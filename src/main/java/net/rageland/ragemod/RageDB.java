@@ -21,21 +21,22 @@ import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.data.PlayerTowns;
 import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.data.Region2D;
+import net.rageland.ragemod.database.JDCConnectionDriver;
+import net.rageland.ragemod.database.JDCConnectionPool;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class RageDB {
 
-    protected Connection conn;
+	protected JDCConnectionPool connectionPool;
     protected String url;
     protected String databaseName;
     protected String driver;
     protected String user;
     protected String password;
     
-    private PreparedStatement preparedStatement = null;
-    private ResultSet rs = null;
+        
     
     private RageMod plugin;
 
@@ -51,8 +52,8 @@ public class RageDB {
     	
         try
         {
-          Class.forName(driver).newInstance();
-           conn = DriverManager.getConnection(url + databaseName, user, password);
+        	JDCConnectionDriver connectionDriver = new JDCConnectionDriver(driver, url, user, password);
+        	connectionPool = connectionDriver.getConnectionPool();
         }
         catch(Exception e)
         {
@@ -60,15 +61,15 @@ public class RageDB {
         }
     }
 
-    public Connection getConnection()
+    public Connection getConnection() throws SQLException
     {
-      return conn;
+    	return connectionPool.getConnection();
     }
         
     
     
     // You need to close the resultSet
-	private void close() {
+	private void close(ResultSet rs, PreparedStatement preparedStatement, Connection conn) {
 		try {
 			if (rs != null) {
 				rs.close();
@@ -89,11 +90,16 @@ public class RageDB {
 	// Load all PlayerTown data
 	public HashMap<String, PlayerTown> loadPlayerTowns()
     {
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
+	    
 		HashMap<String, PlayerTown> towns = new HashMap<String, PlayerTown>();
 		PlayerTown currentTown = null;
 		
     	try
     	{
+    		conn = getConnection();
         	preparedStatement = conn.prepareStatement(
 				"SELECT pt.ID_PlayerTown, pt.TownName, pt.XCoord, pt.ZCoord, " +
 				"	pt.TownLevel, " +
@@ -128,7 +134,7 @@ public class RageDB {
     	} catch (Exception e) {
     		System.out.println("Error in RageDB.LoadPlayerTowns: " + e.getMessage());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
 		
 		return null;
@@ -137,11 +143,15 @@ public class RageDB {
 	// Load data from Players table on login if existing player - create new row if not 
 	public PlayerData playerLogin(String playerName)
     {
-		PlayerData playerData = null;
-		ResultSet rs = null;    		
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
+	    
+		PlayerData playerData = null;  		
 		
     	try
     	{
+    		conn = getConnection();
         	String selectQuery = 
         		"SELECT p.ID_Player, p.Name, IFNULL(p.ID_Faction, 0) as ID_Faction, p.IsMember, p.MemberExpiration, p.Bounty, p.ExtraBounty, " +
         		"   (p.Home_XCoord IS NOT NULL) AS Home_IsSet, p.Home_XCoord, p.Home_YCoord, p.Home_ZCoord, p.Home_LastUsed, " +
@@ -184,7 +194,7 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
 		
 		return null;
@@ -195,10 +205,13 @@ public class RageDB {
 	public PlayerData playerFetch(String playerName)
     {
 		PlayerData playerData = null;
-		ResultSet rs = null;    		
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;		
 		
     	try
     	{
+    		conn = getConnection();
         	String selectQuery = 
         		"SELECT p.ID_Player, p.Name, IFNULL(p.ID_Faction, 0) as ID_Faction, p.IsMember, p.MemberExpiration, p.Bounty, p.ExtraBounty, " +
         		"   (p.Home_XCoord IS NOT NULL) AS Home_IsSet, p.Home_XCoord, p.Home_YCoord, p.Home_ZCoord, p.Home_LastUsed, " +
@@ -223,7 +236,7 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
 		
 		return null;
@@ -256,8 +269,8 @@ public class RageDB {
 		playerData.spawn_Z = rs.getInt("Spawn_ZCoord");
 		playerData.spawn_LastUsed = rs.getTimestamp("Spawn_LastUsed");
 		
-		playerData.lots = this.getLots(playerData.id_Player);
-		playerData.lotPermissions = this.getLotPermissions(playerData.id_Player);
+		playerData.lots = getLots(playerData.id_Player);
+        playerData.lotPermissions = this.getLotPermissions(playerData.id_Player);
 		
 		if( playerData.townName.equals("") )
 			playerData.treasuryBalance = 0;
@@ -270,11 +283,14 @@ public class RageDB {
 	// Make a separate query to get all lots owned by the player
 	private ArrayList<Lot> getLots(int id_Player) 
 	{
-		ResultSet rs = null;    
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;  
 		ArrayList<Lot> playerLots = new ArrayList<Lot>();
 	
     	try
     	{
+    		conn = getConnection();
         	String selectQuery = 
         		"SELECT ID_Lot FROM Lots WHERE ID_Player = " + id_Player;
     		
@@ -292,7 +308,7 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
     	
     	return playerLots;
@@ -301,10 +317,13 @@ public class RageDB {
 	// Return the result of the player's transaction history with their current town
 	public double getPlayerTreasuryBalance(int id_Player, int id_PlayerTown)
 	{
-		ResultSet rs = null;    
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;    
 	
     	try
     	{
+    		conn = getConnection();
         	String selectQuery = 
         		"SELECT SUM(Amount) as Amount FROM TreasuryTransactions WHERE ID_Player = " + id_Player + " AND ID_PlayerTown = " + id_PlayerTown;
     		
@@ -319,13 +338,13 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
     	
     	return -1;
 	}
-	
-	// Return all players who are allowed to build in the player's lots
+    
+    	// Return all players who are allowed to build in the player's lots
 	public ArrayList<String> getLotPermissions(int id_Player)
 	{
 		ResultSet rs = null; 
@@ -361,9 +380,14 @@ public class RageDB {
 	// Update the database with the player data stored in memory (skips town info)
 	public void updatePlayer(PlayerData playerData)
 	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
+		
 		String updateString = "";
 		try
     	{
+			conn = getConnection();
     		// Update the Players table to create the town association
     		updateString = 
 				"UPDATE Players SET " +
@@ -411,7 +435,7 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
 	}
 	
@@ -420,10 +444,14 @@ public class RageDB {
 	// Load data from Players table on login if existing player - create new row if not 
 	public void townAdd(String targetPlayerName, String townName)
     {
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
 		PlayerData playerData = Players.get(targetPlayerName);
 		
     	try
     	{
+    		conn = getConnection();
     		// Update the Players table to create the town association
     		preparedStatement = conn.prepareStatement(
     				"UPDATE Players SET ID_PlayerTown = " +
@@ -436,7 +464,7 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
     }
 	
@@ -444,11 +472,14 @@ public class RageDB {
    	// Load data from Players table on login if existing player - create new row if not 
 	public int townCreate(Player player, String townName)
     {
-		ResultSet rs = null;   
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
 		PlayerData playerData = Players.get(player.getName());
 		
     	try
     	{
+    		conn = getConnection();
     		// TODO: Set default treasury balance from config
     		// Insert the new town into the PlayerTowns table
     		preparedStatement = conn.prepareStatement(
@@ -477,7 +508,7 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
     	
     	System.out.println("Error: RageDB.TownCreate() returned -1");
@@ -487,13 +518,17 @@ public class RageDB {
 	// Reset the player's town affiliation - used by both Leave and Evict
 	public void townLeave(String playerName)
     { 
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
 		PlayerData playerData = Players.get(playerName);
 		
     	try
     	{
+    		conn = getConnection();
     		// Update the Players table to remove the town association
     		preparedStatement = conn.prepareStatement(
-    				"UPDATE Players SET ID_PlayerTown = NULL, IsMayor = 0, Spawn_XCoord = NULL, Spawn_YCoord = NULL, Spawn_ZCoord = NULL WHERE ID_Player = " + playerData.id_Player);
+    				"UPDATE Players SET ID_PlayerTown = NULL, IsMayor = 0, Spawn_IsSet = 0 WHERE ID_Player = " + playerData.id_Player);
     		preparedStatement.executeUpdate();	
     	} 
     	catch (SQLException e) {
@@ -501,15 +536,19 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
     }
 	
 	// Increments the TownLevel value by 1
 	public void townUpgrade(String townName, int cost) 
-	{    		
+	{    
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
     	try
     	{
+    		conn = getConnection();
     		// Update the Players table to remove the town association
     		preparedStatement = conn.prepareStatement(
     				"UPDATE PlayerTowns SET TownLevel = (TownLevel + 1), TreasuryBalance = (TreasuryBalance - " + cost + ") " +
@@ -522,20 +561,23 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
 	}
 
 	// Returns the number of players associated to the specified town
 	public int countResidents(String townName) 
 	{
-		ResultSet rs = null;   
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null; 
 		PlayerTown playerTown = PlayerTowns.get(townName);
 		
     	try
     	{
+    		conn = getConnection();
     		preparedStatement = conn.prepareStatement(
-    				"SELECT COUNT(ID_Player) FROM Players WHERE ID_PlayerTown = " + playerTown.id_PlayerTown);
+    				"SELECT COUNT ID_Player FROM Players WHERE ID_PlayerTown = " + playerTown.id_PlayerTown);
     		rs = preparedStatement.executeQuery();
     		rs.next();
     		return rs.getInt(1);
@@ -545,7 +587,7 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
     	
     	System.out.println("Error: RageDB.CountResidents() returned -1");
@@ -555,12 +597,16 @@ public class RageDB {
 	// Returns all residents for a particular town, with mayor first
 	public ArrayList<String> listTownResidents(String townName) 
 	{
-		ResultSet rs = null;   
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
+	    
 		PlayerTown playerTown = PlayerTowns.get(townName);
 		ArrayList<String> residents = new ArrayList<String>();
 		
     	try
     	{
+    		conn = getConnection();
     		preparedStatement = conn.prepareStatement(
     				"SELECT Name FROM Players p " +
     				"WHERE ID_PlayerTown = " + playerTown.id_PlayerTown + " " +
@@ -579,7 +625,7 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
     	
     	return null;
@@ -588,11 +634,14 @@ public class RageDB {
 	// Returns all spawn points held by residents of a town, to see if any are too close
 	public HashMap<String, Location> getSpawnLocations(int id_PlayerTown) 
 	{
-		ResultSet rs = null;   
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;   
 		HashMap<String, Location> spawns = new HashMap<String, Location>();
 		
     	try
     	{
+    		conn = getConnection();
     		preparedStatement = conn.prepareStatement(
     				"SELECT p.Name, p.Spawn_XCoord, p.Spawn_YCoord, p.Spawn_ZCoord " +
     				"FROM Players p " +
@@ -615,7 +664,7 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
     	
     	return null;
@@ -624,12 +673,16 @@ public class RageDB {
 	// Loads all of the lots in the city into memory
 	public HashMap<String, Lot> loadLots() 
 	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
 		HashMap<String, Lot> lots = new HashMap<String, Lot>();
 		Lot currentLot = null;
 		int mult = RageConfig.Lot_MULTIPLIER;
 		
     	try
     	{
+    		conn = getConnection();
         	preparedStatement = conn.prepareStatement(
         		"SELECT l.ID_Lot, l.Category, l.Number, IFNULL(p.Name, '') as Owner, l.XCoord, l.ZCoord, " +
         		"l.Width, l.Height " +
@@ -662,7 +715,7 @@ public class RageDB {
     	} catch (Exception e) {
     		System.out.println("Error in RageDB.LoadLots(): " + e.getMessage());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
 		
 		return null;
@@ -671,8 +724,12 @@ public class RageDB {
 	// Assign a lot to a player
 	public void lotClaim(PlayerData playerData, Lot lot) 
 	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
 		try
     	{
+			conn = getConnection();
     		// Update the Lots table to assign the owner
     		preparedStatement = conn.prepareStatement(
     				"UPDATE Lots SET ID_Player = " + playerData.id_Player + ", DateClaimed = NOW() WHERE ID_Lot = " + lot.id_Lot);
@@ -683,15 +740,19 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
 	}
 
 	// Reset a lot's owner
 	public void lotUnclaim(Lot lot) 
 	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
 		try
     	{
+			conn = getConnection();
     		// Update the Lots table to assign the owner
     		preparedStatement = conn.prepareStatement(
     				"UPDATE Lots SET ID_Player = NULL, DateClaimed = NULL WHERE ID_Lot = " + lot.id_Lot);
@@ -702,15 +763,19 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
 	}
 	
 	// Return the amount the player has donated in the past month
 	public int getRecentDonations(int id_Player)
 	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
 		try
     	{
+			conn = getConnection();
         	preparedStatement = conn.prepareStatement(
         		"SELECT SUM(Amount) as Amount FROM Donations WHERE ID_Player = " + id_Player + 
         		" AND DATE_SUB(CURDATE(),INTERVAL 30 DAY) <= Date");
@@ -723,7 +788,7 @@ public class RageDB {
 		catch (Exception e) {
     		System.out.println("Error in RageDB.getRecentDonations(): " + e.getMessage());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
 		
 		return 0;
@@ -733,9 +798,13 @@ public class RageDB {
 	public HashMap<Integer, Integer> getFactionPopulations()
 	{
 		HashMap<Integer, Integer> populations = new HashMap<Integer, Integer>();
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
 		
 		try
     	{
+			conn = getConnection();
         	preparedStatement = conn.prepareStatement(
         		"SELECT p.ID_Faction, COUNT(*) as Population FROM Factions f " +
         		"INNER JOIN Players p ON p.ID_Faction = f.ID_Faction " +
@@ -753,7 +822,7 @@ public class RageDB {
 		catch (Exception e) {
     		System.out.println("Error in RageDB.getRecentDonations(): " + e.getMessage());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
 		
 		return null;
@@ -762,8 +831,13 @@ public class RageDB {
 	// Add money to town treasury
 	public void townDeposit(int id_PlayerTown, int id_Player, double amount) 
 	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
+	    
 		try
     	{
+			conn = getConnection();
     		// Update the treasury balance
     		preparedStatement = conn.prepareStatement(
     				"UPDATE PlayerTowns SET TreasuryBalance = (TreasuryBalance + " + amount + ") WHERE ID_PlayerTown = " + id_PlayerTown);
@@ -780,7 +854,7 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
 		
 	}
@@ -788,8 +862,12 @@ public class RageDB {
 	// Set minimum balance
 	public void townSetMinimumBalance(int id_PlayerTown, double amount) 
 	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
 		try
     	{
+			conn = getConnection();
     		// Update the treasury balance
     		preparedStatement = conn.prepareStatement(
     				"UPDATE PlayerTowns SET MinimumBalance = " + amount + " WHERE ID_PlayerTown = " + id_PlayerTown);
@@ -800,7 +878,7 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
 		
 	}
@@ -809,9 +887,13 @@ public class RageDB {
 	public HashMap<String, Timestamp> loadTaskTimes() 
 	{
 		HashMap<String, Timestamp> tasks = new HashMap<String, Timestamp>();
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
 		
 		try
     	{
+			conn = getConnection();
         	preparedStatement = conn.prepareStatement("SELECT Name, MAX(Timestamp) as Timestamp FROM Tasks GROUP BY Name");
         		
         	rs = preparedStatement.executeQuery();
@@ -825,7 +907,7 @@ public class RageDB {
 		catch (Exception e) {
     		System.out.println("Error in RageDB.loadTaskTimes(): " + e.getMessage());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
 		
 		return null;
@@ -834,8 +916,12 @@ public class RageDB {
 	// Log a task as complete in the database
 	public void setComplete(String taskName) 
 	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
 		try
     	{
+			conn = getConnection();
     		preparedStatement = conn.prepareStatement(
     				"INSERT INTO Tasks (Name, Timestamp) VALUES ('" + taskName + "',NOW())");
     		preparedStatement.executeUpdate();	
