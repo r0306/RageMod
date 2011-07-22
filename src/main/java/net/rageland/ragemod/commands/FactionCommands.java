@@ -74,7 +74,7 @@ public class FactionCommands
 		}
 		
 		// Calculate the cost to join each faction
-		HashMap<Integer, Integer> populations = RageMod.database.getFactionPopulations();
+		HashMap<Integer, Integer> populations = RageMod.database.factionQueries.getFactionPopulations();
 		int lowestPopulation = 9999;
 		for( int faction : populations.keySet() )
 		{
@@ -116,7 +116,7 @@ public class FactionCommands
 		// Set the player's faction
 		playerData.id_Faction = id_Faction;
 		Players.update(playerData);
-		RageMod.database.updatePlayer(playerData);
+		RageMod.database.playerQueries.updatePlayer(playerData);
 		
 		Util.message(player, "Congratulations, you are now a member of the " + Factions.getName(id_Faction) + " faction!");
 	}
@@ -145,14 +145,14 @@ public class FactionCommands
 			Util.message(player, "You are no longer a member of the " + Factions.getName(playerData.id_Faction) + " faction.");
 			playerData.id_Faction = 0;
 			Players.update(playerData);
-			RageMod.database.updatePlayer(playerData);
+			RageMod.database.playerQueries.updatePlayer(playerData);
 		}
 	}
 	
 	// /faction stats
 	public static void stats(Player player)
 	{
-		HashMap<Integer, Integer> populations = RageMod.database.getFactionPopulations();
+		HashMap<Integer, Integer> populations = RageMod.database.factionQueries.getFactionPopulations();
 		
 		Util.message(player, "Current faction populations (excluding inactive players):");
 		for( int faction : populations.keySet() )

@@ -24,7 +24,7 @@ public class Players {
     // Creates a new Player record if one does not exist
     public static PlayerData playerLogin(String playerName)
     {
-    	PlayerData playerData = RageMod.database.playerLogin(playerName);
+    	PlayerData playerData = RageMod.database.playerQueries.playerLogin(playerName);
     	players.put(playerName.toLowerCase(), playerData);
     	
     	return playerData;
@@ -38,7 +38,7 @@ public class Players {
     	else
     	{
     		System.out.println("DB fetch called for player: " + playerName);
-    		PlayerData playerData = RageMod.database.playerFetch(playerName);
+    		PlayerData playerData = RageMod.database.playerQueries.playerFetch(playerName);
     		if( playerData == null )
     			return null;
     		else

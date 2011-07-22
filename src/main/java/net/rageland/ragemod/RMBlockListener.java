@@ -69,7 +69,7 @@ public class RMBlockListener extends BlockListener
 		    			Util.message(player, "You no longer have a home point.");
 		    			// Update both memory and database
 		    			Players.update(playerData);
-		    			RageMod.database.updatePlayer(playerData);
+		    			RageMod.database.playerQueries.updatePlayer(playerData);
 					}
 				}
 			}
@@ -84,7 +84,7 @@ public class RMBlockListener extends BlockListener
 	    			Util.message(player, "You no longer have a spawn point.");
 	    			// Update both memory and database
 	    			Players.update(playerData);
-	    			RageMod.database.updatePlayer(playerData);
+	    			RageMod.database.playerQueries.updatePlayer(playerData);
 	    		}
 			}
     	}
@@ -129,7 +129,7 @@ public class RMBlockListener extends BlockListener
 		    			Util.message(player, "Your home location has now been set.");
 		    			// Update both memory and database
 		    			Players.update(playerData);
-		    			RageMod.database.updatePlayer(playerData);
+		    			RageMod.database.playerQueries.updatePlayer(playerData);
 					}
 				}
 			}
@@ -148,7 +148,7 @@ public class RMBlockListener extends BlockListener
 					}
 	    			
 	    			// Make sure the location is not too close to another player's spawn
-	    			HashMap<String, Location> spawns = RageMod.database.getSpawnLocations(playerTown.id_PlayerTown);
+	    			HashMap<String, Location> spawns = RageMod.database.playerQueries.getSpawnLocations(playerTown.id_PlayerTown);
 	    			for( String resident : spawns.keySet() )
 	    			{
 	    				if( block.getLocation().distance(spawns.get(resident)) < RageConfig.Town_DISTANCE_BETWEEN_BEDS && !resident.equals(playerData.name) )
@@ -163,7 +163,7 @@ public class RMBlockListener extends BlockListener
 	    			Util.message(player, "Your spawn location has now been set.");
 	    			// Update both memory and database
 	    			Players.update(playerData);
-	    			RageMod.database.updatePlayer(playerData);
+	    			RageMod.database.playerQueries.updatePlayer(playerData);
 	    		}
 			}
     	}

@@ -40,14 +40,14 @@ public class Tasks {
 	// On startup, pull all records of when tasks ran last
 	public void loadTaskTimes()
 	{
-		tasks = RageMod.database.loadTaskTimes();	
+		tasks = RageMod.database.taskQueries.loadTaskTimes();	
 	}
 	
 	// Log task as complete
 	public static void setComplete(String taskName)
 	{
 		tasks.put(taskName, Util.now());
-		RageMod.database.setComplete(taskName);
+		RageMod.database.taskQueries.setComplete(taskName);
 	}
 	
 	// Get number of seconds since last task run
@@ -96,7 +96,7 @@ public class Tasks {
 					town.treasuryBalance -= cost;
 					remaining -= cost;
 					Players.update(playerData);
-					RageMod.database.updatePlayer(playerData);
+					RageMod.database.playerQueries.updatePlayer(playerData);
 				}
 				// If the player doesn't have the funds in either area, evict their freeloading ass
 				else if( !playerData.isMayor )

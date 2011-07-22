@@ -244,7 +244,7 @@ public class LotCommands
 		// If the player is claiming a member lot, see if they have donated the appropriate amount
 		if( lot.isMemberLot() )
 		{
-			int donation = RageMod.database.getRecentDonations(playerData.id_Player);
+			int donation = RageMod.database.playerQueries.getRecentDonations(playerData.id_Player);
 			
 			if( donation < lot.getPrice() )
 			{

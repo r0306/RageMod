@@ -74,7 +74,7 @@ public class Commands
 		player.teleport(destination);
 		playerData.home_LastUsed = now;
 		Players.update(playerData);
-		RageMod.database.updatePlayer(playerData);
+		RageMod.database.playerQueries.updatePlayer(playerData);
 	}
 	
 	// /spawn [player_name]
@@ -119,7 +119,7 @@ public class Commands
 		player.teleport(destination);
 		playerData.spawn_LastUsed = now;
 		Players.update(playerData);
-		RageMod.database.updatePlayer(playerData);
+		RageMod.database.playerQueries.updatePlayer(playerData);
 	}
 	
 	

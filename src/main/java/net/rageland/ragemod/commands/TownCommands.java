@@ -196,7 +196,7 @@ public class TownCommands
 		// Update the playerData
 		targetPlayerData.townName = playerData.townName;
 		// This will give the player's balance back if they were a previous resident of the town
-		targetPlayerData.treasuryBalance = RageMod.database.getPlayerTreasuryBalance(targetPlayerData.id_Player, PlayerTowns.get(playerData.townName).id_PlayerTown);
+		targetPlayerData.treasuryBalance = RageMod.database.playerQueries.getPlayerTreasuryBalance(targetPlayerData.id_Player, PlayerTowns.get(playerData.townName).id_PlayerTown);
 		Players.update(targetPlayerData);
 		
 		Util.message(player, targetPlayerData.name + " is now a resident of " + playerData.townName + ".");		

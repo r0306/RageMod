@@ -76,7 +76,7 @@ public class DebugCommands
 	public static void donation(Player player) 
 	{
 		PlayerData playerData = Players.get(player.getName());
-		int donation = RageMod.database.getRecentDonations(playerData.id_Player);
+		int donation = RageMod.database.playerQueries.getRecentDonations(playerData.id_Player);
 		
 		Util.message(player, "The database records you with a total donation of $" + donation + " in the last month.");
 	}
