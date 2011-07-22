@@ -20,6 +20,45 @@ import com.iConomy.system.Holdings;
 
 public class FactionCommands 
 {
+	
+	public void onFactionCommand(Player player, PlayerData playerData, String[] split)
+	{
+		if( split.length < 2 || split.length > 3 )
+		{
+			Util.message(player, "Faction commands: <required> [optional]");
+			if( playerData.id_Faction == 0 )
+				Util.message(player, "   /faction join     (used to join a faction)");
+			if( playerData.id_Faction != 0 )
+				Util.message(player, "   /faction leave    (leaves your faction)");
+			if( true )
+				Util.message(player, "   /faction stats    (displays stats on each faction)");
+		}
+		else if( split[1].equalsIgnoreCase("join") )
+		{
+			if( split.length == 2 )
+				FactionCommands.join(player, "");
+			else if( split.length == 3 )
+				FactionCommands.join(player, split[2]); 
+			else
+    			Util.message(player, "Usage: /faction join [faction_name]"); 
+		}
+		else if( split[1].equalsIgnoreCase("leave") )
+		{
+			if( split.length == 2 )
+				FactionCommands.leave(player, false);
+    		else if( split.length == 3 && split[2].equalsIgnoreCase("confirm"))
+    			FactionCommands.leave(player, true);
+    		else
+    			Util.message(player, "Usage: /faction leave [confirm]");
+		}
+		else if( split[1].equalsIgnoreCase("stats") )
+		{
+			FactionCommands.stats(player);
+		}
+		else
+			Util.message(player, "Type /faction to see a list of available commands.");
+	}
+	
 	// /faction join
 	public static void join(Player player, String factionName) 
 	{

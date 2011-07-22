@@ -3,6 +3,7 @@ package net.rageland.ragemod.commands;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.Lot;
 import net.rageland.ragemod.data.Lots;
+import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.data.PlayerTowns;
 
@@ -10,6 +11,44 @@ import org.bukkit.entity.Player;
 
 public class CompassCommands 
 {
+	
+	public void onCompassCommand(Player player, PlayerData playerData, String[] split) 
+	{
+		if( split.length < 2 || split.length > 3 )
+		{
+			Util.message(player, "Compass commands: <required> [optional]");
+			if( true )
+				Util.message(player, "   /compass lot <lot_code>   (points compass to specified lot)");
+			if( true )
+				Util.message(player, "   /compass spawn   (points compass to world spawn)");
+			if( playerData.townName.equals("") )
+				Util.message(player, "   /compass town <town_name>   (points compass to specified town)");
+			else
+				Util.message(player, "   /compass town [town_name]   (points compass to town)");
+		}
+		else if( split[1].equalsIgnoreCase("lot") )
+		{
+			if( split.length == 3 )
+				CompassCommands.lot(player, split[2]); 
+			else
+    			Util.message(player, "Usage: /compass lot <lot_code>"); 
+		}
+		else if( split[1].equalsIgnoreCase("spawn") )
+		{
+			CompassCommands.spawn(player);
+		}
+		else if( split[1].equalsIgnoreCase("town") )
+		{
+			if( split.length == 2 && !playerData.townName.equals("") )
+				CompassCommands.town(player, playerData.townName);
+			else if( split.length == 3 )
+				CompassCommands.town(player, split[2]);
+    		else
+    			Util.message(player, "Usage: /town info <town_name>");
+		}
+		else
+			Util.message(player, "Type /compass to see a list of available commands.");
+	}
 
 	// /compass lot <lot_code>
 	public static void lot(Player player, String lotCode) 

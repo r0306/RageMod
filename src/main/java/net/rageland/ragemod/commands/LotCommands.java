@@ -15,6 +15,87 @@ import org.bukkit.entity.Player;
 //The Commands classes handle all the state checking for typed commands, then send them to the database if approved
 public class LotCommands 
 {
+	
+	public void onLotCommand(Player player, PlayerData playerData, String[] split)
+	{
+		if( split.length < 2 || split.length > 4 )
+		{
+			Util.message(player, "Lot commands: <required> [optional]");
+			if( playerData.lots.size() > 0 )
+				Util.message(player, "   /lot allow <player_name> (allow player to build in your lots)");
+			if( RageMod.permissionHandler.has(player, "ragemod.lot.assign") )
+				Util.message(player, "   /lot assign <lot_code> <player_name>  (gives lot to player)");
+			if( true )
+				Util.message(player, "   /lot check   (returns info on the current lot)");
+			if( true )
+				Util.message(player, "   /lot claim [lot_code]   (claims the specified or current lot)");
+			if( playerData.lots.size() > 0 )
+				Util.message(player, "   /lot disallow <player_name/all> (removes permissions)");
+			if( RageMod.permissionHandler.has(player, "ragemod.lot.evict") )
+				Util.message(player, "   /lot evict <lot_code>   (sets specified lot to 'unclaimed')");
+			if( playerData.lots.size() > 0 )
+				Util.message(player, "   /lot list   (lists all lots you own)");
+			if( playerData.lots.size() > 0 )
+				Util.message(player, "   /lot unclaim [lot_code]  (unclaims the specified lot)");
+		}
+		else if( split[1].equalsIgnoreCase("allow") )
+		{
+			if( split.length == 3 )
+				LotCommands.allow(player, split[2]); 
+			else
+    			Util.message(player, "Usage: /lot allow <player_name>"); 
+		}
+		else if( split[1].equalsIgnoreCase("assign") )
+		{
+			if( split.length == 4 )
+				LotCommands.assign(player, split[2], split[3]); 
+			else
+    			Util.message(player, "Usage: /lot assign <lot_code> <player_name>"); 
+		}
+		else if( split[1].equalsIgnoreCase("check") )
+		{
+			LotCommands.check(player);
+		}
+		else if( split[1].equalsIgnoreCase("claim") )
+		{
+			if( split.length == 2 )
+				LotCommands.claim(player, "");
+			else if( split.length == 3 )
+				LotCommands.claim(player, split[2]); 
+			else
+    			Util.message(player, "Usage: /lot claim [lot_code]"); 
+		}
+		else if( split[1].equalsIgnoreCase("disallow") )
+		{
+			if( split.length == 3 )
+				LotCommands.disallow(player, split[2]); 
+			else
+    			Util.message(player, "Usage: /lot disallow <player_name/all>"); 
+		}
+		else if( split[1].equalsIgnoreCase("evict") )
+		{
+			if( split.length == 3 )
+				LotCommands.evict(player, split[2]); 
+			else
+    			Util.message(player, "Usage: /lot evict <lot_code>"); 
+		}
+		else if( split[1].equalsIgnoreCase("list") )
+		{
+			LotCommands.list(player);
+		}
+		else if( split[1].equalsIgnoreCase("unclaim") )
+		{
+			if( split.length == 2 )
+				LotCommands.unclaim(player, "");
+			else if( split.length == 3 )
+				LotCommands.unclaim(player, split[2]); 
+			else
+    			Util.message(player, "Usage: /lot unclaim [lot_code]"); 
+		}
+		else
+			Util.message(player, "Type /lot to see a list of available commands.");
+	}
+	
 	// /lot allow <player_name>
 	public static void allow(Player player, String targetPlayerName) 
 	{

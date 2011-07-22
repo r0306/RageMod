@@ -19,6 +19,38 @@ import org.bukkit.entity.Player;
 
 public class DebugCommands 
 {
+	
+	public void onDebugCommand(Player player, PlayerData playerData, String[] split) 
+	{
+		if( split.length < 2 || split.length > 3 )
+		{
+			Util.message(player, "Debug commands: <required> [optional]");
+			if( true )
+				Util.message(player, "   /debug colors   (displays all chat colors)");
+			if( true )
+				Util.message(player, "   /debug donation  (displays amount of donations)");
+			if( true )
+				Util.message(player, "   /debug sanctum <level> (attempts to build sanctum floor)");
+		}
+		else if( split[1].equalsIgnoreCase("colors") )
+		{
+			DebugCommands.colors(player);
+		}
+		else if( split[1].equalsIgnoreCase("donation") )
+		{
+			DebugCommands.donation(player);
+		}
+		else if( split[1].equalsIgnoreCase("sanctum") )
+		{
+			if( split.length == 3 )
+				DebugCommands.sanctum(player, split[2]); 
+			else
+    			Util.message(player, "Usage: /debug sanctum <level>"); 
+		}
+		else
+			Util.message(player, "Type /debug to see a list of available commands.");
+	}
+	
 	// /debug colors
 	public static void colors(Player player) 
 	{

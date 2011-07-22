@@ -30,6 +30,130 @@ import com.iConomy.system.Holdings;
 // The Commands classes handle all the state checking for typed commands, then send them to the database if approved
 public class TownCommands 
 {
+	
+	public void onTownCommand(Player player, PlayerData playerData, String[] split) 
+	{
+		if( split.length < 2 || split.length > 3 )
+		{
+			Util.message(player, "Town commands: <required> [optional]");
+			if( playerData.isMayor )
+				Util.message(player, "   /town add <player_name>   (adds a new resident)");
+			if( playerData.townName.equals("") )
+				Util.message(player, "   /town create [town_name]   (creates a new town)");
+			if( !playerData.townName.equals("") )
+				Util.message(player, "   /town deposit <amount>   (deposits into town treasury)");
+			if( playerData.isMayor )
+				Util.message(player, "   /town evict <player_name>   (removes a resident)");
+			if( playerData.townName.equals("") )
+				Util.message(player, "   /town info <town_name>   (gives info on selected town)");
+			else
+				Util.message(player, "   /town info [town_name]   (gives info on selected town)");
+			if( !playerData.isMayor && !playerData.townName.equals("") )
+				Util.message(player, "   /town leave   (leaves your current town)");
+			if( true )
+				Util.message(player, "   /town list [faction]   (lists all towns in the world)");
+			if( playerData.isMayor )
+				Util.message(player, "   /town minimum <amount>   (sets the min. treasury balance)");
+			if( playerData.townName.equals("") )
+				Util.message(player, "   /town residents <town_name>   (lists all residents of town)");
+			else
+				Util.message(player, "   /town residents [town_name]   (lists all residents of town)");
+			if( playerData.isMayor )
+				Util.message(player, "   /town upgrade [confirm]   (upgrades your town)");
+			if( !playerData.townName.equals("") )
+				Util.message(player, "   /town withdrawl <amount>   (withdrawls from town treasury)");
+		}
+		else if( split[1].equalsIgnoreCase("add") )
+		{
+			if( split.length == 3 )
+    			TownCommands.add(player, split[2]); 
+    		else
+    			Util.message(player, "Usage: /town add <player_name>");
+		}
+		else if( split[1].equalsIgnoreCase("create") )
+		{
+	
+			// TODO: Support 2+ word town names
+			
+			if( split.length == 2 )
+				TownCommands.create(player, "");
+			else if( split.length == 3 )
+				TownCommands.create(player, split[2]); 
+			else
+    			Util.message(player, "Usage: /town create [town_name] (use 'quotes' for multiple-word town names)"); 
+		}
+		else if( split[1].equalsIgnoreCase("deposit") )
+		{
+			if( split.length == 3 )
+				TownCommands.deposit(player, split[2]); 
+    		else
+    			Util.message(player, "Usage: /town deposit <amount>");
+		}
+		else if( split[1].equalsIgnoreCase("evict") )
+		{
+			if( split.length == 3 )
+				TownCommands.evict(player, split[2]); 
+    		else
+    			Util.message(player, "Usage: /town evict <player_name>");
+		}
+		else if( split[1].equalsIgnoreCase("info") )
+		{
+			if( split.length == 2 && !playerData.townName.equals("") )
+				TownCommands.info(player, playerData.townName);
+			else if( split.length == 3 )
+				TownCommands.info(player, split[2]);
+    		else
+    			Util.message(player, "Usage: /town info <town_name>");
+		}
+		else if( split[1].equalsIgnoreCase("leave") )
+		{
+			TownCommands.leave(player); 	 
+		}
+		else if( split[1].equalsIgnoreCase("list") )
+		{
+			if( split.length == 2 )
+				TownCommands.list(player, "");
+			else if( split.length == 3 )
+				TownCommands.list(player, split[2]);
+    		else
+    			Util.message(player, "Usage: /town list [faction]");
+		}
+		else if( split[1].equalsIgnoreCase("minimum") )
+		{
+			if( split.length == 3 )
+				TownCommands.minimum(player, split[2]); 
+    		else
+    			Util.message(player, "Usage: /town minimum <amount>");
+		}
+		else if( split[1].equalsIgnoreCase("residents") )
+		{
+			if( split.length == 2 && !playerData.townName.equals("") )
+				TownCommands.residents(player, playerData.townName);
+			else if( split.length == 3 )
+				TownCommands.residents(player, split[2]);
+    		else
+    			Util.message(player, "Usage: /town residents <town_name>");
+		}
+		else if( split[1].equalsIgnoreCase("upgrade") )
+		{
+			if( split.length == 2 )
+    			TownCommands.upgrade(player, false);
+    		else if( split.length == 3 && split[2].equalsIgnoreCase("confirm"))
+    			TownCommands.upgrade(player, true);
+    		else
+    			Util.message(player, "Usage: /town upgrade [confirm]");
+		}
+		else if( split[1].equalsIgnoreCase("withdrawl") )
+		{
+			if( split.length == 3 )
+				TownCommands.withdrawl(player, split[2]); 
+    		else
+    			Util.message(player, "Usage: /town withdrawl <amount>");
+		}
+		else
+			Util.message(player, "Type /town to see a list of available commands.");
+	}
+	
 	// /town add <player_name>
 	public static void add(Player player, String targetPlayerName)
 	{

@@ -7,15 +7,15 @@ import org.bukkit.entity.Player;
 
 public class QuestCommands {
 	
-	public void questCommandIssued(Player player, PlayerData playerData, String[] splitCommands) 
+	public void onQuestCommand(Player player, PlayerData playerData, String[] split) 
 	{
-		if(splitCommands.length != 2) 
+		if(split.length != 2) 
 		{
 			Util.message(player, "Quest commands: ");
 			Util.message(player, "    /quest abandon (Abandons your current quest)");
 			Util.message(player, "    /quest view    (Views your current quest)");
 		}
-		else if(splitCommands[1].equalsIgnoreCase("abandon")) 
+		else if(split[1].equalsIgnoreCase("abandon")) 
 		{
 			if(playerData.activeQuestData.quest == null) 
 			{
@@ -28,7 +28,7 @@ public class QuestCommands {
 				playerData.activeQuestData.questCounter = 0;				
 			}
 		} 
-		else if(splitCommands[1].equalsIgnoreCase("view"))
+		else if(split[1].equalsIgnoreCase("view"))
 		{
 			if(playerData.activeQuestData == null)
 			{
