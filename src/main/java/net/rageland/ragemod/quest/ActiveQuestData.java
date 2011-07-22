@@ -4,7 +4,7 @@ public class ActiveQuestData {
 	
 	
 	public int questCounter;
-	public Quest quest;	
+	public Quest quest;		
 	
 	public ActiveQuestData() {
 		

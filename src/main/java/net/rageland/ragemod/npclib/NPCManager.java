@@ -7,6 +7,9 @@ import java.util.logging.Level;
 
 import net.minecraft.server.ItemInWorldManager;
 import net.minecraft.server.WorldServer;
+import net.rageland.ragemod.quest.Quest;
+import npcentities.NPCEntity;
+import npcentities.QuestStartNPCEntity;
 
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -25,11 +28,6 @@ public class NPCManager {
 	private BServer server;
 	private int taskid;
 	private JavaPlugin plugin;
-	public static final int QUESTSTARTNPC = 1;
-	public static final int QUESTENDNPC = 2;
-	public static final int QUESTNPC = 3;
-	public static final int TRADERNPC = 4;
-	public static final int REWARDNPC = 5;
 
 	public NPCManager(JavaPlugin plugin) 
 	{
@@ -73,6 +71,36 @@ public class NPCManager {
 		}
 		BWorld world = new BWorld(l.getWorld());
 		NPCEntity npcEntity = new NPCEntity(this.server.getMCServer(), world.getWorldServer(), name, new ItemInWorldManager( world.getWorldServer()), this.plugin);
+		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
+		world.getWorldServer().addEntity(npcEntity);
+		npcs.put(id, npcEntity);
+		return npcEntity;
+	}
+	
+	public NPCEntity spawnQuestStartNPC(String name, Location l, String id, Quest quest) 
+	{
+		if (npcs.containsKey(id)) 
+		{
+			this.server.getLogger().log(Level.WARNING, "NPC with that id already exists, existing NPC returned");
+			return (NPCEntity) npcs.get(id);
+		}
+		if (name.length() > 16) 
+		{
+			String tmp = name.substring(0, 16);
+			this.server.getLogger().log(Level.WARNING, "NPCs can't have names longer than 16 characters,");
+			this.server.getLogger().log(Level.WARNING, name + " has been shortened to " + tmp);
+			name = tmp;
+		}
+		BWorld world = new BWorld(l.getWorld());
+		QuestStartNPCEntity npcEntity = new QuestStartNPCEntity(
+													this.server.getMCServer(), 
+													world.getWorldServer(), 
+													name, 
+													new ItemInWorldManager( 
+															world.getWorldServer()), 
+															this.plugin, 
+															quest
+															);
 		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 		world.getWorldServer().addEntity(npcEntity);
 		npcs.put(id, npcEntity);
