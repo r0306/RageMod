@@ -21,6 +21,7 @@ import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.data.PlayerTowns;
 import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.data.Region2D;
+import net.rageland.ragemod.database.JDCConnection;
 import net.rageland.ragemod.database.JDCConnectionDriver;
 import net.rageland.ragemod.database.JDCConnectionPool;
 
@@ -83,7 +84,7 @@ public class RageDB {
 
 			if (conn != null) 
 			{
-				conn.close();
+				connectionPool.returnConnection((JDCConnection)conn);
 			}
 		} catch (Exception e) {
 
@@ -350,11 +351,14 @@ public class RageDB {
     	// Return all players who are allowed to build in the player's lots
 	public ArrayList<String> getLotPermissions(int id_Player)
 	{
-		ResultSet rs = null; 
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
 		ArrayList<String> lotPermissions = new ArrayList<String>();
 	
     	try
     	{
+    		conn = getConnection();
         	String selectQuery = 
         		"SELECT p.Name as Name FROM LotPermissions lp " +
         		"INNER JOIN Players p ON p.ID_Player = lp.ID_Player_Builder " +
@@ -374,7 +378,7 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}
     	
     	return null;
