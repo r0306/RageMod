@@ -9,9 +9,9 @@ import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.data.PlayerTowns;
 import net.rageland.ragemod.data.Players;
+import net.rageland.ragemod.npcentities.NPCEntity;
 import net.rageland.ragemod.npclib.NPCManager;
 import net.rageland.ragemod.npclib.NpcEntityTargetEvent;
-import npcentities.NPCEntity;
 
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.CreatureType;

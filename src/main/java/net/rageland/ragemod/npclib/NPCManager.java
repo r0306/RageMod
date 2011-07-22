@@ -7,9 +7,9 @@ import java.util.logging.Level;
 
 import net.minecraft.server.ItemInWorldManager;
 import net.minecraft.server.WorldServer;
+import net.rageland.ragemod.npcentities.NPCEntity;
+import net.rageland.ragemod.npcentities.QuestStartNPCEntity;
 import net.rageland.ragemod.quest.Quest;
-import npcentities.NPCEntity;
-import npcentities.QuestStartNPCEntity;
 
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftEntity;
