@@ -11,6 +11,7 @@ import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.RageZones;
 import net.rageland.ragemod.RageZones.Zone;
+import net.rageland.ragemod.quest.ActiveQuestData;
 
 // TODO: Create a colored player name that takes their data into account to be easily pulled by Commands, etc
 
@@ -63,6 +64,9 @@ public class PlayerData
 	public PlayerTown currentTown;
 	public boolean isInCapitol;
 	public Timestamp enterLeaveMessageTime = null;		// Prevent message spam by only allowing a message every 10 seconds (while people work on walls, etc)
+	
+	// Quest data
+	public ActiveQuestData activeQuestData = null;
 	
 	
 	// Gets the player's name with the color code, depending on faction (todo)
@@ -129,7 +133,5 @@ public class PlayerData
 	{
 		home_IsSet = false;
 	}
-		
-	
 	
 }
