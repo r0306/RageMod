@@ -1,7 +1,11 @@
 package net.rageland.ragemod;
 
 import java.io.PrintStream;
+import java.util.Random;
+
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -62,6 +66,48 @@ public class NPCUtilities {
 				amountLeft -= maxStackSize;
 			}
 			inv.addItem(new ItemStack[] { item });
+		}
+	}
+	
+	public static Location findValidRandomNPCSpawnInLocation(Location min, Location max, int standardHeight)
+	{
+		int maxRetries = 20;
+		Random rand = new Random();
+		if(min.getWorld() == max.getWorld()) 
+		{
+			World world = min.getWorld();
+			int randomX = rand.nextInt(max.getBlockX() - min.getBlockX()) + min.getBlockX();
+			int randomZ = rand.nextInt(max.getBlockZ() - min.getBlockZ()) + min.getBlockZ();
+			
+			Location possibleLocation;
+			
+			for(int i = 0; i < maxRetries; i++) {
+				possibleLocation = new Location(world, randomX, standardHeight, randomZ);
+				
+				
+				for(int x = -1; x < 2; i++)
+				{					
+					for(int y = -1; y < 2; y++) 
+					{
+						for(int z = -1; z < 2; z++)
+						{
+							if(possibleLocation.getBlock().getRelative(x, y, z).isEmpty())
+							{
+								
+							}
+						}
+					}					
+				}
+				
+				
+			}	
+			
+			return new Location(min.getWorld(), 2, 2, 2);
+		}
+		else
+		{
+			// Cannot find position between different worlds
+			return null;
 		}
 	}
 }
