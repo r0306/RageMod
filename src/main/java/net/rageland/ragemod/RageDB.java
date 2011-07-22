@@ -71,16 +71,19 @@ public class RageDB {
     // You need to close the resultSet
 	private void close(ResultSet rs, PreparedStatement preparedStatement, Connection conn) {
 		try {
-			if (rs != null) {
+			if (rs != null) 
+			{
 				rs.close();
 			}
 
-			if (preparedStatement != null) {
+			if (preparedStatement != null) 
+			{
 				preparedStatement.close();
 			}
 
-			if (conn != null) {
-				//conn.close();
+			if (conn != null) 
+			{
+				conn.close();
 			}
 		} catch (Exception e) {
 
@@ -931,16 +934,21 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}	
 	}
 
 	// Sets permission for collaborative lot building
 	public void lotAllow(int id_Player_Owner, int id_Player_Builder) 
 	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
+	    
 		try
     	{
-    		preparedStatement = conn.prepareStatement(
+			conn = getConnection();
+			preparedStatement = conn.prepareStatement(
     				"INSERT INTO LotPermissions (ID_Player_Owner, ID_Player_Builder) VALUES (" + id_Player_Owner + ", " + id_Player_Builder + ")");
     		preparedStatement.executeUpdate();	
     	} 
@@ -949,16 +957,21 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}		
 	}
 
 	// Clears permissions for collaborative lot building
 	public void lotDisallow(int id_Player_Owner, int id_Player_Builder) 
 	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
+		
 		try
     	{
-    		// An ID of 0 indicates all players
+			conn = getConnection();
+			// An ID of 0 indicates all players
 			if( id_Player_Builder == 0 )
     		{
 				preparedStatement = conn.prepareStatement(
@@ -977,7 +990,7 @@ public class RageDB {
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
-			close();
+			close(rs, preparedStatement, conn);
 		}	
 		
 	}
