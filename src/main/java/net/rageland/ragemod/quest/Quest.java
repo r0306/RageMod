@@ -3,11 +3,13 @@ package net.rageland.ragemod.quest;
 import org.bukkit.entity.Player;
 
 public abstract interface Quest {
-	public abstract void questEnd(Player paramPlayer);
-
-	public abstract void questStart(Player paramPlayer);
-
-	public abstract boolean isQuestFinished(Player paramPlayer);
-
-	public abstract void presentQuest(Player paramPlayer);
+	
+	public void questEnd(Player paramPlayer);
+	public void questStart(Player paramPlayer);
+	public boolean isQuestFinished(Player paramPlayer);
+	public void presentQuest(Player paramPlayer);	
+	public String getQuestName();
+	public int getQuestId();
+	public String getQuestText();
+	
 }

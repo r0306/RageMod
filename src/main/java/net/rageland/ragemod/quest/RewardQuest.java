@@ -87,7 +87,18 @@ public class RewardQuest implements Quest {
 		return false;
 	}
 
+	@Override
 	public int getQuestId() {
 		return this.questId;
+	}
+
+	@Override
+	public String getQuestName() {
+		return this.questName;
+	}
+	
+	@Override
+	public String getQuestText() {
+		return this.questText;
 	}
 }
