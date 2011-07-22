@@ -1,13 +1,10 @@
 package net.rageland.ragemod.npclib;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import net.minecraft.server.EntityHuman;
 import net.minecraft.server.EntityPlayer;
-import net.minecraft.server.EntityTracker;
 import net.minecraft.server.ItemInWorldManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.NetHandler;
@@ -15,19 +12,14 @@ import net.minecraft.server.NetworkManager;
 import net.minecraft.server.Packet18ArmAnimation;
 import net.minecraft.server.World;
 import net.minecraft.server.WorldServer;
-import net.rageland.ragemod.quest.Quest;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitScheduler;
 
 public class NPCEntity extends EntityPlayer {
 	private int lastTargetId;
@@ -40,12 +32,15 @@ public class NPCEntity extends EntityPlayer {
 	int speechInterval;
 
 	public NPCEntity(MinecraftServer minecraftserver, World world, String name,
-			ItemInWorldManager iteminworldmanager, JavaPlugin plugin) {
+			ItemInWorldManager iteminworldmanager, JavaPlugin plugin) 
+	{
 		
 		super(minecraftserver, world, name, iteminworldmanager);
 		NetworkManager netMgr = new NPCNetworkManager(new NullSocket(),
-				"NPC Manager", new NetHandler() {
-					public boolean c() {
+				"NPC Manager", new NetHandler() 
+				{
+					public boolean c() 
+					{
 						return true;
 					}
 				});
@@ -58,24 +53,29 @@ public class NPCEntity extends EntityPlayer {
 		initializeNpc();
 	}
 
-	private void initializeNpc() {
+	private void initializeNpc() 
+	{
 		
 	}
 
-	public void rightClickAction(Player player) {
+	public void rightClickAction(Player player) 
+	{
 		
 	}
 
-	public void leftClickAction(Player player) {
+	public void leftClickAction(Player player) 
+	{
 		
 	}
 
-	public void actAsHurt() {
+	public void actAsHurt() 
+	{
 		((WorldServer) this.world).tracker.a(this, new Packet18ArmAnimation(
 				this, 2));
 	}
 
-	public boolean a(EntityHuman entity) {
+	public boolean a(EntityHuman entity) 
+	{
 		EntityTargetEvent event = new NpcEntityTargetEvent(getBukkitEntity(),
 				entity.getBukkitEntity(),
 				NpcEntityTargetEvent.NpcTargetReason.NPC_RIGHTCLICKED);
@@ -85,8 +85,10 @@ public class NPCEntity extends EntityPlayer {
 		return super.a(entity);
 	}
 
-	public void b(EntityHuman entity) {
-		if ((this.lastTargetId == -1) || (this.lastTargetId != entity.id)) {
+	public void b(EntityHuman entity) 
+	{
+		if ((this.lastTargetId == -1) || (this.lastTargetId != entity.id)) 
+		{
 			EntityTargetEvent event = new NpcEntityTargetEvent(
 					getBukkitEntity(), entity.getBukkitEntity(),
 					NpcEntityTargetEvent.NpcTargetReason.CLOSEST_PLAYER);
@@ -98,9 +100,11 @@ public class NPCEntity extends EntityPlayer {
 		super.b(entity);
 	}
 
-	public void c(net.minecraft.server.Entity entity) {
+	public void c(net.minecraft.server.Entity entity) 
+	{
 		if ((this.lastBounceId != entity.id)
-				|| (System.currentTimeMillis() - this.lastBounceTick > 1000L)) {
+				|| (System.currentTimeMillis() - this.lastBounceTick > 1000L)) 
+		{
 			EntityTargetEvent event = new NpcEntityTargetEvent(
 					getBukkitEntity(), entity.getBukkitEntity(),
 					NpcEntityTargetEvent.NpcTargetReason.NPC_BOUNCED);
@@ -115,41 +119,24 @@ public class NPCEntity extends EntityPlayer {
 		super.c(entity);
 	}
 
-	public PlayerInventory getInventory() {
+	public PlayerInventory getInventory() 
+	{
 		return ((HumanEntity) getBukkitEntity()).getInventory();
 	}
 
-	public void setItemInHand(Material m) {
+	public void setItemInHand(Material m) 
+	{
 		((HumanEntity) getBukkitEntity()).setItemInHand(new ItemStack(m, 1));
 	}
 
-	public void setName(String name) {
+	public void setName(String name) 
+	{
 		this.name = name;
 	}
 
-	public String getName() {
+	public String getName() 
+	{
 		return this.name;
-	}
-
-	public class LookAlive implements Runnable {
-		private NPCEntity npcEntity;
-		private Random rand;
-		private int interval;
-
-		public LookAlive(NPCEntity npcEntity, int interval) {
-			this.npcEntity = npcEntity;
-			this.interval = interval;
-			this.rand = new Random();
-		}
-
-		public void run() {
-			if (NPCManager.npcs.containsValue(this.npcEntity)) {
-				float yaw = this.rand.nextFloat() * -360.0F;
-				float pitch = this.rand.nextFloat() * 50.0F;
-				this.npcEntity.setLocation(this.npcEntity.locX,
-						this.npcEntity.locY, this.npcEntity.locZ, yaw, pitch);
-			}
-		}
 	}
 
 	public class SpeechTask extends TimerTask {
