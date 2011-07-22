@@ -78,7 +78,7 @@ public class Tasks {
 			remaining = town.getLevel().upkeepCost;
 			
 			// Move through each town resident to collect money
-			for( String playerName : RageMod.database.listTownResidents(town.townName))
+			for( String playerName : RageMod.database.townQueries.listTownResidents(town.townName))
 			{
 				holdings = iConomy.getAccount(playerName).getHoldings();
 				playerData = Players.get(playerName);

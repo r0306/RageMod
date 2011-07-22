@@ -28,7 +28,7 @@ public class Lots
 	// On startup, pull all the Lot data from the DB into memory 
 	public void loadLots()
 	{
-		lots = RageMod.database.loadLots();	
+		lots = RageMod.database.lotQueries.loadLots();	
 	}
 	
 	// Insert/update town info

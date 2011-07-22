@@ -191,7 +191,7 @@ public class TownCommands
 		}
 		
 		// Add the target to the player's town
-		RageMod.database.townAdd(targetPlayerName, playerData.townName);
+		RageMod.database.townQueries.townAdd(targetPlayerName, playerData.townName);
 		
 		// Update the playerData
 		targetPlayerData.townName = playerData.townName;
@@ -256,7 +256,7 @@ public class TownCommands
 		if( !townName.equals("") )
 		{
 			// Add the new town to the database
-			int townID = RageMod.database.townCreate(player, townName);
+			int townID = RageMod.database.townQueries.townCreate(player, townName);
 			
 			// Update PlayerTowns
 			PlayerTown playerTown = new PlayerTown();
@@ -332,7 +332,7 @@ public class TownCommands
 		holdings.subtract(amount);
 		
 		// Update the database
-		RageMod.database.townDeposit(playerTown.id_PlayerTown, playerData.id_Player, amount);
+		RageMod.database.townQueries.townDeposit(playerTown.id_PlayerTown, playerData.id_Player, amount);
 		
 		// Update the town data
 		playerTown.treasuryBalance += amount; 
@@ -371,7 +371,7 @@ public class TownCommands
 		}
 		
 		// Remove the target from the player's town
-		RageMod.database.townLeave(targetPlayerName);
+		RageMod.database.townQueries.townLeave(targetPlayerName);
 		
 		// Update the playerData
 		targetPlayerData.townName = "";
@@ -426,7 +426,7 @@ public class TownCommands
 		}
 		
 		// Remove the player from the town in the database
-		RageMod.database.townLeave(playerData.name);
+		RageMod.database.townQueries.townLeave(playerData.name);
 		
 		// Update the playerData
 		playerData.townName = "";
@@ -507,7 +507,7 @@ public class TownCommands
 		}
 		
 		// Update the database
-		RageMod.database.townSetMinimumBalance(playerTown.id_PlayerTown, amount);
+		RageMod.database.townQueries.townSetMinimumBalance(playerTown.id_PlayerTown, amount);
 		
 		// Update the town data
 		playerTown.minimumBalance = amount; 
@@ -531,7 +531,7 @@ public class TownCommands
 		
 		Util.message(player, "Residents of " + playerTown.townName + ":");
 		
-		ArrayList<String> residents = RageMod.database.listTownResidents(townName);
+		ArrayList<String> residents = RageMod.database.townQueries.listTownResidents(townName);
 		
 		for( String resident : residents )
 		{
@@ -603,7 +603,7 @@ public class TownCommands
 			playerTown.createBorder();
 			PlayerTowns.put(playerTown);
 			
-			RageMod.database.townUpgrade(playerTown.townName, (targetLevel.initialCost - targetLevel.minimumBalance));
+			RageMod.database.townQueries.townUpgrade(playerTown.townName, (targetLevel.initialCost - targetLevel.minimumBalance));
 			
 			Util.message(player, "Congratulations, " + playerTown.townName + " has been upgraded to a " + targetLevel.name + "!");
 			Util.message(player, iConomy.format(targetLevel.initialCost) + " has been deducted from the town treasury.");
@@ -663,7 +663,7 @@ public class TownCommands
 		holdings.add(amount);
 		
 		// Update the database
-		RageMod.database.townDeposit(playerTown.id_PlayerTown, playerData.id_Player, (amount * -1));
+		RageMod.database.townQueries.townDeposit(playerTown.id_PlayerTown, playerData.id_Player, (amount * -1));
 		
 		// Update the town data
 		playerTown.treasuryBalance -= amount; 

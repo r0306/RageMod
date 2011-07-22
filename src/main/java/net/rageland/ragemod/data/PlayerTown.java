@@ -93,7 +93,7 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	// Checks to see if the town already has its maximum number of residents
 	public boolean isFull() 
 	{
-		int numberOfResidents = RageMod.database.countResidents(townName);
+		int numberOfResidents = RageMod.database.townQueries.countResidents(townName);
 		
 		return numberOfResidents >= townLevel.maxResidents;
 	}

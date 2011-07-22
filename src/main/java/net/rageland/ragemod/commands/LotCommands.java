@@ -116,7 +116,7 @@ public class LotCommands
 		}
 		
 		// All checks have succeeded - update the DB
-		RageMod.database.lotAllow(playerData.id_Player, targetPlayerData.id_Player);
+		RageMod.database.lotQueries.lotAllow(playerData.id_Player, targetPlayerData.id_Player);
 		
 		// Update the playerData
 		playerData.lotPermissions.add(targetPlayerData.name);
@@ -158,7 +158,7 @@ public class LotCommands
 		}
 		
 		// All checks have succeeded - give the lot to the player
-		RageMod.database.lotClaim(targetPlayerData, lot);
+		RageMod.database.lotQueries.lotClaim(targetPlayerData, lot);
 		
 		// Update the playerData
 		targetPlayerData.lots.add(lot);
@@ -255,7 +255,7 @@ public class LotCommands
 		}
 		
 		// All checks have succeeded - give the lot to the player
-		RageMod.database.lotClaim(playerData, lot);
+		RageMod.database.lotQueries.lotClaim(playerData, lot);
 		
 		// Update the playerData
 		playerData.lots.add(lot);
@@ -282,7 +282,7 @@ public class LotCommands
 			}
 			
 			// All checks have succeeded - update the database
-			RageMod.database.lotDisallow(playerData.id_Player, 0);
+			RageMod.database.lotQueries.lotDisallow(playerData.id_Player, 0);
 			
 			// Update the playerData
 			playerData.lotPermissions.clear();
@@ -308,7 +308,7 @@ public class LotCommands
 			}
 			
 			// All checks have succeeded - update the database
-			RageMod.database.lotDisallow(playerData.id_Player, targetPlayerData.id_Player);
+			RageMod.database.lotQueries.lotDisallow(playerData.id_Player, targetPlayerData.id_Player);
 			
 			// Update the playerData
 			playerData.lotPermissions.remove(targetPlayerData.name);
@@ -344,7 +344,7 @@ public class LotCommands
 		}
 		
 		// All checks have succeeded - remove the lot owner
-		RageMod.database.lotUnclaim(lot);
+		RageMod.database.lotQueries.lotUnclaim(lot);
 		
 		// Update the playerData
 		PlayerData targetPlayerData = Players.get(lot.owner);
@@ -431,7 +431,7 @@ public class LotCommands
 		}
 		
 		// All checks have succeeded - reset the lot owner
-		RageMod.database.lotUnclaim(lot);
+		RageMod.database.lotQueries.lotUnclaim(lot);
 		
 		// Update the playerData
 		playerData.lots.remove(lot);
