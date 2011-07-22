@@ -96,7 +96,6 @@ public class RMPlayerListener extends PlayerListener
     			Commands.spawn(player, split[1]);
     		else
     			Util.message(player, "Usage: /spawn [player_name]");
-    		event.setCancelled(true);
     	}
     	else if( split[0].equalsIgnoreCase("/home") )
     	{
@@ -106,54 +105,47 @@ public class RMPlayerListener extends PlayerListener
     			Commands.home(player, split[1]);
     		else
     			Util.message(player, "Usage: /home [player_name]");
-    		event.setCancelled(true);
     	}
     	else if(split[0].equalsIgnoreCase("/zone"))
     	{
     		Commands.zone(player);
-    		event.setCancelled(true);
     	}
     	
     	// ********* COMPASS COMMANDS *********
     	else if( split[0].equalsIgnoreCase("/compass") )
     	{
     		compassCommands.onCompassCommand(player, playerData, split);
-    		event.setCancelled(true);
     	}
     	
     	// ********* LOT COMMANDS *********
     	else if( split[0].equalsIgnoreCase("/lot") )
     	{
     		lotCommands.onLotCommand(player, playerData, split);
-    		event.setCancelled(true);
     	}
     	
     	// ********* TOWN COMMANDS *********
     	else if( split[0].equalsIgnoreCase("/town") )
     	{
     		townCommands.onTownCommand(player, playerData, split);
-    		event.setCancelled(true);
     	}
     	
     	// ********* FACTION COMMANDS **********
     	else if(split[0].equalsIgnoreCase("/faction") )
     	{
     		factionCommands.onFactionCommand(player, playerData, split);
-    		event.setCancelled(true);
     	}
     	// ********* QUEST COMMANDS **********
     	else if(split[0].equalsIgnoreCase("/quest")) 
     	{
     		questCommands.onQuestCommand(player, playerData, split);
-    		event.setCancelled(true);
     	}
     	
     	// ********* DEBUG COMMANDS **********
     	else if(split[0].equalsIgnoreCase("/debug") && RageMod.permissionHandler.has(player, "ragemod.debug") )
     	{
-    		debugCommands.onDebugCommand(player, playerData, split);
-    		event.setCancelled(true);
+    		debugCommands.onDebugCommand(player, playerData, split);    		
     	}
+    	event.setCancelled(true);
     }
     
     // Player movement
