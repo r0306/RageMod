@@ -17,6 +17,7 @@ import net.rageland.ragemod.commands.DebugCommands;
 import net.rageland.ragemod.commands.FactionCommands;
 import net.rageland.ragemod.commands.LotCommands;
 import net.rageland.ragemod.commands.Commands;
+import net.rageland.ragemod.commands.QuestCommands;
 import net.rageland.ragemod.commands.TownCommands;
 import net.rageland.ragemod.data.Factions;
 import net.rageland.ragemod.data.Lot;
@@ -47,10 +48,12 @@ import org.bukkit.World;
 public class RMPlayerListener extends PlayerListener 
 {
     private final RageMod plugin;
+    private QuestCommands questCommands;
 
     public RMPlayerListener(RageMod instance) 
     {
         plugin = instance;
+        questCommands = new QuestCommands();
     }
 
     // Pull the player data from the DB and register in memory
@@ -386,6 +389,11 @@ public class RMPlayerListener extends PlayerListener
     		else
     			Util.message(player, "Type /faction to see a list of available commands.");
     		event.setCancelled(true);
+    	}
+    	// ********* QUEST COMMANDS **********
+    	else if(split[0].equalsIgnoreCase("/quest")) 
+    	{
+    		questCommands.questCommandIssued(player, playerData, split);
     	}
     	
     	// ********* DEBUG COMMANDS **********
