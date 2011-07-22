@@ -9,14 +9,19 @@ import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.data.PlayerTowns;
 import net.rageland.ragemod.data.Players;
+import net.rageland.ragemod.npclib.NPCEntity;
+import net.rageland.ragemod.npclib.NPCManager;
+import net.rageland.ragemod.npclib.NpcEntityTargetEvent;
 
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityListener;
+import org.bukkit.event.entity.EntityTargetEvent;
 
 /**
  * RageMod entity listener
@@ -38,6 +43,28 @@ public class RMEntityListener extends EntityListener
     	
     	Entity attackerEntity = event.getDamager();
         Entity defenderEntity = event.getEntity();
+        
+        // Handles NPC dmg and leftClickAction
+        if ((event.getEntity() instanceof HumanEntity)) 
+        {
+			
+			if (NPCManager.isNPC(event.getEntity())) {
+				
+				if ((event instanceof EntityDamageByEntityEvent)) {
+					
+					EntityDamageByEntityEvent edbeEvent = (EntityDamageByEntityEvent) event;
+					if ((edbeEvent.getDamager() instanceof Player)) {
+						
+						NPCEntity npcEntity = NPCManager
+								.getNPCFromEntity(edbeEvent.getEntity());
+						npcEntity.leftClickAction((Player) edbeEvent
+								.getDamager());
+					}
+				}
+				event.setCancelled(true);
+			}
+		}
+        
         
         // Handle PvP
         if( attackerEntity instanceof Player && defenderEntity instanceof Player ) 
@@ -135,7 +162,7 @@ public class RMEntityListener extends EntityListener
         	Creature creature = (Creature)attackerEntity;
         	creature.damage(100);
         	System.out.println("Attempted to kill attacking creature");
-        }
+        } 
         else
         {
         	System.out.println(attackerEntity.getEntityId() + " entity caused damage.");
@@ -157,11 +184,26 @@ public class RMEntityListener extends EntityListener
     			(RageZones.isInCapitol(event.getLocation()) || PlayerTowns.getCurrentTown(event.getLocation()) != null) )
     	{
     		event.setCancelled(true);
-    	}
-    	
-    	
-    	
-    	
+    	}    	
     }
+    
+    /**
+     *  Called on entityTarget. Used for detectic right clicks on the NPC
+     */
+    public void onEntityTarget(EntityTargetEvent event) {
+		
+		if ((event instanceof NpcEntityTargetEvent)) {
+			
+			NpcEntityTargetEvent netEvent = (NpcEntityTargetEvent) event;
+			if (((netEvent.getTarget() instanceof Player))
+					&& (netEvent.getNpcReason() == NpcEntityTargetEvent.NpcTargetReason.NPC_RIGHTCLICKED)) {
+				
+				NPCEntity npcEntity = NPCManager.getNPCFromEntity(netEvent
+						.getEntity());
+
+				npcEntity.rightClickAction((Player) event.getTarget());
+			}
+		}
+	}
 }
 

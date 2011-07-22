@@ -21,6 +21,9 @@ import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTowns;
 import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.data.Tasks;
+import net.rageland.ragemod.npclib.NPCManager;
+import net.rageland.ragemod.quest.Quest;
+import net.rageland.ragemod.quest.QuestManager;
 
 import com.iConomy.*;
 import com.nijiko.permissions.PermissionHandler;
@@ -89,7 +92,8 @@ public class RageMod extends JavaPlugin {
         
         pluginManager.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, Priority.Highest, this);
         pluginManager.registerEvent(Event.Type.ENTITY_INTERACT, entityListener, Priority.High, this);
-        pluginManager.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this);
+        pluginManager.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this);        
+		pluginManager.registerEvent(Event.Type.ENTITY_TARGET, entityListener, Event.Priority.Normal, this);
         
         setupPermissions();
         System.out.println( "RageMod is enabled!" );
@@ -113,25 +117,26 @@ public class RageMod extends JavaPlugin {
         runTests();
         
         
+        
+        
+        
     }
     
-    public void onDisable() {        
+    public void creatingNPCTemp() { /*    
+    	this.npcManager.spawnNPC("TraderNPC", new Location(getServer().getWorld("world"), -10.0D, 64.0D, 96.0D), "1", NPCManager.TRADERNPC);
+		this.npcManager.spawnNPC("QuestStartNPC", new Location(getServer().getWorld("world"), -10.0D, 64.0D, 94.0D), "2", NPCManager.QUESTSTARTNPC);
+		this.npcManager.spawnNPC("QuestEndNPC", new Location(getServer().getWorld("world"), -10.0D, 64.0D, 92.0D), "3", NPCManager.QUESTENDNPC);
+		this.npcManager.spawnNPC("QuestNPC", new Location(getServer().getWorld("world"), -10.0D, 64.0D,90.0D), "4", 3);
+		this.npcManager.spawnNPC("RewardNPC", new Location(getServer().getWorld("world"), -10.0D, 64.0D, 88.0D), "5", 5);
+		NPCManager.npcs.get("5").setQuest((Quest) QuestManager.quests.get(Integer.valueOf(1)));
+		*/
+    }
+    
+    public void onDisable() {    
+    	// this.npcManager.despawnAll();
         System.out.println("Goodbye world!");
     }
-    
-//    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {    	       	
-//    	if(command.getName().equalsIgnoreCase("claimtown") && sender instanceof Player) {
-//    		
-////    		if(!this.permissionHandler.has((Player) sender, "ragemod.commands.claimtown") ){
-////    			sender.sendMessage(missingPermissions);
-////    			return true; // Nothing happens, the user don't have permissions
-////    		}
-// //   		townManager.addTown(args[0], (Player) sender);	
-//	    	return true;
-//    	}       	
-//    	return false;
-//    }
-    
+        
     public Configuration load(){
         try {
             Configuration config = new Configuration(file);
@@ -172,11 +177,7 @@ public class RageMod extends JavaPlugin {
     
     private void runTests()
     {
-
-    	System.out.println("Number of lots:" + Lots.getAll().size());
-    	
-    	
-    	
+    	System.out.println("Number of lots:" + Lots.getAll().size());    	
     }
 }
 
