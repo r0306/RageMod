@@ -20,6 +20,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityTargetEvent;
 
@@ -37,136 +38,141 @@ public class RMEntityListener extends EntityListener
     }
     
     // Called when an entity damages another entity
-    private void onEntityDamageByEntity(EntityDamageByEntityEvent event) 
+    @Override
+    public void onEntityDamage(EntityDamageEvent rawEvent) 
     {
-    	System.out.println("DAMAGE!");
+    	Entity defenderEntity = rawEvent.getEntity();
     	
-    	Entity attackerEntity = event.getDamager();
-        Entity defenderEntity = event.getEntity();
-        
-        // Handles NPC dmg and leftClickAction
-        if ((event.getEntity() instanceof HumanEntity)) 
-        {
-			
-			if (NPCManager.isNPC(event.getEntity())) {
-				
-				if ((event instanceof EntityDamageByEntityEvent)) {
-					
-					EntityDamageByEntityEvent edbeEvent = (EntityDamageByEntityEvent) event;
-					if ((edbeEvent.getDamager() instanceof Player)) {
-						
-						NPCEntity npcEntity = NPCManager
-								.getNPCFromEntity(edbeEvent.getEntity());
-						npcEntity.leftClickAction((Player) edbeEvent
-								.getDamager());
-					}
-				}
-				event.setCancelled(true);
+    	// Makes NPC invulnerable
+        if (defenderEntity instanceof HumanEntity) 
+        {			
+			if (NPCManager.isNPC(defenderEntity)) 
+			{				
+				rawEvent.setCancelled(true);
 			}
 		}
-        
-        
-        // Handle PvP
-        if( attackerEntity instanceof Player && defenderEntity instanceof Player ) 
-        {
-        	Player attacker = (Player)attackerEntity;
-        	Player defender = (Player)defenderEntity;
-        	PlayerData attackerData = Players.get(attacker.getName());
-        	PlayerData defenderData = Players.get(defender.getName());
+    	
+    	if(rawEvent instanceof EntityDamageByEntityEvent)
+    	{
+    		EntityDamageByEntityEvent event = (EntityDamageByEntityEvent)rawEvent;
+    		System.out.println("DAMAGE!");
         	
-        	// Always prevent allies from harming each other
-			if( attackerData.id_Faction == defenderData.id_Faction )
-			{
-				event.setCancelled(true);
-    			Util.message(attacker, defenderData.name + " is your ally!");
-    			return;
+        	Entity attackerEntity = event.getDamager();  
+        	
+        	// If defender is NPC, the event is already cancelled, must check if it is a leftClickAction from player.
+        	if (NPCManager.isNPC(defenderEntity)) 
+			{				
+        		if (attackerEntity instanceof Player) 
+    			{						
+    				NPCEntity npcEntity = NPCManager.getNPCFromEntity(defenderEntity);
+    				npcEntity.leftClickAction((Player) attackerEntity);
+    			}
+				return;
 			}
         	
-        	// Use the defender's position to determine behavior
-        	// *** ZONE A (Neutral Zone) ***
-        	if( RageZones.isInZoneA(defender.getLocation()) )
-        	{
-        		// No PvP in capitol
-        		if( RageZones.isInCapitol(defender.getLocation()) )
-        		{
-        			event.setCancelled(true);
-        			Util.message(attacker, "PvP is not allowed inside " + RageConfig.Capitol_Name + ".");
+            
+            // Handle PvP
+            if( attackerEntity instanceof Player && defenderEntity instanceof Player ) 
+            {
+            	Player attacker = (Player)attackerEntity;
+            	Player defender = (Player)defenderEntity;
+            	PlayerData attackerData = Players.get(attacker.getName());
+            	PlayerData defenderData = Players.get(defender.getName());
+            	
+            	// Always prevent allies from harming each other
+    			if( attackerData.id_Faction == defenderData.id_Faction )
+    			{
+    				event.setCancelled(true);
+        			Util.message(attacker, defenderData.name + " is your ally!");
         			return;
-        		}
-        		else
-        		{
-        			// Only faction-faction PvP is allowed in neutral zone
-        			if( defenderData.id_Faction == 0 )
-        			{
-        				event.setCancelled(true);
-            			Util.message(attacker, "You cannot attack neutral players in " + RageConfig.Zone_NAME_A + ".");
+    			}
+            	
+            	// Use the defender's position to determine behavior
+            	// *** ZONE A (Neutral Zone) ***
+            	if( RageZones.isInZoneA(defender.getLocation()) )
+            	{
+            		// No PvP in capitol
+            		if( RageZones.isInCapitol(defender.getLocation()) )
+            		{
+            			event.setCancelled(true);
+            			Util.message(attacker, "PvP is not allowed inside " + RageConfig.Capitol_Name + ".");
             			return;
-        			}
-        			else if( attackerData.id_Faction == 0 )
-        			{
-        				event.setCancelled(true);
-            			Util.message(attacker, "Neutral players cannot attack in " + RageConfig.Zone_NAME_A + ".");
+            		}
+            		else
+            		{
+            			// Only faction-faction PvP is allowed in neutral zone
+            			if( defenderData.id_Faction == 0 )
+            			{
+            				event.setCancelled(true);
+                			Util.message(attacker, "You cannot attack neutral players in " + RageConfig.Zone_NAME_A + ".");
+                			return;
+            			}
+            			else if( attackerData.id_Faction == 0 )
+            			{
+            				event.setCancelled(true);
+                			Util.message(attacker, "Neutral players cannot attack in " + RageConfig.Zone_NAME_A + ".");
+                			return;
+            			}
+            		}
+            	}
+            	// *** ZONE B (War Zone) ***
+            	else if( RageZones.isInZoneB(defender.getLocation()) )
+            	{
+            		PlayerTown playerTown = PlayerTowns.getCurrentTown(defender.getLocation());
+            		
+            		// Keep referees from participating in combat
+            		if( RageMod.permissionHandler.has(attacker, "ragemod.referee.blockpvp") )
+            		{
+            			event.setCancelled(true);
+            			Util.message(attacker, "Referees may not participate in combat.");
             			return;
-        			}
-        		}
-        	}
-        	// *** ZONE B (War Zone) ***
-        	else if( RageZones.isInZoneB(defender.getLocation()) )
-        	{
-        		PlayerTown playerTown = PlayerTowns.getCurrentTown(defender.getLocation());
-        		
-        		// Keep referees from participating in combat
-        		if( RageMod.permissionHandler.has(attacker, "ragemod.referee.blockpvp") )
-        		{
-        			event.setCancelled(true);
-        			Util.message(attacker, "Referees may not participate in combat.");
-        			return;
-        		}
-        		// Protect referees 
-        		else if( RageMod.permissionHandler.has(defender, "ragemod.referee.blockpvp") )
-        		{
-        			event.setCancelled(true);
-        			Util.message(attacker, "You cannot harm a referee.");
-        			return;
-        		}
-        		// Handle combat inside of towns
-        		else if( playerTown != null )
-        		{
-	        		// Protect neutral players inside all towns
-	        		if( defenderData.id_Faction == 0 )
-	        		{
-	        			event.setCancelled(true);
-	        			Util.message(attacker, "You cannot harm neutral players inside of towns.");
-	        			return;
-	        		}
-	        		// Keep neutral players from harming any players
-	        		if( attackerData.id_Faction == 0 )
-	        		{
-	        			event.setCancelled(true);
-	        			Util.message(attacker, "Neutral players cannot attack inside of towns.");
-	        			return;
-	        		}
-	        		// Protect faction players inside of their own and allied towns
-	        		if( defenderData.id_Faction == playerTown.id_Faction )
-	        		{
-	        			event.setCancelled(true);
-	        			Util.message(attacker, "You cannot harm " + Factions.getName(defenderData.id_Faction) + " inside of their own towns.");
-	        			return;
-	        		}
-        		}
-        	}
-        }
-        else if( defenderEntity instanceof Player && attackerEntity instanceof Creature)
-        {
-        	// Automatically kill monsters who attack admins
-        	Creature creature = (Creature)attackerEntity;
-        	creature.damage(100);
-        	System.out.println("Attempted to kill attacking creature");
-        } 
-        else
-        {
-        	System.out.println(attackerEntity.getEntityId() + " entity caused damage.");
-        }
+            		}
+            		// Protect referees 
+            		else if( RageMod.permissionHandler.has(defender, "ragemod.referee.blockpvp") )
+            		{
+            			event.setCancelled(true);
+            			Util.message(attacker, "You cannot harm a referee.");
+            			return;
+            		}
+            		// Handle combat inside of towns
+            		else if( playerTown != null )
+            		{
+    	        		// Protect neutral players inside all towns
+    	        		if( defenderData.id_Faction == 0 )
+    	        		{
+    	        			event.setCancelled(true);
+    	        			Util.message(attacker, "You cannot harm neutral players inside of towns.");
+    	        			return;
+    	        		}
+    	        		// Keep neutral players from harming any players
+    	        		if( attackerData.id_Faction == 0 )
+    	        		{
+    	        			event.setCancelled(true);
+    	        			Util.message(attacker, "Neutral players cannot attack inside of towns.");
+    	        			return;
+    	        		}
+    	        		// Protect faction players inside of their own and allied towns
+    	        		if( defenderData.id_Faction == playerTown.id_Faction )
+    	        		{
+    	        			event.setCancelled(true);
+    	        			Util.message(attacker, "You cannot harm " + Factions.getName(defenderData.id_Faction) + " inside of their own towns.");
+    	        			return;
+    	        		}
+            		}
+            	}
+            }
+            else if( defenderEntity instanceof Player && attackerEntity instanceof Creature)
+            {
+            	// Automatically kill monsters who attack admins
+            	Creature creature = (Creature)attackerEntity;
+            	creature.damage(100);
+            	System.out.println("Attempted to kill attacking creature");
+            } 
+            else
+            {
+            	System.out.println(attackerEntity.getEntityId() + " entity caused damage.");
+            }
+    	}
     }
     
     // Called when creatures spawn

@@ -33,20 +33,16 @@ public class NPCEntity extends EntityPlayer {
 	private int lastTargetId;
 	private long lastBounceTick;
 	private int lastBounceId;
-	private Timer timer = new Timer();
 	private JavaPlugin plugin;
-	private int npcType;
-	private Quest quest;
 	public double speechDistance = 40.0D;
 	private ArrayList<String> speechMessages;
 	int speechCounter;
 	int speechInterval;
 
-	public NPCEntity(MinecraftServer minecraftserver, World world, String s,
-			ItemInWorldManager iteminworldmanager, JavaPlugin plugin,
-			int npcType) {
+	public NPCEntity(MinecraftServer minecraftserver, World world, String name,
+			ItemInWorldManager iteminworldmanager, JavaPlugin plugin) {
 		
-		super(minecraftserver, world, s, iteminworldmanager);
+		super(minecraftserver, world, name, iteminworldmanager);
 		NetworkManager netMgr = new NPCNetworkManager(new NullSocket(),
 				"NPC Manager", new NetHandler() {
 					public boolean c() {
@@ -58,90 +54,20 @@ public class NPCEntity extends EntityPlayer {
 		this.lastBounceId = -1;
 		this.lastBounceTick = 0L;
 		this.plugin = plugin;
-		this.npcType = npcType;
 
 		initializeNpc();
 	}
 
 	private void initializeNpc() {
-		switch (this.npcType) {
-		case NPCManager.QUESTSTARTNPC:
-			break;
-		case NPCManager.QUESTENDNPC:
-			break;
-		case NPCManager.QUESTNPC:
-			break;
-		case NPCManager.TRADERNPC:
-			initializeTrader();
-			break;
-		case NPCManager.REWARDNPC:
-			break;
-		}
+		
 	}
 
 	public void rightClickAction(Player player) {
-		switch (this.npcType) {
-		case NPCManager.QUESTSTARTNPC:
-			player.sendMessage("Right clicked a Quest Start NPC");
-
-			break;
-		case NPCManager.QUESTENDNPC:
-			player.sendMessage("Right clicked a Quest End NPC");
-
-			break;
-		case NPCManager.QUESTNPC:
-			player.sendMessage("Right clicked a Quest NPC");
-
-			break;
-		case NPCManager.TRADERNPC:
-			player.sendMessage("Right clicked a Trader NPC");
-			setLocation(this.locX, this.locY, this.locZ, -180.0F, -20.0F);
-			break;
-		case NPCManager.REWARDNPC:
-			if (this.quest == null)
-				break;
-			this.quest.presentQuest(player);
-
-			break;
-		}
+		
 	}
 
 	public void leftClickAction(Player player) {
-		switch (this.npcType) {
-		case NPCManager.QUESTSTARTNPC:
-			player.sendMessage("Left clicked a Quest Start NPC");
-			
-			break;
-		case NPCManager.QUESTENDNPC:
-			player.sendMessage("Left clicked a Quest End NPC");
-			
-			break;
-		case NPCManager.QUESTNPC:
-			player.sendMessage("Left clicked a Quest NPC");
-			
-			break;
-		case NPCManager.TRADERNPC:
-			player.sendMessage("Left clicked a Trader NPC");
-			
-			break;
-		case NPCManager.REWARDNPC:
-			if (this.quest != null)
-				this.quest.questStart(player);
-			
-			break;
-		}
-	}
-
-	public void setQuest(Quest quest) {
-		this.quest = quest;
-	}
-
-	private void initializeTrader() {
-		this.speechMessages = new ArrayList();
-		this.speechMessages.add("Testmessage #1 from npc.");
-		this.speechMessages.add("Testmessage #2 from npc.");
-		this.speechCounter = 0;
-		this.speechInterval = 15000;
+		
 	}
 
 	public void actAsHurt() {

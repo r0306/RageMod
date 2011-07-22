@@ -60,7 +60,7 @@ public class NPCManager {
 						Priority.Normal, plugin);
 	}
 
-	public NPCEntity spawnNPC(String name, Location l, String id, int npcType) {
+	public NPCEntity spawnNPC(String name, Location l, String id) {
 		if (npcs.containsKey(id)) {
 			this.server.getLogger().log(Level.WARNING,
 					"NPC with that id already exists, existing NPC returned");
@@ -77,7 +77,7 @@ public class NPCManager {
 		BWorld world = new BWorld(l.getWorld());
 		NPCEntity npcEntity = new NPCEntity(this.server.getMCServer(),
 				world.getWorldServer(), name, new ItemInWorldManager(
-						world.getWorldServer()), this.plugin, npcType);
+						world.getWorldServer()), this.plugin);
 		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), new Float(
 				-90.0F).floatValue(), new Float(20.0F).floatValue());
 		world.getWorldServer().addEntity(npcEntity);
