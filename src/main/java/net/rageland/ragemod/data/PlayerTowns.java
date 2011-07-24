@@ -19,12 +19,13 @@ public class PlayerTowns {
 	public PlayerTowns(RageMod plugin) 
 	{
 		this.plugin = plugin;
+		towns = new HashMap<String, PlayerTown>();
 	}
 		
 	// On startup, pull all the PlayerTown data from the DB into memory 
 	public void loadPlayerTowns()
 	{
-		towns = plugin.database.townQueries.loadPlayerTowns();	
+		plugin.database.townQueries.loadPlayerTowns(towns);	
 	}
 	
 	// Insert/update town info

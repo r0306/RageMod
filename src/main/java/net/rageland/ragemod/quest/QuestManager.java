@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class QuestManager {
-	public static HashMap<Integer, Quest> quests = new HashMap();
+	public static HashMap<Integer, Quest> quests = new HashMap<Integer, Quest>();
 
 	public QuestManager() {
 		RewardQuest testRewardQuest = new RewardQuest(1, "TestRewardQuest",

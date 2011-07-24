@@ -29,13 +29,14 @@ public class Tasks {
 	public Tasks(RageMod plugin)
 	{
 		this.plugin = plugin;
+		tasks = new HashMap<String, Timestamp>();
 	}
 	
 	
 	// On startup, pull all records of when tasks ran last
 	public void loadTaskTimes()
 	{
-		tasks = plugin.database.taskQueries.loadTaskTimes();	
+		plugin.database.taskQueries.loadTaskTimes(tasks);
 	}
 	
 	// Log task as complete
@@ -146,7 +147,7 @@ public class Tasks {
 		// Look for players who are currently in the area and evacuate them
 		for( Player player : plugin.getServer().getOnlinePlayers() )
 		{
-			if( RageZones.isInSandlot(player.getLocation()) )
+			if( plugin.zones.isInSandlot(player.getLocation()) )
 			{
 				Util.message(player, "Automatically refilling sand lot - get out of the way!");
 				player.teleport(world.getSpawnLocation());

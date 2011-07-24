@@ -22,11 +22,11 @@ public class RageConfig {
 	public String ServerName = "Rageland";
 	
 	// Database settings
-	public String DB_URL = "<URL>";
-    public String DB_NAME = "<DBName>";
-    public String DB_DRIVER = "<DBDriver>";
-    public String DB_USER = "<DBUser>";
-    public String DB_PASSWORD = "<DBPassword>";
+	public String DB_URL = "jdbc:mysql://mirach.lunarpages.com:3306/";
+    public String DB_NAME = "johnz2_ragemod";
+    public String DB_DRIVER = "com.mysql.jdbc.Driver";
+    public String DB_USER = "johnz2_ragemod";
+    public String DB_PASSWORD = "ragemod";
     
     // Town settings
     public int Town_MIN_DISTANCE_BETWEEN = 400;
@@ -88,39 +88,41 @@ public class RageConfig {
     
     public RageConfig (RageMod plugin)
     {
-    	File file = new File(plugin.getDataFolder().getPath() + "/plugin.yml");
     	pluginConfig = plugin.getConfiguration();
     	
-    	if(file.exists()) 
-    	{
-    		loadConfigValues();
-    	} 
-    	else 
-    	{
-    		setupConfigValues();
-    	}
-    	    	
+    	// loadConfigValues();	
     	loadDefaultTownLevels();
     }
     
     private void loadConfigValues() 
     {
-    	DB_URL = pluginConfig.getString("dburl");
-    	DB_NAME = pluginConfig.getString("dbname");
-    	DB_DRIVER = pluginConfig.getString("dbdriver");
-    	DB_USER = pluginConfig.getString("dbuser");
-    	DB_PASSWORD = pluginConfig.getString("dbpassword");    	
-    }
-    
-    private void setupConfigValues() 
-    {
-    	pluginConfig.setProperty("dburl", DB_URL);
-    	pluginConfig.setProperty("dbname", DB_NAME);
-    	pluginConfig.setProperty("dbdriver", DB_DRIVER);
-    	pluginConfig.setProperty("dbuser", DB_USER);
-    	pluginConfig.setProperty("dbpassword", DB_PASSWORD);
+    	if(pluginConfig.getProperty("dburl") != null)
+    		DB_URL = pluginConfig.getString("dburl");
+    	else 
+    		pluginConfig.setProperty("dburl", DB_URL);
+    	
+    	if(pluginConfig.getProperty("dbname") != null)
+    		DB_NAME = pluginConfig.getString("dbname");
+    	else
+    		pluginConfig.setProperty("dbname", DB_NAME);
+    	
+    	if(pluginConfig.getProperty("dbdriver") != null)
+    		DB_DRIVER = pluginConfig.getString("dbdriver");
+    	else
+    		pluginConfig.setProperty("dbdriver", DB_DRIVER);
+    	
+    	if(pluginConfig.getProperty("dbuser") != null)
+    		DB_USER = pluginConfig.getString("dbuser");
+    	else
+    		pluginConfig.setProperty("dbuser", DB_USER);
+    	
+    	if(pluginConfig.getProperty("dbpassword") != null)
+    		DB_PASSWORD = pluginConfig.getString("dbpassword");    
+    	else
+    		pluginConfig.setProperty("dbpassword", DB_PASSWORD);
+    	
     	pluginConfig.save();
-    }
+    }    
     
     private void loadDefaultTownLevels()
     {

@@ -42,10 +42,10 @@ import org.bukkit.plugin.Plugin;
  * @author TheIcarusKid
  */
 public class RageMod extends JavaPlugin {
-    private final RMPlayerListener playerListener;
-    private final RMBlockListener blockListener;
-    private final RMServerListener serverListener;
-    private final RMEntityListener entityListener;
+    private RMPlayerListener playerListener;
+    private RMBlockListener blockListener;
+    private RMServerListener serverListener;
+    private RMEntityListener entityListener;
     
     private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
     private Server server; 
@@ -62,14 +62,21 @@ public class RageMod extends JavaPlugin {
     public Tasks tasks;
     public Factions factions;
     
-    // Static utility classes
     public RageConfig config;
     public RageDB database;
-    public static RageZones zones;
+    public RageZones zones;
+    public NPCManager npcManager;
+    
     
     
     public RageMod() 
     {
+    	
+    }
+    
+    
+    public void onEnable() 
+    {    	
     	serverListener = new RMServerListener(this);
     	playerListener = new RMPlayerListener(this);
     	blockListener = new RMBlockListener(this);  
@@ -77,19 +84,16 @@ public class RageMod extends JavaPlugin {
     	iConomy = null; 
     	config = new RageConfig(this);
         database = new RageDB(this, config);
-        zones = new RageZones(this, config);
+        
         lots = new Lots(this);
         players = new Players(this);
         playerTowns = new PlayerTowns(this);
         tasks = new Tasks(this);
         factions = new Factions();
-    }
-    
-    
-    public void onEnable() 
-    {    		           
     	server = this.getServer();
+    	zones = new RageZones(this, config);
         pluginManager = server.getPluginManager();
+        npcManager = new NPCManager(this);
         
         pluginManager.registerEvent(Event.Type.PLUGIN_ENABLE, this.serverListener, Event.Priority.Normal, this);
         pluginManager.registerEvent(Event.Type.PLUGIN_DISABLE, this.serverListener, Event.Priority.Normal, this);
@@ -105,7 +109,7 @@ public class RageMod extends JavaPlugin {
         
         pluginManager.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, Priority.Highest, this);
         pluginManager.registerEvent(Event.Type.ENTITY_INTERACT, entityListener, Priority.High, this);
-        pluginManager.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this);        
+        // pluginManager.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this);        
 		pluginManager.registerEvent(Event.Type.ENTITY_TARGET, entityListener, Event.Priority.Normal, this);
         
         setupPermissions();
@@ -118,7 +122,7 @@ public class RageMod extends JavaPlugin {
         
         
         // Run basic debug tests
-        runTests();
+        //runTests();
         
         
         

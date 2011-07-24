@@ -44,6 +44,7 @@ public class RMEntityListener extends EntityListener
     	Entity defenderEntity = rawEvent.getEntity();
     	
     	// Makes NPC invulnerable
+    	/*
         if (defenderEntity instanceof HumanEntity) 
         {			
 			if (NPCManager.isNPC(defenderEntity)) 
@@ -51,6 +52,7 @@ public class RMEntityListener extends EntityListener
 				rawEvent.setCancelled(true);
 			}
 		}
+		*/
     	
     	if(rawEvent instanceof EntityDamageByEntityEvent)
     	{
@@ -59,6 +61,7 @@ public class RMEntityListener extends EntityListener
         	
         	Entity attackerEntity = event.getDamager();  
         	
+        	/*
         	// If defender is NPC, the event is already cancelled, must check if it is a leftClickAction from player.
         	if (NPCManager.isNPC(defenderEntity)) 
 			{				
@@ -69,6 +72,7 @@ public class RMEntityListener extends EntityListener
     			}
 				return;
 			}
+			*/
         	
             
             // Handle PvP
@@ -89,10 +93,10 @@ public class RMEntityListener extends EntityListener
             	
             	// Use the defender's position to determine behavior
             	// *** ZONE A (Neutral Zone) ***
-            	if( RageZones.isInZoneA(defender.getLocation()) )
+            	if( plugin.zones.isInZoneA(defender.getLocation()) )
             	{
             		// No PvP in capitol
-            		if( RageZones.isInCapitol(defender.getLocation()) )
+            		if( plugin.zones.isInCapitol(defender.getLocation()) )
             		{
             			event.setCancelled(true);
             			Util.message(attacker, "PvP is not allowed inside " + plugin.config.Capitol_Name + ".");
@@ -116,7 +120,7 @@ public class RMEntityListener extends EntityListener
             		}
             	}
             	// *** ZONE B (War Zone) ***
-            	else if( RageZones.isInZoneB(defender.getLocation()) )
+            	else if( plugin.zones.isInZoneB(defender.getLocation()) )
             	{
             		PlayerTown playerTown = plugin.playerTowns.getCurrentTown(defender.getLocation());
             		
@@ -187,7 +191,7 @@ public class RMEntityListener extends EntityListener
     	// Don't let monsters spawn inside player towns or the capitol
     	if( (event.getCreatureType() == CreatureType.CREEPER || event.getCreatureType() == CreatureType.SKELETON ||
     			event.getCreatureType() == CreatureType.ZOMBIE || event.getCreatureType() == CreatureType.SPIDER) && 
-    			(RageZones.isInCapitol(event.getLocation()) || plugin.playerTowns.getCurrentTown(event.getLocation()) != null) )
+    			(plugin.zones.isInCapitol(event.getLocation()) || plugin.playerTowns.getCurrentTown(event.getLocation()) != null) )
     	{
     		event.setCancelled(true);
     	}    	
@@ -198,6 +202,7 @@ public class RMEntityListener extends EntityListener
      */
     public void onEntityTarget(EntityTargetEvent event) {
 		
+    	/*
 		if ((event instanceof NpcEntityTargetEvent)) {
 			
 			NpcEntityTargetEvent netEvent = (NpcEntityTargetEvent) event;
@@ -210,6 +215,7 @@ public class RMEntityListener extends EntityListener
 				npcEntity.rightClickAction((Player) event.getTarget());
 			}
 		}
+		*/
 	}
 }
 

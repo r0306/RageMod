@@ -1,8 +1,10 @@
 package net.rageland.ragemod.data;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.RageZones;
 
 public class Players {
 		
@@ -12,6 +14,7 @@ public class Players {
 	public Players(RageMod plugin) 
 	{
 		this.plugin = plugin;
+		players = new HashMap<String, PlayerData>();
 	}
 	
     
@@ -20,7 +23,36 @@ public class Players {
     public PlayerData playerLogin(String playerName)
     {
     	PlayerData playerData = plugin.database.playerQueries.playerLogin(playerName);
+    	
+    	
+    	if(playerData == null) 
+    	{
+    		// No contact with DB
+    		playerData = generateDefaultPlayer(playerName);
+    		
+    	} 
+    	else 
+    	{
+    		playerData.persistantInDatabase = true;
+    	}
+    	
     	players.put(playerName.toLowerCase(), playerData);
+    	
+    	return playerData;
+    }
+    
+    private PlayerData generateDefaultPlayer(String playerName) 
+    {
+    	PlayerData playerData = new PlayerData();
+    	playerData.name = playerName;
+    	playerData.id_Player = -1;
+    	playerData.id_Faction = -1;
+    	playerData.isMember = false;
+    	playerData.memberExpiration = new Date();
+    	playerData.bounty = 0;
+    	playerData.extraBounty = 0;
+    	playerData.persistantInDatabase = false;
+    	playerData.townName = "";
     	
     	return playerData;
     }
@@ -34,19 +66,19 @@ public class Players {
     	{
     		System.out.println("DB fetch called for player: " + playerName);
     		PlayerData playerData = plugin.database.playerQueries.playerFetch(playerName);
-    		if( playerData == null )
-    			return null;
-    		else
-    		{
+    		if( playerData != null )
     			players.put(playerName.toLowerCase(), playerData);
-    			return playerData;
-    		}
+    		
+    		return playerData;    		
     	}
     }
     
     // Updates the player's info in memory
     public void update(PlayerData playerData)
     {
+    	// No point in doing this, in the hashmap is pointer to the object. If you change values
+    	// This will also be changed in the object the hashmap points to.
+    	/*
     	if( players.containsKey(playerData.name.toLowerCase()) )
     	{
     		players.put(playerData.name.toLowerCase(), playerData);
@@ -55,6 +87,7 @@ public class Players {
     	{
     		System.out.println("Players.update called on invalid value: " + playerData.name);
     	}
+    	*/
     }
     
     // For debugging - returns the number of players loaded into memory

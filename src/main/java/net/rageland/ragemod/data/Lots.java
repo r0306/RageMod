@@ -18,12 +18,18 @@ public class Lots
 	public Lots(RageMod plugin)
 	{
 		this.plugin = plugin;
+		lots = new HashMap<String, Lot>();
 	}
 	
 	// On startup, pull all the Lot data from the DB into memory 
 	public void loadLots()
 	{
-		lots = plugin.database.lotQueries.loadLots();	
+		lots = plugin.database.lotQueries.loadLots();
+		
+		if(lots == null) 
+		{
+			lots = new HashMap<String, Lot>();
+		}
 	}
 	
 	// Insert/update town info
@@ -63,7 +69,14 @@ public class Lots
     // Returns all lots
     public ArrayList<Lot> getAll()
     {
-    	return new ArrayList<Lot>(lots.values());
+    	ArrayList<Lot> lotsList = new ArrayList<Lot>();
+    	
+    	for(Lot lot : lots.values()) 
+    	{
+    		lotsList.add(lot);
+    	}
+    	
+    	return lotsList;
     }
     
     // Find which lot the player is standing in, if any

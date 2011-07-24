@@ -66,7 +66,7 @@ public class RageDB {
     	
         try
         {
-        	JDCConnectionDriver connectionDriver = new JDCConnectionDriver(driver, url, user, password);
+        	JDCConnectionDriver connectionDriver = new JDCConnectionDriver(driver, url + databaseName, user, password);
         	connectionPool = connectionDriver.getConnectionPool();
         }
         catch(Exception e)

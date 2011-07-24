@@ -12,18 +12,18 @@ import org.bukkit.World;
 // Contains static info and utility methods for processing zone code
 public class RageZones {
 	
-    public static String ZoneA_Name;
-    public static int ZoneA_Border; 
-    public static String ZoneB_Name;
-    public static int ZoneB_Border; 
-    public static String ZoneC_Name;
-    public static int ZoneC_Border;
+    public String ZoneA_Name;
+    public int ZoneA_Border; 
+    public String ZoneB_Name;
+    public int ZoneB_Border; 
+    public String ZoneC_Name;
+    public int ZoneC_Border;
     
-    public static World world;
-    public static Location2D WorldSpawn;
+    public World world;
+    public Location2D WorldSpawn;
     
-    private static Region2D Capitol_RegionA;
-    private static Region2D Capitol_RegionB;
+    private Region2D Capitol_RegionA;
+    private Region2D Capitol_RegionB;
     
     public static Region3D Capitol_SandLot;
     
@@ -31,7 +31,7 @@ public class RageZones {
 		TOWN_CREATE;
 	}
 	
-	public enum Zone {
+	public static enum Zone {
 		A,
 		B,
 		C,
@@ -65,7 +65,7 @@ public class RageZones {
     
     // Returns the name of the zone the Location is currently in
     // TODO: Remove this and make calls to it use a combination of GetCurrentZone and GetName
-    public static String getName(Location location) 
+    public String getName(Location location) 
     {
     	double distanceFromSpawn = WorldSpawn.distance(location);
     	
@@ -82,7 +82,7 @@ public class RageZones {
     }
     
     // Return the name of the Zone matching the Zone enum
-    public static String getName(Zone zone)
+    public String getName(Zone zone)
     {
     	if( zone == Zone.A )
     		return ZoneA_Name;
@@ -97,7 +97,7 @@ public class RageZones {
     }
     
     // Calculates the player's current zone based on their location
-    public static Zone getCurrentZone(Location location)
+    public Zone getCurrentZone(Location location)
     {
 		double distanceFromSpawn = WorldSpawn.distance(location);
     	
@@ -113,37 +113,37 @@ public class RageZones {
     		return null;
     }
     
-    public static double getDistanceFromSpawn(Location location)
+    public double getDistanceFromSpawn(Location location)
     {
     	return WorldSpawn.distance(location);
     }
     
     // Returns whether or not the location is in Zone A
-    public static boolean isInZoneA(Location location)
+    public boolean isInZoneA(Location location)
     {
     	return ( WorldSpawn.distance(location) >= 0 && WorldSpawn.distance(location) <= ZoneA_Border );
     }
     
     // Returns whether or not the location is in Zone A
-    public static boolean isInZoneB(Location location)
+    public boolean isInZoneB(Location location)
     {
     	return ( WorldSpawn.distance(location) > ZoneA_Border && WorldSpawn.distance(location) <= ZoneB_Border );
     }
     
     // Returns whether or not the location is in Zone A
-    public static boolean isInZoneC(Location location)
+    public boolean isInZoneC(Location location)
     {
     	return ( WorldSpawn.distance(location) > ZoneB_Border && WorldSpawn.distance(location) <= ZoneC_Border );
     }
     
     // Returns whether the player is in the world capitol
-    public static boolean isInCapitol(Location location)
+    public boolean isInCapitol(Location location)
     {
     	return ( Capitol_RegionA.isInside(location) || Capitol_RegionB.isInside(location) );
     }
     
     // Checks whether a specified action is allowed in the zone specified by 'location'
-    public static boolean checkPermission(Location location, Action action)
+    public boolean checkPermission(Location location, Action action)
     {
     	// Put the most frequently called checks at the beginning.  On that note, would it be 
     	// better to split this method into multiple methods to prevent having to do so many comparisons?
@@ -155,7 +155,7 @@ public class RageZones {
     }
   
     // Checks to see whether the location is inside the sand lot
-    public static boolean isInSandlot(Location location)
+    public boolean isInSandlot(Location location)
     {
     	return ( Capitol_SandLot.isInside(location) );
     }

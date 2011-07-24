@@ -25,8 +25,8 @@ public class Commands
 	// /zone
 	public void zone(Player player)
 	{
-		Util.message(player, "Your current zone is " + RageZones.getName(player.getLocation()) 
-				+ " and distance from spawn is " + (int)RageZones.getDistanceFromSpawn(player.getLocation()));
+		Util.message(player, "Your current zone is " + plugin.zones.getName(player.getLocation()) 
+				+ " and distance from spawn is " + (int)plugin.zones.getDistanceFromSpawn(player.getLocation()));
 	}
 
 	// /home [player_name]

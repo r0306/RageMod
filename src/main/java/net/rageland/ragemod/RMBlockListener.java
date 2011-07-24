@@ -59,7 +59,7 @@ public class RMBlockListener extends BlockListener
     	if( block.getType() == Material.BED_BLOCK )
     	{
     		// /home: bed inside capitol lot
-			if( RageZones.isInZoneA(block.getLocation()) )
+			if( plugin.zones.isInZoneA(block.getLocation()) )
 			{
 				for( Lot lot : playerData.lots )
 				{
@@ -74,7 +74,7 @@ public class RMBlockListener extends BlockListener
 				}
 			}
 			// /spawn: for beds in player towns
-			else if( RageZones.isInZoneB(block.getLocation()) )
+			else if( plugin.zones.isInZoneB(block.getLocation()) )
 			{
 				PlayerTown playerTown = plugin.playerTowns.getCurrentTown(block.getLocation());
 
@@ -113,7 +113,7 @@ public class RMBlockListener extends BlockListener
     	if( block.getType() == Material.BED_BLOCK )
     	{
     		// /home: bed inside capitol lot
-			if( RageZones.isInZoneA(block.getLocation()) && playerData.isMember )
+			if( plugin.zones.isInZoneA(block.getLocation()) && playerData.isMember )
 			{
 				for( Lot lot : playerData.lots )
 				{
@@ -134,7 +134,7 @@ public class RMBlockListener extends BlockListener
 				}
 			}
 			// /spawn: for beds in player towns
-			else if( RageZones.isInZoneB(block.getLocation()) )
+			else if( plugin.zones.isInZoneB(block.getLocation()) )
 			{
 				PlayerTown playerTown = plugin.playerTowns.getCurrentTown(block.getLocation());
 
@@ -178,7 +178,7 @@ public class RMBlockListener extends BlockListener
     	
     	// *** ZONE A (Neutral Zone) ***
     	// See if player is in capitol
-    	if( RageZones.isInZoneA(location) && RageZones.isInCapitol(location) )
+    	if( plugin.zones.isInZoneA(location) && plugin.zones.isInCapitol(location) )
     	{
     		// If the player is below y=22, make sure they have permission to mine below city (don't check lots)
     		if( location.getY() < 22 && !RageMod.permissionHandler.has(player, "ragemod.mine.capitol"))
@@ -212,7 +212,7 @@ public class RMBlockListener extends BlockListener
     		}
     	}
     	// *** ZONE B (War Zone) ***
-    	else if( RageZones.isInZoneB(location) )
+    	else if( plugin.zones.isInZoneB(location) )
     	{
     		PlayerTown playerTown = plugin.playerTowns.getCurrentTown(location);
     		

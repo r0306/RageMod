@@ -30,6 +30,7 @@ public class PlayerData
 	public Date memberExpiration;
 	public float bounty;
 	public float extraBounty;
+	public boolean persistantInDatabase;
 	
 	// Home (used for capitol lots)
 	public boolean home_IsSet;
@@ -48,9 +49,9 @@ public class PlayerData
 	public Timestamp spawn_LastUsed;
 	
 	// Town info
-	public String townName;
-	public boolean isMayor;
-	public double treasuryBalance;
+	public String townName = "";
+	public boolean isMayor = false;
+	public double treasuryBalance = 0;
 	
 	// Lot info
 	public ArrayList<Lot> lots = new ArrayList<Lot>();

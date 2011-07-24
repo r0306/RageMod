@@ -6,12 +6,11 @@ import org.bukkit.Material;
 
 public class Factions 
 {	
-	private HashMap<Integer, String> factions = new HashMap<Integer, String>(); // this can be expanded from String to a Faction object if I add more data
-	
+	private HashMap<Integer, String> factions;
 	
 	public Factions()
 	{
-		
+		factions = new HashMap<Integer, String>();
 	}
     
     

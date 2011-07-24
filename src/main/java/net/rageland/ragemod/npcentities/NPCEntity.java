@@ -138,37 +138,5 @@ public class NPCEntity extends EntityPlayer {
 		return this.name;
 	}
 
-	public class SpeechTask extends TimerTask {
-		private NPCEntity npcEntity;
-		private Timer timer;
-		private int speechInterval;
-
-		public SpeechTask(NPCEntity npcEntity, Timer timer, int speechInterval) {
-			this.npcEntity = npcEntity;
-			this.timer = timer;
-			this.speechInterval = speechInterval;
-		}
-
-		public void run() {
-			Player[] players = NPCEntity.this.plugin.getServer()
-					.getOnlinePlayers();
-
-			for (Player player : players) {
-				if ((this.npcEntity == null)
-						|| (player.getLocation().distance(
-								this.npcEntity.getBukkitEntity().getLocation()) >= NPCEntity.this.speechDistance))
-					continue;
-				player.sendMessage((String) NPCEntity.this.speechMessages
-						.get(NPCEntity.this.speechCounter));
-				NPCEntity.this.speechCounter += 1;
-
-				if (NPCEntity.this.speechCounter == NPCEntity.this.speechMessages
-						.size()) {
-					NPCEntity.this.speechCounter = 0;
-				}
-
-			}
-
-		}
-	}
+	
 }

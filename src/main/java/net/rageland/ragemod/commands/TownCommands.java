@@ -230,7 +230,7 @@ public class TownCommands
 			return;
 		}
 		// Ensure that the current zone is allowed to create towns
-		if( !RageZones.checkPermission(player.getLocation(), Action.TOWN_CREATE) )
+		if( !plugin.zones.checkPermission(player.getLocation(), Action.TOWN_CREATE) )
 		{
 			Util.message(player, "You cannot create a town in this zone.");
 			return;

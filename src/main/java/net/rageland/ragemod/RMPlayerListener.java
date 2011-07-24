@@ -11,7 +11,6 @@ package net.rageland.ragemod;
 
 import java.util.HashMap;
 
-import net.rageland.ragemod.RageZones.Zone;
 import net.rageland.ragemod.commands.CompassCommands;
 import net.rageland.ragemod.commands.DebugCommands;
 import net.rageland.ragemod.commands.FactionCommands;
@@ -74,11 +73,13 @@ public class RMPlayerListener extends PlayerListener
     	Player player = event.getPlayer();    	
     	PlayerData playerData = plugin.players.playerLogin(player.getName());    	  
     	
-    	// Set the state info
-    	playerData.currentZone = RageZones.getCurrentZone(player.getLocation());
+		// Set the state info
+    	playerData.currentZone = plugin.zones.getCurrentZone(player.getLocation());
     	playerData.currentTown = plugin.playerTowns.getCurrentTown(player.getLocation());
-    	playerData.isInCapitol = RageZones.isInCapitol(player.getLocation());
-    	plugin.players.update(playerData);
+    	playerData.isInCapitol = plugin.zones.isInCapitol(player.getLocation());
+	
+    	
+    	// 
     }
     
     // Process commands
@@ -161,23 +162,22 @@ public class RMPlayerListener extends PlayerListener
         	event.getFrom().getBlockZ() != event.getTo().getBlockZ() )
         {
         	// Check to see if the player has changed zones
-        	if( playerData.currentZone != RageZones.getCurrentZone(player.getLocation()))
+        	if( playerData.currentZone != plugin.zones.getCurrentZone(player.getLocation()))
         	{
-        		playerData.currentZone = RageZones.getCurrentZone(player.getLocation());
-        		Util.message(player, "Your current zone is now " + RageZones.getName(playerData.currentZone));
-        		plugin.players.update(playerData);
+        		playerData.currentZone = plugin.zones.getCurrentZone(player.getLocation());
+        		Util.message(player, "Your current zone is now " + plugin.zones.getName(playerData.currentZone));        		
         	}
         	
         	// *** ZONE A (Neutral Zone) ***
-        	if( playerData.currentZone == Zone.A )
+        	if( playerData.currentZone == RageZones.Zone.A )
         	{
         		// Check to see if the player has entered or left the capitol
         		if( playerData.isInCapitol )
         		{
-        			if( !RageZones.isInCapitol(player.getLocation()) )
+        			if( !plugin.zones.isInCapitol(player.getLocation()) )
         			{
         				playerData.isInCapitol = false;
-        				plugin.players.update(playerData);
+        				
         				
         				// TODO: Is this necessary?  It might end up doing more harm than good...
         				
@@ -190,10 +190,10 @@ public class RMPlayerListener extends PlayerListener
         		}
         		else
         		{
-        			if( RageZones.isInCapitol(player.getLocation()) )
+        			if( plugin.zones.isInCapitol(player.getLocation()) )
         			{
         				playerData.isInCapitol = true;
-        				plugin.players.update(playerData);
+        				
         				if( playerData.enterLeaveMessageTime == null || Util.secondsSince(playerData.enterLeaveMessageTime) > 10 )
         				{
         					Util.message(player, "Now entering the capitol of " + plugin.config.Capitol_Name);
@@ -203,7 +203,7 @@ public class RMPlayerListener extends PlayerListener
         		}
         	}
         	// *** ZONE B (War Zone) ***
-        	else if( playerData.currentZone == Zone.B )
+        	else if( playerData.currentZone == RageZones.Zone.B )
         	{
 	        	// See if the player has entered or left a PlayerTown
 	        	if( playerData.currentTown == null )
@@ -213,7 +213,7 @@ public class RMPlayerListener extends PlayerListener
 	        		{
 	        			Util.message(player, "Now entering the " + currentTown.townLevel.name.toLowerCase() + " of " + currentTown.townName);
 	        			playerData.currentTown = currentTown;
-	        			plugin.players.update(playerData);
+	        			
 	        		}
 	        	}
 	        	else
@@ -223,7 +223,7 @@ public class RMPlayerListener extends PlayerListener
 	        		{
 	        			Util.message(player, "Now leaving the " + playerData.currentTown.townLevel.name.toLowerCase() + " of " + playerData.currentTown.townName);
 	        			playerData.currentTown = null;
-	        			plugin.players.update(playerData);
+	        			
 	        		}
 	        	}
         	}

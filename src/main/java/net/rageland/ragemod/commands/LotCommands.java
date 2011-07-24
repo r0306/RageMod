@@ -182,7 +182,7 @@ public class LotCommands
 	public void check(Player player)
 	{		
 		// Make sure the player is in the capitol
-		if( !RageZones.isInCapitol(player.getLocation()) )
+		if( !plugin.zones.isInCapitol(player.getLocation()) )
 		{
 			Util.message(player, "You must be in " + plugin.config.Capitol_Name + " to use this command.");
 		}

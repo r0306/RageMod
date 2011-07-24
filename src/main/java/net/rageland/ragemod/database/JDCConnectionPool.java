@@ -71,7 +71,8 @@ public class JDCConnectionPool {
 
 
    public synchronized Connection getConnection() throws SQLException {
-
+	   System.out.println("Pool size: " + connections.size());
+	   
        JDCConnection c;
        for(int i = 0; i < connections.size(); i++) {
            c = (JDCConnection)connections.elementAt(i);
@@ -84,6 +85,7 @@ public class JDCConnectionPool {
        c = new JDCConnection(conn, this);
        c.lease();
        connections.addElement(c);
+       
        return c;
   } 
 

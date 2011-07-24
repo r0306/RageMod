@@ -32,13 +32,12 @@ public class TownQueries {
 	}
 	
 	// Load all PlayerTown data
-	public HashMap<String, PlayerTown> loadPlayerTowns()
+	public void loadPlayerTowns(HashMap<String, PlayerTown> towns)
     {
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
 	    ResultSet rs = null;
 	    
-		HashMap<String, PlayerTown> towns = new HashMap<String, PlayerTown>();
 		PlayerTown currentTown = null;
 		
     	try
@@ -69,19 +68,17 @@ public class TownQueries {
         		currentTown.mayor = rs.getString("Mayor");
         		currentTown.world = plugin.getServer().getWorld("world");
         		
-        		currentTown.buildRegion();	        		
-        		towns.put(rs.getString("TownName").toLowerCase(), currentTown);	 
-        	}
+        		currentTown.buildRegion();	 
         		
-        	return towns;				
+        		if(currentTown.townName != null)
+        			towns.put(currentTown.townName, currentTown);	 
+        	}			
         		        	
     	} catch (Exception e) {
     		System.out.println("Error in RageDB.LoadPlayerTowns: " + e.getMessage());
 		} finally {
 			rageDB.close(rs, preparedStatement, conn);
 		}
-		
-		return null;
     }
 	
 	// Load data from Players table on login if existing player - create new row if not 
@@ -260,17 +257,18 @@ public class TownQueries {
         		residents.add(rs.getString("Name"));	        		
         	}
         		
-        	return residents;	
+        		
     	} 
     	catch (SQLException e) {
     		System.out.println("Error in RageDB.ListTownResidents(): " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
+		    return residents;
 		} finally {
 			rageDB.close(rs, preparedStatement, conn);
-		}
-    	
-    	return null;
+			
+		}    
+		return residents;
 	}
 	
 	// Add money to town treasury
