@@ -108,9 +108,4 @@ public class Util
 	    Matcher matcher = pattern.matcher(message);
 	    return matcher.replaceAll(ChatColor.DARK_GRAY + "$1" + color);
 	}
-	
-	
-	
-
-
 }

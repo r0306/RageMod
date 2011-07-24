@@ -31,11 +31,7 @@ public class NPCEntity extends EntityPlayer {
 	private int lastTargetId;
 	private long lastBounceTick;
 	private int lastBounceId;
-	private JavaPlugin plugin;
-	public double speechDistance = 40.0D;
-	private ArrayList<String> speechMessages;
-	int speechCounter;
-	int speechInterval;
+	protected JavaPlugin plugin;
 
 	public NPCEntity(MinecraftServer minecraftserver, World world, String name,
 			ItemInWorldManager iteminworldmanager, JavaPlugin plugin) 
@@ -101,8 +97,7 @@ public class NPCEntity extends EntityPlayer {
 
 	public void c(net.minecraft.server.Entity entity) 
 	{
-		if ((this.lastBounceId != entity.id)
-				|| (System.currentTimeMillis() - this.lastBounceTick > 1000L)) 
+		if (this.lastBounceId != entity.id || (System.currentTimeMillis() - this.lastBounceTick > 1000L)) 
 		{
 			EntityTargetEvent event = new NpcEntityTargetEvent(
 					getBukkitEntity(), entity.getBukkitEntity(),

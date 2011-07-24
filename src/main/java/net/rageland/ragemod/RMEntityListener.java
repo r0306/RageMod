@@ -44,7 +44,6 @@ public class RMEntityListener extends EntityListener
     	Entity defenderEntity = rawEvent.getEntity();
     	
     	// Makes NPC invulnerable
-    	/*
         if (defenderEntity instanceof HumanEntity) 
         {			
 			if (NPCManager.isNPC(defenderEntity)) 
@@ -52,7 +51,7 @@ public class RMEntityListener extends EntityListener
 				rawEvent.setCancelled(true);
 			}
 		}
-		*/
+		
     	
     	if(rawEvent instanceof EntityDamageByEntityEvent)
     	{
@@ -61,7 +60,6 @@ public class RMEntityListener extends EntityListener
         	
         	Entity attackerEntity = event.getDamager();  
         	
-        	/*
         	// If defender is NPC, the event is already cancelled, must check if it is a leftClickAction from player.
         	if (NPCManager.isNPC(defenderEntity)) 
 			{				
@@ -72,9 +70,7 @@ public class RMEntityListener extends EntityListener
     			}
 				return;
 			}
-			*/
         	
-            
             // Handle PvP
             if( attackerEntity instanceof Player && defenderEntity instanceof Player ) 
             {
@@ -200,22 +196,18 @@ public class RMEntityListener extends EntityListener
     /**
      *  Called on entityTarget. Used for detectic right clicks on the NPC
      */
-    public void onEntityTarget(EntityTargetEvent event) {
-		
-    	/*
-		if ((event instanceof NpcEntityTargetEvent)) {
-			
+    public void onEntityTarget(EntityTargetEvent event) 
+    {    	
+		if ((event instanceof NpcEntityTargetEvent)) 
+		{			
 			NpcEntityTargetEvent netEvent = (NpcEntityTargetEvent) event;
 			if (((netEvent.getTarget() instanceof Player))
-					&& (netEvent.getNpcReason() == NpcEntityTargetEvent.NpcTargetReason.NPC_RIGHTCLICKED)) {
-				
-				NPCEntity npcEntity = NPCManager.getNPCFromEntity(netEvent
-						.getEntity());
-
+					&& (netEvent.getNpcReason() == NpcEntityTargetEvent.NpcTargetReason.NPC_RIGHTCLICKED)) 
+			{				
+				NPCEntity npcEntity = NPCManager.getNPCFromEntity(netEvent.getEntity());
 				npcEntity.rightClickAction((Player) event.getTarget());
 			}
-		}
-		*/
+		}		
 	}
 }
 

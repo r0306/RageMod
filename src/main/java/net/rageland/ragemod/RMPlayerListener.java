@@ -16,6 +16,7 @@ import net.rageland.ragemod.commands.DebugCommands;
 import net.rageland.ragemod.commands.FactionCommands;
 import net.rageland.ragemod.commands.LotCommands;
 import net.rageland.ragemod.commands.Commands;
+import net.rageland.ragemod.commands.NPCCommands;
 import net.rageland.ragemod.commands.QuestCommands;
 import net.rageland.ragemod.commands.TownCommands;
 import net.rageland.ragemod.data.Factions;
@@ -54,6 +55,7 @@ public class RMPlayerListener extends PlayerListener
     private FactionCommands factionCommands;
     private DebugCommands debugCommands;
     private Commands commands;
+    private NPCCommands npcCommands;
 
     public RMPlayerListener(RageMod instance) 
     {
@@ -65,6 +67,7 @@ public class RMPlayerListener extends PlayerListener
         factionCommands = new FactionCommands(plugin);
         debugCommands = new DebugCommands(plugin);
         commands = new Commands(plugin);
+        npcCommands = new NPCCommands(plugin);
     }
 
     // Pull the player data from the DB and register in memory
@@ -141,6 +144,14 @@ public class RMPlayerListener extends PlayerListener
     	else if(split[0].equalsIgnoreCase("/quest")) 
     	{
     		questCommands.onQuestCommand(player, playerData, split);
+    	}
+    	// ********* NPC COMMANDS ************
+    	else if(split[0].equalsIgnoreCase("/npc"))
+    	{
+    		if(RageMod.permissionHandler.has(player, "ragemod.npc"))
+			{
+    			npcCommands.onNPCCommand(player, playerData, split);
+			}
     	}
     	
     	// ********* DEBUG COMMANDS **********

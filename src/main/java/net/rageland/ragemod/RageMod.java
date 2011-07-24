@@ -66,6 +66,7 @@ public class RageMod extends JavaPlugin {
     public RageDB database;
     public RageZones zones;
     public NPCManager npcManager;
+    public QuestManager questManager;
     
     
     
@@ -94,6 +95,7 @@ public class RageMod extends JavaPlugin {
     	zones = new RageZones(this, config);
         pluginManager = server.getPluginManager();
         npcManager = new NPCManager(this);
+        questManager = new QuestManager(this);
         
         pluginManager.registerEvent(Event.Type.PLUGIN_ENABLE, this.serverListener, Event.Priority.Normal, this);
         pluginManager.registerEvent(Event.Type.PLUGIN_DISABLE, this.serverListener, Event.Priority.Normal, this);

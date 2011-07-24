@@ -77,6 +77,29 @@ public class NPCManager {
 		return npcEntity;
 	}
 	
+	public QuestStartNPCEntity spawnQuestStartNPC(String name, Location l, Quest quest)
+	{
+		String id = String.valueOf(npcs.size() + 1);
+		if (npcs.containsKey(id)) 
+		{
+			this.server.getLogger().log(Level.WARNING, "NPC with that id already exists, existing NPC returned");
+			return (QuestStartNPCEntity) npcs.get(id);
+		}
+		if (name.length() > 16) 
+		{
+			String tmp = name.substring(0, 16);
+			this.server.getLogger().log(Level.WARNING, "NPCs can't have names longer than 16 characters,");
+			this.server.getLogger().log(Level.WARNING, name + " has been shortened to " + tmp);
+			name = tmp;
+		}
+		BWorld world = new BWorld(l.getWorld());
+		QuestStartNPCEntity npcEntity = new QuestStartNPCEntity(this.server.getMCServer(), world.getWorldServer(), name, new ItemInWorldManager( world.getWorldServer()), this.plugin, quest);
+		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
+		world.getWorldServer().addEntity(npcEntity);
+		npcs.put(String.valueOf(npcs.size() + 1), npcEntity);
+		return npcEntity;
+	}
+	
 	public NPCEntity spawnQuestStartNPC(String name, Location l, String id, Quest quest) 
 	{
 		if (npcs.containsKey(id)) 

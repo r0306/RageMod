@@ -11,6 +11,7 @@ public class Factions
 	public Factions()
 	{
 		factions = new HashMap<Integer, String>();
+		loadFactions();
 	}
     
     
