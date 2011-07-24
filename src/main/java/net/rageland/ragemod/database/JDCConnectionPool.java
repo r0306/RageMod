@@ -2,7 +2,6 @@ package net.rageland.ragemod.database;
 
 import java.sql.*;
 import java.util.*;
-import java.io.*;
 
 class ConnectionReaper extends Thread {
 
@@ -23,12 +22,55 @@ class ConnectionReaper extends Thread {
     }
 }
 
+/**
+ * To keep the connections in the pool alive. This was what caused our problems.
+ * No good way to track if a connection is closed or not without just keeping
+ * it alive by using ping.
+ * @author Jorgen
+ *
+ */
+class ConnectionKeepAlive extends Thread
+{
+	private Vector<JDCConnection> connections;
+	private final int interval = 60000;
+	
+	public ConnectionKeepAlive(Vector<JDCConnection> connections)
+	{
+		this.connections = connections;
+	}
+	
+	public void run()
+	{
+		while(true)
+		{			
+			try {
+				sleep(interval);				
+			} 
+			catch (InterruptedException e) { }
+			for(JDCConnection conn : connections)
+			{
+				PreparedStatement ps;
+				
+				try {
+					ps = conn.prepareStatement("/* ping */ SELECT 1");
+					ps.executeQuery();
+				} catch (SQLException e) {					
+					e.printStackTrace();
+				}
+				
+			}
+		}
+	}
+	
+}
+
 public class JDCConnectionPool {
 
-   private Vector<JDCConnection> connections;
+   public Vector<JDCConnection> connections;
    private String url, user, password;
    final private long timeout=60000;
    private ConnectionReaper reaper;
+   private ConnectionKeepAlive pinger;
    final private int poolsize=10;
 
    public JDCConnectionPool(String url, String user, String password) {
@@ -38,6 +80,8 @@ public class JDCConnectionPool {
       connections = new Vector<JDCConnection>(poolsize);
       reaper = new ConnectionReaper(this);
       reaper.start();
+      pinger = new ConnectionKeepAlive(connections);
+      pinger.start();
    }
 
    public synchronized void reapConnections() {
@@ -73,20 +117,19 @@ public class JDCConnectionPool {
    public synchronized Connection getConnection() throws SQLException {
 	   System.out.println("Pool size: " + connections.size());
 	   
-       JDCConnection c;
-       for(int i = 0; i < connections.size(); i++) {
-           c = (JDCConnection)connections.elementAt(i);
-           if (c.lease()) {
-              return c;
-           }
+       for(JDCConnection connection : connections) {    	   
+           if(connection.validate() && connection.lease()) 
+           {
+              return connection;
+           } 
        }
 
        Connection conn = DriverManager.getConnection(url, user, password);
-       c = new JDCConnection(conn, this);
-       c.lease();
-       connections.addElement(c);
+       JDCConnection newConnection = new JDCConnection(conn, this);
+       newConnection.lease();
+       connections.addElement(newConnection);
        
-       return c;
+       return newConnection;
   } 
 
    public synchronized void returnConnection(JDCConnection conn) {

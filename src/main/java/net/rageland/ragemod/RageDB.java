@@ -35,7 +35,7 @@ import org.bukkit.entity.Player;
 
 public class RageDB {
 
-	protected JDCConnectionPool connectionPool;
+	private JDCConnectionDriver connectionDriver;
     protected String url;
     protected String databaseName;
     protected String driver;
@@ -66,8 +66,7 @@ public class RageDB {
     	
         try
         {
-        	JDCConnectionDriver connectionDriver = new JDCConnectionDriver(driver, url + databaseName, user, password);
-        	connectionPool = connectionDriver.getConnectionPool();
+        	connectionDriver = new JDCConnectionDriver(driver, url + databaseName, user, password);
         }
         catch(Exception e)
         {
@@ -77,7 +76,7 @@ public class RageDB {
 
     public Connection getConnection() throws SQLException
     {
-    	return connectionPool.getConnection();
+    	return connectionDriver.getConnectionPool().getConnection();
     }    
     
     // You need to close the resultSet
@@ -95,7 +94,7 @@ public class RageDB {
 
 			if (conn != null) 
 			{
-				connectionPool.returnConnection((JDCConnection)conn);
+				connectionDriver.getConnectionPool().returnConnection((JDCConnection)conn);
 			}
 		} catch (Exception e) {
 

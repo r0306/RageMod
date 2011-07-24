@@ -122,7 +122,7 @@ public class RageMod extends JavaPlugin {
         
         
         // Run basic debug tests
-        //runTests();
+        runTests();
         
         
         

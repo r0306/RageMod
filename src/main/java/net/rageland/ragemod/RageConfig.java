@@ -17,16 +17,17 @@ public class RageConfig {
 	 */
 	
 	private Configuration pluginConfig;
+	private RageMod plugin;
 	
 	// General settings
 	public String ServerName = "Rageland";
 	
 	// Database settings
-	public String DB_URL = "jdbc:mysql://mirach.lunarpages.com:3306/";
-    public String DB_NAME = "johnz2_ragemod";
+	public String DB_URL = "<DB URL>";
+    public String DB_NAME = "<DB Name>";
     public String DB_DRIVER = "com.mysql.jdbc.Driver";
-    public String DB_USER = "johnz2_ragemod";
-    public String DB_PASSWORD = "ragemod";
+    public String DB_USER = "<DB User>";
+    public String DB_PASSWORD = "<DB Password>";
     
     // Town settings
     public int Town_MIN_DISTANCE_BETWEEN = 400;
@@ -88,14 +89,32 @@ public class RageConfig {
     
     public RageConfig (RageMod plugin)
     {
-    	pluginConfig = plugin.getConfiguration();
+    	this.plugin = plugin;
     	
-    	// loadConfigValues();	
+    	loadConfigValues();	
     	loadDefaultTownLevels();
     }
     
     private void loadConfigValues() 
     {
+    	if(pluginConfig == null) 
+    	{
+    		String path = plugin.getDataFolder().getPath() + "/config.yml";
+    		File configFile = new File(path);
+    		
+    		if(!configFile.exists())
+    		{
+    			configFile.mkdirs();    			
+    		}
+    		
+    		pluginConfig = new Configuration(configFile);
+    	}
+    	else
+    	{
+    		pluginConfig = plugin.getConfiguration();
+    	}
+    	
+    	
     	if(pluginConfig.getProperty("dburl") != null)
     		DB_URL = pluginConfig.getString("dburl");
     	else 

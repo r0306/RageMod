@@ -42,6 +42,7 @@ public class LotQueries {
     	try
     	{
     		conn = rageDB.getConnection();
+    		
         	String selectQuery = 
         		"SELECT ID_Lot FROM Lots WHERE ID_Player = " + id_Player;
     		

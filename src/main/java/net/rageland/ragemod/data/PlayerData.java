@@ -67,7 +67,7 @@ public class PlayerData
 	public Timestamp enterLeaveMessageTime = null;		// Prevent message spam by only allowing a message every 10 seconds (while people work on walls, etc)
 	
 	// Quest data
-	public ActiveQuestData activeQuestData = null;
+	public ActiveQuestData activeQuestData = new ActiveQuestData();
 	
 	
 	// Gets the player's name with the color code, depending on faction (todo)

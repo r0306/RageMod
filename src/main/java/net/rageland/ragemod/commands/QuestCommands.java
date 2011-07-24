@@ -30,7 +30,7 @@ public class QuestCommands {
 		} 
 		else if(split[1].equalsIgnoreCase("view"))
 		{
-			if(playerData.activeQuestData == null)
+			if(playerData.activeQuestData.quest == null)
 			{
 				Util.message(player, "ERROR: You're not currently on a quest.");
 			}
