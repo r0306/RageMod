@@ -115,8 +115,6 @@ public class JDCConnectionPool {
 
 
    public synchronized Connection getConnection() throws SQLException {
-	   System.out.println("Pool size: " + connections.size());
-	   
        for(JDCConnection connection : connections) {    	   
            if(connection.validate() && connection.lease()) 
            {
