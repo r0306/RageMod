@@ -10,35 +10,30 @@ import net.rageland.ragemod.RageMod;
 // Stores a HashMap of all the Lots in the capitol
 public class Lots 
 {
-	// Set up Lots as a static instance
-	private static volatile Lots instance;
 	
 	// The String key is Category (single letter) + ID; eg. W12
-	private static HashMap<String, Lot> lots;
+	private HashMap<String, Lot> lots;
+	private RageMod plugin;
 	
-    public static Lots getInstance() 
-    {
-		if (instance == null) 
-		{
-			instance = new Lots();
-		}
-		return instance;
+	public Lots(RageMod plugin)
+	{
+		this.plugin = plugin;
 	}
 	
 	// On startup, pull all the Lot data from the DB into memory 
 	public void loadLots()
 	{
-		lots = RageMod.database.lotQueries.loadLots();	
+		lots = plugin.database.lotQueries.loadLots();	
 	}
 	
 	// Insert/update town info
-	public static void put(Lot lot)
+	public void put(Lot lot)
 	{
 		lots.put(lot.getLotCode(), lot);
 	}
 	
 	// Gets the lot from memory.  Returns NULL for non-existent lot
-    public static Lot get(String lotCode)
+    public Lot get(String lotCode)
     {       	
     	if( lots.containsKey(lotCode.toUpperCase()) )
     		return lots.get(lotCode.toUpperCase());
@@ -50,7 +45,7 @@ public class Lots
     }
     
     // Gets the lot by database ID
-    public static Lot get(int id)
+    public Lot get(int id)
     {
     	for( Lot lot : lots.values() )
 		{
@@ -66,13 +61,13 @@ public class Lots
     }
     
     // Returns all lots
-    public static ArrayList<Lot> getAll()
+    public ArrayList<Lot> getAll()
     {
     	return new ArrayList<Lot>(lots.values());
     }
     
     // Find which lot the player is standing in, if any
-    public static Lot findCurrentLot(Location loc)
+    public Lot findCurrentLot(Location loc)
     {
     	for( Lot lot : lots.values() )
 		{

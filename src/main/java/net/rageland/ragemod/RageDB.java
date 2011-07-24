@@ -49,7 +49,7 @@ public class RageDB {
     public FactionQueries factionQueries;
     public TaskQueries taskQueries;
 
-    public RageDB(RageMod instance)
+    public RageDB(RageMod instance, RageConfig config)
     {
     	plugin = instance;
     	townQueries = new TownQueries(this, this.plugin);
@@ -58,11 +58,11 @@ public class RageDB {
     	factionQueries = new FactionQueries(this, this.plugin);
     	taskQueries = new TaskQueries(this, this.plugin);
     	
-    	url = RageConfig.DB_URL;
-    	databaseName = RageConfig.DB_NAME;
-    	driver = RageConfig.DB_DRIVER;
-    	user = RageConfig.DB_USER;
-    	password = RageConfig.DB_PASSWORD;
+    	url = config.DB_URL;
+    	databaseName = config.DB_NAME;
+    	driver = config.DB_DRIVER;
+    	user = config.DB_USER;
+    	password = config.DB_PASSWORD;
     	
         try
         {

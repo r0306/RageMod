@@ -56,11 +56,16 @@ public class RageMod extends JavaPlugin {
     public static String mainDirectory = "plugins/RageMod";
     public File file = new File(mainDirectory + File.separator + "config.yml");
     private Timer rageTimer = new Timer(true);
+    public Lots lots;
+    public Players players;
+    public PlayerTowns playerTowns;
+    public Tasks tasks;
+    public Factions factions;
     
     // Static utility classes
-    public static RageConfig config = null;
-    public static RageDB database = null;  
-    public static RageZones zones = null;
+    public RageConfig config;
+    public RageDB database;
+    public static RageZones zones;
     
     
     public RageMod() 
@@ -70,6 +75,14 @@ public class RageMod extends JavaPlugin {
     	blockListener = new RMBlockListener(this);  
     	entityListener = new RMEntityListener(this);
     	iConomy = null; 
+    	config = new RageConfig(this);
+        database = new RageDB(this, config);
+        zones = new RageZones(this, config);
+        lots = new Lots(this);
+        players = new Players(this);
+        playerTowns = new PlayerTowns(this);
+        tasks = new Tasks(this);
+        factions = new Factions();
     }
     
     
@@ -98,17 +111,8 @@ public class RageMod extends JavaPlugin {
         setupPermissions();
         System.out.println( "RageMod is enabled!" );
         
-        // Initialize the static classes - make sure to initialize Config first as ther other constuctors rely on it
-        config = new RageConfig();
-        database = new RageDB(this);
-        zones = new RageZones(this);
-        
         // Load the HashMaps for DB data
-        PlayerTowns.getInstance().loadPlayerTowns();
-        Players.getInstance();	// Player data is not loaded until players log on
-        Lots.getInstance().loadLots();
-        Factions.getInstance().loadFactions();
-        Tasks.getInstance().loadTaskTimes();
+        lots.loadLots();
         
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new RageTimer(this), 20, 20);
         
@@ -177,7 +181,7 @@ public class RageMod extends JavaPlugin {
     
     private void runTests()
     {
-    	System.out.println("Number of lots:" + Lots.getAll().size());    	
+    	System.out.println("Number of lots:" + lots.getAll().size());    	
     }
 }
 

@@ -31,6 +31,13 @@ import com.iConomy.system.Holdings;
 public class TownCommands 
 {
 	
+	private RageMod plugin;
+	
+	public TownCommands(RageMod plugin)
+	{
+		this.plugin = plugin;
+	}
+	
 	public void onTownCommand(Player player, PlayerData playerData, String[] split) 
 	{
 		if( split.length < 2 || split.length > 3 )
@@ -66,7 +73,7 @@ public class TownCommands
 		else if( split[1].equalsIgnoreCase("add") )
 		{
 			if( split.length == 3 )
-    			TownCommands.add(player, split[2]); 
+    			this.add(player, split[2]); 
     		else
     			Util.message(player, "Usage: /town add <player_name>");
 		}
@@ -76,77 +83,77 @@ public class TownCommands
 			// TODO: Support 2+ word town names
 			
 			if( split.length == 2 )
-				TownCommands.create(player, "");
+				this.create(player, "");
 			else if( split.length == 3 )
-				TownCommands.create(player, split[2]); 
+				this.create(player, split[2]); 
 			else
     			Util.message(player, "Usage: /town create [town_name] (use 'quotes' for multiple-word town names)"); 
 		}
 		else if( split[1].equalsIgnoreCase("deposit") )
 		{
 			if( split.length == 3 )
-				TownCommands.deposit(player, split[2]); 
+				this.deposit(player, split[2]); 
     		else
     			Util.message(player, "Usage: /town deposit <amount>");
 		}
 		else if( split[1].equalsIgnoreCase("evict") )
 		{
 			if( split.length == 3 )
-				TownCommands.evict(player, split[2]); 
+				this.evict(player, split[2]); 
     		else
     			Util.message(player, "Usage: /town evict <player_name>");
 		}
 		else if( split[1].equalsIgnoreCase("info") )
 		{
 			if( split.length == 2 && !playerData.townName.equals("") )
-				TownCommands.info(player, playerData.townName);
+				this.info(player, playerData.townName);
 			else if( split.length == 3 )
-				TownCommands.info(player, split[2]);
+				this.info(player, split[2]);
     		else
     			Util.message(player, "Usage: /town info <town_name>");
 		}
 		else if( split[1].equalsIgnoreCase("leave") )
 		{
-			TownCommands.leave(player); 	 
+			this.leave(player); 	 
 		}
 		else if( split[1].equalsIgnoreCase("list") )
 		{
 			if( split.length == 2 )
-				TownCommands.list(player, "");
+				this.list(player, "");
 			else if( split.length == 3 )
-				TownCommands.list(player, split[2]);
+				this.list(player, split[2]);
     		else
     			Util.message(player, "Usage: /town list [faction]");
 		}
 		else if( split[1].equalsIgnoreCase("minimum") )
 		{
 			if( split.length == 3 )
-				TownCommands.minimum(player, split[2]); 
+				this.minimum(player, split[2]); 
     		else
     			Util.message(player, "Usage: /town minimum <amount>");
 		}
 		else if( split[1].equalsIgnoreCase("residents") )
 		{
 			if( split.length == 2 && !playerData.townName.equals("") )
-				TownCommands.residents(player, playerData.townName);
+				this.residents(player, playerData.townName);
 			else if( split.length == 3 )
-				TownCommands.residents(player, split[2]);
+				this.residents(player, split[2]);
     		else
     			Util.message(player, "Usage: /town residents <town_name>");
 		}
 		else if( split[1].equalsIgnoreCase("upgrade") )
 		{
 			if( split.length == 2 )
-    			TownCommands.upgrade(player, false);
+    			this.upgrade(player, false);
     		else if( split.length == 3 && split[2].equalsIgnoreCase("confirm"))
-    			TownCommands.upgrade(player, true);
+    			this.upgrade(player, true);
     		else
     			Util.message(player, "Usage: /town upgrade [confirm]");
 		}
 		else if( split[1].equalsIgnoreCase("withdrawl") )
 		{
 			if( split.length == 3 )
-				TownCommands.withdrawl(player, split[2]); 
+				this.withdrawl(player, split[2]); 
     		else
     			Util.message(player, "Usage: /town withdrawl <amount>");
 		}
@@ -155,10 +162,10 @@ public class TownCommands
 	}
 	
 	// /town add <player_name>
-	public static void add(Player player, String targetPlayerName)
+	public void add(Player player, String targetPlayerName)
 	{
-		PlayerData playerData = Players.get(player.getName());
-		PlayerData targetPlayerData = Players.get(targetPlayerName);
+		PlayerData playerData = plugin.players.get(player.getName());
+		PlayerData targetPlayerData = plugin.players.get(targetPlayerName);
 		
 		// Check to see if target player exists
 		if( targetPlayerData == null )
@@ -184,31 +191,31 @@ public class TownCommands
 			Util.message(player, "You can only add players that are the same faction as you.");
 			return;
 		}
-		if( PlayerTowns.get(playerData.townName).isFull() )
+		if( plugin.playerTowns.get(playerData.townName).isFull() )
 		{
 			Util.message(player, "Your town already has the maximum number of residents for its level.");
 			return;
 		}
 		
 		// Add the target to the player's town
-		RageMod.database.townQueries.townAdd(targetPlayerName, playerData.townName);
+		plugin.database.townQueries.townAdd(targetPlayerName, playerData.townName);
 		
 		// Update the playerData
 		targetPlayerData.townName = playerData.townName;
 		// This will give the player's balance back if they were a previous resident of the town
-		targetPlayerData.treasuryBalance = RageMod.database.playerQueries.getPlayerTreasuryBalance(targetPlayerData.id_Player, PlayerTowns.get(playerData.townName).id_PlayerTown);
-		Players.update(targetPlayerData);
+		targetPlayerData.treasuryBalance = plugin.database.playerQueries.getPlayerTreasuryBalance(targetPlayerData.id_Player, plugin.playerTowns.get(playerData.townName).id_PlayerTown);
+		plugin.players.update(targetPlayerData);
 		
 		Util.message(player, targetPlayerData.name + " is now a resident of " + playerData.townName + ".");		
 	}
 	
 	// /town  create <town_name>
-	public static void create(Player player, String townName)
+	public void create(Player player, String townName)
 	{		
-		PlayerData playerData = Players.get(player.getName());
-		HashMap<String, Integer> nearbyTowns = PlayerTowns.checkForNearbyTowns(player.getLocation());
+		PlayerData playerData = plugin.players.get(player.getName());
+		HashMap<String, Integer> nearbyTowns = plugin.playerTowns.checkForNearbyTowns(player.getLocation());
 		Holdings holdings = iConomy.getAccount(player.getName()).getHoldings();
-		int cost = RageConfig.townLevels.get(1).initialCost;
+		int cost = plugin.config.townLevels.get(1).initialCost;
 
 		// Ensure that the player is not currently a resident of a town
 		if( !playerData.townName.equals("") )
@@ -217,7 +224,7 @@ public class TownCommands
 			return;
 		}		
 		// Ensure that the town name is not taken
-		if( PlayerTowns.get(townName) != null )
+		if( plugin.playerTowns.get(townName) != null )
 		{
 			Util.message(player, "A town named " + townName + " already exists!");
 			return;
@@ -237,13 +244,13 @@ public class TownCommands
 				message += nearbyTownName + " (" + nearbyTowns.get(nearbyTownName) + "m) ";
 			}
 			Util.message(player, message);
-			Util.message(player, "Towns must be a minimum distance of " + RageConfig.Town_MIN_DISTANCE_BETWEEN + "m apart.");
+			Util.message(player, "Towns must be a minimum distance of " + plugin.config.Town_MIN_DISTANCE_BETWEEN + "m apart.");
 			return;
 		}
 		// Check to see if the player has enough money to join the specified faction
 		if( !holdings.hasEnough(cost) )
 		{
-			Util.message(player, "You need at least " + iConomy.format(cost) + " to create a " + RageConfig.townLevels.get(1).name + ".");
+			Util.message(player, "You need at least " + iConomy.format(cost) + " to create a " + plugin.config.townLevels.get(1).name + ".");
 			return;
 		}
 		
@@ -256,32 +263,32 @@ public class TownCommands
 		if( !townName.equals("") )
 		{
 			// Add the new town to the database
-			int townID = RageMod.database.townQueries.townCreate(player, townName);
+			int townID = plugin.database.townQueries.townCreate(player, townName);
 			
 			// Update PlayerTowns
-			PlayerTown playerTown = new PlayerTown();
+			PlayerTown playerTown = new PlayerTown(plugin);
 			playerTown.id_PlayerTown = townID;
 			playerTown.townName = townName;
 			playerTown.centerPoint = new Location2D((int)player.getLocation().getX(), (int)player.getLocation().getZ());
 			playerTown.id_Faction = playerData.id_Faction;
 			playerTown.bankruptDate = null;
-			playerTown.townLevel = RageConfig.townLevels.get(1);
-			playerTown.treasuryBalance = RageConfig.townLevels.get(1).minimumBalance;
-			playerTown.minimumBalance = RageConfig.townLevels.get(1).minimumBalance;
+			playerTown.townLevel = plugin.config.townLevels.get(1);
+			playerTown.treasuryBalance = plugin.config.townLevels.get(1).minimumBalance;
+			playerTown.minimumBalance = plugin.config.townLevels.get(1).minimumBalance;
 			playerTown.mayor = playerData.name;
 			playerTown.world = player.getWorld();
 			
 			playerTown.buildRegion();
 			playerTown.createBorder();
 			
-			PlayerTowns.put(playerTown);
+			plugin.playerTowns.put(playerTown);
 			
 			// Update the playerData
 			playerData.townName = townName;
 			playerData.isMayor = true;
 			playerData.currentTown = playerTown;
 			playerData.treasuryBalance = cost;
-			Players.update(playerData);
+			plugin.players.update(playerData);
 			
 			Util.message(player, "Congratulations, you are the new mayor of " + townName + "!");		
 		}
@@ -292,12 +299,12 @@ public class TownCommands
 	}
 	
 	// /town deposit <amount>
-	public static void deposit(Player player, String amountString)
+	public void deposit(Player player, String amountString)
 	{
-		PlayerData playerData = Players.get(player.getName());
+		PlayerData playerData = plugin.players.get(player.getName());
 		double amount;
 		Holdings holdings = iConomy.getAccount(player.getName()).getHoldings();
-		PlayerTown playerTown = PlayerTowns.get(playerData.townName);
+		PlayerTown playerTown = plugin.playerTowns.get(playerData.townName);
 		
 		// Make sure the player is a resident of a town
 		if( playerData.townName.equals("") )
@@ -332,24 +339,24 @@ public class TownCommands
 		holdings.subtract(amount);
 		
 		// Update the database
-		RageMod.database.townQueries.townDeposit(playerTown.id_PlayerTown, playerData.id_Player, amount);
+		plugin.database.townQueries.townDeposit(playerTown.id_PlayerTown, playerData.id_Player, amount);
 		
 		// Update the town data
 		playerTown.treasuryBalance += amount; 
-		PlayerTowns.put(playerTown);
+		plugin.playerTowns.put(playerTown);
 		
 		// Update the player data
 		playerData.treasuryBalance += amount;
-		Players.update(playerData);
+		plugin.players.update(playerData);
 		
 		Util.message(player, "Deposited " + iConomy.format(amount) + " into town treasury.");
 	}
 	
 	// /town evict <player_name>
-	public static void evict(Player player, String targetPlayerName)
+	public void evict(Player player, String targetPlayerName)
 	{
-		PlayerData playerData = Players.get(player.getName());
-		PlayerData targetPlayerData = Players.get(targetPlayerName);
+		PlayerData playerData = plugin.players.get(player.getName());
+		PlayerData targetPlayerData = plugin.players.get(targetPlayerName);
 		
 		// Ensure that the current player is the mayor
 		if( !playerData.isMayor )
@@ -371,21 +378,21 @@ public class TownCommands
 		}
 		
 		// Remove the target from the player's town
-		RageMod.database.townQueries.townLeave(targetPlayerName);
+		plugin.database.townQueries.townLeave(targetPlayerName);
 		
 		// Update the playerData
 		targetPlayerData.townName = "";
 		targetPlayerData.spawn_IsSet = false;
-		Players.update(targetPlayerData);
+		plugin.players.update(targetPlayerData);
 		
 		Util.message(player, targetPlayerData.name + " is no longer a resident of " + playerData.townName + ".");		
 	}
 	
 	// /town info [town_name]
-	public static void info(Player player, String townName) 
+	public void info(Player player, String townName) 
 	{
-		PlayerData playerData = Players.get(player.getName());
-		PlayerTown playerTown = PlayerTowns.get(townName);
+		PlayerData playerData = plugin.players.get(player.getName());
+		PlayerTown playerTown = plugin.playerTowns.get(townName);
 		
 		// Check to see if specified town exists
 		if( playerTown == null )
@@ -395,7 +402,7 @@ public class TownCommands
 		}
 		
 		Util.message(player, "Info for " + townName + ":");
-		Util.message(player, "   Faction: " + Factions.getName(playerTown.id_Faction));
+		Util.message(player, "   Faction: " + plugin.factions.getName(playerTown.id_Faction));
 		Util.message(player, "   Level: " + playerTown.getLevel().name + " (" + playerTown.townLevel.level + ")");
 		Util.message(player, "   Mayor: " + playerTown.mayor);
 		if( playerData.townName.equalsIgnoreCase(townName) )
@@ -407,9 +414,9 @@ public class TownCommands
 	}
 	
 	// /town leave
-	public static void leave(Player player)
+	public void leave(Player player)
 	{
-		PlayerData playerData = Players.get(player.getName());
+		PlayerData playerData = plugin.players.get(player.getName());
 		String townName = playerData.townName;
 
 		// Ensure that the player is currently a resident of a town
@@ -426,22 +433,22 @@ public class TownCommands
 		}
 		
 		// Remove the player from the town in the database
-		RageMod.database.townQueries.townLeave(playerData.name);
+		plugin.database.townQueries.townLeave(playerData.name);
 		
 		// Update the playerData
 		playerData.townName = "";
 		playerData.isMayor = false;
 		playerData.spawn_IsSet = false;
 		playerData.treasuryBalance = 0;
-		Players.update(playerData);
+		plugin.players.update(playerData);
 		
 		Util.message(player, "You are no longer a resident of " + townName + ".");		
 	}
 	
 	// /town list [faction]
-	public static void list(Player player, String factionName) 
+	public void list(Player player, String factionName) 
 	{
-		ArrayList<PlayerTown> towns = PlayerTowns.getAll();
+		ArrayList<PlayerTown> towns = plugin.playerTowns.getAll();
 		
 		// TODO: Implement page # functionality 
 		
@@ -457,18 +464,18 @@ public class TownCommands
 		
 		for( PlayerTown town : towns )
 		{
-			if( Factions.getName(town.id_Faction).equalsIgnoreCase(factionName) || factionName.equals("") )
-				Util.message(player, Factions.getName(town.id_Faction) + ": " + town.townName + " (" + town.getLevel().name + ")");
+			if( plugin.factions.getName(town.id_Faction).equalsIgnoreCase(factionName) || factionName.equals("") )
+				Util.message(player, plugin.factions.getName(town.id_Faction) + ": " + town.townName + " (" + town.getLevel().name + ")");
 		}
 	}
 	
 	// /town minimum <amount>
-	public static void minimum(Player player, String amountString)
+	public void minimum(Player player, String amountString)
 	{
-		PlayerData playerData = Players.get(player.getName());
+		PlayerData playerData = plugin.players.get(player.getName());
 		double amount;
 		Holdings holdings = iConomy.getAccount(player.getName()).getHoldings();
-		PlayerTown playerTown = PlayerTowns.get(playerData.townName);
+		PlayerTown playerTown = plugin.playerTowns.get(playerData.townName);
 		
 		// Make sure the player is a resident of a town
 		if( playerData.townName.equals("") )
@@ -507,19 +514,19 @@ public class TownCommands
 		}
 		
 		// Update the database
-		RageMod.database.townQueries.townSetMinimumBalance(playerTown.id_PlayerTown, amount);
+		plugin.database.townQueries.townSetMinimumBalance(playerTown.id_PlayerTown, amount);
 		
 		// Update the town data
 		playerTown.minimumBalance = amount; 
-		PlayerTowns.put(playerTown);
+		plugin.playerTowns.put(playerTown);
 		
 		Util.message(player, "Your town's treasury minimum balance is now " + iConomy.format(amount) + ".");
 	}
 	
 	// /town residents [town_name]
-	public static void residents(Player player, String townName) 
+	public void residents(Player player, String townName) 
 	{
-		PlayerTown playerTown = PlayerTowns.get(townName);
+		PlayerTown playerTown = plugin.playerTowns.get(townName);
 		boolean isMayor = true;
 		
 		// Check to see if specified town exists
@@ -531,7 +538,7 @@ public class TownCommands
 		
 		Util.message(player, "Residents of " + playerTown.townName + ":");
 		
-		ArrayList<String> residents = RageMod.database.townQueries.listTownResidents(townName);
+		ArrayList<String> residents = plugin.database.townQueries.listTownResidents(townName);
 		
 		for( String resident : residents )
 		{
@@ -548,10 +555,10 @@ public class TownCommands
 	}
 	
 	// /town upgrade <confirm>
-	public static void upgrade(Player player, boolean isConfirmed)
+	public void upgrade(Player player, boolean isConfirmed)
 	{
-		PlayerData playerData = Players.get(player.getName());
-		PlayerTown playerTown = PlayerTowns.get(playerData.townName);
+		PlayerData playerData = plugin.players.get(player.getName());
+		PlayerTown playerTown = plugin.playerTowns.get(playerData.townName);
 		
 		// Ensure that the current player is the mayor
 		if( !playerData.isMayor )
@@ -567,19 +574,19 @@ public class TownCommands
 		}
 		
 		// Load the data for the target town level
-		TownLevel targetLevel = RageConfig.townLevels.get(playerTown.townLevel.level + 1);
+		TownLevel targetLevel = plugin.config.townLevels.get(playerTown.townLevel.level + 1);
 		
 		// If the upgrade would make the current town a capitol...
 		if( targetLevel.isCapitol )
 		{
 			// ...check to see if the player's faction already has a capitol...
-			if( PlayerTowns.doesFactionCapitolExist(playerData.id_Faction) )
+			if( plugin.playerTowns.doesFactionCapitolExist(playerData.id_Faction) )
 			{
 				Util.message(player, "Your faction already has a capitol; your town cannot be upgraded further.");
 				return;
 			}
 			// ...and make sure it is not too close to enemy capitols.
-			if( PlayerTowns.areEnemyCapitolsTooClose(playerTown) )
+			if( plugin.playerTowns.areEnemyCapitolsTooClose(playerTown) )
 			{
 				Util.message(player, "Your town is ineligible to be your faction's capitol; it is too close to an enemy capitol.");
 				return;
@@ -596,14 +603,14 @@ public class TownCommands
 		if( isConfirmed ) 
 		{
 			// Update PlayerTowns; subtract balance from treasury; also add minimum balance
-			playerTown.townLevel = RageConfig.townLevels.get(playerTown.townLevel.level + 1);
+			playerTown.townLevel = plugin.config.townLevels.get(playerTown.townLevel.level + 1);
 			playerTown.treasuryBalance = playerTown.treasuryBalance - targetLevel.initialCost + targetLevel.minimumBalance;
 			playerTown.minimumBalance = targetLevel.minimumBalance;
 			playerTown.buildRegion();
 			playerTown.createBorder();
-			PlayerTowns.put(playerTown);
+			plugin.playerTowns.put(playerTown);
 			
-			RageMod.database.townQueries.townUpgrade(playerTown.townName, (targetLevel.initialCost - targetLevel.minimumBalance));
+			plugin.database.townQueries.townUpgrade(playerTown.townName, (targetLevel.initialCost - targetLevel.minimumBalance));
 			
 			Util.message(player, "Congratulations, " + playerTown.townName + " has been upgraded to a " + targetLevel.name + "!");
 			Util.message(player, iConomy.format(targetLevel.initialCost) + " has been deducted from the town treasury.");
@@ -617,12 +624,12 @@ public class TownCommands
 	}
 	
 	// /town withdrawl <amount>
-	public static void withdrawl(Player player, String amountString)
+	public void withdrawl(Player player, String amountString)
 	{
-		PlayerData playerData = Players.get(player.getName());
+		PlayerData playerData = plugin.players.get(player.getName());
 		double amount;
 		Holdings holdings = iConomy.getAccount(player.getName()).getHoldings();
-		PlayerTown playerTown = PlayerTowns.get(playerData.townName);
+		PlayerTown playerTown = plugin.playerTowns.get(playerData.townName);
 		
 		// Make sure the player is a resident of a town
 		if( playerData.townName.equals("") )
@@ -663,15 +670,15 @@ public class TownCommands
 		holdings.add(amount);
 		
 		// Update the database
-		RageMod.database.townQueries.townDeposit(playerTown.id_PlayerTown, playerData.id_Player, (amount * -1));
+		plugin.database.townQueries.townDeposit(playerTown.id_PlayerTown, playerData.id_Player, (amount * -1));
 		
 		// Update the town data
 		playerTown.treasuryBalance -= amount; 
-		PlayerTowns.put(playerTown);
+		plugin.playerTowns.put(playerTown);
 		
 		// Update the player data
 		playerData.treasuryBalance -= amount;
-		Players.update(playerData);
+		plugin.players.update(playerData);
 		
 		Util.message(player, "Withdrew " + iConomy.format(amount) + " from town treasury.");
 	}

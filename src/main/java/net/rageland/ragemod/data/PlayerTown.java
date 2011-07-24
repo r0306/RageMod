@@ -32,6 +32,8 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	public Region2D region;
 	public World world;
 	
+	private RageMod plugin;
+	
 	
 	// Constructor: All data
 //	public PlayerTown (int _id_PlayerTown, String _townName, int _xCoord, int _zCoord, String _faction, 
@@ -53,8 +55,9 @@ public class PlayerTown implements Comparable<PlayerTown> {
 //	}
 	
 	// Constructor: Blank
-	public PlayerTown ()
+	public PlayerTown (RageMod plugin)
 	{		
+		this.plugin = plugin;
 	}
 	
 	// Implementing Comparable for sorting purposes
@@ -80,20 +83,20 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	public boolean isAtMaxLevel()
 	{
 		if( id_Faction == 0 )
-			return townLevel.level >= RageConfig.Town_MAX_LEVEL_NEUTRAL;
+			return townLevel.level >= plugin.config.Town_MAX_LEVEL_NEUTRAL;
 		else
-			return townLevel.level >= RageConfig.Town_MAXLEVEL_FACTION;
+			return townLevel.level >= plugin.config.Town_MAXLEVEL_FACTION;
 	}
 	
 	public boolean isCapitol()
 	{
-		return RageConfig.townLevels.get(townLevel).isCapitol;
+		return plugin.config.townLevels.get(townLevel).isCapitol;
 	}
 
 	// Checks to see if the town already has its maximum number of residents
 	public boolean isFull() 
 	{
-		int numberOfResidents = RageMod.database.townQueries.countResidents(townName);
+		int numberOfResidents = plugin.database.townQueries.countResidents(townName);
 		
 		return numberOfResidents >= townLevel.maxResidents;
 	}

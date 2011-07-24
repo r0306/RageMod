@@ -40,7 +40,7 @@ public class RMBlockListener extends BlockListener
     public void onBlockBreak(BlockBreakEvent event) 
     {
     	Player player = event.getPlayer();
-    	PlayerData playerData = Players.get(player.getName());
+    	PlayerData playerData = plugin.players.get(player.getName());
     	Block block = event.getBlock();
     	
     	if (event.isCancelled()) 
@@ -68,23 +68,23 @@ public class RMBlockListener extends BlockListener
 						playerData.clearHome();
 		    			Util.message(player, "You no longer have a home point.");
 		    			// Update both memory and database
-		    			Players.update(playerData);
-		    			RageMod.database.playerQueries.updatePlayer(playerData);
+		    			plugin.players.update(playerData);
+		    			plugin.database.playerQueries.updatePlayer(playerData);
 					}
 				}
 			}
 			// /spawn: for beds in player towns
 			else if( RageZones.isInZoneB(block.getLocation()) )
 			{
-				PlayerTown playerTown = PlayerTowns.getCurrentTown(block.getLocation());
+				PlayerTown playerTown = plugin.playerTowns.getCurrentTown(block.getLocation());
 
 	    		if( playerTown != null && playerTown.townName.equals(playerData.townName) )
 	    		{
 	    			playerData.clearSpawn();
 	    			Util.message(player, "You no longer have a spawn point.");
 	    			// Update both memory and database
-	    			Players.update(playerData);
-	    			RageMod.database.playerQueries.updatePlayer(playerData);
+	    			plugin.players.update(playerData);
+	    			plugin.database.playerQueries.updatePlayer(playerData);
 	    		}
 			}
     	}
@@ -94,7 +94,7 @@ public class RMBlockListener extends BlockListener
     public void onBlockPlace(BlockPlaceEvent event) 
     {
     	Player player = event.getPlayer();
-    	PlayerData playerData = Players.get(player.getName());
+    	PlayerData playerData = plugin.players.get(player.getName());
     	Block block = event.getBlock();
     	
     	if (event.isCancelled()) 
@@ -128,15 +128,15 @@ public class RMBlockListener extends BlockListener
 						playerData.setHome(block.getLocation());
 		    			Util.message(player, "Your home location has now been set.");
 		    			// Update both memory and database
-		    			Players.update(playerData);
-		    			RageMod.database.playerQueries.updatePlayer(playerData);
+		    			plugin.players.update(playerData);
+		    			plugin.database.playerQueries.updatePlayer(playerData);
 					}
 				}
 			}
 			// /spawn: for beds in player towns
 			else if( RageZones.isInZoneB(block.getLocation()) )
 			{
-				PlayerTown playerTown = PlayerTowns.getCurrentTown(block.getLocation());
+				PlayerTown playerTown = plugin.playerTowns.getCurrentTown(block.getLocation());
 
 	    		if( playerTown != null && playerTown.townName.equals(playerData.townName) )
 	    		{
@@ -148,10 +148,10 @@ public class RMBlockListener extends BlockListener
 					}
 	    			
 	    			// Make sure the location is not too close to another player's spawn
-	    			HashMap<String, Location> spawns = RageMod.database.playerQueries.getSpawnLocations(playerTown.id_PlayerTown);
+	    			HashMap<String, Location> spawns = plugin.database.playerQueries.getSpawnLocations(playerTown.id_PlayerTown);
 	    			for( String resident : spawns.keySet() )
 	    			{
-	    				if( block.getLocation().distance(spawns.get(resident)) < RageConfig.Town_DISTANCE_BETWEEN_BEDS && !resident.equals(playerData.name) )
+	    				if( block.getLocation().distance(spawns.get(resident)) < plugin.config.Town_DISTANCE_BETWEEN_BEDS && !resident.equals(playerData.name) )
 	    				{
 	    					Util.message(player, "This bed is too close to " + resident + "'s bed - spawn not set.");
 	    					event.setCancelled(true);
@@ -162,8 +162,8 @@ public class RMBlockListener extends BlockListener
 	    			playerData.setSpawn(block.getLocation());
 	    			Util.message(player, "Your spawn location has now been set.");
 	    			// Update both memory and database
-	    			Players.update(playerData);
-	    			RageMod.database.playerQueries.updatePlayer(playerData);
+	    			plugin.players.update(playerData);
+	    			plugin.database.playerQueries.updatePlayer(playerData);
 	    		}
 			}
     	}
@@ -172,7 +172,7 @@ public class RMBlockListener extends BlockListener
     // Generic permission edit handler that handles multiple types of block editing
     private boolean canEditBlock(BlockEvent event, Player player)
     {
-    	PlayerData playerData = Players.get(player.getName());
+    	PlayerData playerData = plugin.players.get(player.getName());
     	Block block = event.getBlock();
     	Location location = block.getLocation();
     	
@@ -189,7 +189,7 @@ public class RMBlockListener extends BlockListener
     		// See if the player is inside a lot, and if they own it
     		else if( !playerData.isInsideLot(location) && !RageMod.permissionHandler.has(player, "ragemod.build.anylot") )
     		{
-    			Lot lot = Lots.findCurrentLot(location);
+    			Lot lot = plugin.lots.findCurrentLot(location);
     			
     			if( lot == null && !RageMod.permissionHandler.has(player, "ragemod.build.capitol") )
     				Util.message(player, "You don't have permission to edit city infrastructure.");
@@ -200,7 +200,7 @@ public class RMBlockListener extends BlockListener
     				else
     				{
     					// Check to see if the player has permission to build in this lot
-    					PlayerData ownerData = Players.get(lot.owner);
+    					PlayerData ownerData = plugin.players.get(lot.owner);
     					if( !ownerData.lotPermissions.contains(playerData.name) )
     						Util.message(player, "This lot is owned by " + lot.owner + ".");
     					else
@@ -214,7 +214,7 @@ public class RMBlockListener extends BlockListener
     	// *** ZONE B (War Zone) ***
     	else if( RageZones.isInZoneB(location) )
     	{
-    		PlayerTown playerTown = PlayerTowns.getCurrentTown(location);
+    		PlayerTown playerTown = plugin.playerTowns.getCurrentTown(location);
     		
     		// Players can only build inside their own towns
     		if( playerTown != null && !playerTown.townName.equals(playerData.townName) && !RageMod.permissionHandler.has(player, "ragemod.build.anytown") )

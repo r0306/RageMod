@@ -1,6 +1,7 @@
 package net.rageland.ragemod.data;
 
 import net.rageland.ragemod.RageConfig;
+import net.rageland.ragemod.RageMod;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -20,6 +21,8 @@ public class Lot
 		DIAMOND;
 	}
 	
+	private RageMod plugin;
+	
 	public int id_Lot;
 	public int number;
 	public LotCategory category;
@@ -28,9 +31,9 @@ public class Lot
 	public String owner;			// Only necessary when loaded into the Lots global
 	
 	// Blank constructor 
-	public Lot()
+	public Lot(RageMod plugin)
 	{
-		
+		this.plugin = plugin;
 	}
 	
 	// Returns the plaintext version of the lot category
@@ -121,13 +124,13 @@ public class Lot
 	public int getPrice()
 	{
 		if( category == LotCategory.COAL )
-			return RageConfig.Lot_PRICE_COAL;
+			return plugin.config.Lot_PRICE_COAL;
 		else if( category == LotCategory.IRON )
-			return RageConfig.Lot_PRICE_IRON;
+			return plugin.config.Lot_PRICE_IRON;
 		else if( category == LotCategory.GOLD )
-			return RageConfig.Lot_PRICE_GOLD;
+			return plugin.config.Lot_PRICE_GOLD;
 		else if( category == LotCategory.DIAMOND )
-			return RageConfig.Lot_PRICE_DIAMOND;
+			return plugin.config.Lot_PRICE_DIAMOND;
 		else
 			return 0;
 	}

@@ -1,5 +1,6 @@
 package net.rageland.ragemod.commands;
 
+import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.Lot;
 import net.rageland.ragemod.data.Lots;
@@ -11,6 +12,13 @@ import org.bukkit.entity.Player;
 
 public class CompassCommands 
 {
+	
+	private RageMod plugin;
+	
+	public CompassCommands(RageMod plugin) 
+	{
+		this.plugin = plugin;
+	}
 	
 	public void onCompassCommand(Player player, PlayerData playerData, String[] split) 
 	{
@@ -29,20 +37,20 @@ public class CompassCommands
 		else if( split[1].equalsIgnoreCase("lot") )
 		{
 			if( split.length == 3 )
-				CompassCommands.lot(player, split[2]); 
+				this.lot(player, split[2]); 
 			else
     			Util.message(player, "Usage: /compass lot <lot_code>"); 
 		}
 		else if( split[1].equalsIgnoreCase("spawn") )
 		{
-			CompassCommands.spawn(player);
+			this.spawn(player);
 		}
 		else if( split[1].equalsIgnoreCase("town") )
 		{
 			if( split.length == 2 && !playerData.townName.equals("") )
-				CompassCommands.town(player, playerData.townName);
+				this.town(player, playerData.townName);
 			else if( split.length == 3 )
-				CompassCommands.town(player, split[2]);
+				this.town(player, split[2]);
     		else
     			Util.message(player, "Usage: /town info <town_name>");
 		}
@@ -51,9 +59,9 @@ public class CompassCommands
 	}
 
 	// /compass lot <lot_code>
-	public static void lot(Player player, String lotCode) 
+	public void lot(Player player, String lotCode) 
 	{
-		Lot lot = Lots.get(lotCode);
+		Lot lot = plugin.lots.get(lotCode);
 		
 		// lot will be null if code is invalid
 		if( lot == null )
@@ -67,16 +75,16 @@ public class CompassCommands
 	}
 
 	// /compass spawn
-	public static void spawn(Player player) 
+	public void spawn(Player player) 
 	{
 		player.setCompassTarget(player.getServer().getWorld("world").getSpawnLocation());
 		Util.message(player, "Compass target set to world spawn.");
 	}
 
 	// /compass town <town_name>
-	public static void town(Player player, String townName) 
+	public void town(Player player, String townName) 
 	{
-		PlayerTown playerTown = PlayerTowns.get(townName);
+		PlayerTown playerTown = plugin.playerTowns.get(townName);
 		
 		// Check to see if specified town exists
 		if( playerTown == null )

@@ -21,6 +21,13 @@ import com.iConomy.system.Holdings;
 public class FactionCommands 
 {
 	
+	private RageMod plugin;
+	
+	public FactionCommands(RageMod plugin) 
+	{
+		this.plugin = plugin;
+	}
+	
 	public void onFactionCommand(Player player, PlayerData playerData, String[] split)
 	{
 		if( split.length < 2 || split.length > 3 )
@@ -36,33 +43,33 @@ public class FactionCommands
 		else if( split[1].equalsIgnoreCase("join") )
 		{
 			if( split.length == 2 )
-				FactionCommands.join(player, "");
+				this.join(player, "");
 			else if( split.length == 3 )
-				FactionCommands.join(player, split[2]); 
+				this.join(player, split[2]); 
 			else
     			Util.message(player, "Usage: /faction join [faction_name]"); 
 		}
 		else if( split[1].equalsIgnoreCase("leave") )
 		{
 			if( split.length == 2 )
-				FactionCommands.leave(player, false);
+				this.leave(player, false);
     		else if( split.length == 3 && split[2].equalsIgnoreCase("confirm"))
-    			FactionCommands.leave(player, true);
+    			this.leave(player, true);
     		else
     			Util.message(player, "Usage: /faction leave [confirm]");
 		}
 		else if( split[1].equalsIgnoreCase("stats") )
 		{
-			FactionCommands.stats(player);
+			this.stats(player);
 		}
 		else
 			Util.message(player, "Type /faction to see a list of available commands.");
 	}
 	
 	// /faction join
-	public static void join(Player player, String factionName) 
+	public void join(Player player, String factionName) 
 	{
-		PlayerData playerData = Players.get(player.getName());
+		PlayerData playerData = plugin.players.get(player.getName());
 		int id_Faction;
 		Holdings balance = iConomy.getAccount(player.getName()).getHoldings();
 		
@@ -74,7 +81,7 @@ public class FactionCommands
 		}
 		
 		// Calculate the cost to join each faction
-		HashMap<Integer, Integer> populations = RageMod.database.factionQueries.getFactionPopulations();
+		HashMap<Integer, Integer> populations = plugin.database.factionQueries.getFactionPopulations();
 		int lowestPopulation = 9999;
 		for( int faction : populations.keySet() )
 		{
@@ -83,7 +90,7 @@ public class FactionCommands
 		}
 		for( int faction : populations.keySet() )
 		{
-			populations.put(faction, (RageConfig.Faction_BaseJoinCost + ((populations.get(faction) - lowestPopulation) * RageConfig.Faction_JoinCostIncrease)));
+			populations.put(faction, (plugin.config.Faction_BaseJoinCost + ((populations.get(faction) - lowestPopulation) * plugin.config.Faction_JoinCostIncrease)));
 		}
 		
 		// If the player did not type a faction name, return the cost to join each faction
@@ -92,12 +99,12 @@ public class FactionCommands
 			Util.message(player, "Current costs to join each faction (based on population):");
 			for( int faction : populations.keySet() )
 			{
-				Util.message(player, "   " + Factions.getName(faction) + ": " + iConomy.format(populations.get(faction)));
+				Util.message(player, "   " + plugin.factions.getName(faction) + ": " + iConomy.format(populations.get(faction)));
 			}
 			return;
 		}
 		// Check to make sure the typed faction exists
-		id_Faction = Factions.getID(factionName);
+		id_Faction = plugin.factions.getID(factionName);
 		if( id_Faction == 0 )
 		{
 			Util.message(player, "Faction '" + factionName + "' does not exist.");
@@ -106,7 +113,7 @@ public class FactionCommands
 		// Check to see if the player has enough money to join the specified faction
 		if( !balance.hasEnough(populations.get(id_Faction)) )
 		{
-			Util.message(player, "You need at least " + iConomy.format(populations.get(id_Faction)) + " to join the " + Factions.getName(id_Faction) + " faction.");
+			Util.message(player, "You need at least " + iConomy.format(populations.get(id_Faction)) + " to join the " + plugin.factions.getName(id_Faction) + " faction.");
 			return;
 		}
 		
@@ -115,16 +122,16 @@ public class FactionCommands
 		
 		// Set the player's faction
 		playerData.id_Faction = id_Faction;
-		Players.update(playerData);
-		RageMod.database.playerQueries.updatePlayer(playerData);
+		plugin.players.update(playerData);
+		plugin.database.playerQueries.updatePlayer(playerData);
 		
-		Util.message(player, "Congratulations, you are now a member of the " + Factions.getName(id_Faction) + " faction!");
+		Util.message(player, "Congratulations, you are now a member of the " + plugin.factions.getName(id_Faction) + " faction!");
 	}
 	
 	// /faction leave
-	public static void leave(Player player, boolean isConfirmed) 
+	public void leave(Player player, boolean isConfirmed) 
 	{
-		PlayerData playerData = Players.get(player.getName());
+		PlayerData playerData = plugin.players.get(player.getName());
 		
 		// Ensure the player is a member of a faction
 		if( playerData.id_Faction == 0 )
@@ -142,22 +149,22 @@ public class FactionCommands
 		else
 		{
 			// Reset the player's faction
-			Util.message(player, "You are no longer a member of the " + Factions.getName(playerData.id_Faction) + " faction.");
+			Util.message(player, "You are no longer a member of the " + plugin.factions.getName(playerData.id_Faction) + " faction.");
 			playerData.id_Faction = 0;
-			Players.update(playerData);
-			RageMod.database.playerQueries.updatePlayer(playerData);
+			plugin.players.update(playerData);
+			plugin.database.playerQueries.updatePlayer(playerData);
 		}
 	}
 	
 	// /faction stats
-	public static void stats(Player player)
+	public void stats(Player player)
 	{
-		HashMap<Integer, Integer> populations = RageMod.database.factionQueries.getFactionPopulations();
+		HashMap<Integer, Integer> populations = plugin.database.factionQueries.getFactionPopulations();
 		
 		Util.message(player, "Current faction populations (excluding inactive players):");
 		for( int faction : populations.keySet() )
 		{
-			Util.message(player, "   " + Factions.getName(faction) + ": " + populations.get(faction) + " players");
+			Util.message(player, "   " + plugin.factions.getName(faction) + ": " + populations.get(faction) + " players");
 		}
 	}
 

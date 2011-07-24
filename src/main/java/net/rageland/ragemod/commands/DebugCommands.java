@@ -20,6 +20,13 @@ import org.bukkit.entity.Player;
 public class DebugCommands 
 {
 	
+	private RageMod plugin;
+	
+	public DebugCommands(RageMod plugin) 
+	{
+		this.plugin = plugin;
+	}
+	
 	public void onDebugCommand(Player player, PlayerData playerData, String[] split) 
 	{
 		if( split.length < 2 || split.length > 3 )
@@ -34,16 +41,16 @@ public class DebugCommands
 		}
 		else if( split[1].equalsIgnoreCase("colors") )
 		{
-			DebugCommands.colors(player);
+			this.colors(player);
 		}
 		else if( split[1].equalsIgnoreCase("donation") )
 		{
-			DebugCommands.donation(player);
+			this.donation(player);
 		}
 		else if( split[1].equalsIgnoreCase("sanctum") )
 		{
 			if( split.length == 3 )
-				DebugCommands.sanctum(player, split[2]); 
+				this.sanctum(player, split[2]); 
 			else
     			Util.message(player, "Usage: /debug sanctum <level>"); 
 		}
@@ -52,7 +59,7 @@ public class DebugCommands
 	}
 	
 	// /debug colors
-	public static void colors(Player player) 
+	public void colors(Player player) 
 	{
 		player.sendMessage(ChatColor.AQUA + "Aqua Aqua Aqua ");
 		player.sendMessage(ChatColor.BLACK + "Black Black Black ");
@@ -73,19 +80,19 @@ public class DebugCommands
 	}
 	
 	// /debug donation
-	public static void donation(Player player) 
+	public void donation(Player player) 
 	{
-		PlayerData playerData = Players.get(player.getName());
-		int donation = RageMod.database.playerQueries.getRecentDonations(playerData.id_Player);
+		PlayerData playerData = plugin.players.get(player.getName());
+		int donation = plugin.database.playerQueries.getRecentDonations(playerData.id_Player);
 		
 		Util.message(player, "The database records you with a total donation of $" + donation + " in the last month.");
 	}
 
-	public static void sanctum(Player player, String levelString) 
+	public void sanctum(Player player, String levelString) 
 	{
 		int level;
 		World world = player.getWorld();
-		PlayerData playerData = Players.get(player.getName());
+		PlayerData playerData = plugin.players.get(player.getName());
 		
 		try
 		{
@@ -174,7 +181,7 @@ public class DebugCommands
 						break;
 					case 'w':
 						currentBlock.setType(Material.WOOL); 
-						currentBlock.setData((byte) Byte.valueOf(String.valueOf(Factions.getWoolColor(playerData.id_Faction))));
+						currentBlock.setData((byte) Byte.valueOf(String.valueOf(plugin.factions.getWoolColor(playerData.id_Faction))));
 						break;
 					case '-':
 						currentBlock.setType(Material.OBSIDIAN); 
@@ -194,14 +201,14 @@ public class DebugCommands
 						currentBlock.setType(Material.BEDROCK); break;
 					case 'L':
 						currentBlock.setType(Material.GLASS);
-						world.getBlockAt(cornerX + x, cornerY - 1, cornerZ + z).setType(Factions.getLiquidBlock(playerData.id_Faction));
+						world.getBlockAt(cornerX + x, cornerY - 1, cornerZ + z).setType(plugin.factions.getLiquidBlock(playerData.id_Faction));
 						break;
 					case 'n':
 						currentBlock.setType(Material.SNOW_BLOCK); break;
 					case 'i':
 						currentBlock.setType(Material.IRON_BLOCK); break;
 					case 'S':
-						currentBlock.setType(Factions.getSpecialBlock(playerData.id_Faction)); break;
+						currentBlock.setType(plugin.factions.getSpecialBlock(playerData.id_Faction)); break;
 						
 						
 						

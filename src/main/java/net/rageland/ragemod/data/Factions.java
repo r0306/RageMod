@@ -5,19 +5,15 @@ import java.util.HashMap;
 import org.bukkit.Material;
 
 public class Factions 
-{
-	private static volatile Factions instance;
+{	
+	private HashMap<Integer, String> factions = new HashMap<Integer, String>(); // this can be expanded from String to a Faction object if I add more data
 	
-	private static HashMap<Integer, String> factions = new HashMap<Integer, String>(); // this can be expanded from String to a Faction object if I add more data
 	
-    public static Factions getInstance() 
-    {
-		if (instance == null) 
-		{
-			instance = new Factions();
-		}
-		return instance;
+	public Factions()
+	{
+		
 	}
+    
     
     // TODO: Eventually pull all of this stuff from the DB or config - since we only have 2 factions, keep this hardcoded for now
     public void loadFactions()
@@ -28,13 +24,13 @@ public class Factions
     }
     
     // Returns the faction name from ID
-    public static String getName(int id)
+    public String getName(int id)
     {
     	return factions.get(id);
     }
     
     // Returns the faction ID from name
-    public static int getID(String name)
+    public int getID(String name)
     {
     	for( int id : factions.keySet() )
     	{
@@ -46,7 +42,7 @@ public class Factions
     }
     
     // Returns the correct data value for the faction's wool color
-    public static int getWoolColor(int id)
+    public int getWoolColor(int id)
     {
     	switch(id)
     	{
@@ -59,7 +55,7 @@ public class Factions
     	}
     }
 
-	public static Material getLiquidBlock(int id) 
+	public Material getLiquidBlock(int id) 
 	{
 		switch(id)
     	{
@@ -72,7 +68,7 @@ public class Factions
     	}
 	}
 	
-	public static Material getSpecialBlock(int id) 
+	public Material getSpecialBlock(int id) 
 	{
 		switch(id)
     	{

@@ -1,10 +1,10 @@
 package net.rageland.ragemod;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.bukkit.ChatColor;
-import org.bukkit.World;
+import org.bukkit.util.config.Configuration;
 
 import net.rageland.ragemod.data.TownLevel;
 
@@ -16,88 +16,110 @@ public class RageConfig {
 	 * 
 	 */
 	
+	private Configuration pluginConfig;
+	
 	// General settings
-	public static String ServerName = "Rageland";
+	public String ServerName = "Rageland";
 	
 	// Database settings
-	public static String DB_URL = "jdbc:mysql://localhost:3306/";
-    public static String DB_NAME = "johnz2_ragemod";
-    public static String DB_DRIVER = "com.mysql.jdbc.Driver";
-    public static String DB_USER = "johnz2_ragemod";
-    public static String DB_PASSWORD = "ragemod";
+	public String DB_URL = "<URL>";
+    public String DB_NAME = "<DBName>";
+    public String DB_DRIVER = "<DBDriver>";
+    public String DB_USER = "<DBUser>";
+    public String DB_PASSWORD = "<DBPassword>";
     
     // Town settings
-    public static int Town_MIN_DISTANCE_BETWEEN = 400;
-    public static int Town_MIN_DISTANCE_ENEMY_CAPITOL = 2000;
-    public static int Town_MIN_DISTANCE_SPAWN = 1000;  // This leaves the issue of towns hanging into the neutral zone
-    public static int Town_MAX_LEVEL_NEUTRAL = 4;
-    public static int Town_MAXLEVEL_FACTION = 5;
-    public static int Town_DISTANCE_BETWEEN_BEDS = 6;
-    public static double Town_UPKEEP_PER_PLAYER = 1.00;
-    public static int Town_MAX_BANKRUPT_DAYS = 7;
+    public int Town_MIN_DISTANCE_BETWEEN = 400;
+    public int Town_MIN_DISTANCE_ENEMY_CAPITOL = 2000;
+    public int Town_MIN_DISTANCE_SPAWN = 1000;  // This leaves the issue of towns hanging into the neutral zone
+    public int Town_MAX_LEVEL_NEUTRAL = 4;
+    public int Town_MAXLEVEL_FACTION = 5;
+    public int Town_DISTANCE_BETWEEN_BEDS = 6;
+    public double Town_UPKEEP_PER_PLAYER = 1.00;
+    public int Town_MAX_BANKRUPT_DAYS = 7;
     
-    public static HashMap<Integer, TownLevel> townLevels;
+    public  HashMap<Integer, TownLevel> townLevels;
     
     // Zone settings
-    public static String Zone_NAME_A = "the Neutral Zone";
-    public static int Zone_BORDER_A = 1000;  // Distance from spawn
-    public static String Zone_NAME_B = "the War Zone";
-    public static int Zone_BORDER_B = 2000;  // Distance from spawn
-    public static String Zone_NAME_C = "The Wilds";
-    public static int Zone_BORDER_C = 2500;  // Distance from spawn
+    public String Zone_NAME_A = "the Neutral Zone";
+    public int Zone_BORDER_A = 1000;  // Distance from spawn
+    public String Zone_NAME_B = "the War Zone";
+    public int Zone_BORDER_B = 2000;  // Distance from spawn
+    public String Zone_NAME_C = "The Wilds";
+    public int Zone_BORDER_C = 2500;  // Distance from spawn
 
     // Lot settings
-    public static int Lot_X_OFFSET = -384;			// How to convert the web X coordinates to in-game coords
-    public static int Lot_Z_OFFSET = 144;
-    public static int Lot_MULTIPLIER = 16;			// The lot grid is based on 16x16 chunks
-    public static int Lot_PRICE_COAL = 10;			// Price for Coal-level member lot in USD
-    public static int Lot_PRICE_IRON = 20;			// Price for Iron-level member lot in USD
-    public static int Lot_PRICE_GOLD = 30;			// Price for Gold-level member lot in USD
-    public static int Lot_PRICE_DIAMOND = 40;		// Price for Diamond-level member lot in USD
+    public int Lot_X_OFFSET = -384;			// How to convert the web X coordinates to in-game coords
+    public int Lot_Z_OFFSET = 416;
+    public int Lot_MULTIPLIER = 16;			// The lot grid is based on 16x16 chunks
+    public int Lot_PRICE_COAL = 10;			// Price for Coal-level member lot in USD
+    public int Lot_PRICE_IRON = 20;			// Price for Iron-level member lot in USD
+    public int Lot_PRICE_GOLD = 30;			// Price for Gold-level member lot in USD
+    public int Lot_PRICE_DIAMOND = 40;		// Price for Diamond-level member lot in USD
     
     // Capitol settings
-    public static String Capitol_Name = "Rage City";
-    public static int Capitol_X1a = -386;			// The NW corner of region A for capitol
-    public static int Capitol_Z1a = 146;
-    public static int Capitol_X2a = -82;			// The SE corner of region A for capitol
-    public static int Capitol_Z2a = -261;
-    public static int Capitol_X1b = -83;			// The NW corner of region B for capitol
-    public static int Capitol_Z1b = 418;
-    public static int Capitol_X2b = 513;			// The SE corner of region B for capitol
-    public static int Capitol_Z2b = -261;
-    public static String Capitol_SANDLOT = "114,60,-19,141,68,-46";		// Auto-regen sand mine
-    public static int Capitol_SANDLOT_GOLD_ODDS = 100000;				// Chance (1 / x) of gold spawning in sand mine
-    public static int Capitol_SANDLOT_DIAMOND_ODDS = 1000000;
+    public String Capitol_Name = "Rage City";
+    public int Capitol_X1a = -386;			// The NW corner of region A for capitol
+    public int Capitol_Z1a = 146;
+    public int Capitol_X2a = -82;			// The SE corner of region A for capitol
+    public int Capitol_Z2a = -261;
+    public int Capitol_X1b = -83;			// The NW corner of region B for capitol
+    public int Capitol_Z1b = 418;
+    public int Capitol_X2b = 513;			// The SE corner of region B for capitol
+    public int Capitol_Z2b = -261;
+    public String Capitol_SANDLOT = "114,60,-19,141,68,-46";		// Auto-regen sand mine
+    public int Capitol_SANDLOT_GOLD_ODDS = 100000;				// Chance (1 / x) of gold spawning in sand mine
+    public int Capitol_SANDLOT_DIAMOND_ODDS = 1000000;
     
     // Cooldowns (in seconds)
-    public static int Cooldown_Spawn = 30;
-    public static int Cooldown_Home = 30;
+    public int Cooldown_Spawn = 30;
+    public int Cooldown_Home = 30;
     
     // Faction settings
-    public static int Faction_BaseJoinCost = 100;		// Initial cost in coins to join a faction
-    public static int Faction_JoinCostIncrease = 10; 	// Amount the join cost will go up due to population imbalance
+    public int Faction_BaseJoinCost = 100;		// Initial cost in coins to join a faction
+    public int Faction_JoinCostIncrease = 10; 	// Amount the join cost will go up due to population imbalance
     
     // Task frequencies (in seconds)
     // 1 hour: 3600
     // 1 day:  86400
     // 1 week: 604800
-    public static int Task_TOWN_UPKEEP = 86400;			// Charge taxes for player towns
-    public static int Task_FILL_SANDLOT = 86400;		// Replenish sand in public sand mine
-
-    private static volatile RageConfig instance;
-	
-    public static RageConfig GetInstance() 
-    {
-		if (instance == null) 
-		{
-			instance = new RageConfig();
-		}
-		return instance;
-	}
+    public int Task_TOWN_UPKEEP = 86400;			// Charge taxes for player towns
+    public int Task_FILL_SANDLOT = 86400;		// Replenish sand in public sand mine
     
-    public RageConfig ()
+    public RageConfig (RageMod plugin)
     {
+    	File file = new File(plugin.getDataFolder().getPath() + "/plugin.yml");
+    	pluginConfig = plugin.getConfiguration();
+    	
+    	if(file.exists()) 
+    	{
+    		loadConfigValues();
+    	} 
+    	else 
+    	{
+    		setupConfigValues();
+    	}
+    	    	
     	loadDefaultTownLevels();
+    }
+    
+    private void loadConfigValues() 
+    {
+    	DB_URL = pluginConfig.getString("dburl");
+    	DB_NAME = pluginConfig.getString("dbname");
+    	DB_DRIVER = pluginConfig.getString("dbdriver");
+    	DB_USER = pluginConfig.getString("dbuser");
+    	DB_PASSWORD = pluginConfig.getString("dbpassword");    	
+    }
+    
+    private void setupConfigValues() 
+    {
+    	pluginConfig.setProperty("dburl", DB_URL);
+    	pluginConfig.setProperty("dbname", DB_NAME);
+    	pluginConfig.setProperty("dbdriver", DB_DRIVER);
+    	pluginConfig.setProperty("dbuser", DB_USER);
+    	pluginConfig.setProperty("dbpassword", DB_PASSWORD);
+    	pluginConfig.save();
     }
     
     private void loadDefaultTownLevels()

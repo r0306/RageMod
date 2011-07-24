@@ -76,8 +76,8 @@ public class RMEntityListener extends EntityListener
             {
             	Player attacker = (Player)attackerEntity;
             	Player defender = (Player)defenderEntity;
-            	PlayerData attackerData = Players.get(attacker.getName());
-            	PlayerData defenderData = Players.get(defender.getName());
+            	PlayerData attackerData = plugin.players.get(attacker.getName());
+            	PlayerData defenderData = plugin.players.get(defender.getName());
             	
             	// Always prevent allies from harming each other
     			if( attackerData.id_Faction == defenderData.id_Faction )
@@ -95,7 +95,7 @@ public class RMEntityListener extends EntityListener
             		if( RageZones.isInCapitol(defender.getLocation()) )
             		{
             			event.setCancelled(true);
-            			Util.message(attacker, "PvP is not allowed inside " + RageConfig.Capitol_Name + ".");
+            			Util.message(attacker, "PvP is not allowed inside " + plugin.config.Capitol_Name + ".");
             			return;
             		}
             		else
@@ -104,13 +104,13 @@ public class RMEntityListener extends EntityListener
             			if( defenderData.id_Faction == 0 )
             			{
             				event.setCancelled(true);
-                			Util.message(attacker, "You cannot attack neutral players in " + RageConfig.Zone_NAME_A + ".");
+                			Util.message(attacker, "You cannot attack neutral players in " + plugin.config.Zone_NAME_A + ".");
                 			return;
             			}
             			else if( attackerData.id_Faction == 0 )
             			{
             				event.setCancelled(true);
-                			Util.message(attacker, "Neutral players cannot attack in " + RageConfig.Zone_NAME_A + ".");
+                			Util.message(attacker, "Neutral players cannot attack in " + plugin.config.Zone_NAME_A + ".");
                 			return;
             			}
             		}
@@ -118,7 +118,7 @@ public class RMEntityListener extends EntityListener
             	// *** ZONE B (War Zone) ***
             	else if( RageZones.isInZoneB(defender.getLocation()) )
             	{
-            		PlayerTown playerTown = PlayerTowns.getCurrentTown(defender.getLocation());
+            		PlayerTown playerTown = plugin.playerTowns.getCurrentTown(defender.getLocation());
             		
             		// Keep referees from participating in combat
             		if( RageMod.permissionHandler.has(attacker, "ragemod.referee.blockpvp") )
@@ -155,7 +155,7 @@ public class RMEntityListener extends EntityListener
     	        		if( defenderData.id_Faction == playerTown.id_Faction )
     	        		{
     	        			event.setCancelled(true);
-    	        			Util.message(attacker, "You cannot harm " + Factions.getName(defenderData.id_Faction) + " inside of their own towns.");
+    	        			Util.message(attacker, "You cannot harm " + plugin.factions.getName(defenderData.id_Faction) + " inside of their own towns.");
     	        			return;
     	        		}
             		}
@@ -187,7 +187,7 @@ public class RMEntityListener extends EntityListener
     	// Don't let monsters spawn inside player towns or the capitol
     	if( (event.getCreatureType() == CreatureType.CREEPER || event.getCreatureType() == CreatureType.SKELETON ||
     			event.getCreatureType() == CreatureType.ZOMBIE || event.getCreatureType() == CreatureType.SPIDER) && 
-    			(RageZones.isInCapitol(event.getLocation()) || PlayerTowns.getCurrentTown(event.getLocation()) != null) )
+    			(RageZones.isInCapitol(event.getLocation()) || plugin.playerTowns.getCurrentTown(event.getLocation()) != null) )
     	{
     		event.setCancelled(true);
     	}    	

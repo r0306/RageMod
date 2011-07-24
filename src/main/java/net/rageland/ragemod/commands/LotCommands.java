@@ -16,6 +16,13 @@ import org.bukkit.entity.Player;
 public class LotCommands 
 {
 	
+	private RageMod plugin;
+	
+	public LotCommands(RageMod plugin) 
+	{
+		this.plugin = plugin;
+	}
+	
 	public void onLotCommand(Player player, PlayerData playerData, String[] split)
 	{
 		if( split.length < 2 || split.length > 4 )
@@ -41,54 +48,54 @@ public class LotCommands
 		else if( split[1].equalsIgnoreCase("allow") )
 		{
 			if( split.length == 3 )
-				LotCommands.allow(player, split[2]); 
+				this.allow(player, split[2]); 
 			else
     			Util.message(player, "Usage: /lot allow <player_name>"); 
 		}
 		else if( split[1].equalsIgnoreCase("assign") )
 		{
 			if( split.length == 4 )
-				LotCommands.assign(player, split[2], split[3]); 
+				this.assign(player, split[2], split[3]); 
 			else
     			Util.message(player, "Usage: /lot assign <lot_code> <player_name>"); 
 		}
 		else if( split[1].equalsIgnoreCase("check") )
 		{
-			LotCommands.check(player);
+			this.check(player);
 		}
 		else if( split[1].equalsIgnoreCase("claim") )
 		{
 			if( split.length == 2 )
-				LotCommands.claim(player, "");
+				this.claim(player, "");
 			else if( split.length == 3 )
-				LotCommands.claim(player, split[2]); 
+				this.claim(player, split[2]); 
 			else
     			Util.message(player, "Usage: /lot claim [lot_code]"); 
 		}
 		else if( split[1].equalsIgnoreCase("disallow") )
 		{
 			if( split.length == 3 )
-				LotCommands.disallow(player, split[2]); 
+				this.disallow(player, split[2]); 
 			else
     			Util.message(player, "Usage: /lot disallow <player_name/all>"); 
 		}
 		else if( split[1].equalsIgnoreCase("evict") )
 		{
 			if( split.length == 3 )
-				LotCommands.evict(player, split[2]); 
+				this.evict(player, split[2]); 
 			else
     			Util.message(player, "Usage: /lot evict <lot_code>"); 
 		}
 		else if( split[1].equalsIgnoreCase("list") )
 		{
-			LotCommands.list(player);
+			this.list(player);
 		}
 		else if( split[1].equalsIgnoreCase("unclaim") )
 		{
 			if( split.length == 2 )
-				LotCommands.unclaim(player, "");
+				this.unclaim(player, "");
 			else if( split.length == 3 )
-				LotCommands.unclaim(player, split[2]); 
+				this.unclaim(player, split[2]); 
 			else
     			Util.message(player, "Usage: /lot unclaim [lot_code]"); 
 		}
@@ -97,10 +104,10 @@ public class LotCommands
 	}
 	
 	// /lot allow <player_name>
-	public static void allow(Player player, String targetPlayerName) 
+	public void allow(Player player, String targetPlayerName) 
 	{
-		PlayerData playerData = Players.get(player.getName());
-		PlayerData targetPlayerData = Players.get(targetPlayerName);
+		PlayerData playerData = plugin.players.get(player.getName());
+		PlayerData targetPlayerData = plugin.players.get(targetPlayerName);
 
 		// Check to see if target player exists
 		if( targetPlayerData == null )
@@ -116,21 +123,21 @@ public class LotCommands
 		}
 		
 		// All checks have succeeded - update the DB
-		RageMod.database.lotQueries.lotAllow(playerData.id_Player, targetPlayerData.id_Player);
+		plugin.database.lotQueries.lotAllow(playerData.id_Player, targetPlayerData.id_Player);
 		
 		// Update the playerData
 		playerData.lotPermissions.add(targetPlayerData.name);
-		Players.update(playerData);
+		plugin.players.update(playerData);
 		
 		Util.message(player, targetPlayerData.getNameColor() + " is now allowed to build in your lots.");
 	}
 	
 	
 	// /lot assign <lot_code> <player_name>
-	public static void assign(Player player, String lotCode, String targetPlayerName) 
+	public void assign(Player player, String lotCode, String targetPlayerName) 
 	{
-		PlayerData targetPlayerData = Players.get(targetPlayerName);
-		Lot lot = Lots.get(lotCode);
+		PlayerData targetPlayerData = plugin.players.get(targetPlayerName);
+		Lot lot = plugin.lots.get(lotCode);
 		
 		// Make sure the player has permission to perform this command
 		if( !RageMod.permissionHandler.has(player, "ragemod.lot.assign") )
@@ -153,34 +160,34 @@ public class LotCommands
 		// See if the lot is already claimed
 		if( !lot.owner.equals("") )
 		{
-			Util.message(player, "Lot " + lot.getLotCode() + " is already owned by " + Players.get(lot.owner).getNameColor() + ".");
+			Util.message(player, "Lot " + lot.getLotCode() + " is already owned by " + plugin.players.get(lot.owner).getNameColor() + ".");
 			return;
 		}
 		
 		// All checks have succeeded - give the lot to the player
-		RageMod.database.lotQueries.lotClaim(targetPlayerData, lot);
+		plugin.database.lotQueries.lotClaim(targetPlayerData, lot);
 		
 		// Update the playerData
 		targetPlayerData.lots.add(lot);
-		Players.update(targetPlayerData);
+		plugin.players.update(targetPlayerData);
 		
 		// Update Lots to set the owner
 		lot.owner = targetPlayerData.name;
-		Lots.put(lot);
+		plugin.lots.put(lot);
 		
 		Util.message(player, targetPlayerData.getNameColor() + " now owns lot " + lot.getLotCode() + ".");
 	}
 	
 	// /lot check
-	public static void check(Player player)
+	public void check(Player player)
 	{		
 		// Make sure the player is in the capitol
 		if( !RageZones.isInCapitol(player.getLocation()) )
 		{
-			Util.message(player, "You must be in " + RageConfig.Capitol_Name + " to use this command.");
+			Util.message(player, "You must be in " + plugin.config.Capitol_Name + " to use this command.");
 		}
 		
-		Lot lot = Lots.findCurrentLot(player.getLocation());
+		Lot lot = plugin.lots.findCurrentLot(player.getLocation());
 		
 		if( lot != null )
 		{
@@ -188,7 +195,7 @@ public class LotCommands
 			if( lot.owner.equals("") )
 				Util.message(player, "This lot is unowned - type /lot claim to claim it.");
 			else
-				Util.message(player, "This lot is owned by " + Players.get(lot.owner).getNameColor() + ".");
+				Util.message(player, "This lot is owned by " + plugin.players.get(lot.owner).getNameColor() + ".");
 		}
 		else
 		{
@@ -197,16 +204,16 @@ public class LotCommands
 	}
 
 	// /lot claim [lot_code]
-	public static void claim(Player player, String lotCode) 
+	public void claim(Player player, String lotCode) 
 	{
-		PlayerData playerData = Players.get(player.getName());
+		PlayerData playerData = plugin.players.get(player.getName());
 		Lot lot;
 		
 		// Get the current lot, whether blank (current location) or typed
 		if( lotCode.equals("") )
-			lot = Lots.findCurrentLot(player.getLocation());
+			lot = plugin.lots.findCurrentLot(player.getLocation());
 		else
-			lot = Lots.get(lotCode);
+			lot = plugin.lots.get(lotCode);
 		
 		// lot will be null if either of the above methods failed
 		if( lot == null )
@@ -223,7 +230,7 @@ public class LotCommands
 			if( lot.owner.equals(playerData.name) )
 				Util.message(player, "You already own this lot!");
 			else
-				Util.message(player, "Lot " + lot.getLotCode() + " is already owned by " + Players.get(lot.owner).getNameColor() + ".");
+				Util.message(player, "Lot " + lot.getLotCode() + " is already owned by " + plugin.players.get(lot.owner).getNameColor() + ".");
 			return;
 		}
 		// Make sure the player does not already own a lot of the current lot's category
@@ -244,34 +251,34 @@ public class LotCommands
 		// If the player is claiming a member lot, see if they have donated the appropriate amount
 		if( lot.isMemberLot() )
 		{
-			int donation = RageMod.database.playerQueries.getRecentDonations(playerData.id_Player);
+			int donation = plugin.database.playerQueries.getRecentDonations(playerData.id_Player);
 			
 			if( donation < lot.getPrice() )
 			{
-				Util.message(player, "To claim this lot you must be a " + lot.getCategoryName() + "-level " + RageConfig.ServerName + " member.");
+				Util.message(player, "To claim this lot you must be a " + lot.getCategoryName() + "-level " + plugin.config.ServerName + " member.");
 				Util.message(player, "Visit http://www.rageland.net/donate for more details.");
 				return;
 			}
 		}
 		
 		// All checks have succeeded - give the lot to the player
-		RageMod.database.lotQueries.lotClaim(playerData, lot);
+		plugin.database.lotQueries.lotClaim(playerData, lot);
 		
 		// Update the playerData
 		playerData.lots.add(lot);
-		Players.update(playerData);
+		plugin.players.update(playerData);
 		
 		// Update Lots to set the owner
 		lot.owner = playerData.name;
-		Lots.put(lot);
+		plugin.lots.put(lot);
 		
 		Util.message(player, "You now own lot " + lot.getLotCode() + ".");
 	}
 	
 	// /lot disallow <player_name/all>
-	public static void disallow(Player player, String targetPlayerName) 
+	public void disallow(Player player, String targetPlayerName) 
 	{
-		PlayerData playerData = Players.get(player.getName());
+		PlayerData playerData = plugin.players.get(player.getName());
 
 		if( targetPlayerName.equalsIgnoreCase("all") )
 		{
@@ -282,17 +289,17 @@ public class LotCommands
 			}
 			
 			// All checks have succeeded - update the database
-			RageMod.database.lotQueries.lotDisallow(playerData.id_Player, 0);
+			plugin.database.lotQueries.lotDisallow(playerData.id_Player, 0);
 			
 			// Update the playerData
 			playerData.lotPermissions.clear();
-			Players.update(playerData);
+			plugin.players.update(playerData);
 			
 			Util.message(player, "All of your lot permissions have been cleared.");
 		}
 		else
 		{
-			PlayerData targetPlayerData = Players.get(targetPlayerName);
+			PlayerData targetPlayerData = plugin.players.get(targetPlayerName);
 			
 			// Check to see if target player exists
 			if( targetPlayerData == null )
@@ -308,11 +315,11 @@ public class LotCommands
 			}
 			
 			// All checks have succeeded - update the database
-			RageMod.database.lotQueries.lotDisallow(playerData.id_Player, targetPlayerData.id_Player);
+			plugin.database.lotQueries.lotDisallow(playerData.id_Player, targetPlayerData.id_Player);
 			
 			// Update the playerData
 			playerData.lotPermissions.remove(targetPlayerData.name);
-			Players.update(playerData);
+			plugin.players.update(playerData);
 			
 			Util.message(player, targetPlayerData.getNameColor() + " is no longer allowed to build in your lots.");
 		}
@@ -320,9 +327,9 @@ public class LotCommands
 	}
 	
 	// /lot assign <lot_code> <player_name>
-	public static void evict(Player player, String lotCode) 
+	public void evict(Player player, String lotCode) 
 	{
-		Lot lot = Lots.get(lotCode);
+		Lot lot = plugin.lots.get(lotCode);
 		
 		// Make sure the player has permission to perform this command
 		if( !RageMod.permissionHandler.has(player, "ragemod.lot.evict") )
@@ -344,24 +351,24 @@ public class LotCommands
 		}
 		
 		// All checks have succeeded - remove the lot owner
-		RageMod.database.lotQueries.lotUnclaim(lot);
+		plugin.database.lotQueries.lotUnclaim(lot);
 		
 		// Update the playerData
-		PlayerData targetPlayerData = Players.get(lot.owner);
+		PlayerData targetPlayerData = plugin.players.get(lot.owner);
 		targetPlayerData.lots.remove(lot);
-		Players.update(targetPlayerData);
+		plugin.players.update(targetPlayerData);
 		
 		// Update Lots to set the owner
 		lot.owner = "";
-		Lots.put(lot);
+		plugin.lots.put(lot);
 		
 		Util.message(player, targetPlayerData.getNameColor() + " has been evicted from lot " + lot.getLotCode() + ".");
 	}
 	
 	// /lot list
-	public static void list(Player player) 
+	public void list(Player player) 
 	{
-		PlayerData playerData = Players.get(player.getName());
+		PlayerData playerData = plugin.players.get(player.getName());
 		
 		// Make sure the player actually owns lots
 		if( playerData.lots.size() == 0 )
@@ -386,18 +393,18 @@ public class LotCommands
 			for( String name : playerData.lotPermissions )
 			{
 				if( nameList.equals("") )
-					nameList += Players.get(name).getNameColor();
+					nameList += plugin.players.get(name).getNameColor();
 				else
-					nameList += ", " + Players.get(name).getNameColor();
+					nameList += ", " + plugin.players.get(name).getNameColor();
 			}
 			Util.message(player, "   " + nameList);
 		}		
 	}
 
 	// /lot unclaim [lot_code]
-	public static void unclaim(Player player, String lotCode) 
+	public void unclaim(Player player, String lotCode) 
 	{
-		PlayerData playerData = Players.get(player.getName());
+		PlayerData playerData = plugin.players.get(player.getName());
 		Lot lot;
 		boolean isLotOwned = false;
 		
@@ -405,9 +412,9 @@ public class LotCommands
 		
 		// Get the current lot, whether blank (current location) or typed
 		if( lotCode.equals("") )
-			lot = Lots.findCurrentLot(player.getLocation());
+			lot = plugin.lots.findCurrentLot(player.getLocation());
 		else
-			lot = Lots.get(lotCode);
+			lot = plugin.lots.get(lotCode);
 		
 		// lot will be null if either of the above methods failed
 		if( lot == null )
@@ -431,15 +438,15 @@ public class LotCommands
 		}
 		
 		// All checks have succeeded - reset the lot owner
-		RageMod.database.lotQueries.lotUnclaim(lot);
+		plugin.database.lotQueries.lotUnclaim(lot);
 		
 		// Update the playerData
 		playerData.lots.remove(lot);
-		Players.update(playerData);
+		plugin.players.update(playerData);
 		
 		// Update Lots to remove the owner
 		lot.owner = "";
-		Lots.put(lot);
+		plugin.lots.put(lot);
 		
 		Util.message(player, "You are no longer the owner of lot " + lot.getLotCode() + ".");
 	}

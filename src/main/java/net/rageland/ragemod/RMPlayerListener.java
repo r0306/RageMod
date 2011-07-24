@@ -54,36 +54,38 @@ public class RMPlayerListener extends PlayerListener
     private TownCommands townCommands;
     private FactionCommands factionCommands;
     private DebugCommands debugCommands;
+    private Commands commands;
 
     public RMPlayerListener(RageMod instance) 
     {
         plugin = instance;
         questCommands = new QuestCommands();
-        compassCommands = new CompassCommands();
-        lotCommands = new LotCommands();
-        townCommands = new TownCommands();
-        factionCommands = new FactionCommands();
-        debugCommands = new DebugCommands();
+        compassCommands = new CompassCommands(plugin);
+        lotCommands = new LotCommands(plugin);
+        townCommands = new TownCommands(plugin);
+        factionCommands = new FactionCommands(plugin);
+        debugCommands = new DebugCommands(plugin);
+        commands = new Commands(plugin);
     }
 
     // Pull the player data from the DB and register in memory
     public void onPlayerJoin(PlayerJoinEvent event)
     {
     	Player player = event.getPlayer();    	
-    	PlayerData playerData = Players.playerLogin(player.getName());    	  
+    	PlayerData playerData = plugin.players.playerLogin(player.getName());    	  
     	
     	// Set the state info
     	playerData.currentZone = RageZones.getCurrentZone(player.getLocation());
-    	playerData.currentTown = PlayerTowns.getCurrentTown(player.getLocation());
+    	playerData.currentTown = plugin.playerTowns.getCurrentTown(player.getLocation());
     	playerData.isInCapitol = RageZones.isInCapitol(player.getLocation());
-    	Players.update(playerData);
+    	plugin.players.update(playerData);
     }
     
     // Process commands
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) 
     {
     	Player player = event.getPlayer();
-    	PlayerData playerData = Players.get(player.getName());
+    	PlayerData playerData = plugin.players.get(player.getName());
     	
     	String[] split = event.getMessage().split(" ");
     	
@@ -91,24 +93,24 @@ public class RMPlayerListener extends PlayerListener
     	if( split[0].equalsIgnoreCase("/spawn") )
     	{
     		if( split.length == 1 )
-    			Commands.spawn(player, playerData.name);
+    			commands.spawn(player, playerData.name);
     		else if( split.length == 2 )
-    			Commands.spawn(player, split[1]);
+    			commands.spawn(player, split[1]);
     		else
     			Util.message(player, "Usage: /spawn [player_name]");
     	}
     	else if( split[0].equalsIgnoreCase("/home") )
     	{
     		if( split.length == 1 )
-    			Commands.home(player, playerData.name);
+    			commands.home(player, playerData.name);
     		else if( split.length == 2 )
-    			Commands.home(player, split[1]);
+    			commands.home(player, split[1]);
     		else
     			Util.message(player, "Usage: /home [player_name]");
     	}
     	else if(split[0].equalsIgnoreCase("/zone"))
     	{
-    		Commands.zone(player);
+    		commands.zone(player);
     	}
     	
     	// ********* COMPASS COMMANDS *********
@@ -152,7 +154,7 @@ public class RMPlayerListener extends PlayerListener
     public void onPlayerMove(PlayerMoveEvent event) 
     {
         Player player = event.getPlayer();
-        PlayerData playerData = Players.get(player.getName());
+        PlayerData playerData = plugin.players.get(player.getName());
         World world = player.getWorld();
 
         if( event.getFrom().getBlockX() != event.getTo().getBlockX() ||
@@ -163,7 +165,7 @@ public class RMPlayerListener extends PlayerListener
         	{
         		playerData.currentZone = RageZones.getCurrentZone(player.getLocation());
         		Util.message(player, "Your current zone is now " + RageZones.getName(playerData.currentZone));
-        		Players.update(playerData);
+        		plugin.players.update(playerData);
         	}
         	
         	// *** ZONE A (Neutral Zone) ***
@@ -175,13 +177,13 @@ public class RMPlayerListener extends PlayerListener
         			if( !RageZones.isInCapitol(player.getLocation()) )
         			{
         				playerData.isInCapitol = false;
-        				Players.update(playerData);
+        				plugin.players.update(playerData);
         				
         				// TODO: Is this necessary?  It might end up doing more harm than good...
         				
         				if( playerData.enterLeaveMessageTime == null || Util.secondsSince(playerData.enterLeaveMessageTime) > 10 )
         				{
-        					Util.message(player, "Now leaving the capitol of " + RageConfig.Capitol_Name);
+        					Util.message(player, "Now leaving the capitol of " + plugin.config.Capitol_Name);
         					playerData.enterLeaveMessageTime = Util.now();
         				}
         			}
@@ -191,10 +193,10 @@ public class RMPlayerListener extends PlayerListener
         			if( RageZones.isInCapitol(player.getLocation()) )
         			{
         				playerData.isInCapitol = true;
-        				Players.update(playerData);
+        				plugin.players.update(playerData);
         				if( playerData.enterLeaveMessageTime == null || Util.secondsSince(playerData.enterLeaveMessageTime) > 10 )
         				{
-        					Util.message(player, "Now entering the capitol of " + RageConfig.Capitol_Name);
+        					Util.message(player, "Now entering the capitol of " + plugin.config.Capitol_Name);
         					playerData.enterLeaveMessageTime = Util.now();
         				}
         			}
@@ -206,22 +208,22 @@ public class RMPlayerListener extends PlayerListener
 	        	// See if the player has entered or left a PlayerTown
 	        	if( playerData.currentTown == null )
 	        	{
-	        		PlayerTown currentTown = PlayerTowns.getCurrentTown(player.getLocation());
+	        		PlayerTown currentTown = plugin.playerTowns.getCurrentTown(player.getLocation());
 	        		if( currentTown != null )
 	        		{
 	        			Util.message(player, "Now entering the " + currentTown.townLevel.name.toLowerCase() + " of " + currentTown.townName);
 	        			playerData.currentTown = currentTown;
-	        			Players.update(playerData);
+	        			plugin.players.update(playerData);
 	        		}
 	        	}
 	        	else
 	        	{
-	        		PlayerTown currentTown = PlayerTowns.getCurrentTown(player.getLocation());
+	        		PlayerTown currentTown = plugin.playerTowns.getCurrentTown(player.getLocation());
 	        		if( currentTown == null )
 	        		{
 	        			Util.message(player, "Now leaving the " + playerData.currentTown.townLevel.name.toLowerCase() + " of " + playerData.currentTown.townName);
 	        			playerData.currentTown = null;
-	        			Players.update(playerData);
+	        			plugin.players.update(playerData);
 	        		}
 	        	}
         	}
@@ -232,7 +234,7 @@ public class RMPlayerListener extends PlayerListener
     public void onPlayerInteract(PlayerInteractEvent event) 
     {
     	Player player = event.getPlayer();
-    	PlayerData playerData = Players.get(player.getName());
+    	PlayerData playerData = plugin.players.get(player.getName());
     	Action action = event.getAction();
     	Block block = event.getClickedBlock();
 
@@ -246,7 +248,7 @@ public class RMPlayerListener extends PlayerListener
     public void onPlayerRespawn(PlayerRespawnEvent event) 
     {
     	Player player = event.getPlayer();
-    	PlayerData playerData = Players.get(player.getName());
+    	PlayerData playerData = plugin.players.get(player.getName());
     	
     	if( playerData.spawn_IsSet )
     	{

@@ -20,16 +20,16 @@ public class RageTimer implements Runnable
 		if( secondHand == 0 )
 		{
 			// Process town upkeep/taxes
-			if( Tasks.getSeconds("TOWN_UPKEEP") > RageConfig.Task_TOWN_UPKEEP )
+			if( plugin.tasks.getSeconds("TOWN_UPKEEP") > plugin.config.Task_TOWN_UPKEEP )
 			{
-				Tasks.processTownUpkeeps();
-				Tasks.setComplete("TOWN_UPKEEP");
+				plugin.tasks.processTownUpkeeps();
+				plugin.tasks.setComplete("TOWN_UPKEEP");
 			}
 			// Fill sandlot
-			if( Tasks.getSeconds("FILL_SANDLOT") > RageConfig.Task_FILL_SANDLOT )
+			if( plugin.tasks.getSeconds("FILL_SANDLOT") > plugin.config.Task_FILL_SANDLOT )
 			{
-				Tasks.processFillSandlot(plugin);
-				Tasks.setComplete("FILL_SANDLOT");
+				plugin.tasks.processFillSandlot(plugin);
+				plugin.tasks.setComplete("FILL_SANDLOT");
 			}
 			
 				

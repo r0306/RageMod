@@ -12,35 +12,29 @@ import org.bukkit.Location;
 // 		 I could also store a separate hash/array that stores ID to string for fast lookup (would this actually be faster?)
 
 public class PlayerTowns {
+		
+	private HashMap<String, PlayerTown> towns;
+	private RageMod plugin;
 	
-	// Set up PlayerTowns as a static instance
-	private static volatile PlayerTowns instance;
-	
-	private static HashMap<String, PlayerTown> towns;
-	
-    public static PlayerTowns getInstance() 
-    {
-		if (instance == null) 
-		{
-			instance = new PlayerTowns();
-		}
-		return instance;
+	public PlayerTowns(RageMod plugin) 
+	{
+		this.plugin = plugin;
 	}
-	
+		
 	// On startup, pull all the PlayerTown data from the DB into memory 
 	public void loadPlayerTowns()
 	{
-		towns = RageMod.database.townQueries.loadPlayerTowns();	
+		towns = plugin.database.townQueries.loadPlayerTowns();	
 	}
 	
 	// Insert/update town info
-	public static void put(PlayerTown playerTown)
+	public void put(PlayerTown playerTown)
 	{
 		towns.put(playerTown.townName.toLowerCase(), playerTown);
 	}
 	
 	// Gets the town from memory.  Returns NULL for non-existent towns
-    public static PlayerTown get(String townName)
+    public PlayerTown get(String townName)
     {       	
     	if( towns.containsKey(townName.toLowerCase()) )
     		return towns.get(townName.toLowerCase());
@@ -52,7 +46,7 @@ public class PlayerTowns {
     }
     
     // Returns all towns
-    public static ArrayList<PlayerTown> getAll()
+    public ArrayList<PlayerTown> getAll()
     {
     	System.out.println("Number of towns: " + towns.values().size());
     	return new ArrayList<PlayerTown>(towns.values());
@@ -60,7 +54,7 @@ public class PlayerTowns {
     
     
     // Check for all nearby towns within minimum distance (for creating new towns)
- 	public static HashMap<String, Integer> checkForNearbyTowns(Location location)
+ 	public HashMap<String, Integer> checkForNearbyTowns(Location location)
  	{
  		HashMap<String, Integer> townList = new HashMap<String, Integer>();
  		double distance; 
@@ -68,7 +62,7 @@ public class PlayerTowns {
  		for( PlayerTown town : towns.values() )
  		{
  			distance = town.centerPoint.distance(location);
- 			if( distance < RageConfig.Town_MIN_DISTANCE_BETWEEN )
+ 			if( distance < plugin.config.Town_MIN_DISTANCE_BETWEEN )
  				townList.put(town.townName, (int)distance);
  		}
  		
@@ -76,7 +70,7 @@ public class PlayerTowns {
  	}
     
     // Checks to see if the selected faction already has a capitol; used by /townupgrade
-    public static boolean doesFactionCapitolExist(int faction)
+    public boolean doesFactionCapitolExist(int faction)
     {
     	for( PlayerTown town : towns.values () )
     	{
@@ -88,11 +82,11 @@ public class PlayerTowns {
     }
     
     // Checks to see if nearby enemy capitols are too close; used by /townupgrade
-    public static boolean areEnemyCapitolsTooClose(PlayerTown playerTown)
+    public boolean areEnemyCapitolsTooClose(PlayerTown playerTown)
     {
     	for( PlayerTown town : towns.values () )
     	{
-    		if( town.isCapitol() && town.centerPoint.distance(playerTown.centerPoint) < RageConfig.Town_MIN_DISTANCE_ENEMY_CAPITOL )
+    		if( town.isCapitol() && town.centerPoint.distance(playerTown.centerPoint) < plugin.config.Town_MIN_DISTANCE_ENEMY_CAPITOL )
     		{
     			return true;
     		}
@@ -101,7 +95,7 @@ public class PlayerTowns {
     	return false;	// No too-close capitols found
     }
 
-	public static PlayerTown getCurrentTown(Location location) 
+	public PlayerTown getCurrentTown(Location location) 
 	{
 		for( PlayerTown town : towns.values() )
     	{

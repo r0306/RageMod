@@ -16,18 +16,24 @@ import org.bukkit.entity.Player;
 
 public class Commands 
 {
+	private RageMod plugin;
+	
+	public Commands(RageMod plugin)
+	{
+		this.plugin = plugin;
+	}
 	// /zone
-	public static void zone(Player player)
+	public void zone(Player player)
 	{
 		Util.message(player, "Your current zone is " + RageZones.getName(player.getLocation()) 
 				+ " and distance from spawn is " + (int)RageZones.getDistanceFromSpawn(player.getLocation()));
 	}
 
 	// /home [player_name]
-	public static void home(Player player, String targetPlayerName) 
+	public void home(Player player, String targetPlayerName) 
 	{
-		PlayerData playerData = Players.get(player.getName());
-		PlayerData targetPlayerData = Players.get(targetPlayerName);
+		PlayerData playerData = plugin.players.get(player.getName());
+		PlayerData targetPlayerData = plugin.players.get(targetPlayerName);
 		Timestamp now = new Timestamp(new Date().getTime());
 		Location destination;
 		
@@ -56,9 +62,9 @@ public class Commands
 		if( playerData.home_LastUsed != null )
 		{
 			int secondsSinceLastUse = (int)((now.getTime() - playerData.home_LastUsed.getTime()) / 1000);
-			if( secondsSinceLastUse < RageConfig.Cooldown_Home )
+			if( secondsSinceLastUse < plugin.config.Cooldown_Home )
 			{
-				Util.message(player, "Spell '/home' is not ready yet (" + Util.formatCooldown(RageConfig.Cooldown_Home - secondsSinceLastUse) + " left)");
+				Util.message(player, "Spell '/home' is not ready yet (" + Util.formatCooldown(plugin.config.Cooldown_Home - secondsSinceLastUse) + " left)");
 				return;
 			}
 		}
@@ -73,15 +79,15 @@ public class Commands
 		destination = new Location(player.getServer().getWorld("world"), targetPlayerData.home_X + .5, targetPlayerData.home_Y, targetPlayerData.home_Z + .5 );
 		player.teleport(destination);
 		playerData.home_LastUsed = now;
-		Players.update(playerData);
-		RageMod.database.playerQueries.updatePlayer(playerData);
+		plugin.players.update(playerData);
+		plugin.database.playerQueries.updatePlayer(playerData);
 	}
 	
 	// /spawn [player_name]
-	public static void spawn(Player player, String targetPlayerName) 
+	public void spawn(Player player, String targetPlayerName) 
 	{
-		PlayerData playerData = Players.get(player.getName());
-		PlayerData targetPlayerData = Players.get(targetPlayerName);
+		PlayerData playerData = plugin.players.get(player.getName());
+		PlayerData targetPlayerData = plugin.players.get(targetPlayerName);
 		Timestamp now = new Timestamp(new Date().getTime());
 		Location destination;
 		
@@ -103,9 +109,9 @@ public class Commands
 		if( playerData.spawn_LastUsed != null )
 		{
 			int secondsSinceLastUse = (int)((now.getTime() - playerData.spawn_LastUsed.getTime()) / 1000);
-			if( secondsSinceLastUse < RageConfig.Cooldown_Spawn )
+			if( secondsSinceLastUse < plugin.config.Cooldown_Spawn )
 			{
-				Util.message(player, "Spell '/spawn' is not ready yet (" + Util.formatCooldown(RageConfig.Cooldown_Spawn - secondsSinceLastUse) + " left)");
+				Util.message(player, "Spell '/spawn' is not ready yet (" + Util.formatCooldown(plugin.config.Cooldown_Spawn - secondsSinceLastUse) + " left)");
 				return;
 			}
 		}
@@ -118,8 +124,8 @@ public class Commands
 		Util.message(player, "Teleporting...");
 		player.teleport(destination);
 		playerData.spawn_LastUsed = now;
-		Players.update(playerData);
-		RageMod.database.playerQueries.updatePlayer(playerData);
+		plugin.players.update(playerData);
+		plugin.database.playerQueries.updatePlayer(playerData);
 	}
 	
 	

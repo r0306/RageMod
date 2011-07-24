@@ -41,23 +41,23 @@ public class RageZones {
 	private RageMod plugin;
 	
     
-    public RageZones (RageMod ragemod)
+    public RageZones (RageMod ragemod, RageConfig config)
     {
     	plugin = ragemod;
     	world = plugin.getServer().getWorld("world");
     	
     	// TODO: This feels redundant.  Maybe it will make more sense when the config is loading from a file.
-    	ZoneA_Name = RageConfig.Zone_NAME_A;
-    	ZoneA_Border = RageConfig.Zone_BORDER_A;
-    	ZoneB_Name = RageConfig.Zone_NAME_B;
-    	ZoneB_Border = RageConfig.Zone_BORDER_B;
-    	ZoneC_Name = RageConfig.Zone_NAME_C;
-    	ZoneC_Border = RageConfig.Zone_BORDER_C;
+    	ZoneA_Name = config.Zone_NAME_A;
+    	ZoneA_Border = config.Zone_BORDER_A;
+    	ZoneB_Name = config.Zone_NAME_B;
+    	ZoneB_Border = config.Zone_BORDER_B;
+    	ZoneC_Name = config.Zone_NAME_C;
+    	ZoneC_Border = config.Zone_BORDER_C;
     	
     	// Load the capitol regions
-    	Capitol_RegionA = new Region2D(RageConfig.Capitol_X1a, RageConfig.Capitol_Z1a, RageConfig.Capitol_X2a, RageConfig.Capitol_Z2a);
-    	Capitol_RegionB = new Region2D(RageConfig.Capitol_X1b, RageConfig.Capitol_Z1b, RageConfig.Capitol_X2b, RageConfig.Capitol_Z2b);
-    	Capitol_SandLot = new Region3D(world, RageConfig.Capitol_SANDLOT);
+    	Capitol_RegionA = new Region2D(config.Capitol_X1a, config.Capitol_Z1a, config.Capitol_X2a, config.Capitol_Z2a);
+    	Capitol_RegionB = new Region2D(config.Capitol_X1b, config.Capitol_Z1b, config.Capitol_X2b, config.Capitol_Z2b);
+    	Capitol_SandLot = new Region3D(world, config.Capitol_SANDLOT);
     	
     	WorldSpawn = new Location2D(world.getSpawnLocation());
     	

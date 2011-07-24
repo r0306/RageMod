@@ -22,36 +22,31 @@ import net.rageland.ragemod.Util;
 // TODO: Use the bukkit scheduler - the current method will not work with java.Timer
 
 public class Tasks {
+		
+	private HashMap<String, Timestamp> tasks;
+	private RageMod plugin;
 	
-	// Set up Tasks as a static instance
-	private static volatile Tasks instance;
-	
-	private static HashMap<String, Timestamp> tasks;
-	
-    public static Tasks getInstance() 
-    {
-		if (instance == null) 
-		{
-			instance = new Tasks();
-		}
-		return instance;
+	public Tasks(RageMod plugin)
+	{
+		this.plugin = plugin;
 	}
+	
 	
 	// On startup, pull all records of when tasks ran last
 	public void loadTaskTimes()
 	{
-		tasks = RageMod.database.taskQueries.loadTaskTimes();	
+		tasks = plugin.database.taskQueries.loadTaskTimes();	
 	}
 	
 	// Log task as complete
-	public static void setComplete(String taskName)
+	public void setComplete(String taskName)
 	{
 		tasks.put(taskName, Util.now());
-		RageMod.database.taskQueries.setComplete(taskName);
+		plugin.database.taskQueries.setComplete(taskName);
 	}
 	
 	// Get number of seconds since last task run
-	public static int getSeconds(String taskName)
+	public int getSeconds(String taskName)
 	{
 		// If we have a null value, the task has never been run, so return a huge value to force it to run
 		if( !tasks.containsKey(taskName) || tasks.get(taskName) == null )
@@ -63,25 +58,25 @@ public class Tasks {
 	// *** TASK CODE ***
 	
 	// Charge taxes for player towns
-	public static void processTownUpkeeps()
+	public void processTownUpkeeps()
 	{
 		double remaining;
-		double cost = RageConfig.Town_UPKEEP_PER_PLAYER;
+		double cost = plugin.config.Town_UPKEEP_PER_PLAYER;
 		Holdings holdings;
 		PlayerData playerData;
 		
 		System.out.println("Beginning town upkeep processing...");
 		
-		for( PlayerTown town : PlayerTowns.getAll() )
+		for( PlayerTown town : plugin.playerTowns.getAll() )
 		{
 			// Set the total amount needed to be collected
 			remaining = town.getLevel().upkeepCost;
 			
 			// Move through each town resident to collect money
-			for( String playerName : RageMod.database.townQueries.listTownResidents(town.townName))
+			for( String playerName : plugin.database.townQueries.listTownResidents(town.townName))
 			{
 				holdings = iConomy.getAccount(playerName).getHoldings();
-				playerData = Players.get(playerName);
+				playerData = plugin.players.get(playerName);
 				
 				// Attempt to collect from player's iConomy balance first
 				if( holdings.hasEnough(cost) )
@@ -95,8 +90,8 @@ public class Tasks {
 					playerData.treasuryBalance -= cost;
 					town.treasuryBalance -= cost;
 					remaining -= cost;
-					Players.update(playerData);
-					RageMod.database.playerQueries.updatePlayer(playerData);
+					plugin.players.update(playerData);
+					plugin.database.playerQueries.updatePlayer(playerData);
 				}
 				// If the player doesn't have the funds in either area, evict their freeloading ass
 				else if( !playerData.isMayor )
@@ -104,7 +99,7 @@ public class Tasks {
 					playerData.townName = "";
 					playerData.spawn_IsSet = false;
 					playerData.treasuryBalance = 0;
-					Players.update(playerData);
+					plugin.players.update(playerData);
 					
 					// TODO: Inform the player of their eviction somehow
 				}
@@ -124,7 +119,7 @@ public class Tasks {
 				else
 				{
 					// At this point the town has been bankrupt for some time - delete after specified time
-					if( Util.daysBetween(Util.now(), town.bankruptDate) > RageConfig.Town_MAX_BANKRUPT_DAYS )
+					if( Util.daysBetween(Util.now(), town.bankruptDate) > plugin.config.Town_MAX_BANKRUPT_DAYS )
 					{
 						// TODO: Finish writing this
 					}
@@ -136,12 +131,12 @@ public class Tasks {
 				// TODO: Set bankrupt date null
 			}
 			
-			PlayerTowns.put(town);	
+			plugin.playerTowns.put(town);	
 		}
 	}
 
 	// Fill a specified area with sand for a public mine
-	public static void processFillSandlot(RageMod plugin) 
+	public void processFillSandlot(RageMod plugin) 
 	{
 		World world = plugin.getServer().getWorld("world");
 		Random random = new Random();
@@ -167,9 +162,9 @@ public class Tasks {
 				for( int z = (int)RageZones.Capitol_SandLot.nwCorner.getZ(); z >= (int)RageZones.Capitol_SandLot.seCorner.getZ(); z-- )
 				{
 					currentBlock = world.getBlockAt(x, y, z);
-					if( random.nextInt( RageConfig.Capitol_SANDLOT_GOLD_ODDS ) == 0 )
+					if( random.nextInt( plugin.config.Capitol_SANDLOT_GOLD_ODDS ) == 0 )
 						currentBlock.setType(Material.GOLD_ORE);
-					else if( random.nextInt( RageConfig.Capitol_SANDLOT_DIAMOND_ODDS ) == 0 ) 
+					else if( random.nextInt( plugin.config.Capitol_SANDLOT_DIAMOND_ODDS ) == 0 ) 
 						currentBlock.setType(Material.DIAMOND_ORE);
 					else
 						currentBlock.setType(Material.SAND);
