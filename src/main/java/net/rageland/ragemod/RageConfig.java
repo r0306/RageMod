@@ -97,50 +97,14 @@ public class RageConfig {
     
     private void loadConfigValues() 
     {
-    	if(pluginConfig == null) 
-    	{
-    		String path = plugin.getDataFolder().getPath() + "/config.yml";
-    		File configFile = new File(path);
-    		
-    		if(!configFile.exists())
-    		{
-    			configFile.mkdirs();    			
-    		}
-    		
-    		pluginConfig = new Configuration(configFile);
-    	}
-    	else
-    	{
-    		pluginConfig = plugin.getConfiguration();
-    	}
     	
-    	
-    	if(pluginConfig.getProperty("dburl") != null)
-    		DB_URL = pluginConfig.getString("dburl");
-    	else 
-    		pluginConfig.setProperty("dburl", DB_URL);
-    	
-    	if(pluginConfig.getProperty("dbname") != null)
-    		DB_NAME = pluginConfig.getString("dbname");
-    	else
-    		pluginConfig.setProperty("dbname", DB_NAME);
-    	
-    	if(pluginConfig.getProperty("dbdriver") != null)
-    		DB_DRIVER = pluginConfig.getString("dbdriver");
-    	else
-    		pluginConfig.setProperty("dbdriver", DB_DRIVER);
-    	
-    	if(pluginConfig.getProperty("dbuser") != null)
-    		DB_USER = pluginConfig.getString("dbuser");
-    	else
-    		pluginConfig.setProperty("dbuser", DB_USER);
-    	
-    	if(pluginConfig.getProperty("dbpassword") != null)
-    		DB_PASSWORD = pluginConfig.getString("dbpassword");    
-    	else
-    		pluginConfig.setProperty("dbpassword", DB_PASSWORD);
-    	
-    	pluginConfig.save();
+    	pluginConfig = plugin.getConfiguration();
+    	DB_URL = pluginConfig.getString("dburl");
+		DB_NAME = pluginConfig.getString("dbname");
+		DB_DRIVER = pluginConfig.getString("dbdriver");
+		DB_USER = pluginConfig.getString("dbuser");
+		DB_PASSWORD = pluginConfig.getString("dbpassword");    
+		
     }    
     
     private void loadDefaultTownLevels()
