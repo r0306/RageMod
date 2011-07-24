@@ -117,7 +117,7 @@ public class PlayerQueries {
 		if( playerData.townName.equals("") )
 			playerData.treasuryBalance = 0;
 		else
-			playerData.treasuryBalance = this.getPlayerTreasuryBalance(playerData.id_Player, PlayerTowns.get(playerData.townName).id_PlayerTown);
+			playerData.treasuryBalance = this.getPlayerTreasuryBalance(playerData.id_Player, plugin.playerTowns.get(playerData.townName).id_PlayerTown);
 		
     	return playerData;
 	}	

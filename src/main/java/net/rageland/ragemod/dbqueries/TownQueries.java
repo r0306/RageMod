@@ -57,7 +57,7 @@ public class TownQueries {
         	
         	while ( rs.next() ) 
         	{	        		
-        		currentTown = new PlayerTown();
+        		currentTown = new PlayerTown(plugin);
         		currentTown.id_PlayerTown = rs.getInt("ID_PlayerTown");
         		currentTown.townName = rs.getString("TownName");
         		currentTown.centerPoint = new Location2D(rs.getInt("XCoord"), rs.getInt("ZCoord"));
@@ -65,7 +65,7 @@ public class TownQueries {
         		currentTown.treasuryBalance = rs.getFloat("TreasuryBalance");
         		currentTown.minimumBalance = rs.getFloat("MinimumBalance");
         		currentTown.bankruptDate = rs.getTimestamp("BankruptDate");
-        		currentTown.townLevel = RageConfig.townLevels.get(rs.getInt("TownLevel"));
+        		currentTown.townLevel = plugin.config.townLevels.get(rs.getInt("TownLevel"));
         		currentTown.mayor = rs.getString("Mayor");
         		currentTown.world = plugin.getServer().getWorld("world");
         		
@@ -90,7 +90,7 @@ public class TownQueries {
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
 	    ResultSet rs = null;
-		PlayerData playerData = Players.get(targetPlayerName);
+		PlayerData playerData = plugin.players.get(targetPlayerName);
 		
     	try
     	{
@@ -117,7 +117,7 @@ public class TownQueries {
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
 	    ResultSet rs = null;
-		PlayerData playerData = Players.get(player.getName());
+		PlayerData playerData = plugin.players.get(player.getName());
 		
     	try
     	{
@@ -128,7 +128,7 @@ public class TownQueries {
     				"INSERT INTO PlayerTowns (TownName, XCoord, ZCoord, ID_Faction, TreasuryBalance, TownLevel, DateCreated) " +
     				"VALUES ('" + townName + "', " + (int)player.getLocation().getX() + ", " + (int)player.getLocation().getZ() + ", " +  
     				"(SELECT ID_Faction FROM Players WHERE ID_Player = " + playerData.id_Player + "), " + 
-    				RageConfig.townLevels.get(1).minimumBalance + ", 1, NOW())",
+    				plugin.config.townLevels.get(1).minimumBalance + ", 1, NOW())",
     				Statement.RETURN_GENERATED_KEYS);        		
     		preparedStatement.executeUpdate();
     		
@@ -163,7 +163,7 @@ public class TownQueries {
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
 	    ResultSet rs = null;
-		PlayerData playerData = Players.get(playerName);
+		PlayerData playerData = plugin.players.get(playerName);
 		
     	try
     	{
@@ -213,7 +213,7 @@ public class TownQueries {
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
 	    ResultSet rs = null; 
-		PlayerTown playerTown = PlayerTowns.get(townName);
+		PlayerTown playerTown = plugin.playerTowns.get(townName);
 		
     	try
     	{
@@ -243,7 +243,7 @@ public class TownQueries {
 	    PreparedStatement preparedStatement = null;
 	    ResultSet rs = null;
 	    
-		PlayerTown playerTown = PlayerTowns.get(townName);
+		PlayerTown playerTown = plugin.playerTowns.get(townName);
 		ArrayList<String> residents = new ArrayList<String>();
 		
     	try

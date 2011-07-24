@@ -51,7 +51,7 @@ public class LotQueries {
         	// Test to see if result set was empty - return null if not 
         	while( rs.next() )
         	{
-        		playerLots.add(Lots.get(rs.getInt("ID_Lot")));	// We already have the lot info in memory; save the DB some work
+        		playerLots.add(plugin.lots.get(rs.getInt("ID_Lot")));	// We already have the lot info in memory; save the DB some work
         	}
         		        	
     	} catch (SQLException e) {
@@ -109,7 +109,7 @@ public class LotQueries {
 	    ResultSet rs = null;
 		HashMap<String, Lot> lots = new HashMap<String, Lot>();
 		Lot currentLot = null;
-		int mult = RageConfig.Lot_MULTIPLIER;
+		int mult = plugin.config.Lot_MULTIPLIER;
 		
     	try
     	{
@@ -124,7 +124,7 @@ public class LotQueries {
         	
         	while ( rs.next() ) 
         	{
-        		currentLot = new Lot();
+        		currentLot = new Lot(plugin);
         		
         		currentLot.id_Lot = rs.getInt("ID_Lot");
         		currentLot.setCategory(rs.getString("Category"));
@@ -132,10 +132,10 @@ public class LotQueries {
         		currentLot.owner = rs.getString("Owner");
         		// X and Z are reversed >:(
         		currentLot.region = new Region2D(
-        				((rs.getInt("ZCoord")-1) * mult) + RageConfig.Lot_X_OFFSET,
-        				((rs.getInt("XCoord")-1) * mult * -1) + RageConfig.Lot_Z_OFFSET,
-        				((rs.getInt("ZCoord")-1) * mult) + RageConfig.Lot_X_OFFSET + (rs.getInt("Height") * mult),
-        				((rs.getInt("XCoord")-1) * mult * -1) + RageConfig.Lot_Z_OFFSET - (rs.getInt("Width") * mult));
+        				((rs.getInt("ZCoord")-1) * mult) + plugin.config.Lot_X_OFFSET,
+        				((rs.getInt("XCoord")-1) * mult * -1) + plugin.config.Lot_Z_OFFSET,
+        				((rs.getInt("ZCoord")-1) * mult) + plugin.config.Lot_X_OFFSET + (rs.getInt("Height") * mult),
+        				((rs.getInt("XCoord")-1) * mult * -1) + plugin.config.Lot_Z_OFFSET - (rs.getInt("Width") * mult));
         		currentLot.world = plugin.getServer().getWorld("world");
     	        
         		lots.put(currentLot.getLotCode(), currentLot);	        		
