@@ -1,8 +1,11 @@
 package net.rageland.ragemod.quest;
 
+import net.rageland.ragemod.NPCUtilities;
+import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.PlayerData;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -21,6 +24,7 @@ public class KillCreatureQuest implements Quest
 	private boolean isActiveQuestNPC;
 	public  String questTargetCreature;
 	private int killNeededCounter;
+	private RageMod plugin;
 
 	public KillCreatureQuest( 
 						int questId, 
@@ -33,7 +37,8 @@ public class KillCreatureQuest implements Quest
 						boolean isRandomNPC,
 						boolean isActiveQuestNPC,
 						String questTargetCreature,
-						int killNeededCounter) 
+						int killNeededCounter,
+						RageMod plugin) 
 	{
 		this.questId = questId;
 		this.questName = questName;
@@ -46,26 +51,73 @@ public class KillCreatureQuest implements Quest
 		this.isActiveQuestNPC = isActiveQuestNPC;
 		this.questTargetCreature = questTargetCreature;	
 		this.killNeededCounter = killNeededCounter;
+		this.plugin = plugin;
 	}
 	
 	@Override
+	/**
+	 * Executed when a player is finished with the quest.
+	 */
 	public void questEnd(Player player, PlayerData playerData) 
 	{
-		// TODO Auto-generated method stub
-		
+		if (NPCUtilities.checkFreeSpace(player.getInventory(), this.rewardItem, this.rewardItemAmount)) 
+		{
+			Util.message(player, this.questFinishedText);
+			Util.message(player, "Received: ");
+
+			if (this.rewardItemAmount > 0) 
+			{
+				Util.message(player, Integer.toString(this.rewardItemAmount) + this.rewardItem.getType().toString());
+				NPCUtilities.addItemToInventory(player.getInventory(), this.rewardItem, this.rewardItemAmount);
+			}
+
+			if (this.coinRewardAmount > 0.0D) 
+			{
+				Util.message(player, Double.toString(this.coinRewardAmount) + " Coins");
+			}
+
+			Util.message(player, "for finishing " + this.questName);
+			
+			if(isQuestAttachedToRandomNPC) 
+			{
+				isActiveQuestNPC = false;
+			}			
+		} 
+		else 
+		{
+			player.sendMessage(NPCUtilities.notEnoughSpaceMessage);
+		}
 	}
 
 	@Override
 	public void questStart(Player player, PlayerData playerData) 
 	{
-		
+		if(playerData.activeQuestData != null || playerData.activeQuestData.quest != null)
+		{
+			Util.message(player, "You are already on a quest. To abandon the quest write /quest abandon");
+		}
+		else 
+		{
+			Util.message(player, "Accepted quest: " + questName);
+			Util.message(player, questText);
+			
+			ActiveQuestData questData = new ActiveQuestData();
+			questData.quest = this;
+			questData.questCounter = 0;
+		}
 	}
 
 	@Override
 	public boolean isQuestFinished(PlayerData playerData) 
 	{
-		// TODO Auto-generated method stub
-		return false;
+		if(playerData.activeQuestData.questCounter >= killNeededCounter)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	@Override
