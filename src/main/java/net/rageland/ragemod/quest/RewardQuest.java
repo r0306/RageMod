@@ -47,9 +47,9 @@ public class RewardQuest implements Quest
 		
 	}
 
-	public void questStart(Player player) 
+	public void questStart(Player player, PlayerData playerData) 
 	{
-		presentQuest(player);
+		presentQuest(player, playerData);
 
 		if (this.isActiveQuestNPC) 
 		{
@@ -88,7 +88,7 @@ public class RewardQuest implements Quest
 		}
 	}
 
-	public void presentQuest(Player player) 
+	public void presentQuest(Player player, PlayerData playerData) 
 	{
 		if (this.isActiveQuestNPC) 
 		{
@@ -126,6 +126,18 @@ public class RewardQuest implements Quest
 	public String getQuestText() 
 	{
 		return this.questText;
+	}
+
+	@Override
+	public void questEnd(Player player, PlayerData playerData) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void questUpdate(Player player, PlayerData playerData) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

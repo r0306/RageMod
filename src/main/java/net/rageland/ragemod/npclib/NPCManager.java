@@ -7,6 +7,7 @@ import java.util.logging.Level;
 
 import net.minecraft.server.ItemInWorldManager;
 import net.minecraft.server.WorldServer;
+import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.npcentities.NPCEntity;
 import net.rageland.ragemod.npcentities.QuestStartNPCEntity;
 import net.rageland.ragemod.quest.Quest;
@@ -27,9 +28,9 @@ public class NPCManager {
 	public static HashMap<String, NPCEntity> npcs = new HashMap<String, NPCEntity>();
 	private BServer server;
 	private int taskid;
-	private JavaPlugin plugin;
+	private RageMod plugin;
 
-	public NPCManager(JavaPlugin plugin) 
+	public NPCManager(RageMod plugin) 
 	{
 		this.server = BServer.getInstance(plugin);
 		this.plugin = plugin;

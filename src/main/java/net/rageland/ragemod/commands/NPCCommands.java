@@ -1,7 +1,9 @@
 package net.rageland.ragemod.commands;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Spider;
 
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.PlayerData;
@@ -23,15 +25,15 @@ public class NPCCommands {
 			if(split[2].equalsIgnoreCase("queststartnpc"))
 			{
 				spawnQuestStartNPC(player, playerData, plugin.questManager.quests.get(Integer.parseInt(split[3])), split[4]);
+			} 
+			else if(split[2].equalsIgnoreCase("questrewardnpc"))
+			{
+				
 			}
 		} 
-		else if(split.length == 2) 
+		else if(split.length == 2)
 		{
-			spawnQuestStartNPC(player, playerData, plugin.questManager.quests.get(1), split[1]);
-		}
-		else if(split.length == 1)
-		{
-			spawnAlotOfNPCS(player);
+			
 		}
 	}
 	

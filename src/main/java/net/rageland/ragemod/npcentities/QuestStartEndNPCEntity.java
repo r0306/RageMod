@@ -5,16 +5,14 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.World;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
-import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.quest.Quest;
 
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class QuestStartNPCEntity extends NPCEntity {
+public class QuestStartEndNPCEntity extends NPCEntity {
 	private Quest quest;
 	
-	public QuestStartNPCEntity(
+	public QuestStartEndNPCEntity(
 			MinecraftServer minecraftserver, 
 			World world, String name,
 			ItemInWorldManager iteminworldmanager, 
@@ -36,5 +34,4 @@ public class QuestStartNPCEntity extends NPCEntity {
 	{
 		quest.questStart(player, plugin.players.get(player.getName()));
 	}
-
 }

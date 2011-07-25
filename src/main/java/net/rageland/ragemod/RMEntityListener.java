@@ -4,6 +4,8 @@ package net.rageland.ragemod;
 
 // TODO: Fix onEntityDamageByEntity, I can't get it to fire on mob damage whatsoever
 
+import java.rmi.server.Skeleton;
+
 import net.rageland.ragemod.data.Factions;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
@@ -12,15 +14,24 @@ import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.npcentities.NPCEntity;
 import net.rageland.ragemod.npclib.NPCManager;
 import net.rageland.ragemod.npclib.NpcEntityTargetEvent;
+import net.rageland.ragemod.quest.KillCreatureQuest;
 
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Giant;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Spider;
+import org.bukkit.entity.Squid;
+import org.bukkit.entity.Wolf;
+import org.bukkit.entity.Zombie;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityTargetEvent;
 
@@ -55,10 +66,11 @@ public class RMEntityListener extends EntityListener
     	
     	if(rawEvent instanceof EntityDamageByEntityEvent)
     	{
-    		EntityDamageByEntityEvent event = (EntityDamageByEntityEvent)rawEvent;
+    		EntityDamageByEntityEvent edbeEvent = (EntityDamageByEntityEvent)rawEvent;
     		System.out.println("DAMAGE!");
+    		
         	
-        	Entity attackerEntity = event.getDamager();  
+        	Entity attackerEntity = edbeEvent.getDamager();  
         	
         	// If defender is NPC, the event is already cancelled, must check if it is a leftClickAction from player.
         	if (NPCManager.isNPC(defenderEntity)) 
@@ -82,7 +94,7 @@ public class RMEntityListener extends EntityListener
             	// Always prevent allies from harming each other
     			if( attackerData.id_Faction == defenderData.id_Faction )
     			{
-    				event.setCancelled(true);
+    				edbeEvent.setCancelled(true);
         			Util.message(attacker, defenderData.name + " is your ally!");
         			return;
     			}
@@ -94,7 +106,7 @@ public class RMEntityListener extends EntityListener
             		// No PvP in capitol
             		if( plugin.zones.isInCapitol(defender.getLocation()) )
             		{
-            			event.setCancelled(true);
+            			edbeEvent.setCancelled(true);
             			Util.message(attacker, "PvP is not allowed inside " + plugin.config.Capitol_Name + ".");
             			return;
             		}
@@ -103,13 +115,13 @@ public class RMEntityListener extends EntityListener
             			// Only faction-faction PvP is allowed in neutral zone
             			if( defenderData.id_Faction == 0 )
             			{
-            				event.setCancelled(true);
+            				edbeEvent.setCancelled(true);
                 			Util.message(attacker, "You cannot attack neutral players in " + plugin.config.Zone_NAME_A + ".");
                 			return;
             			}
             			else if( attackerData.id_Faction == 0 )
             			{
-            				event.setCancelled(true);
+            				edbeEvent.setCancelled(true);
                 			Util.message(attacker, "Neutral players cannot attack in " + plugin.config.Zone_NAME_A + ".");
                 			return;
             			}
@@ -123,14 +135,14 @@ public class RMEntityListener extends EntityListener
             		// Keep referees from participating in combat
             		if( RageMod.permissionHandler.has(attacker, "ragemod.referee.blockpvp") )
             		{
-            			event.setCancelled(true);
+            			edbeEvent.setCancelled(true);
             			Util.message(attacker, "Referees may not participate in combat.");
             			return;
             		}
             		// Protect referees 
             		else if( RageMod.permissionHandler.has(defender, "ragemod.referee.blockpvp") )
             		{
-            			event.setCancelled(true);
+            			edbeEvent.setCancelled(true);
             			Util.message(attacker, "You cannot harm a referee.");
             			return;
             		}
@@ -140,21 +152,21 @@ public class RMEntityListener extends EntityListener
     	        		// Protect neutral players inside all towns
     	        		if( defenderData.id_Faction == 0 )
     	        		{
-    	        			event.setCancelled(true);
+    	        			edbeEvent.setCancelled(true);
     	        			Util.message(attacker, "You cannot harm neutral players inside of towns.");
     	        			return;
     	        		}
     	        		// Keep neutral players from harming any players
     	        		if( attackerData.id_Faction == 0 )
     	        		{
-    	        			event.setCancelled(true);
+    	        			edbeEvent.setCancelled(true);
     	        			Util.message(attacker, "Neutral players cannot attack inside of towns.");
     	        			return;
     	        		}
     	        		// Protect faction players inside of their own and allied towns
     	        		if( defenderData.id_Faction == playerTown.id_Faction )
     	        		{
-    	        			event.setCancelled(true);
+    	        			edbeEvent.setCancelled(true);
     	        			Util.message(attacker, "You cannot harm " + plugin.factions.getName(defenderData.id_Faction) + " inside of their own towns.");
     	        			return;
     	        		}
@@ -168,6 +180,85 @@ public class RMEntityListener extends EntityListener
             	creature.damage(100);
             	System.out.println("Attempted to kill attacking creature");
             } 
+            // Defender is Creature, Attacker is Player
+            else if(defenderEntity instanceof Creature && attackerEntity instanceof Player)
+            {
+            	Creature defenderCreature = (Creature)defenderEntity;
+            	Player attackerPlayer = (Player) attackerEntity;
+            	// Creature dies from attack
+            	if(defenderCreature.getHealth() <= edbeEvent.getDamage())
+            	{
+            		// Player is on a quest, quest is of KillCreatureQuest type
+            		if(plugin.players.get(attackerPlayer.getName()).isOnKillQuest())
+            		{
+            			KillCreatureQuest kcQuest = (KillCreatureQuest) plugin.players.get(attackerPlayer.getName()).activeQuestData.quest;
+            			if(defenderCreature instanceof Spider)
+            			{
+            				if(kcQuest.questTargetCreature.equalsIgnoreCase("spider"))
+            				{
+            					plugin.players.get(attackerPlayer.getName()).activeQuestData.questCounter++;
+            					plugin.players.get(attackerPlayer.getName()).activeQuestData.quest.questUpdate(attackerPlayer, plugin.players.get(attackerPlayer.getName()));
+            				}
+            			}
+            			else if(defenderCreature instanceof Wolf)
+            			{
+            				if(kcQuest.questTargetCreature.equalsIgnoreCase("wolf"))
+            				{
+            					plugin.players.get(attackerPlayer.getName()).activeQuestData.questCounter++;
+            					plugin.players.get(attackerPlayer.getName()).activeQuestData.quest.questUpdate(attackerPlayer, plugin.players.get(attackerPlayer.getName()));
+            				}
+            			}
+            			else if(defenderCreature instanceof Creeper)
+            			{
+            				if(kcQuest.questTargetCreature.equalsIgnoreCase("creeper"))
+            				{
+            					plugin.players.get(attackerPlayer.getName()).activeQuestData.questCounter++;
+            					plugin.players.get(attackerPlayer.getName()).activeQuestData.quest.questUpdate(attackerPlayer, plugin.players.get(attackerPlayer.getName()));
+            				}
+            			}
+            			else if(defenderCreature instanceof Giant)
+            			{
+            				if(kcQuest.questTargetCreature.equalsIgnoreCase("giant"))
+            				{
+            					plugin.players.get(attackerPlayer.getName()).activeQuestData.questCounter++;
+            					plugin.players.get(attackerPlayer.getName()).activeQuestData.quest.questUpdate(attackerPlayer, plugin.players.get(attackerPlayer.getName()));
+            				}
+            			}
+            			else if(defenderCreature instanceof Skeleton)
+            			{
+            				if(kcQuest.questTargetCreature.equalsIgnoreCase("skeleton"))
+            				{
+            					plugin.players.get(attackerPlayer.getName()).activeQuestData.questCounter++;
+            					plugin.players.get(attackerPlayer.getName()).activeQuestData.quest.questUpdate(attackerPlayer, plugin.players.get(attackerPlayer.getName()));
+            				}
+            			}
+            			else if(defenderCreature instanceof Zombie)
+            			{
+            				if(kcQuest.questTargetCreature.equalsIgnoreCase("zombie"))
+            				{
+            					plugin.players.get(attackerPlayer.getName()).activeQuestData.questCounter++;
+            					plugin.players.get(attackerPlayer.getName()).activeQuestData.quest.questUpdate(attackerPlayer, plugin.players.get(attackerPlayer.getName()));
+            				}
+            			}
+            			else if(defenderCreature instanceof PigZombie)
+            			{
+            				if(kcQuest.questTargetCreature.equalsIgnoreCase("pigzombie"))
+            				{
+            					plugin.players.get(attackerPlayer.getName()).activeQuestData.questCounter++;
+            					plugin.players.get(attackerPlayer.getName()).activeQuestData.quest.questUpdate(attackerPlayer, plugin.players.get(attackerPlayer.getName()));
+            				}
+            			}
+            			else if(defenderCreature instanceof Squid)
+            			{
+            				if(kcQuest.questTargetCreature.equalsIgnoreCase("squid"))
+            				{
+            					plugin.players.get(attackerPlayer.getName()).activeQuestData.questCounter++;
+            					plugin.players.get(attackerPlayer.getName()).activeQuestData.quest.questUpdate(attackerPlayer, plugin.players.get(attackerPlayer.getName()));
+            				}
+            			}
+            		}
+            	}
+            }
             else
             {
             	System.out.println(attackerEntity.getEntityId() + " entity caused damage.");
@@ -208,6 +299,6 @@ public class RMEntityListener extends EntityListener
 				npcEntity.rightClickAction((Player) event.getTarget());
 			}
 		}		
-	}
+	}    
 }
 

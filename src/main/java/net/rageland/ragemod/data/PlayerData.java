@@ -12,6 +12,7 @@ import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.RageZones;
 import net.rageland.ragemod.RageZones.Zone;
 import net.rageland.ragemod.quest.ActiveQuestData;
+import net.rageland.ragemod.quest.KillCreatureQuest;
 
 // TODO: Create a colored player name that takes their data into account to be easily pulled by Commands, etc
 
@@ -121,6 +122,18 @@ public class PlayerData
 		
 		// The location was not in any of the player's lots
 		return false;
+	}
+	
+	public boolean isOnKillQuest() {
+		if(this.activeQuestData != null && this.activeQuestData.quest != null && activeQuestData.quest instanceof KillCreatureQuest)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+			
 	}
 	
 	// Clears the spawn location when bed is broken	

@@ -12,6 +12,7 @@ import net.minecraft.server.NetworkManager;
 import net.minecraft.server.Packet18ArmAnimation;
 import net.minecraft.server.World;
 import net.minecraft.server.WorldServer;
+import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.npclib.NPCNetHandler;
 import net.rageland.ragemod.npclib.NPCNetworkManager;
 import net.rageland.ragemod.npclib.NpcEntityTargetEvent;
@@ -31,10 +32,10 @@ public class NPCEntity extends EntityPlayer {
 	private int lastTargetId;
 	private long lastBounceTick;
 	private int lastBounceId;
-	protected JavaPlugin plugin;
+	protected RageMod plugin;
 
 	public NPCEntity(MinecraftServer minecraftserver, World world, String name,
-			ItemInWorldManager iteminworldmanager, JavaPlugin plugin) 
+			ItemInWorldManager iteminworldmanager, RageMod plugin) 
 	{
 		
 		super(minecraftserver, world, name, iteminworldmanager);

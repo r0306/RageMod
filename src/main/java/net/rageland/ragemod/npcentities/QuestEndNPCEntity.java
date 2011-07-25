@@ -9,12 +9,11 @@ import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.quest.Quest;
 
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class QuestStartNPCEntity extends NPCEntity {
+public class QuestEndNPCEntity extends NPCEntity {
 	private Quest quest;
 	
-	public QuestStartNPCEntity(
+	public QuestEndNPCEntity(
 			MinecraftServer minecraftserver, 
 			World world, String name,
 			ItemInWorldManager iteminworldmanager, 
@@ -34,7 +33,23 @@ public class QuestStartNPCEntity extends NPCEntity {
 
 	public void leftClickAction(Player player) 
 	{
-		quest.questStart(player, plugin.players.get(player.getName()));
+		PlayerData playerData = plugin.players.get(player.getName());
+		if(playerData != null && 
+				playerData.activeQuestData.quest == quest)
+		{
+			if(quest.isQuestFinished(playerData))
+			{
+				quest.questEnd(player, playerData);
+			}
+			else
+			{
+				Util.message(player, "You havent finished your quest. What are you waiting for?");
+			}
+		}
+		else 
+		{
+			Util.message(player, "Sorry, I can't help you with anything.");
+		}
+		
 	}
-
 }
