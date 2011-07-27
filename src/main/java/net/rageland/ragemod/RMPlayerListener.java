@@ -38,6 +38,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.World;
 
@@ -79,11 +80,48 @@ public class RMPlayerListener extends PlayerListener
 		// Set the state info
     	playerData.currentZone = plugin.zones.getCurrentZone(player.getLocation());
     	playerData.currentTown = plugin.playerTowns.getCurrentTown(player.getLocation());
-    	playerData.isInCapitol = plugin.zones.isInCapitol(player.getLocation());
-	
+    	playerData.isInCapitol = plugin.zones.isInCapitol(player.getLocation()); 
     	
-    	// 
+    	// Check for expired or new memberships
+    	if( RageMod.permissionHandler.inGroup("world", playerData.name, "Member") && !playerData.isMember ) 
+    	{
+    		// TODO: Find out a way to do this programatically
+    		// Message all mods/admins to demote the member
+    		for( Player onlinePlayer : plugin.getServer().getOnlinePlayers() )
+    		{
+    			if( RageMod.permissionHandler.has(onlinePlayer, "ragemod.ismoderator") )
+    			{
+    				Util.message(onlinePlayer, playerData.getNameColor() + "'s membership has expired - please /demote him/her.");
+    			}
+    		}
+    	}
+    	else if( !RageMod.permissionHandler.inGroup("world", playerData.name, "Member") && playerData.isMember && !RageMod.permissionHandler.has(player, "ragemod.ismoderator") ) 
+    	{
+    		// Message all mods/admins to promote the member
+    		for( Player onlinePlayer : plugin.getServer().getOnlinePlayers() )
+    		{
+    			if( RageMod.permissionHandler.has(onlinePlayer, "ragemod.ismoderator") )
+    			{
+    				Util.message(onlinePlayer, playerData.getNameColor() + " has donated $" + plugin.database.playerQueries.getRecentDonations(playerData.id_Player) + " to the server!  Please /promote him/her.");
+    			}
+    		}
+    	}
+
+    	
     }
+    
+    // Register the player as logged off
+    public void onPlayerQuit(PlayerQuitEvent event)
+    {
+    	Player player = event.getPlayer();    	
+    	PlayerData playerData = plugin.players.get(player.getName());    	  
+    	
+    	plugin.database.playerQueries.playerLogoff(playerData.id_Player);
+		
+    }
+    
+    
+    
     
     // Process commands
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) 
@@ -93,73 +131,106 @@ public class RMPlayerListener extends PlayerListener
     	
     	String[] split = event.getMessage().split(" ");
     	
-    	// ********* BASIC COMMANDS *********
-    	if( split[0].equalsIgnoreCase("/spawn") )
+    	// *** Reduce the command tree for the lot-only release ***
+    	if( plugin.config.DISABLE_NON_LOT_CODE )
     	{
-    		if( split.length == 1 )
-    			commands.spawn(player, playerData.name);
-    		else if( split.length == 2 )
-    			commands.spawn(player, split[1]);
-    		else
-    			Util.message(player, "Usage: /spawn [player_name]");
+    		// ********* COMPASS COMMANDS *********
+        	if( split[0].equalsIgnoreCase("/compass") )
+        	{
+        		compassCommands.onCompassCommand(player, playerData, split);
+        		event.setCancelled(true);
+        	}
+        	
+        	// ********* LOT COMMANDS *********
+        	else if( split[0].equalsIgnoreCase("/lot") )
+        	{
+        		lotCommands.onLotCommand(player, playerData, split);
+        		event.setCancelled(true);
+        	}
     	}
-    	else if( split[0].equalsIgnoreCase("/home") )
+    	else
     	{
-    		if( split.length == 1 )
-    			commands.home(player, playerData.name);
-    		else if( split.length == 2 )
-    			commands.home(player, split[1]);
-    		else
-    			Util.message(player, "Usage: /home [player_name]");
-    	}
-    	else if(split[0].equalsIgnoreCase("/zone"))
-    	{
-    		commands.zone(player);
+
+        	// ********* BASIC COMMANDS *********
+        	if( split[0].equalsIgnoreCase("/spawn") )
+        	{
+        		if( split.length == 1 )
+        			commands.spawn(player, playerData.name);
+        		else if( split.length == 2 )
+        			commands.spawn(player, split[1]);
+        		else
+        			Util.message(player, "Usage: /spawn [player_name]");
+        		event.setCancelled(true);
+        	}
+        	else if( split[0].equalsIgnoreCase("/home") )
+        	{
+        		if( split.length == 1 )
+        			commands.home(player, playerData.name);
+        		else if( split.length == 2 )
+        			commands.home(player, split[1]);
+        		else
+        			Util.message(player, "Usage: /home [player_name]");
+        		event.setCancelled(true);
+        	}
+        	else if(split[0].equalsIgnoreCase("/zone"))
+        	{
+        		commands.zone(player);
+        		event.setCancelled(true);
+        	}
+        	
+        	// ********* COMPASS COMMANDS *********
+        	else if( split[0].equalsIgnoreCase("/compass") )
+        	{
+        		compassCommands.onCompassCommand(player, playerData, split);
+        		event.setCancelled(true);
+        	}
+        	
+        	// ********* LOT COMMANDS *********
+        	else if( split[0].equalsIgnoreCase("/lot") )
+        	{
+        		lotCommands.onLotCommand(player, playerData, split);
+        		event.setCancelled(true);
+        	}
+        	
+        	// ********* TOWN COMMANDS *********
+        	else if( split[0].equalsIgnoreCase("/town") )
+        	{
+        		townCommands.onTownCommand(player, playerData, split);
+        		event.setCancelled(true);
+        	}
+        	
+        	// ********* FACTION COMMANDS **********
+        	else if(split[0].equalsIgnoreCase("/faction") )
+        	{
+        		factionCommands.onFactionCommand(player, playerData, split);
+        		event.setCancelled(true);
+        	}
+        	// ********* QUEST COMMANDS **********
+        	else if(split[0].equalsIgnoreCase("/quest")) 
+        	{
+        		questCommands.onQuestCommand(player, playerData, split);
+        		event.setCancelled(true);
+        	}
+        	// ********* NPC COMMANDS ************
+        	else if(split[0].equalsIgnoreCase("/npc"))
+        	{
+        		if(RageMod.permissionHandler.has(player, "ragemod.npc"))
+    			{
+        			npcCommands.onNPCCommand(player, playerData, split);
+    			}
+        		event.setCancelled(true);
+        	}
+        	
+        	// ********* DEBUG COMMANDS **********
+        	else if(split[0].equalsIgnoreCase("/debug") && RageMod.permissionHandler.has(player, "ragemod.debug") )
+        	{
+        		debugCommands.onDebugCommand(player, playerData, split);  
+        		event.setCancelled(true);
+        	}
     	}
     	
-    	// ********* COMPASS COMMANDS *********
-    	else if( split[0].equalsIgnoreCase("/compass") )
-    	{
-    		compassCommands.onCompassCommand(player, playerData, split);
-    	}
     	
-    	// ********* LOT COMMANDS *********
-    	else if( split[0].equalsIgnoreCase("/lot") )
-    	{
-    		lotCommands.onLotCommand(player, playerData, split);
-    	}
     	
-    	// ********* TOWN COMMANDS *********
-    	else if( split[0].equalsIgnoreCase("/town") )
-    	{
-    		townCommands.onTownCommand(player, playerData, split);
-    	}
-    	
-    	// ********* FACTION COMMANDS **********
-    	else if(split[0].equalsIgnoreCase("/faction") )
-    	{
-    		factionCommands.onFactionCommand(player, playerData, split);
-    	}
-    	// ********* QUEST COMMANDS **********
-    	else if(split[0].equalsIgnoreCase("/quest")) 
-    	{
-    		questCommands.onQuestCommand(player, playerData, split);
-    	}
-    	// ********* NPC COMMANDS ************
-    	else if(split[0].equalsIgnoreCase("/npc"))
-    	{
-    		if(RageMod.permissionHandler.has(player, "ragemod.npc"))
-			{
-    			npcCommands.onNPCCommand(player, playerData, split);
-			}
-    	}
-    	
-    	// ********* DEBUG COMMANDS **********
-    	else if(split[0].equalsIgnoreCase("/debug") && RageMod.permissionHandler.has(player, "ragemod.debug") )
-    	{
-    		debugCommands.onDebugCommand(player, playerData, split);    		
-    	}
-    	event.setCancelled(true);
     }
     
     // Player movement
@@ -261,7 +332,7 @@ public class RMPlayerListener extends PlayerListener
     	Player player = event.getPlayer();
     	PlayerData playerData = plugin.players.get(player.getName());
     	
-    	if( playerData.spawn_IsSet )
+    	if( playerData.spawn_IsSet && !plugin.config.DISABLE_NON_LOT_CODE )
     	{
     		event.setRespawnLocation(playerData.getSpawnLocation());
     	}

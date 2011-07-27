@@ -91,7 +91,7 @@ public class NPCUtilities {
 					{
 						for(int z = -1; z < 2; z++)
 						{
-							if(possibleLocation.getBlock().getRelative(x, y, z).isEmpty())
+//							if(possibleLocation.getBlock().getRelative(x, y, z).isEmpty())  // TODO: Commented out by Icarus, preventing compilation
 							{
 								
 							}

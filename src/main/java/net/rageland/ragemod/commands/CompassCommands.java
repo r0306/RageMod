@@ -29,10 +29,13 @@ public class CompassCommands
 				Util.message(player, "   /compass lot <lot_code>   (points compass to specified lot)");
 			if( true )
 				Util.message(player, "   /compass spawn   (points compass to world spawn)");
-			if( playerData.townName.equals("") )
-				Util.message(player, "   /compass town <town_name>   (points compass to specified town)");
-			else
-				Util.message(player, "   /compass town [town_name]   (points compass to town)");
+			if( !plugin.config.DISABLE_NON_LOT_CODE )
+			{
+				if( playerData.townName.equals("") )
+					Util.message(player, "   /compass town <town_name>   (points compass to specified town)");
+				else
+					Util.message(player, "   /compass town [town_name]   (points compass to town)");
+			}	
 		}
 		else if( split[1].equalsIgnoreCase("lot") )
 		{
@@ -45,7 +48,7 @@ public class CompassCommands
 		{
 			this.spawn(player);
 		}
-		else if( split[1].equalsIgnoreCase("town") )
+		else if( split[1].equalsIgnoreCase("town") && !plugin.config.DISABLE_NON_LOT_CODE )
 		{
 			if( split.length == 2 && !playerData.townName.equals("") )
 				this.town(player, playerData.townName);

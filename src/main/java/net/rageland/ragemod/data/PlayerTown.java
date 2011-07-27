@@ -85,7 +85,7 @@ public class PlayerTown implements Comparable<PlayerTown> {
 		if( id_Faction == 0 )
 			return townLevel.level >= plugin.config.Town_MAX_LEVEL_NEUTRAL;
 		else
-			return townLevel.level >= plugin.config.Town_MAXLEVEL_FACTION;
+			return townLevel.level >= plugin.config.Town_MAX_LEVEL_FACTION;
 	}
 	
 	public boolean isCapitol()

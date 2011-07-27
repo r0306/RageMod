@@ -62,6 +62,7 @@ public class Util
 		message = highlightParentheses(message, color);
 		message = highlightSilver(message, color);
 		message = highlightCopper(message, color);
+		message = highlightURL(message, color);
 		
 		player.sendMessage(message);
 	}
@@ -107,5 +108,11 @@ public class Util
 		Pattern pattern = Pattern.compile("([\\d,]+ Copper)");
 	    Matcher matcher = pattern.matcher(message);
 	    return matcher.replaceAll(ChatColor.DARK_GRAY + "$1" + color);
+	}
+	private static String highlightURL(String message, ChatColor color)
+	{
+		Pattern pattern = Pattern.compile("(http://\\S+)");
+	    Matcher matcher = pattern.matcher(message);
+	    return matcher.replaceAll(ChatColor.AQUA + "$1" + color);
 	}
 }

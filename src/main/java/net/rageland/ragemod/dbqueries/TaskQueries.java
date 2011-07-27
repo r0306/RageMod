@@ -22,8 +22,10 @@ public class TaskQueries {
 	}
 	
 	// Load the latest ran task times for all tasks
-	public void loadTaskTimes(HashMap<String, Timestamp> tasks) 
+	public HashMap<String, Timestamp> loadTaskTimes() // The refactoring broke it here - DC
 	{
+		HashMap<String, Timestamp> tasks = new HashMap<String, Timestamp>();
+		
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
 	    ResultSet rs = null;
@@ -38,6 +40,7 @@ public class TaskQueries {
         	{
         		tasks.put(rs.getString("Name"), rs.getTimestamp("Timestamp"));       		
         	}
+        	return tasks;
         	
     	} 
 		catch (Exception e) {
@@ -45,6 +48,8 @@ public class TaskQueries {
 		} finally {
 			rageDB.close(rs, preparedStatement, conn);
 		}
+		
+		return null;
 	}
 
 	// Log a task as complete in the database

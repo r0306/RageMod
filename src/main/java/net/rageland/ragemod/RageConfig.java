@@ -20,21 +20,22 @@ public class RageConfig {
 	private RageMod plugin;
 	
 	// General settings
-	public String ServerName = "Rageland";
+	public String SERVER_NAME = "Rageland";
+	public boolean DISABLE_NON_LOT_CODE;
 	
 	// Database settings
-	public String DB_URL = "<DB URL>";
-    public String DB_NAME = "<DB Name>";
-    public String DB_DRIVER = "com.mysql.jdbc.Driver";
-    public String DB_USER = "<DB User>";
-    public String DB_PASSWORD = "<DB Password>";
+	public String DB_URL;
+    public String DB_NAME;
+    public String DB_DRIVER;
+    public String DB_USER;
+    public String DB_PASSWORD;
     
     // Town settings
     public int Town_MIN_DISTANCE_BETWEEN = 400;
     public int Town_MIN_DISTANCE_ENEMY_CAPITOL = 2000;
     public int Town_MIN_DISTANCE_SPAWN = 1000;  // This leaves the issue of towns hanging into the neutral zone
     public int Town_MAX_LEVEL_NEUTRAL = 4;
-    public int Town_MAXLEVEL_FACTION = 5;
+    public int Town_MAX_LEVEL_FACTION = 5;
     public int Town_DISTANCE_BETWEEN_BEDS = 6;
     public double Town_UPKEEP_PER_PLAYER = 1.00;
     public int Town_MAX_BANKRUPT_DAYS = 7;
@@ -50,8 +51,8 @@ public class RageConfig {
     public int Zone_BORDER_C = 2500;  // Distance from spawn
 
     // Lot settings
-    public int Lot_X_OFFSET = -384;			// How to convert the web X coordinates to in-game coords
-    public int Lot_Z_OFFSET = 416;
+    public int Lot_X_OFFSET;			// How to convert the web X coordinates to in-game coords
+    public int Lot_Z_OFFSET;
     public int Lot_MULTIPLIER = 16;			// The lot grid is based on 16x16 chunks
     public int Lot_PRICE_COAL = 10;			// Price for Coal-level member lot in USD
     public int Lot_PRICE_IRON = 20;			// Price for Iron-level member lot in USD
@@ -59,16 +60,16 @@ public class RageConfig {
     public int Lot_PRICE_DIAMOND = 40;		// Price for Diamond-level member lot in USD
     
     // Capitol settings
-    public String Capitol_Name = "Rage City";
-    public int Capitol_X1a = -386;			// The NW corner of region A for capitol
-    public int Capitol_Z1a = 146;
-    public int Capitol_X2a = -82;			// The SE corner of region A for capitol
-    public int Capitol_Z2a = -261;
-    public int Capitol_X1b = -83;			// The NW corner of region B for capitol
-    public int Capitol_Z1b = 418;
-    public int Capitol_X2b = 513;			// The SE corner of region B for capitol
-    public int Capitol_Z2b = -261;
-    public String Capitol_SANDLOT = "114,60,-19,141,68,-46";		// Auto-regen sand mine
+    public String Capitol_Name;
+    public int Capitol_X1a;			// The NW corner of region A for capitol
+    public int Capitol_Z1a;
+    public int Capitol_X2a;			// The SE corner of region A for capitol
+    public int Capitol_Z2a;
+    public int Capitol_X1b;			// The NW corner of region B for capitol
+    public int Capitol_Z1b;
+    public int Capitol_X2b;			// The SE corner of region B for capitol
+    public int Capitol_Z2b;
+    public String Capitol_SANDLOT;		// Auto-regen sand mine
     public int Capitol_SANDLOT_GOLD_ODDS = 100000;				// Chance (1 / x) of gold spawning in sand mine
     public int Capitol_SANDLOT_DIAMOND_ODDS = 1000000;
     
@@ -97,13 +98,35 @@ public class RageConfig {
     
     private void loadConfigValues() 
     {
-    	
     	pluginConfig = plugin.getConfiguration();
-    	DB_URL = pluginConfig.getString("dburl");
-		DB_NAME = pluginConfig.getString("dbname");
-		DB_DRIVER = pluginConfig.getString("dbdriver");
-		DB_USER = pluginConfig.getString("dbuser");
-		DB_PASSWORD = pluginConfig.getString("dbpassword");    
+    	
+    	DISABLE_NON_LOT_CODE = pluginConfig.getBoolean("general.disable_non_lot_code", false);
+		if( DISABLE_NON_LOT_CODE )
+			System.out.println("Activating Lot-only mode.");
+    	
+    	DB_URL = pluginConfig.getString("database.url");
+		DB_NAME = pluginConfig.getString("database.name");
+		DB_DRIVER = pluginConfig.getString("database.driver");
+		DB_USER = pluginConfig.getString("database.user");
+		DB_PASSWORD = pluginConfig.getString("database.password");  
+		
+		this.Lot_X_OFFSET = pluginConfig.getInt("lots.x_offset", -384); 
+		this.Lot_Z_OFFSET = pluginConfig.getInt("lots.z_offset", 416); 
+		
+		Capitol_Name = pluginConfig.getString("capitol.name", "Rage City");
+	    Capitol_X1a = pluginConfig.getInt("capitol.x1a", -386);			// The NW corner of region A for capitol
+	    Capitol_Z1a = pluginConfig.getInt("capitol.z1a", 146);
+	    Capitol_X2a = pluginConfig.getInt("capitol.x2a", -82);			// The SE corner of region A for capitol
+	    Capitol_Z2a = pluginConfig.getInt("capitol.z2a", -261);
+	    Capitol_X1b = pluginConfig.getInt("capitol.x1b", -83);			// The NW corner of region B for capitol
+	    Capitol_Z1b = pluginConfig.getInt("capitol.z1b", 418);
+	    Capitol_X2b = pluginConfig.getInt("capitol.x2b", 513);			// The SE corner of region B for capitol
+	    Capitol_Z2b = pluginConfig.getInt("capitol.x2b", -261);
+	    Capitol_SANDLOT = pluginConfig.getString("capitol.sandlot", "114,60,-19,141,68,-46");
+		
+		System.out.println("Connecting to " + DB_URL + "...");		// Debug
+		
+		
 		
     }    
     

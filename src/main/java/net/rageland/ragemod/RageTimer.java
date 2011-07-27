@@ -28,6 +28,7 @@ public class RageTimer implements Runnable
 			// Fill sandlot
 			if( plugin.tasks.getSeconds("FILL_SANDLOT") > plugin.config.Task_FILL_SANDLOT )
 			{
+				System.out.println("It has been " + plugin.tasks.getSeconds("FILL_SANDLOT") + " seconds since the last sandlot fill.");
 				plugin.tasks.processFillSandlot(plugin);
 				plugin.tasks.setComplete("FILL_SANDLOT");
 			}

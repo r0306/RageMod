@@ -10,6 +10,7 @@ import org.bukkit.Location;
 
 import net.rageland.ragemod.RageDB;
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTowns;
 
@@ -53,7 +54,7 @@ public class PlayerQueries {
         	{
         		playerData = fillPlayerData(rs);
         		
-        		// Set LastLogin time
+        		// Set LastLogin time  TODO: Does the playerLog table deprecate this?  I'm thinking yes...
         		preparedStatement = conn.prepareStatement("UPDATE Players SET LastLogin = NOW() WHERE Name = '" + playerName + "'");
         		preparedStatement.executeUpdate();
         	}
@@ -70,6 +71,10 @@ public class PlayerQueries {
         		rs.next();
         		playerData = fillPlayerData(rs);
         	}	        	
+        	
+        	// Log the player's logon time
+        	preparedStatement = conn.prepareStatement("INSERT INTO PlayerLog (ID_Player, LogonTime) VALUES ('" + playerData.id_Player + "', NOW())");
+    		preparedStatement.executeUpdate();
         	
         	return playerData;				
         		        	
@@ -92,12 +97,17 @@ public class PlayerQueries {
 		playerData.id_Player = rs.getInt("ID_Player");
 		playerData.name = rs.getString("Name");
 		playerData.id_Faction = rs.getInt("ID_Faction");
-		playerData.isMember = rs.getBoolean("IsMember");
 		playerData.memberExpiration = rs.getDate("MemberExpiration");
 		playerData.bounty = rs.getFloat("Bounty");
 		playerData.extraBounty = rs.getFloat("ExtraBounty");
 		playerData.townName = rs.getString("TownName");
 		playerData.isMayor = rs.getBoolean("IsMayor");
+		
+		// Set the player's isMember boolean based on the expiration date
+		if( playerData.memberExpiration == null )
+			playerData.isMember = false;
+		else
+			playerData.isMember = playerData.memberExpiration.getTime() > Util.now().getTime();
 		
 		playerData.home_IsSet = rs.getBoolean("Home_IsSet");
 		playerData.home_X = rs.getInt("Home_XCoord");
@@ -329,6 +339,34 @@ public class PlayerQueries {
 		}
 		
 		return 0;
+	}
+
+	// Log the player's logoff time
+	public void playerLogoff(int id_Player) 
+	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
+		try
+    	{
+			conn = rageDB.getConnection();
+			
+			// Get the ID of the latest entry
+			preparedStatement = conn.prepareStatement(
+	        		"SELECT ID_PlayerLog FROM PlayerLog WHERE ID_Player = " + id_Player + " ORDER BY ID_PlayerLog DESC LIMIT 1");
+        	rs = preparedStatement.executeQuery();
+        	rs.next();
+        	int id_PlayerLog = rs.getInt("ID_PlayerLog");
+			
+        	// Update the database
+        	preparedStatement = conn.prepareStatement("UPDATE PlayerLog SET LogoffTime = NOW() WHERE ID_PlayerLog = " + id_PlayerLog);
+    		preparedStatement.executeUpdate();       	
+    	} 
+		catch (Exception e) {
+    		System.out.println("Error in RageDB.playerLogoff(): " + e.getMessage());
+		} finally {
+			rageDB.close(rs, preparedStatement, conn);
+		}
 	}
 	
 }

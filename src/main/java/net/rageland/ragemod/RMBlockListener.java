@@ -55,6 +55,10 @@ public class RMBlockListener extends BlockListener
     		return;
     	}
     	
+    	// *** DISABLE ALL FURTHER CODE FOR LOT RELEASE ***
+    	if( plugin.config.DISABLE_NON_LOT_CODE )
+    		return;
+    	
     	// Bed breaking - clear spawn and home
     	if( block.getType() == Material.BED_BLOCK )
     	{
@@ -108,6 +112,10 @@ public class RMBlockListener extends BlockListener
     		event.setCancelled(true);
     		return;
     	}
+    	
+    	// *** DISABLE ALL FURTHER CODE FOR LOT RELEASE ***
+    	if( plugin.config.DISABLE_NON_LOT_CODE )
+    		return;
     	
     	// Bed placement - set spawn and home
     	if( block.getType() == Material.BED_BLOCK )

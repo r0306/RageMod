@@ -30,14 +30,15 @@ public class NPCCommands {
 			{
 				
 			}
-		} 
+		}  
 		else if(split.length == 2)
 		{
 			
 		}
 	}
 	
-	private void spawnQuestStartNPC(Player player, PlayerData playerData, Quest quest, String npcName) {
+	private void spawnQuestStartNPC(Player player, PlayerData playerData, Quest quest, String npcName) 
+	{
 		Location l = player.getLocation();
 		
 		plugin.npcManager.spawnQuestStartNPC(npcName, l, quest);

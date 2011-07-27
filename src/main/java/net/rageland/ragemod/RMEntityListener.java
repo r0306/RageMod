@@ -67,8 +67,6 @@ public class RMEntityListener extends EntityListener
     	if(rawEvent instanceof EntityDamageByEntityEvent)
     	{
     		EntityDamageByEntityEvent edbeEvent = (EntityDamageByEntityEvent)rawEvent;
-    		System.out.println("DAMAGE!");
-    		
         	
         	Entity attackerEntity = edbeEvent.getDamager();  
         	
@@ -84,7 +82,7 @@ public class RMEntityListener extends EntityListener
 			}
         	
             // Handle PvP
-            if( attackerEntity instanceof Player && defenderEntity instanceof Player ) 
+            if( attackerEntity instanceof Player && defenderEntity instanceof Player && !plugin.config.DISABLE_NON_LOT_CODE ) 
             {
             	Player attacker = (Player)attackerEntity;
             	Player defender = (Player)defenderEntity;
@@ -175,13 +173,16 @@ public class RMEntityListener extends EntityListener
             }
             else if( defenderEntity instanceof Player && attackerEntity instanceof Creature)
             {
-            	// Automatically kill monsters who attack admins
-            	Creature creature = (Creature)attackerEntity;
-            	creature.damage(100);
-            	System.out.println("Attempted to kill attacking creature");
+            	Player defenderPlayer = (Player) defenderEntity;
+            	if( RageMod.permissionHandler.has(defenderPlayer, "ragemod.admin.smitemobs") )
+            	{
+            		// Automatically kill monsters who attack admins
+                	Creature creature = (Creature)attackerEntity;
+                	creature.damage(100);
+            	}
             } 
             // Defender is Creature, Attacker is Player
-            else if(defenderEntity instanceof Creature && attackerEntity instanceof Player)
+            else if(defenderEntity instanceof Creature && attackerEntity instanceof Player && !plugin.config.DISABLE_NON_LOT_CODE)
             {
             	Creature defenderCreature = (Creature)defenderEntity;
             	Player attackerPlayer = (Player) attackerEntity;

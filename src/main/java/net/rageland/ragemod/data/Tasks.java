@@ -36,7 +36,7 @@ public class Tasks {
 	// On startup, pull all records of when tasks ran last
 	public void loadTaskTimes()
 	{
-		plugin.database.taskQueries.loadTaskTimes(tasks);
+		tasks = plugin.database.taskQueries.loadTaskTimes();
 	}
 	
 	// Log task as complete
@@ -65,6 +65,9 @@ public class Tasks {
 		double cost = plugin.config.Town_UPKEEP_PER_PLAYER;
 		Holdings holdings;
 		PlayerData playerData;
+		
+		if( plugin.config.DISABLE_NON_LOT_CODE )
+			return;
 		
 		System.out.println("Beginning town upkeep processing...");
 		

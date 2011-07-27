@@ -55,7 +55,6 @@ public class RageMod extends JavaPlugin {
 
     public static String mainDirectory = "plugins/RageMod";
     public File file = new File(mainDirectory + File.separator + "config.yml");
-    private Timer rageTimer = new Timer(true);
     public Lots lots;
     public Players players;
     public PlayerTowns playerTowns;
@@ -78,7 +77,7 @@ public class RageMod extends JavaPlugin {
     
     public void onEnable() 
     {    	
-    	serverListener = new RMServerListener(this);
+       	serverListener = new RMServerListener(this);
     	playerListener = new RMPlayerListener(this);
     	blockListener = new RMBlockListener(this);  
     	entityListener = new RMEntityListener(this);
@@ -105,13 +104,14 @@ public class RageMod extends JavaPlugin {
         pluginManager.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
         pluginManager.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
         pluginManager.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Normal, this);
+        pluginManager.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Normal, this);
         
         pluginManager.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this);
         pluginManager.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Priority.Normal, this);
         
         pluginManager.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, Priority.Highest, this);
         pluginManager.registerEvent(Event.Type.ENTITY_INTERACT, entityListener, Priority.High, this);
-        // pluginManager.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this);        
+        pluginManager.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this);        
 		pluginManager.registerEvent(Event.Type.ENTITY_TARGET, entityListener, Event.Priority.Normal, this);
 		pluginManager.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Event.Priority.Normal, this);
         
@@ -120,6 +120,7 @@ public class RageMod extends JavaPlugin {
         
         // Load the HashMaps for DB data
         lots.loadLots();
+        tasks.loadTaskTimes();
         
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new RageTimer(this), 20, 20);
         

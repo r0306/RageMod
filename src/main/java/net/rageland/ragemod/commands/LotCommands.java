@@ -255,7 +255,17 @@ public class LotCommands
 			
 			if( donation < lot.getPrice() )
 			{
-				Util.message(player, "To claim this lot you must be a " + lot.getCategoryName() + "-level " + plugin.config.ServerName + " member.");
+				Util.message(player, "To claim this lot you must be a " + lot.getCategoryName() + "-level " + plugin.config.SERVER_NAME + " member.");
+				Util.message(player, "Visit http://www.rageland.net/donate for more details.");
+				return;
+			}
+		}
+		// See if the player has an active membership
+		if( lot.category == LotCategory.MARKET )
+		{
+			if( !playerData.isMember )
+			{
+				Util.message(player, "To claim a Market lot you must be an active " + plugin.config.SERVER_NAME + " member.");
 				Util.message(player, "Visit http://www.rageland.net/donate for more details.");
 				return;
 			}

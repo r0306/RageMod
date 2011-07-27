@@ -2,6 +2,6 @@ name: RageMod
 main: net.rageland.ragemod.RageMod
 version: 0.1
 commands:
-  town:
+  lot:
     description: N/A
-    usage: /town
+    usage: /lot
