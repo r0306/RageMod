@@ -260,10 +260,6 @@ public class RMEntityListener extends EntityListener
             		}
             	}
             }
-            else
-            {
-            	System.out.println(attackerEntity.getEntityId() + " entity caused damage.");
-            }
     	}
     }
     

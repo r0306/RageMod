@@ -6,7 +6,7 @@ import java.util.*;
 class ConnectionReaper extends Thread {
 
     private JDCConnectionPool pool;
-    private final long delay=300000;
+    private final long delay=3600000;		// TODO: this was 300000
 
     ConnectionReaper(JDCConnectionPool pool) {
         this.pool=pool;
@@ -17,6 +17,7 @@ class ConnectionReaper extends Thread {
            try {
               sleep(delay);
            } catch( InterruptedException e) { }
+           System.out.println("[RAGE] Attempting to reap connections... (pool size: " + pool.connections.size() + ")");
            pool.reapConnections();
         }
     }
@@ -68,10 +69,10 @@ public class JDCConnectionPool {
 
    public Vector<JDCConnection> connections;
    private String url, user, password;
-   final private long timeout=60000;
+   final private long timeout=20000000; 			// TODO: This was 60000
    private ConnectionReaper reaper;
    private ConnectionKeepAlive pinger;
-   final private int poolsize=10;
+   final private int poolsize=20;
 
    public JDCConnectionPool(String url, String user, String password) {
       this.url = url;
@@ -80,8 +81,8 @@ public class JDCConnectionPool {
       connections = new Vector<JDCConnection>(poolsize);
       reaper = new ConnectionReaper(this);
       reaper.start();
-      pinger = new ConnectionKeepAlive(connections);
-      pinger.start();
+      //pinger = new ConnectionKeepAlive(connections);
+      //pinger.start();
    }
 
    public synchronized void reapConnections() {
@@ -89,13 +90,23 @@ public class JDCConnectionPool {
       long stale = System.currentTimeMillis() - timeout;
       Enumeration<JDCConnection> connlist = connections.elements();
     
-      while((connlist != null) && (connlist.hasMoreElements())) {
+      while( (connlist != null) && (connlist.hasMoreElements()) ) 
+      {
           JDCConnection conn = (JDCConnection)connlist.nextElement();
 
-          if((conn.inUse()) && (stale >conn.getLastUse()) && 
-                                            (!conn.validate())) {
- 	      removeConnection(conn);
-         }
+          System.out.println("[RAGE] Conn. " + connections.indexOf(conn) + ": inUse: " + conn.inUse() + ", stale: " + ((stale-conn.getLastUse())/1000) + " validate(): " + conn.validate());
+          
+          if((conn.inUse()) && !conn.validate()) // Reap all connections that fail validate() (DC)
+          {
+        	  removeConnection(conn);
+        	  System.out.println("RAGE: Connection pool reaped broken connection.  Pool size: " + connections.size());
+          }
+          // Also reap ALL older connections - the pool isn't going to try to use them anyway
+          else if((!conn.inUse() && (stale > conn.getLastUse())) || (!conn.validate())) // Reap all connections that fail validate() or are too old (DC)
+          {
+        	  removeConnection(conn);
+        	  System.out.println("RAGE: Connection pool reaped idle connection.  Pool size: " + connections.size());
+          }
       }
    }
 
@@ -115,13 +126,18 @@ public class JDCConnectionPool {
 
 
    public synchronized Connection getConnection() throws SQLException {
-       for(JDCConnection connection : connections) {    	   
-           if(connection.validate() && connection.lease()) 
+	   long stale = System.currentTimeMillis() - timeout;   // DC - added stale checking to getConnection - don't even try with old connections
+	   
+	   for(JDCConnection connection : connections) {    	   
+           if(stale < connection.getLastUse() && (connection.validate() && connection.lease())) 
            {
-              return connection;
+               System.out.println("[RAGE] Getting connection " + connections.indexOf(connection));
+        	   return connection;
            } 
        }
 
+       System.out.println("[RAGE] Creating new connection");
+       
        Connection conn = DriverManager.getConnection(url, user, password);
        JDCConnection newConnection = new JDCConnection(conn, this);
        newConnection.lease();

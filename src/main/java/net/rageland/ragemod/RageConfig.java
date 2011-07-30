@@ -121,7 +121,7 @@ public class RageConfig {
 	    Capitol_X1b = pluginConfig.getInt("capitol.x1b", -83);			// The NW corner of region B for capitol
 	    Capitol_Z1b = pluginConfig.getInt("capitol.z1b", 418);
 	    Capitol_X2b = pluginConfig.getInt("capitol.x2b", 513);			// The SE corner of region B for capitol
-	    Capitol_Z2b = pluginConfig.getInt("capitol.x2b", -261);
+	    Capitol_Z2b = pluginConfig.getInt("capitol.z2b", -261);
 	    Capitol_SANDLOT = pluginConfig.getString("capitol.sandlot", "114,60,-19,141,68,-46");
 		
 		System.out.println("Connecting to " + DB_URL + "...");		// Debug
