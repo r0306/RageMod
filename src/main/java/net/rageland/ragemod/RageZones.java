@@ -35,7 +35,8 @@ public class RageZones {
 		A,
 		B,
 		C,
-		OUTSIDE;
+		OUTSIDE,
+		UNKNOWN;
 	}
 	
 	private RageMod plugin;
@@ -67,6 +68,9 @@ public class RageZones {
     // TODO: Remove this and make calls to it use a combination of GetCurrentZone and GetName
     public String getName(Location location) 
     {
+    	if(!(location.getWorld() == world))
+    		return location.getWorld().getName();
+    		
     	double distanceFromSpawn = WorldSpawn.distance(location);
     	
     	if( distanceFromSpawn >= 0 && distanceFromSpawn <= ZoneA_Border )
@@ -99,6 +103,10 @@ public class RageZones {
     // Calculates the player's current zone based on their location
     public Zone getCurrentZone(Location location)
     {
+    	if(!(location.getWorld() == world))
+    		return Zone.UNKNOWN;
+    
+    	
 		double distanceFromSpawn = WorldSpawn.distance(location);
     	
     	if( distanceFromSpawn >= 0 && distanceFromSpawn <= ZoneA_Border )
@@ -121,25 +129,37 @@ public class RageZones {
     // Returns whether or not the location is in Zone A
     public boolean isInZoneA(Location location)
     {
-    	return ( WorldSpawn.distance(location) >= 0 && WorldSpawn.distance(location) <= ZoneA_Border );
+    	if(location.getWorld() == world)
+    		return ( WorldSpawn.distance(location) >= 0 && WorldSpawn.distance(location) <= ZoneA_Border );
+    	else
+    		return false;
     }
     
     // Returns whether or not the location is in Zone A
     public boolean isInZoneB(Location location)
     {
-    	return ( WorldSpawn.distance(location) > ZoneA_Border && WorldSpawn.distance(location) <= ZoneB_Border );
+    	if(location.getWorld() == world)
+    		return ( WorldSpawn.distance(location) > ZoneA_Border && WorldSpawn.distance(location) <= ZoneB_Border );
+    	else
+    		return false;
     }
     
     // Returns whether or not the location is in Zone A
     public boolean isInZoneC(Location location)
     {
-    	return ( WorldSpawn.distance(location) > ZoneB_Border && WorldSpawn.distance(location) <= ZoneC_Border );
+    	if(location.getWorld() == world)
+    		return ( WorldSpawn.distance(location) > ZoneB_Border && WorldSpawn.distance(location) <= ZoneC_Border );
+    	else
+    		return false;
     }
     
     // Returns whether the player is in the world capitol
     public boolean isInCapitol(Location location)
     {
-    	return ( Capitol_RegionA.isInside(location) || Capitol_RegionB.isInside(location) );
+    	if(location.getWorld() == world)
+    		return ( Capitol_RegionA.isInside(location) || Capitol_RegionB.isInside(location) );
+    	else
+    		return false;
     }
     
     // Checks whether a specified action is allowed in the zone specified by 'location'
@@ -148,7 +168,7 @@ public class RageZones {
     	// Put the most frequently called checks at the beginning.  On that note, would it be 
     	// better to split this method into multiple methods to prevent having to do so many comparisons?
     	if(action == Action.TOWN_CREATE)
-    		return isInZoneB(location);
+    		return (isInZoneB(location) && location.getWorld() == world);
     	
     	// If we haven't recognized the action, return false.  Should this throw an exception?
     	return false;
@@ -157,7 +177,7 @@ public class RageZones {
     // Checks to see whether the location is inside the sand lot
     public boolean isInSandlot(Location location)
     {
-    	return ( Capitol_SandLot.isInside(location) );
+    	return ( Capitol_SandLot.isInside(location) && location.getWorld() == world);
     }
     
 

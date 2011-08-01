@@ -29,7 +29,7 @@ public class Tasks {
 	public Tasks(RageMod plugin)
 	{
 		this.plugin = plugin;
-		tasks = new HashMap<String, Timestamp>();
+		
 	}
 	
 	
@@ -37,6 +37,8 @@ public class Tasks {
 	public void loadTaskTimes()
 	{
 		tasks = plugin.database.taskQueries.loadTaskTimes();
+		if(tasks == null)
+			tasks = new HashMap<String, Timestamp>();
 	}
 	
 	// Log task as complete
