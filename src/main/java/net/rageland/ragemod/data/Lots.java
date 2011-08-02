@@ -82,6 +82,9 @@ public class Lots
     // Find which lot the player is standing in, if any
     public Lot findCurrentLot(Location loc)
     {
+    	if(!loc.getWorld().getName().equals("world"))
+    		return null;
+    	
     	for( Lot lot : lots.values() )
 		{
     		if( lot.isInside(loc) )

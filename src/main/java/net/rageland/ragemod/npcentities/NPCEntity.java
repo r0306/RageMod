@@ -54,11 +54,19 @@ public class NPCEntity extends EntityPlayer {
 		this.plugin = plugin;
 	}
 
+	/**
+	 * Placeholder method for a right click action performed by a player on a NPC
+	 * @param player The player that right clicks
+	 */
 	public void rightClickAction(Player player) 
 	{
 		
 	}
 
+	/**
+	 * Placeholder method for a left click action performed by a player on a NPC
+	 * @param player The player that left clicks
+	 */
 	public void leftClickAction(Player player) 
 	{
 		
