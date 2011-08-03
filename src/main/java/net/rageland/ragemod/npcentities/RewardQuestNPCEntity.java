@@ -9,26 +9,26 @@ import net.rageland.ragemod.quest.Quest;
 
 import org.bukkit.entity.Player;
 
-public class RewardQuestNPCEntity extends NPCEntity 
+public class RewardQuestNPCEntity extends NPCEntity
 {
 	private Quest quest;
-	
-	public RewardQuestNPCEntity(
-			MinecraftServer minecraftserver, 
-			World world, String name,
-			ItemInWorldManager iteminworldmanager, 
-			RageMod plugin,
-			Quest quest) 
+
+	public RewardQuestNPCEntity(MinecraftServer minecraftserver, World world,
+			String name, ItemInWorldManager iteminworldmanager, RageMod plugin,
+			Quest quest)
 	{
 		super(minecraftserver, world, name, iteminworldmanager, plugin);
-		this.quest = quest;		
+		this.quest = quest;
 	}
-	
+
 	/**
-	 * Method called when a right click action on the NPC is performed by a player.	 * 
-	 * @param player Player that right clicked the entity
+	 * Method called when a right click action on the NPC is performed by a
+	 * player. *
+	 * 
+	 * @param player
+	 *            Player that right clicked the entity
 	 */
-	public void rightClickAction(Player player) 
+	public void rightClickAction(Player player)
 	{
 		Util.message(player, "Quest: " + quest.getQuestName());
 		Util.message(player, quest.getQuestText());
@@ -36,10 +36,13 @@ public class RewardQuestNPCEntity extends NPCEntity
 	}
 
 	/**
-	 * Method called when a left click action on the NPC is performed by a player.	 * 
-	 * @param player Player that left clicked the entity
+	 * Method called when a left click action on the NPC is performed by a
+	 * player. *
+	 * 
+	 * @param player
+	 *            Player that left clicked the entity
 	 */
-	public void leftClickAction(Player player) 
+	public void leftClickAction(Player player)
 	{
 		quest.questStart(player, this.plugin.players.get(player.getName()));
 	}

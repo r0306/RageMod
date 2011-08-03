@@ -8,7 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class RewardQuest implements Quest 
+public class RewardQuest implements Quest
 {
 	private String questName;
 	private int questId;
@@ -20,16 +20,10 @@ public class RewardQuest implements Quest
 	private boolean isQuestAttachedToRandomNPC;
 	private boolean isActiveQuestNPC;
 
-	public RewardQuest( 
-						int questId, 
-						String questName, 
-						String questText,						
-						String questFinished, 
-						ItemStack rewardItem, 
-						int rewardItemAmount,
-						double coinRewardAmount, 
-						boolean isRandomNPC,
-						boolean isActiveQuestNPC ) 
+	public RewardQuest(int questId, String questName, String questText,
+			String questFinished, ItemStack rewardItem, int rewardItemAmount,
+			double coinRewardAmount, boolean isRandomNPC,
+			boolean isActiveQuestNPC)
 	{
 		this.questId = questId;
 		this.questName = questName;
@@ -42,102 +36,108 @@ public class RewardQuest implements Quest
 		this.isActiveQuestNPC = isActiveQuestNPC;
 	}
 
-	public void questEnd(Player player) 
+	public void questEnd(Player player)
 	{
-		
+
 	}
 
-	public void questStart(Player player, PlayerData playerData) 
+	public void questStart(Player player, PlayerData playerData)
 	{
 		presentQuest(player, playerData);
 
-		if (this.isActiveQuestNPC) 
+		if (this.isActiveQuestNPC)
 		{
-			if (NPCUtilities.checkFreeSpace(player.getInventory(), this.rewardItem, this.rewardItemAmount)) 
+			if (NPCUtilities.checkFreeSpace(player.getInventory(),
+					this.rewardItem, this.rewardItemAmount))
 			{
 				player.sendMessage(ChatColor.LIGHT_PURPLE + this.questFinished);
 				player.sendMessage("Received: ");
 
-				if (this.rewardItemAmount > 0) 
+				if (this.rewardItemAmount > 0)
 				{
 					player.sendMessage(ChatColor.DARK_GREEN
 							+ Integer.toString(this.rewardItemAmount)
 							+ ChatColor.GOLD
 							+ this.rewardItem.getType().toString());
-					NPCUtilities.addItemToInventory(player.getInventory(), this.rewardItem, this.rewardItemAmount);
+					NPCUtilities.addItemToInventory(player.getInventory(),
+							this.rewardItem, this.rewardItemAmount);
 				}
 
-				if (this.coinRewardAmount > 0.0D) 
+				if (this.coinRewardAmount > 0.0D)
 				{
-					player.sendMessage(ChatColor.DARK_GREEN + Double.toString(this.coinRewardAmount) + ChatColor.GOLD + " Coins");
+					player.sendMessage(ChatColor.DARK_GREEN
+							+ Double.toString(this.coinRewardAmount)
+							+ ChatColor.GOLD + " Coins");
 				}
 
 				player.sendMessage(" ");
 				player.sendMessage("for finishing &a" + this.questName);
-				
-				if(isQuestAttachedToRandomNPC) 
+
+				if (isQuestAttachedToRandomNPC)
 				{
 					isActiveQuestNPC = false;
 				}
-				
-			} 
-			else 
+
+			}
+			else
 			{
 				player.sendMessage(NPCUtilities.notEnoughSpaceMessage);
 			}
 		}
 	}
 
-	public void presentQuest(Player player, PlayerData playerData) 
+	public void presentQuest(Player player, PlayerData playerData)
 	{
-		if (this.isActiveQuestNPC) 
+		if (this.isActiveQuestNPC)
 		{
 			player.sendMessage(ChatColor.DARK_GREEN + "Quest: "
 					+ ChatColor.YELLOW + "[" + this.questName + "]");
 			player.sendMessage(ChatColor.GREEN + this.questText);
-		} 
-		else 
+		}
+		else
 		{
 			player.sendMessage(ChatColor.GOLD
 					+ "Someone has already finished this quest.");
 		}
 	}
-	
+
 	@Override
-	public boolean isQuestFinished(PlayerData playerData) 
+	public boolean isQuestFinished(PlayerData playerData)
 	{
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public int getQuestId() 
+	public int getQuestId()
 	{
 		return this.questId;
 	}
 
 	@Override
-	public String getQuestName() 
+	public String getQuestName()
 	{
 		return this.questName;
 	}
-	
+
 	@Override
-	public String getQuestText() 
+	public String getQuestText()
 	{
 		return this.questText;
 	}
 
 	@Override
-	public void questEnd(Player player, PlayerData playerData) {
+	public void questEnd(Player player, PlayerData playerData)
+	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void questUpdate(Player player, PlayerData playerData) {
+	public void questUpdate(Player player, PlayerData playerData)
+	{
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 }

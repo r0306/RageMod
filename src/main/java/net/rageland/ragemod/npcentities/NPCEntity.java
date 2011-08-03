@@ -28,21 +28,22 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class NPCEntity extends EntityPlayer {
+public class NPCEntity extends EntityPlayer
+{
 	private int lastTargetId;
 	private long lastBounceTick;
 	private int lastBounceId;
 	protected RageMod plugin;
 
 	public NPCEntity(MinecraftServer minecraftserver, World world, String name,
-			ItemInWorldManager iteminworldmanager, RageMod plugin) 
+			ItemInWorldManager iteminworldmanager, RageMod plugin)
 	{
-		
+
 		super(minecraftserver, world, name, iteminworldmanager);
 		NetworkManager netMgr = new NPCNetworkManager(new NullSocket(),
-				"NPC Manager", new NetHandler() 
+				"NPC Manager", new NetHandler()
 				{
-					public boolean c() 
+					public boolean c()
 					{
 						return true;
 					}
@@ -55,30 +56,35 @@ public class NPCEntity extends EntityPlayer {
 	}
 
 	/**
-	 * Placeholder method for a right click action performed by a player on a NPC
-	 * @param player The player that right clicks
+	 * Placeholder method for a right click action performed by a player on a
+	 * NPC
+	 * 
+	 * @param player
+	 *            The player that right clicks
 	 */
-	public void rightClickAction(Player player) 
+	public void rightClickAction(Player player)
 	{
-		
+
 	}
 
 	/**
 	 * Placeholder method for a left click action performed by a player on a NPC
-	 * @param player The player that left clicks
+	 * 
+	 * @param player
+	 *            The player that left clicks
 	 */
-	public void leftClickAction(Player player) 
+	public void leftClickAction(Player player)
 	{
-		
+
 	}
 
-	public void actAsHurt() 
+	public void actAsHurt()
 	{
 		((WorldServer) this.world).tracker.a(this, new Packet18ArmAnimation(
 				this, 2));
 	}
 
-	public boolean a(EntityHuman entity) 
+	public boolean a(EntityHuman entity)
 	{
 		EntityTargetEvent event = new NpcEntityTargetEvent(getBukkitEntity(),
 				entity.getBukkitEntity(),
@@ -89,9 +95,9 @@ public class NPCEntity extends EntityPlayer {
 		return super.a(entity);
 	}
 
-	public void b(EntityHuman entity) 
+	public void b(EntityHuman entity)
 	{
-		if ((this.lastTargetId == -1) || (this.lastTargetId != entity.id)) 
+		if ((this.lastTargetId == -1) || (this.lastTargetId != entity.id))
 		{
 			EntityTargetEvent event = new NpcEntityTargetEvent(
 					getBukkitEntity(), entity.getBukkitEntity(),
@@ -104,9 +110,10 @@ public class NPCEntity extends EntityPlayer {
 		super.b(entity);
 	}
 
-	public void c(net.minecraft.server.Entity entity) 
+	public void c(net.minecraft.server.Entity entity)
 	{
-		if (this.lastBounceId != entity.id || (System.currentTimeMillis() - this.lastBounceTick > 1000L)) 
+		if (this.lastBounceId != entity.id
+				|| (System.currentTimeMillis() - this.lastBounceTick > 1000L))
 		{
 			EntityTargetEvent event = new NpcEntityTargetEvent(
 					getBukkitEntity(), entity.getBukkitEntity(),
@@ -122,25 +129,24 @@ public class NPCEntity extends EntityPlayer {
 		super.c(entity);
 	}
 
-	public PlayerInventory getInventory() 
+	public PlayerInventory getInventory()
 	{
 		return ((HumanEntity) getBukkitEntity()).getInventory();
 	}
 
-	public void setItemInHand(Material m) 
+	public void setItemInHand(Material m)
 	{
 		((HumanEntity) getBukkitEntity()).setItemInHand(new ItemStack(m, 1));
 	}
 
-	public void setName(String name) 
+	public void setName(String name)
 	{
 		this.name = name;
 	}
 
-	public String getName() 
+	public String getName()
 	{
 		return this.name;
 	}
 
-	
 }

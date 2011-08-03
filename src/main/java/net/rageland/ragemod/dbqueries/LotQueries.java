@@ -31,7 +31,9 @@ public class LotQueries {
 		this.plugin = plugin;
 	}
 	
-	// Make a separate query to get all lots owned by the player
+	/**
+	 *  Make a separate query to get all lots owned by the player
+	 */
 	public ArrayList<Lot> getLots(int id_Player) 
 	{
 		Connection conn = null;

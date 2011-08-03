@@ -10,25 +10,26 @@ import net.rageland.ragemod.quest.Quest;
 
 import org.bukkit.entity.Player;
 
-public class QuestEndNPCEntity extends NPCEntity {
+public class QuestEndNPCEntity extends NPCEntity
+{
 	private Quest quest;
-	
-	public QuestEndNPCEntity(
-			MinecraftServer minecraftserver, 
-			World world, String name,
-			ItemInWorldManager iteminworldmanager, 
-			RageMod plugin,
-			Quest quest) 
+
+	public QuestEndNPCEntity(MinecraftServer minecraftserver, World world,
+			String name, ItemInWorldManager iteminworldmanager, RageMod plugin,
+			Quest quest)
 	{
 		super(minecraftserver, world, name, iteminworldmanager, plugin);
-		this.quest = quest;		
+		this.quest = quest;
 	}
-	
+
 	/**
-	 * Method called when a right click action on the NPC is performed by a player.	 * 
-	 * @param player Player that right clicked the entity
+	 * Method called when a right click action on the NPC is performed by a
+	 * player. *
+	 * 
+	 * @param player
+	 *            Player that right clicked the entity
 	 */
-	public void rightClickAction(Player player) 
+	public void rightClickAction(Player player)
 	{
 		Util.message(player, "Quest: " + quest.getQuestName());
 		Util.message(player, quest.getQuestText());
@@ -36,28 +37,31 @@ public class QuestEndNPCEntity extends NPCEntity {
 	}
 
 	/**
-	 * Method called when a left click action on the NPC is performed by a player.	 * 
-	 * @param player Player that left clicked the entity
+	 * Method called when a left click action on the NPC is performed by a
+	 * player. *
+	 * 
+	 * @param player
+	 *            Player that left clicked the entity
 	 */
-	public void leftClickAction(Player player) 
+	public void leftClickAction(Player player)
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
-		if(playerData != null && 
-				playerData.activeQuestData.quest == quest)
+		if (playerData != null && playerData.activeQuestData.quest == quest)
 		{
-			if(quest.isQuestFinished(playerData))
+			if (quest.isQuestFinished(playerData))
 			{
 				quest.questEnd(player, playerData);
 			}
 			else
 			{
-				Util.message(player, "You havent finished your quest. What are you waiting for?");
+				Util.message(player,
+						"You havent finished your quest. What are you waiting for?");
 			}
 		}
-		else 
+		else
 		{
 			Util.message(player, "Sorry, I can't help you with anything.");
 		}
-		
+
 	}
 }
