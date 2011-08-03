@@ -158,7 +158,7 @@ public class Tasks {
 		{
 			if( plugin.zones.isInSandlot(player.getLocation()) )
 			{
-				Util.message(player, "Automatically refilling sand lot - get out of the way!");
+				plugin.text.message(player, "Automatically refilling sand lot - get out of the way!");
 				player.teleport(world.getSpawnLocation());
 			}
 		}

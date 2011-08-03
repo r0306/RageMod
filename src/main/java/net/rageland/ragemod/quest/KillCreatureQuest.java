@@ -62,21 +62,21 @@ public class KillCreatureQuest implements Quest
 	{
 		if (NPCUtilities.checkFreeSpace(player.getInventory(), this.rewardItem, this.rewardItemAmount)) 
 		{
-			Util.message(player, this.questFinishedText);
-			Util.message(player, "Received: ");
+			plugin.text.message(player, this.questFinishedText);
+			plugin.text.message(player, "Received: ");
 
 			if (this.rewardItemAmount > 0) 
 			{
-				Util.message(player, Integer.toString(this.rewardItemAmount) + this.rewardItem.getType().toString());
+				plugin.text.message(player, Integer.toString(this.rewardItemAmount) + this.rewardItem.getType().toString());
 				NPCUtilities.addItemToInventory(player.getInventory(), this.rewardItem, this.rewardItemAmount);
 			}
 
 			if (this.coinRewardAmount > 0.0D) 
 			{
-				Util.message(player, Double.toString(this.coinRewardAmount) + " Coins");
+				plugin.text.message(player, Double.toString(this.coinRewardAmount) + " Coins");
 			}
 
-			Util.message(player, "for finishing " + this.questName);
+			plugin.text.message(player, "for finishing " + this.questName);
 			
 			if(isQuestAttachedToRandomNPC) 
 			{
@@ -94,12 +94,12 @@ public class KillCreatureQuest implements Quest
 	{
 		if(playerData.activeQuestData != null || playerData.activeQuestData.quest != null)
 		{
-			Util.message(player, "You are already on a quest. To abandon the quest write /quest abandon");
+			plugin.text.message(player, "You are already on a quest. To abandon the quest write /quest abandon");
 		}
 		else 
 		{
-			Util.message(player, "Accepted quest: " + questName);
-			Util.message(player, questText);
+			plugin.text.message(player, "Accepted quest: " + questName);
+			plugin.text.message(player, questText);
 			
 			ActiveQuestData questData = new ActiveQuestData();
 			questData.quest = this;
@@ -148,7 +148,7 @@ public class KillCreatureQuest implements Quest
 
 	@Override
 	public void questUpdate(Player player, PlayerData playerData) {
-		Util.message(player, "You have killed " + playerData.activeQuestData.questCounter + " of " + killNeededCounter + " " + questTargetCreature + "s.");
+		plugin.text.message(player, "You have killed " + playerData.activeQuestData.questCounter + " of " + killNeededCounter + " " + questTargetCreature + "s.");
 	}
 
 }

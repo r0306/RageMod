@@ -55,15 +55,19 @@ public class RageMod extends JavaPlugin {
 
     public static String mainDirectory = "plugins/RageMod";
     public File file = new File(mainDirectory + File.separator + "config.yml");
+    
+    // Global data
     public Lots lots;
     public Players players;
     public PlayerTowns playerTowns;
     public Tasks tasks;
     public Factions factions;
     
+    // Semi-static data and methods
     public RageConfig config;
     public RageDB database;
     public RageZones zones;
+    public Text text;
     public NPCManager npcManager;
     public QuestManager questManager;
     
@@ -90,11 +94,14 @@ public class RageMod extends JavaPlugin {
         playerTowns = new PlayerTowns(this);
         tasks = new Tasks(this);
         factions = new Factions();
+        
     	server = this.getServer();
     	zones = new RageZones(this, config);
         pluginManager = server.getPluginManager();
         npcManager = new NPCManager(this);
         questManager = new QuestManager(this);
+        text = new Text(this);
+        
         
         pluginManager.registerEvent(Event.Type.PLUGIN_ENABLE, this.serverListener, Event.Priority.Normal, this);
         pluginManager.registerEvent(Event.Type.PLUGIN_DISABLE, this.serverListener, Event.Priority.Normal, this);

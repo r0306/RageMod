@@ -43,7 +43,7 @@ public class Players {
     
     private PlayerData generateDefaultPlayer(String playerName) 
     {
-    	PlayerData playerData = new PlayerData();
+    	PlayerData playerData = new PlayerData(plugin);
     	playerData.name = playerName;
     	playerData.id_Player = -1;
     	playerData.id_Faction = -1;

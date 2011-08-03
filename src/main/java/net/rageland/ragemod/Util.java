@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 // Misc. methods
 public class Util 
-{
+{	
 	// Formats the cooldown time into a lovely string
 	public static String formatCooldown(int totalSeconds)
 	{
@@ -45,90 +45,5 @@ public class Util
 		return (int)((now().getTime() - timestamp.getTime()) / 1000);
 	}
 	
-	// Handles default color 
-	public static void message(Player player, String message)
-	{
-		Util.message(player, message, ChatColor.GREEN);
-	}
 	
-	// Formats player messages with colors
-	public static void message(Player player, String message, ChatColor color)
-	{
-		message = color + message;
-		message = highlightPlayers(message, color);
-		message = highlightCommands(message, color);
-		message = highlightRequired(message, color);
-		message = highlightOptional(message, color);
-		message = highlightParentheses(message, color);
-		message = highlightSilver(message, color);
-		message = highlightCopper(message, color);
-		message = highlightURL(message, color);
-		message = highlightTowns(message, color);
-		
-		player.sendMessage(message);
-	}
-	
-	private static String highlightPlayers(String message, ChatColor color)
-	{
-		Pattern pattern = Pattern.compile("\\^\\*(\\S+)\\*\\^");
-	    Matcher matcher = pattern.matcher(message);
-	    return matcher.replaceAll(ChatColor.LIGHT_PURPLE + "$1" + color);
-	}
-	private static String highlightCommands(String message, ChatColor color)
-	{
-		Pattern pattern = Pattern.compile("( /[a-zA-Z]+)");
-	    Matcher matcher = pattern.matcher(message);
-	    return matcher.replaceAll(ChatColor.DARK_GREEN + "$1" + color);
-	}
-	private static String highlightRequired(String message, ChatColor color)
-	{
-		Pattern pattern = Pattern.compile("(<.+>)");
-	    Matcher matcher = pattern.matcher(message);
-	    return matcher.replaceAll(ChatColor.GOLD + "$1" + color);
-	}
-	private static String highlightOptional(String message, ChatColor color)
-	{
-		Pattern pattern = Pattern.compile("(\\[.+\\])");
-	    Matcher matcher = pattern.matcher(message);
-	    return matcher.replaceAll(ChatColor.YELLOW + "$1" + color);
-	}
-	private static String highlightParentheses(String message, ChatColor color)
-	{
-		Pattern pattern = Pattern.compile("([(].+[)])");
-	    Matcher matcher = pattern.matcher(message);
-	    return matcher.replaceAll(ChatColor.GRAY + "$1" + color);
-	}
-	private static String highlightSilver(String message, ChatColor color)
-	{
-		Pattern pattern = Pattern.compile("([\\d,]+ Silver)");
-	    Matcher matcher = pattern.matcher(message);
-	    return matcher.replaceAll(ChatColor.GRAY + "$1" + color);
-	}
-	private static String highlightCopper(String message, ChatColor color)
-	{
-		Pattern pattern = Pattern.compile("([\\d,]+ Copper)");
-	    Matcher matcher = pattern.matcher(message);
-	    return matcher.replaceAll(ChatColor.DARK_GRAY + "$1" + color);
-	}
-	private static String highlightURL(String message, ChatColor color)
-	{
-		Pattern pattern = Pattern.compile("(http://\\S+)");
-	    Matcher matcher = pattern.matcher(message);
-	    return matcher.replaceAll(ChatColor.AQUA + "$1" + color);
-	}
-	private static String highlightTowns(String message, ChatColor color)
-	{
-		Pattern pattern = Pattern.compile("<t(.)>(.+)</t.>");
-	    Matcher matcher = pattern.matcher(message);
-	    ChatColor townColor = ChatColor.WHITE;
-	    if( matcher.find() )
-	    {
-	    	if( matcher.group(1).equals("b") )
-	    		townColor = ChatColor.DARK_BLUE;
-	    	else if( matcher.group(1).equals("r") )
-	    		townColor = ChatColor.DARK_RED;
-	    }
-	   
-	    return matcher.replaceAll(townColor + "$2" + color);
-	}
 }

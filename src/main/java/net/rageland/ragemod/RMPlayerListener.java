@@ -62,7 +62,7 @@ public class RMPlayerListener extends PlayerListener
     public RMPlayerListener(RageMod instance) 
     {
         plugin = instance;
-        questCommands = new QuestCommands();
+        questCommands = new QuestCommands(plugin);
         compassCommands = new CompassCommands(plugin);
         lotCommands = new LotCommands(plugin);
         townCommands = new TownCommands(plugin);
@@ -92,7 +92,7 @@ public class RMPlayerListener extends PlayerListener
     		{
     			if( !message.equals("") )
     			{
-    				Util.message(player, message, ChatColor.DARK_GREEN);
+    				plugin.text.message(player, message, ChatColor.DARK_GREEN);
     			}
     		}
     		
@@ -110,7 +110,7 @@ public class RMPlayerListener extends PlayerListener
     		{
     			if( RageMod.permissionHandler.has(onlinePlayer, "ragemod.ismoderator") )
     			{
-    				Util.message(onlinePlayer, playerData.getNameColor() + "'s membership has expired - please /demote him/her.");
+    				plugin.text.message(onlinePlayer, playerData.getCodedName() + "'s membership has expired - please /demote him/her.");
     			}
     		}
     	}
@@ -121,7 +121,7 @@ public class RMPlayerListener extends PlayerListener
     		{
     			if( RageMod.permissionHandler.has(onlinePlayer, "ragemod.ismoderator") )
     			{
-    				Util.message(onlinePlayer, playerData.getNameColor() + " has donated $" + plugin.database.playerQueries.getRecentDonations(playerData.id_Player) + " to the server!  Please /promote him/her.");
+    				plugin.text.message(onlinePlayer, playerData.getCodedName() + " has donated $" + plugin.database.playerQueries.getRecentDonations(playerData.id_Player) + " to the server!  Please /promote him/her.");
     			}
     		}
     	}
@@ -180,7 +180,7 @@ public class RMPlayerListener extends PlayerListener
         		else if( split.length == 2 )
         			commands.spawn(player, split[1]);
         		else
-        			Util.message(player, "Usage: /spawn [player_name]");
+        			plugin.text.message(player, "Usage: /spawn [player_name]");
         		event.setCancelled(true);
         	}
         	else if( split[0].equalsIgnoreCase("/home") )
@@ -190,7 +190,7 @@ public class RMPlayerListener extends PlayerListener
         		else if( split.length == 2 )
         			commands.home(player, split[1]);
         		else
-        			Util.message(player, "Usage: /home [player_name]");
+        			plugin.text.message(player, "Usage: /home [player_name]");
         		event.setCancelled(true);
         	}
         	else if(split[0].equalsIgnoreCase("/zone"))
@@ -268,7 +268,7 @@ public class RMPlayerListener extends PlayerListener
         	if( playerData.currentZone != plugin.zones.getCurrentZone(player.getLocation()))
         	{
         		playerData.currentZone = plugin.zones.getCurrentZone(player.getLocation());
-        		Util.message(player, "Your current zone is now " + plugin.zones.getName(playerData.currentZone));        		
+        		plugin.text.message(player, "Your current zone is now " + plugin.zones.getName(playerData.currentZone));        		
         	}
         	
         	// *** ZONE A (Neutral Zone) ***
@@ -286,7 +286,7 @@ public class RMPlayerListener extends PlayerListener
         				
         				if( playerData.enterLeaveMessageTime == null || Util.secondsSince(playerData.enterLeaveMessageTime) > 10 )
         				{
-        					Util.message(player, "Now leaving the capitol of " + plugin.config.Capitol_Name);
+        					plugin.text.message(player, "Now leaving the capitol of " + plugin.config.Capitol_Name);
         					playerData.enterLeaveMessageTime = Util.now();
         				}
         			}
@@ -299,7 +299,7 @@ public class RMPlayerListener extends PlayerListener
         				
         				if( playerData.enterLeaveMessageTime == null || Util.secondsSince(playerData.enterLeaveMessageTime) > 10 )
         				{
-        					Util.message(player, "Now entering the capitol of " + plugin.config.Capitol_Name);
+        					plugin.text.message(player, "Now entering the capitol of " + plugin.config.Capitol_Name);
         					playerData.enterLeaveMessageTime = Util.now();
         				}
         			}
@@ -314,7 +314,7 @@ public class RMPlayerListener extends PlayerListener
 	        		PlayerTown currentTown = plugin.playerTowns.getCurrentTown(player.getLocation());
 	        		if( currentTown != null )
 	        		{
-	        			Util.message(player, "Now entering the " + currentTown.townLevel.name.toLowerCase() + " of " + currentTown.townName);
+	        			plugin.text.message(player, "Now entering the " + currentTown.townLevel.name.toLowerCase() + " of " + currentTown.townName);
 	        			playerData.currentTown = currentTown;
 	        			
 	        		}
@@ -324,7 +324,7 @@ public class RMPlayerListener extends PlayerListener
 	        		PlayerTown currentTown = plugin.playerTowns.getCurrentTown(player.getLocation());
 	        		if( currentTown == null )
 	        		{
-	        			Util.message(player, "Now leaving the " + playerData.currentTown.townLevel.name.toLowerCase() + " of " + playerData.currentTown.townName);
+	        			plugin.text.message(player, "Now leaving the " + playerData.currentTown.townLevel.name.toLowerCase() + " of " + playerData.currentTown.townName);
 	        			playerData.currentTown = null;
 	        			
 	        		}

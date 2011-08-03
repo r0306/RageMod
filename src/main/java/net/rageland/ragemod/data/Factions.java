@@ -81,17 +81,19 @@ public class Factions
     	}
 	}
 
-
-	public String getCodedTownName(int id, String townName) 
+	// Returns codes for faction colors
+	public char getColorCode(int id) 
 	{
 		switch(id)
 		{
 			case 1:		// red
-				return "<tr>" + townName + "</tr>";
+				return 'r';
 			case 2:		// blue
-				return "<tb>" + townName + "</tb>";
+				return 'b';
 			default:	// neutral
-				return "<tn>" + townName + "</tn>";
+				return 'n';
 		}
 	}
+	
+
 }

@@ -94,7 +94,7 @@ public class PlayerQueries {
 	// Fill the PlayerData class with data from a result set
 	private PlayerData fillPlayerData(ResultSet rs) throws SQLException
 	{
-		PlayerData playerData = new PlayerData();
+		PlayerData playerData = new PlayerData(plugin);
 		
 		playerData.id_Player = rs.getInt("ID_Player");
 		playerData.name = rs.getString("Name");

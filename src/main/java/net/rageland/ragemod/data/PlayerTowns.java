@@ -49,7 +49,6 @@ public class PlayerTowns {
     // Returns all towns
     public ArrayList<PlayerTown> getAll()
     {
-    	System.out.println("Number of towns: " + towns.values().size());
     	return new ArrayList<PlayerTown>(towns.values());
     }
     

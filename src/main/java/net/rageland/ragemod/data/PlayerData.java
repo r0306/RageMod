@@ -73,11 +73,15 @@ public class PlayerData
 	// Quest data
 	public ActiveQuestData activeQuestData = new ActiveQuestData();
 	
+	// Misc.
+	private RageMod plugin;
 	
-	// Gets the player's name with the color code, depending on faction (todo)
-	public String getNameColor()
+	
+	
+	// Constructor
+	public PlayerData( RageMod plugin )
 	{
-		return "^*" + this.name + "*^";
+		this.plugin = plugin;
 	}
 	
 	// Sets the spawn location when bed clicked
@@ -152,6 +156,27 @@ public class PlayerData
 	public void clearHome() 
 	{
 		home_IsSet = false;
+	}
+	
+	// Returns the player name with special color tags to be interpreted by the messaging methods
+	public String getCodedName() 
+	{
+		char colorCode;
+		
+		if( id_Faction != 0 )
+			colorCode = plugin.factions.getColorCode(this.id_Faction);
+		else if( RageMod.permissionHandler.inGroup("world", this.name, "Owner") )
+			colorCode = 'o';
+		else if( RageMod.permissionHandler.inGroup("world", this.name, "Admin") )
+			colorCode = 'a';
+		else if( RageMod.permissionHandler.inGroup("world", this.name, "Moderator") )
+			colorCode = 'm';
+		else if( RageMod.permissionHandler.inGroup("world", this.name, "Citizen") )
+			colorCode = 'c';
+		else
+			colorCode = 't';	// tourist
+			
+		return "<p" + colorCode + ">" + this.name + "</p" + colorCode + ">";
 	}
 	
 }

@@ -223,7 +223,7 @@ public class TownQueries {
     	{
     		conn = rageDB.getConnection();
     		preparedStatement = conn.prepareStatement(
-    				"SELECT COUNT ID_Player FROM Players WHERE ID_PlayerTown = " + playerTown.id_PlayerTown);
+    				"SELECT COUNT (ID_Player) FROM Players WHERE ID_PlayerTown = " + playerTown.id_PlayerTown);
     		rs = preparedStatement.executeQuery();
     		rs.next();
     		return rs.getInt(1);
