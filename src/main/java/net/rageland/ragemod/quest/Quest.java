@@ -17,7 +17,7 @@ public abstract interface Quest
 
 	public String getQuestName();
 
-	public int getQuestId();
+	public String getQuestId();
 
 	public String getQuestText();
 

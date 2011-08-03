@@ -10,28 +10,19 @@ import org.bukkit.inventory.ItemStack;
 
 public class RewardQuest implements Quest
 {
-	private String questName;
-	private int questId;
-	private String questText;
-	private String questFinished;
-	private ItemStack rewardItem;
-	private int rewardItemAmount;
-	private double coinRewardAmount;
+	private QuestData questData;
+	private RewardData rewardData;
 	private boolean isQuestAttachedToRandomNPC;
 	private boolean isActiveQuestNPC;
 
-	public RewardQuest(int questId, String questName, String questText,
-			String questFinished, ItemStack rewardItem, int rewardItemAmount,
-			double coinRewardAmount, boolean isRandomNPC,
-			boolean isActiveQuestNPC)
+	public RewardQuest(
+				QuestData questData, 
+				RewardData rewardData, 
+				boolean isRandomNPC,
+				boolean isActiveQuestNPC)
 	{
-		this.questId = questId;
-		this.questName = questName;
-		this.questText = questText;
-		this.questFinished = questFinished;
-		this.rewardItem = rewardItem;
-		this.rewardItemAmount = rewardItemAmount;
-		this.coinRewardAmount = coinRewardAmount;
+		this.questData = questData;
+		this.rewardData = rewardData;
 		this.isQuestAttachedToRandomNPC = isRandomNPC;
 		this.isActiveQuestNPC = isActiveQuestNPC;
 	}
@@ -47,13 +38,17 @@ public class RewardQuest implements Quest
 
 		if (this.isActiveQuestNPC)
 		{
-			if (NPCUtilities.checkFreeSpace(player.getInventory(),
-					this.rewardItem, this.rewardItemAmount))
+			if (NPCUtilities.checkFreeSpace(
+							player.getInventory(),
+							rewardData.getItem(), 
+							rewardData.getAmountOfItems()
+						)
+				)
 			{
-				player.sendMessage(ChatColor.LIGHT_PURPLE + this.questFinished);
+				player.sendMessage(ChatColor.LIGHT_PURPLE + questData.getEndText());
 				player.sendMessage("Received: ");
 
-				if (this.rewardItemAmount > 0)
+				if (rewardData.getAmountOfItems() > 0)
 				{
 					player.sendMessage(ChatColor.DARK_GREEN
 							+ Integer.toString(this.rewardItemAmount)
@@ -71,7 +66,7 @@ public class RewardQuest implements Quest
 				}
 
 				player.sendMessage(" ");
-				player.sendMessage("for finishing &a" + this.questName);
+				player.sendMessage("for finishing &a" + questData.getName());
 
 				if (isQuestAttachedToRandomNPC)
 				{
@@ -91,8 +86,8 @@ public class RewardQuest implements Quest
 		if (this.isActiveQuestNPC)
 		{
 			player.sendMessage(ChatColor.DARK_GREEN + "Quest: "
-					+ ChatColor.YELLOW + "[" + this.questName + "]");
-			player.sendMessage(ChatColor.GREEN + this.questText);
+					+ ChatColor.YELLOW + "[" + questData.getName() + "]");
+			player.sendMessage(ChatColor.GREEN + questData.getStartText());
 		}
 		else
 		{
@@ -109,21 +104,21 @@ public class RewardQuest implements Quest
 	}
 
 	@Override
-	public int getQuestId()
+	public String getQuestId()
 	{
-		return this.questId;
+		return questData.getId();
 	}
 
 	@Override
 	public String getQuestName()
 	{
-		return this.questName;
+		return questData.getName();
 	}
 
 	@Override
 	public String getQuestText()
 	{
-		return this.questText;
+		return questData.getStartText();
 	}
 
 	@Override
