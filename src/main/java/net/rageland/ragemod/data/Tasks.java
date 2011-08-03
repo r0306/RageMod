@@ -96,7 +96,6 @@ public class Tasks {
 					playerData.treasuryBalance -= cost;
 					town.treasuryBalance -= cost;
 					remaining -= cost;
-					plugin.players.update(playerData);
 					plugin.database.playerQueries.updatePlayer(playerData);
 				}
 				// If the player doesn't have the funds in either area, evict their freeloading ass
@@ -105,9 +104,14 @@ public class Tasks {
 					playerData.townName = "";
 					playerData.spawn_IsSet = false;
 					playerData.treasuryBalance = 0;
-					plugin.players.update(playerData);
+					playerData.logonMessageQueue += "You have been automatically evicted from " + 
+							plugin.playerTowns.get(playerData.townName).getCodedName() + " for insufficient funds.<br>";
+					
+					plugin.database.playerQueries.updatePlayer(playerData);
 					
 					// TODO: Inform the player of their eviction somehow
+					
+					// TODO: Delete the player's treasury blocks, give them money
 				}
 			}
 			

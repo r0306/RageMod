@@ -127,7 +127,6 @@ public class LotCommands
 		
 		// Update the playerData
 		playerData.lotPermissions.add(targetPlayerData.name);
-		plugin.players.update(playerData);
 		
 		Util.message(player, targetPlayerData.getNameColor() + " is now allowed to build in your lots.");
 	}
@@ -169,7 +168,6 @@ public class LotCommands
 		
 		// Update the playerData
 		targetPlayerData.lots.add(lot);
-		plugin.players.update(targetPlayerData);
 		
 		// Update Lots to set the owner
 		lot.owner = targetPlayerData.name;
@@ -276,7 +274,6 @@ public class LotCommands
 		
 		// Update the playerData
 		playerData.lots.add(lot);
-		plugin.players.update(playerData);
 		
 		// Update Lots to set the owner
 		lot.owner = playerData.name;
@@ -303,7 +300,6 @@ public class LotCommands
 			
 			// Update the playerData
 			playerData.lotPermissions.clear();
-			plugin.players.update(playerData);
 			
 			Util.message(player, "All of your lot permissions have been cleared.");
 		}
@@ -329,7 +325,6 @@ public class LotCommands
 			
 			// Update the playerData
 			playerData.lotPermissions.remove(targetPlayerData.name);
-			plugin.players.update(playerData);
 			
 			Util.message(player, targetPlayerData.getNameColor() + " is no longer allowed to build in your lots.");
 		}
@@ -366,7 +361,6 @@ public class LotCommands
 		// Update the playerData
 		PlayerData targetPlayerData = plugin.players.get(lot.owner);
 		targetPlayerData.lots.remove(lot);
-		plugin.players.update(targetPlayerData);
 		
 		// Update Lots to set the owner
 		lot.owner = "";
@@ -452,7 +446,6 @@ public class LotCommands
 		
 		// Update the playerData
 		playerData.lots.remove(lot);
-		plugin.players.update(playerData);
 		
 		// Update Lots to remove the owner
 		lot.owner = "";

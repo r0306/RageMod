@@ -54,7 +54,7 @@ public class Util
 	// Formats player messages with colors
 	public static void message(Player player, String message, ChatColor color)
 	{
-		message = ChatColor.GREEN + message;
+		message = color + message;
 		message = highlightPlayers(message, color);
 		message = highlightCommands(message, color);
 		message = highlightRequired(message, color);
@@ -63,6 +63,7 @@ public class Util
 		message = highlightSilver(message, color);
 		message = highlightCopper(message, color);
 		message = highlightURL(message, color);
+		message = highlightTowns(message, color);
 		
 		player.sendMessage(message);
 	}
@@ -114,5 +115,20 @@ public class Util
 		Pattern pattern = Pattern.compile("(http://\\S+)");
 	    Matcher matcher = pattern.matcher(message);
 	    return matcher.replaceAll(ChatColor.AQUA + "$1" + color);
+	}
+	private static String highlightTowns(String message, ChatColor color)
+	{
+		Pattern pattern = Pattern.compile("<t(.)>(.+)</t.>");
+	    Matcher matcher = pattern.matcher(message);
+	    ChatColor townColor = ChatColor.WHITE;
+	    if( matcher.find() )
+	    {
+	    	if( matcher.group(1).equals("b") )
+	    		townColor = ChatColor.DARK_BLUE;
+	    	else if( matcher.group(1).equals("r") )
+	    		townColor = ChatColor.DARK_RED;
+	    }
+	   
+	    return matcher.replaceAll(townColor + "$2" + color);
 	}
 }

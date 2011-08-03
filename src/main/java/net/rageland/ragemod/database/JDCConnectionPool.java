@@ -17,7 +17,7 @@ class ConnectionReaper extends Thread {
            try {
               sleep(delay);
            } catch( InterruptedException e) { }
-           System.out.println("[RAGE] Attempting to reap connections... (pool size: " + pool.connections.size() + ")");
+           //System.out.println("[RAGE] Attempting to reap connections... (pool size: " + pool.connections.size() + ")");
            pool.reapConnections();
         }
     }
@@ -94,18 +94,18 @@ public class JDCConnectionPool {
       {
           JDCConnection conn = (JDCConnection)connlist.nextElement();
 
-          System.out.println("[RAGE] Conn. " + connections.indexOf(conn) + ": inUse: " + conn.inUse() + ", stale: " + ((stale-conn.getLastUse())/1000) + " validate(): " + conn.validate());
+          //System.out.println("[RAGE] Conn. " + connections.indexOf(conn) + ": inUse: " + conn.inUse() + ", stale: " + ((stale-conn.getLastUse())/1000) + " validate(): " + conn.validate());
           
           if((conn.inUse()) && !conn.validate()) // Reap all connections that fail validate() (DC)
           {
         	  removeConnection(conn);
-        	  System.out.println("RAGE: Connection pool reaped broken connection.  Pool size: " + connections.size());
+        	  System.out.println("[RAGE] Connection pool reaped broken connection.  Pool size: " + connections.size());
           }
           // Also reap ALL older connections - the pool isn't going to try to use them anyway
           else if((!conn.inUse() && (stale > conn.getLastUse())) || (!conn.validate())) // Reap all connections that fail validate() or are too old (DC)
           {
         	  removeConnection(conn);
-        	  System.out.println("RAGE: Connection pool reaped idle connection.  Pool size: " + connections.size());
+        	  System.out.println("[RAGE] Connection pool reaped idle connection.  Pool size: " + connections.size());
           }
       }
    }
@@ -131,12 +131,12 @@ public class JDCConnectionPool {
 	   for(JDCConnection connection : connections) {    	   
            if(stale < connection.getLastUse() && (connection.validate() && connection.lease())) 
            {
-               System.out.println("[RAGE] Getting connection " + connections.indexOf(connection));
+               //System.out.println("[RAGE] Getting connection " + connections.indexOf(connection));
         	   return connection;
            } 
        }
 
-       System.out.println("[RAGE] Creating new connection");
+       //System.out.println("[RAGE] Creating new connection");
        
        Connection conn = DriverManager.getConnection(url, user, password);
        JDCConnection newConnection = new JDCConnection(conn, this);

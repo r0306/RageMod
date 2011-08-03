@@ -33,7 +33,7 @@ public class Players {
     	} 
     	else 
     	{
-    		playerData.persistantInDatabase = true;
+    		playerData.persistentInDatabase = true;
     	}
     	
     	players.put(playerName.toLowerCase(), playerData);
@@ -51,7 +51,7 @@ public class Players {
     	playerData.memberExpiration = new Date();
     	playerData.bounty = 0;
     	playerData.extraBounty = 0;
-    	playerData.persistantInDatabase = false;
+    	playerData.persistentInDatabase = false;
     	playerData.townName = "";
     	
     	return playerData;
@@ -72,23 +72,7 @@ public class Players {
     		return playerData;    		
     	}
     }
-    
-    // Updates the player's info in memory
-    public void update(PlayerData playerData)
-    {
-    	// No point in doing this, in the hashmap is pointer to the object. If you change values
-    	// This will also be changed in the object the hashmap points to.
-    	/*
-    	if( players.containsKey(playerData.name.toLowerCase()) )
-    	{
-    		players.put(playerData.name.toLowerCase(), playerData);
-    	}
-    	else
-    	{
-    		System.out.println("Players.update called on invalid value: " + playerData.name);
-    	}
-    	*/
-    }
+
     
     // For debugging - returns the number of players loaded into memory
     public int size()

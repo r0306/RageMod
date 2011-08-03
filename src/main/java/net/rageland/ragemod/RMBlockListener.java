@@ -72,7 +72,6 @@ public class RMBlockListener extends BlockListener
 						playerData.clearHome();
 		    			Util.message(player, "You no longer have a home point.");
 		    			// Update both memory and database
-		    			plugin.players.update(playerData);
 		    			plugin.database.playerQueries.updatePlayer(playerData);
 					}
 				}
@@ -87,7 +86,6 @@ public class RMBlockListener extends BlockListener
 	    			playerData.clearSpawn();
 	    			Util.message(player, "You no longer have a spawn point.");
 	    			// Update both memory and database
-	    			plugin.players.update(playerData);
 	    			plugin.database.playerQueries.updatePlayer(playerData);
 	    		}
 			}
@@ -136,7 +134,6 @@ public class RMBlockListener extends BlockListener
 						playerData.setHome(block.getLocation());
 		    			Util.message(player, "Your home location has now been set.");
 		    			// Update both memory and database
-		    			plugin.players.update(playerData);
 		    			plugin.database.playerQueries.updatePlayer(playerData);
 					}
 				}
@@ -170,7 +167,6 @@ public class RMBlockListener extends BlockListener
 	    			playerData.setSpawn(block.getLocation());
 	    			Util.message(player, "Your spawn location has now been set.");
 	    			// Update both memory and database
-	    			plugin.players.update(playerData);
 	    			plugin.database.playerQueries.updatePlayer(playerData);
 	    		}
 			}

@@ -31,7 +31,7 @@ public class PlayerData
 	public Date memberExpiration;
 	public float bounty;
 	public float extraBounty;
-	public boolean persistantInDatabase;
+	public boolean persistentInDatabase;
 	
 	// Home (used for capitol lots)
 	public boolean home_IsSet;
@@ -57,6 +57,9 @@ public class PlayerData
 	// Lot info
 	public ArrayList<Lot> lots = new ArrayList<Lot>();
 	public ArrayList<String> lotPermissions = new ArrayList<String>();	// array of player names allowed to build
+	
+	// Messages
+	public String logonMessageQueue = "";
 	
 	
 	// ***** STATE (Non-DB) VALUES *****

@@ -79,7 +79,6 @@ public class Commands
 		destination = new Location(player.getServer().getWorld("world"), targetPlayerData.home_X + .5, targetPlayerData.home_Y, targetPlayerData.home_Z + .5 );
 		player.teleport(destination);
 		playerData.home_LastUsed = now;
-		plugin.players.update(playerData);
 		plugin.database.playerQueries.updatePlayer(playerData);
 	}
 	
@@ -124,7 +123,6 @@ public class Commands
 		Util.message(player, "Teleporting...");
 		player.teleport(destination);
 		playerData.spawn_LastUsed = now;
-		plugin.players.update(playerData);
 		plugin.database.playerQueries.updatePlayer(playerData);
 	}
 	

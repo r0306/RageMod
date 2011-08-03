@@ -119,6 +119,7 @@ public class RageMod extends JavaPlugin {
         System.out.println( "RageMod is enabled!" );
         
         // Load the HashMaps for DB data
+        playerTowns.loadPlayerTowns();
         lots.loadLots();
         tasks.loadTaskTimes();
         

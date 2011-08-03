@@ -204,7 +204,6 @@ public class TownCommands
 		targetPlayerData.townName = playerData.townName;
 		// This will give the player's balance back if they were a previous resident of the town
 		targetPlayerData.treasuryBalance = plugin.database.playerQueries.getPlayerTreasuryBalance(targetPlayerData.id_Player, plugin.playerTowns.get(playerData.townName).id_PlayerTown);
-		plugin.players.update(targetPlayerData);
 		
 		Util.message(player, targetPlayerData.name + " is now a resident of " + playerData.townName + ".");		
 	}
@@ -288,7 +287,6 @@ public class TownCommands
 			playerData.isMayor = true;
 			playerData.currentTown = playerTown;
 			playerData.treasuryBalance = cost;
-			plugin.players.update(playerData);
 			
 			Util.message(player, "Congratulations, you are the new mayor of " + townName + "!");		
 		}
@@ -347,7 +345,6 @@ public class TownCommands
 		
 		// Update the player data
 		playerData.treasuryBalance += amount;
-		plugin.players.update(playerData);
 		
 		Util.message(player, "Deposited " + iConomy.format(amount) + " into town treasury.");
 	}
@@ -383,7 +380,6 @@ public class TownCommands
 		// Update the playerData
 		targetPlayerData.townName = "";
 		targetPlayerData.spawn_IsSet = false;
-		plugin.players.update(targetPlayerData);
 		
 		Util.message(player, targetPlayerData.name + " is no longer a resident of " + playerData.townName + ".");		
 	}
@@ -401,7 +397,7 @@ public class TownCommands
 			return;
 		}
 		
-		Util.message(player, "Info for " + townName + ":");
+		Util.message(player, "Info for " + playerTown.getCodedName() + ":");
 		Util.message(player, "   Faction: " + plugin.factions.getName(playerTown.id_Faction));
 		Util.message(player, "   Level: " + playerTown.getLevel().name + " (" + playerTown.townLevel.level + ")");
 		Util.message(player, "   Mayor: " + playerTown.mayor);
@@ -440,7 +436,6 @@ public class TownCommands
 		playerData.isMayor = false;
 		playerData.spawn_IsSet = false;
 		playerData.treasuryBalance = 0;
-		plugin.players.update(playerData);
 		
 		Util.message(player, "You are no longer a resident of " + townName + ".");		
 	}
@@ -678,7 +673,6 @@ public class TownCommands
 		
 		// Update the player data
 		playerData.treasuryBalance -= amount;
-		plugin.players.update(playerData);
 		
 		Util.message(player, "Withdrew " + iConomy.format(amount) + " from town treasury.");
 	}

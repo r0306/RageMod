@@ -122,7 +122,6 @@ public class FactionCommands
 		
 		// Set the player's faction
 		playerData.id_Faction = id_Faction;
-		plugin.players.update(playerData);
 		plugin.database.playerQueries.updatePlayer(playerData);
 		
 		Util.message(player, "Congratulations, you are now a member of the " + plugin.factions.getName(id_Faction) + " faction!");
@@ -151,7 +150,6 @@ public class FactionCommands
 			// Reset the player's faction
 			Util.message(player, "You are no longer a member of the " + plugin.factions.getName(playerData.id_Faction) + " faction.");
 			playerData.id_Faction = 0;
-			plugin.players.update(playerData);
 			plugin.database.playerQueries.updatePlayer(playerData);
 		}
 	}

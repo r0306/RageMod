@@ -61,22 +61,22 @@ public class DebugCommands
 	// /debug colors
 	public void colors(Player player) 
 	{
-		player.sendMessage(ChatColor.AQUA + "Aqua Aqua Aqua ");
-		player.sendMessage(ChatColor.BLACK + "Black Black Black ");
-		player.sendMessage(ChatColor.BLUE + "Blue");
-		player.sendMessage(ChatColor.DARK_AQUA + "Dark Aqua");
-		player.sendMessage(ChatColor.DARK_BLUE + "Dark Blue");
-		player.sendMessage(ChatColor.DARK_GRAY + "Dark Gray");
-		player.sendMessage(ChatColor.DARK_GREEN + "Dark Green");
-		player.sendMessage(ChatColor.DARK_PURPLE + "Dark Purple");
-		player.sendMessage(ChatColor.DARK_RED + "Dark Red");
-		player.sendMessage(ChatColor.GOLD + "Gold");
-		player.sendMessage(ChatColor.GRAY + "Gray");
-		player.sendMessage(ChatColor.GREEN + "Green");
+		player.sendMessage(ChatColor.DARK_GRAY + "Dark Gray: Player (Tourist)");
+		player.sendMessage(ChatColor.GRAY + "Gray: Player (Neutral)");
+		player.sendMessage(ChatColor.WHITE + "White: Town (Neutral), Player (Neutral Member)");
+		player.sendMessage(ChatColor.YELLOW + "Yellow: Player (Admin)");
+		player.sendMessage(ChatColor.GOLD + "Gold: Player (Owner)");
+		player.sendMessage(ChatColor.RED + "Red: Player (Red Faction)");
+		player.sendMessage(ChatColor.DARK_RED + "Dark Red: Town (Red Faction), Player (Red Member)");
 		player.sendMessage(ChatColor.LIGHT_PURPLE + "Light Purple");
-		player.sendMessage(ChatColor.RED + "Red");
-		player.sendMessage(ChatColor.WHITE + "White");
-		player.sendMessage(ChatColor.YELLOW + "Yellow");
+		player.sendMessage(ChatColor.DARK_PURPLE + "Dark Purple");
+		player.sendMessage(ChatColor.BLUE + "Blue: Player (Blue Faction)");
+		player.sendMessage(ChatColor.DARK_BLUE + "Dark Blue: Town Name (Blue Faction), Player (Blue Member)");
+		player.sendMessage(ChatColor.AQUA + "Aqua: NPC quests/shops/etc. ");
+		player.sendMessage(ChatColor.DARK_AQUA + "Dark Aqua: NPC speech");
+		player.sendMessage(ChatColor.GREEN + "Green: Ragemod messages");
+		player.sendMessage(ChatColor.DARK_GREEN + "Dark Green: Important messages, Player (Moderator)");
+		
 	}
 	
 	// /debug donation

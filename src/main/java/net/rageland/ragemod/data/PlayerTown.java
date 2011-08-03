@@ -178,6 +178,12 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	{
 		
 	}
+
+	// Returns the town name with special tags to be interpreted by the messaging methods
+	public String getCodedName() 
+	{
+		return plugin.factions.getCodedTownName(this.id_Faction, this.townName);
+	}
 	
 	
 	

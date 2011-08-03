@@ -26,6 +26,7 @@ import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.data.PlayerTowns;
 import net.rageland.ragemod.data.Players;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -82,8 +83,26 @@ public class RMPlayerListener extends PlayerListener
     	playerData.currentTown = plugin.playerTowns.getCurrentTown(player.getLocation());
     	playerData.isInCapitol = plugin.zones.isInCapitol(player.getLocation()); 
     	
+    	// Display any messages they have from actions that happened while they were offline
+    	if( !playerData.logonMessageQueue.equals("") )
+    	{
+    		String[] split = playerData.logonMessageQueue.split("<br>");
+    		
+    		for( String message : split )
+    		{
+    			if( !message.equals("") )
+    			{
+    				Util.message(player, message, ChatColor.DARK_GREEN);
+    			}
+    		}
+    		
+    		// Clear the message queue
+    		playerData.logonMessageQueue = "";
+    		plugin.database.playerQueries.updatePlayer(playerData);
+    	}
+    	
     	// Check for expired or new memberships
-    	if( RageMod.permissionHandler.inGroup("world", playerData.name, "Member") && !playerData.isMember ) 
+    	if( RageMod.permissionHandler.inGroup("world", playerData.name, "Member") && !playerData.isMember && !RageMod.permissionHandler.has(player, "ragemod.ismoderator") ) 
     	{
     		// TODO: Find out a way to do this programatically
     		// Message all mods/admins to demote the member
@@ -106,6 +125,8 @@ public class RMPlayerListener extends PlayerListener
     			}
     		}
     	}
+    	
+    	// Update playerD
 
     	
     }

@@ -25,7 +25,7 @@ public class PlayerTowns {
 	// On startup, pull all the PlayerTown data from the DB into memory 
 	public void loadPlayerTowns()
 	{
-		plugin.database.townQueries.loadPlayerTowns(towns);	
+		towns = plugin.database.townQueries.loadPlayerTowns();	
 	}
 	
 	// Insert/update town info

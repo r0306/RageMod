@@ -80,4 +80,18 @@ public class Factions
     			return Material.SNOW_BLOCK;
     	}
 	}
+
+
+	public String getCodedTownName(int id, String townName) 
+	{
+		switch(id)
+		{
+			case 1:		// red
+				return "<tr>" + townName + "</tr>";
+			case 2:		// blue
+				return "<tb>" + townName + "</tb>";
+			default:	// neutral
+				return "<tn>" + townName + "</tn>";
+		}
+	}
 }

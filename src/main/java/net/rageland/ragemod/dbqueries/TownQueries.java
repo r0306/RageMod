@@ -32,11 +32,12 @@ public class TownQueries {
 	}
 	
 	// Load all PlayerTown data
-	public void loadPlayerTowns(HashMap<String, PlayerTown> towns)
+	public HashMap<String, PlayerTown> loadPlayerTowns()
     {
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
 	    ResultSet rs = null;
+	    HashMap<String, PlayerTown> towns = new HashMap<String, PlayerTown>();
 	    
 		PlayerTown currentTown = null;
 		
@@ -71,14 +72,20 @@ public class TownQueries {
         		currentTown.buildRegion();	 
         		
         		if(currentTown.townName != null)
-        			towns.put(currentTown.townName, currentTown);	 
+        			towns.put(currentTown.townName.toLowerCase(), currentTown);	 
+        		else
+        			System.out.println("Town name was null for " + rs.getInt("ID_PlayerTown") + " in loadPlayerTowns()");
         	}			
+        	
+        	return towns;
         		        	
     	} catch (Exception e) {
     		System.out.println("Error in RageDB.LoadPlayerTowns: " + e.getMessage());
 		} finally {
 			rageDB.close(rs, preparedStatement, conn);
 		}
+    	
+    	return null;
     }
 	
 	// Load data from Players table on login if existing player - create new row if not 
