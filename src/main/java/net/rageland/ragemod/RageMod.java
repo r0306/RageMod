@@ -80,66 +80,15 @@ public class RageMod extends JavaPlugin {
     
     
     public void onEnable() 
-    {    	
-       	serverListener = new RMServerListener(this);
-    	playerListener = new RMPlayerListener(this);
-    	blockListener = new RMBlockListener(this);  
-    	entityListener = new RMEntityListener(this);
-    	iConomy = null; 
-    	config = new RageConfig(this);
-        database = new RageDB(this, config);
+    {           	
+        initializeVariables();
+        registerEvents();        
+        setupPermissions();   
+        loadDatabaseData();        
+        startScheduledTasks();        
+        runDebugTests();      
         
-        lots = new Lots(this);
-        players = new Players(this);
-        playerTowns = new PlayerTowns(this);
-        tasks = new Tasks(this);
-        factions = new Factions();
-        
-    	server = this.getServer();
-    	zones = new RageZones(this, config);
-        pluginManager = server.getPluginManager();
-        npcManager = new NPCManager(this);
-        questManager = new QuestManager(this);
-        text = new Text(this);
-        
-        
-        pluginManager.registerEvent(Event.Type.PLUGIN_ENABLE, this.serverListener, Event.Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.PLUGIN_DISABLE, this.serverListener, Event.Priority.Normal, this);
-        
-        pluginManager.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, playerListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Normal, this);
-        
-        pluginManager.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Priority.Normal, this);
-        
-        pluginManager.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, Priority.Highest, this);
-        pluginManager.registerEvent(Event.Type.ENTITY_INTERACT, entityListener, Priority.High, this);
-        pluginManager.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this);        
-		pluginManager.registerEvent(Event.Type.ENTITY_TARGET, entityListener, Event.Priority.Normal, this);
-		pluginManager.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Event.Priority.Normal, this);
-        
-        setupPermissions();
         System.out.println( "RageMod is enabled!" );
-        
-        // Load the HashMaps for DB data
-        playerTowns.loadPlayerTowns();
-        lots.loadLots();
-        tasks.loadTaskTimes();
-        
-        this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new RageTimer(this), 20, 20);
-        
-        
-        // Run basic debug tests
-        runTests();
-        
-        
-        
-        
-        
     }
     
     public void creatingNPCTemp() { /*    
@@ -195,9 +144,68 @@ public class RageMod extends JavaPlugin {
         }
     }
     
-    private void runTests()
+    private void runDebugTests()
     {
     	System.out.println("Number of lots:" + lots.getAll().size());    	
     }
+    
+    private void registerEvents()
+    {
+    	pluginManager.registerEvent(Event.Type.PLUGIN_ENABLE, this.serverListener, Event.Priority.Normal, this);
+        pluginManager.registerEvent(Event.Type.PLUGIN_DISABLE, this.serverListener, Event.Priority.Normal, this);
+        
+        pluginManager.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, playerListener, Priority.Normal, this);
+        pluginManager.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Normal, this);
+        pluginManager.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
+        pluginManager.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
+        pluginManager.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Normal, this);
+        pluginManager.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Normal, this);
+        
+        pluginManager.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this);
+        pluginManager.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Priority.Normal, this);
+        
+        pluginManager.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, Priority.Highest, this);
+        pluginManager.registerEvent(Event.Type.ENTITY_INTERACT, entityListener, Priority.High, this);
+        pluginManager.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this);        
+		pluginManager.registerEvent(Event.Type.ENTITY_TARGET, entityListener, Event.Priority.Normal, this);
+		pluginManager.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Event.Priority.Normal, this);
+    }
+    
+    private void initializeVariables()
+    {
+    	serverListener = new RMServerListener(this);
+    	playerListener = new RMPlayerListener(this);
+    	blockListener = new RMBlockListener(this);  
+    	entityListener = new RMEntityListener(this);
+    	iConomy = null; 
+    	config = new RageConfig(this);
+        database = new RageDB(this, config);
+        
+        lots = new Lots(this);
+        players = new Players(this);
+        playerTowns = new PlayerTowns(this);
+        tasks = new Tasks(this);
+        factions = new Factions();
+        
+    	server = this.getServer();
+    	zones = new RageZones(this, config);
+        pluginManager = server.getPluginManager();
+        npcManager = new NPCManager(this);
+        questManager = new QuestManager(this);
+        text = new Text(this);
+    }
+    
+    private void loadDatabaseData()
+    {
+    	playerTowns.loadPlayerTowns();
+        lots.loadLots();
+        tasks.loadTaskTimes();
+    }
+    
+    private void startScheduledTasks()
+    {
+    	this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new RageTimer(this), 20, 20);
+    }
+    
 }
 
