@@ -30,10 +30,7 @@ public class RewardQuestNPCEntity extends NPCEntity
 	 */
 	public void rightClickAction(Player player)
 	{
-		player.sendMessage("Quest: " + quest.getQuestName());
-		player.sendMessage(quest.getQuestText());
-		player.sendMessage("[Left click npc to accept]");		
-		
+		quest.presentQuest(player, this.plugin.players.get(player.getName()));
 	}
 
 	/**

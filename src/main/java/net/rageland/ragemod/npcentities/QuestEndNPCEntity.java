@@ -31,8 +31,8 @@ public class QuestEndNPCEntity extends NPCEntity
 	 */
 	public void rightClickAction(Player player)
 	{
-		player.sendMessage("Quest: " + quest.getQuestName());
-		player.sendMessage(quest.getQuestText());
+		player.sendMessage("Quest: " + quest.getQuestData().getName());
+		player.sendMessage(quest.getQuestData().getStartText());
 		player.sendMessage("[Left click npc to accept]");	
 	}
 
@@ -46,7 +46,7 @@ public class QuestEndNPCEntity extends NPCEntity
 	public void leftClickAction(Player player)
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
-		if (playerData != null && playerData.activeQuestData.quest == quest)
+		if (playerData != null && playerData.activeQuestData.getQuest() == quest)
 		{
 			if (quest.isQuestFinished(playerData))
 			{

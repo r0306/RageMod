@@ -11,7 +11,7 @@ import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.RageZones;
 import net.rageland.ragemod.RageZones.Zone;
-import net.rageland.ragemod.quest.ActiveQuestData;
+import net.rageland.ragemod.quest.PlayerQuestData;
 import net.rageland.ragemod.quest.KillCreatureQuest;
 
 // TODO: Create a colored player name that takes their data into account to be easily pulled by Commands, etc
@@ -71,7 +71,7 @@ public class PlayerData
 	public Timestamp enterLeaveMessageTime = null;		// Prevent message spam by only allowing a message every 10 seconds (while people work on walls, etc)
 	
 	// Quest data
-	public ActiveQuestData activeQuestData = new ActiveQuestData();
+	public PlayerQuestData activeQuestData = new PlayerQuestData();
 	
 	// Misc.
 	private RageMod plugin;
@@ -135,7 +135,7 @@ public class PlayerData
 	}
 	
 	public boolean isOnKillQuest() {
-		if(this.activeQuestData != null && this.activeQuestData.quest != null && activeQuestData.quest instanceof KillCreatureQuest)
+		if(this.activeQuestData.isPlayerOnQuest() && activeQuestData.getQuest() instanceof KillCreatureQuest)
 		{
 			return true;
 		}

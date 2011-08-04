@@ -34,6 +34,9 @@ public class RewardQuest implements Quest
 
 	}
 
+	/**
+	 * For a RewardQuest type, the quest is finished when it starts. 
+	 */
 	public void questStart(Player player, PlayerData playerData)
 	{
 		presentQuest(player, playerData);
@@ -106,24 +109,6 @@ public class RewardQuest implements Quest
 	}
 
 	@Override
-	public String getQuestId()
-	{
-		return questData.getId();
-	}
-
-	@Override
-	public String getQuestName()
-	{
-		return questData.getName();
-	}
-
-	@Override
-	public String getQuestText()
-	{
-		return questData.getStartText();
-	}
-
-	@Override
 	public void questEnd(Player player, PlayerData playerData)
 	{
 		// TODO Auto-generated method stub
@@ -135,6 +120,12 @@ public class RewardQuest implements Quest
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public QuestData getQuestData()
+	{
+		return questData;
 	}
 
 }

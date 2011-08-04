@@ -36,31 +36,17 @@ public class GatheringQuest implements Quest
 	}
 
 	@Override
-	public String getQuestName()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getQuestId()
-	{
-		// TODO Auto-generated method stub
-		return "";
-	}
-
-	@Override
-	public String getQuestText()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void questUpdate(Player player, PlayerData playerData)
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public QuestData getQuestData()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

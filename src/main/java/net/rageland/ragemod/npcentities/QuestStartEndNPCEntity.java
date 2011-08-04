@@ -30,8 +30,8 @@ public class QuestStartEndNPCEntity extends NPCEntity
 	 */
 	public void rightClickAction(Player player)
 	{
-		player.sendMessage("Quest: " + quest.getQuestName());
-		player.sendMessage(quest.getQuestText());
+		player.sendMessage("Quest: " + quest.getQuestData().getName());
+		player.sendMessage(quest.getQuestData().getStartText());
 		player.sendMessage("[Left click npc to accept]");	
 	}
 

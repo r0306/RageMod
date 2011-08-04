@@ -11,6 +11,8 @@ public class QuestData
 	private String id;
 	private String startText;
 	private String endText;
+	private int objectiveCounter;
+	private String preRequiredQuest;
 	
 	/**
 	 * 
@@ -23,12 +25,16 @@ public class QuestData
 				String name,
 				String id,
 				String startText,
-				String endText )
+				String endText,
+				int objectiveCounter,
+				String preRequiredQuest)
 	{
 		this.name = name;
 		this.id = id;
 		this.startText = startText;
 		this.endText = endText;
+		this.objectiveCounter = objectiveCounter;
+		this.preRequiredQuest = preRequiredQuest;
 	}
 	
 	/**
@@ -65,5 +71,15 @@ public class QuestData
 	public String getEndText()
 	{
 		return endText;
+	}
+	
+	public int getObjectiveCounter()
+	{
+		return objectiveCounter;
+	}
+	
+	public String getPreRequiredQuest()
+	{
+		return preRequiredQuest;
 	}
 }

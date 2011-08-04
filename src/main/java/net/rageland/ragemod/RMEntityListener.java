@@ -186,77 +186,23 @@ public class RMEntityListener extends EntityListener
             {
             	Creature defenderCreature = (Creature)defenderEntity;
             	Player attackerPlayer = (Player) attackerEntity;
+            	PlayerData playerData = plugin.players.get(attackerPlayer.getName());
+            	
             	// Creature dies from attack
             	if(defenderCreature.getHealth() <= edbeEvent.getDamage())
             	{
             		// Player is on a quest, quest is of KillCreatureQuest type
-            		if(plugin.players.get(attackerPlayer.getName()).isOnKillQuest())
+            		if(playerData.isOnKillQuest())
             		{
-            			KillCreatureQuest kcQuest = (KillCreatureQuest) plugin.players.get(attackerPlayer.getName()).activeQuestData.quest;
-            			if(defenderCreature instanceof Spider)
+            			KillCreatureQuest kcQuest = (KillCreatureQuest) playerData.activeQuestData.getQuest();
+            			CreatureType entityCreatureType = Util.getCreatureTypeFromEntity(defenderCreature);
+            			
+            			if(entityCreatureType == kcQuest.getCreatureToBeKilled())
             			{
-            				if(kcQuest.questTargetCreature.equalsIgnoreCase("spider"))
-            				{
-            					plugin.players.get(attackerPlayer.getName()).activeQuestData.questCounter++;
-            					plugin.players.get(attackerPlayer.getName()).activeQuestData.quest.questUpdate(attackerPlayer, plugin.players.get(attackerPlayer.getName()));
-            				}
+            				playerData.activeQuestData.incrementObjectiveCounter();
+            				playerData.activeQuestData.getQuest().questUpdate(attackerPlayer, playerData);
             			}
-            			else if(defenderCreature instanceof Wolf)
-            			{
-            				if(kcQuest.questTargetCreature.equalsIgnoreCase("wolf"))
-            				{
-            					plugin.players.get(attackerPlayer.getName()).activeQuestData.questCounter++;
-            					plugin.players.get(attackerPlayer.getName()).activeQuestData.quest.questUpdate(attackerPlayer, plugin.players.get(attackerPlayer.getName()));
-            				}
-            			}
-            			else if(defenderCreature instanceof Creeper)
-            			{
-            				if(kcQuest.questTargetCreature.equalsIgnoreCase("creeper"))
-            				{
-            					plugin.players.get(attackerPlayer.getName()).activeQuestData.questCounter++;
-            					plugin.players.get(attackerPlayer.getName()).activeQuestData.quest.questUpdate(attackerPlayer, plugin.players.get(attackerPlayer.getName()));
-            				}
-            			}
-            			else if(defenderCreature instanceof Giant)
-            			{
-            				if(kcQuest.questTargetCreature.equalsIgnoreCase("giant"))
-            				{
-            					plugin.players.get(attackerPlayer.getName()).activeQuestData.questCounter++;
-            					plugin.players.get(attackerPlayer.getName()).activeQuestData.quest.questUpdate(attackerPlayer, plugin.players.get(attackerPlayer.getName()));
-            				}
-            			}
-            			else if(defenderCreature instanceof Skeleton)
-            			{
-            				if(kcQuest.questTargetCreature.equalsIgnoreCase("skeleton"))
-            				{
-            					plugin.players.get(attackerPlayer.getName()).activeQuestData.questCounter++;
-            					plugin.players.get(attackerPlayer.getName()).activeQuestData.quest.questUpdate(attackerPlayer, plugin.players.get(attackerPlayer.getName()));
-            				}
-            			}
-            			else if(defenderCreature instanceof Zombie)
-            			{
-            				if(kcQuest.questTargetCreature.equalsIgnoreCase("zombie"))
-            				{
-            					plugin.players.get(attackerPlayer.getName()).activeQuestData.questCounter++;
-            					plugin.players.get(attackerPlayer.getName()).activeQuestData.quest.questUpdate(attackerPlayer, plugin.players.get(attackerPlayer.getName()));
-            				}
-            			}
-            			else if(defenderCreature instanceof PigZombie)
-            			{
-            				if(kcQuest.questTargetCreature.equalsIgnoreCase("pigzombie"))
-            				{
-            					plugin.players.get(attackerPlayer.getName()).activeQuestData.questCounter++;
-            					plugin.players.get(attackerPlayer.getName()).activeQuestData.quest.questUpdate(attackerPlayer, plugin.players.get(attackerPlayer.getName()));
-            				}
-            			}
-            			else if(defenderCreature instanceof Squid)
-            			{
-            				if(kcQuest.questTargetCreature.equalsIgnoreCase("squid"))
-            				{
-            					plugin.players.get(attackerPlayer.getName()).activeQuestData.questCounter++;
-            					plugin.players.get(attackerPlayer.getName()).activeQuestData.quest.questUpdate(attackerPlayer, plugin.players.get(attackerPlayer.getName()));
-            				}
-            			}
+            			
             		}
             	}
             }

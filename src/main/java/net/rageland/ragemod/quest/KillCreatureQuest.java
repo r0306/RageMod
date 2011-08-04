@@ -9,41 +9,37 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.entity.CreatureType;
 
 public class KillCreatureQuest implements Quest
 {
 
-	private String questName;
-	private int questId;
-	private String questText;
-	private String questFinishedText;
-	private ItemStack rewardItem;
-	private int rewardItemAmount;
-	private double coinRewardAmount;
-	private boolean isQuestAttachedToRandomNPC;
-	private boolean isActiveQuestNPC;
-	public String questTargetCreature;
+	private QuestData questData;
+	private RewardData rewardData;
+	private Flags flags;
+	private CreatureType creatureToBeKilled;
 	private int killNeededCounter;
 	private RageMod plugin;
 
-	public KillCreatureQuest(int questId, String questName, String questText,
-			String questFinishedText, ItemStack rewardItem,
-			int rewardItemAmount, double coinRewardAmount, boolean isRandomNPC,
-			boolean isActiveQuestNPC, String questTargetCreature,
-			int killNeededCounter, RageMod plugin)
+	public KillCreatureQuest(
+			QuestData questData, 
+			RewardData rewardData, 
+			Flags flags,
+			CreatureType creatureToBeKilled,
+			int killNeededCounter, 
+			RageMod plugin)
 	{
-		this.questId = questId;
-		this.questName = questName;
-		this.questText = questText;
-		this.questFinishedText = questFinishedText;
-		this.rewardItem = rewardItem;
-		this.rewardItemAmount = rewardItemAmount;
-		this.coinRewardAmount = coinRewardAmount;
-		this.isQuestAttachedToRandomNPC = isRandomNPC;
-		this.isActiveQuestNPC = isActiveQuestNPC;
-		this.questTargetCreature = questTargetCreature;
+		this.questData = questData;
+		this.rewardData = rewardData;
+		this.flags = flags;
+		this.creatureToBeKilled = creatureToBeKilled;
 		this.killNeededCounter = killNeededCounter;
 		this.plugin = plugin;
+	}
+	
+	public CreatureType getCreatureToBeKilled()
+	{
+		return creatureToBeKilled;
 	}
 
 	@Override
@@ -52,32 +48,32 @@ public class KillCreatureQuest implements Quest
 	 */
 	public void questEnd(Player player, PlayerData playerData)
 	{
-		if (NPCUtilities.checkFreeSpace(player.getInventory(), this.rewardItem,
-				this.rewardItemAmount))
+		if (NPCUtilities.checkFreeSpace(player.getInventory(), rewardData.getItem(),
+				rewardData.getAmountOfItems()))
 		{
-			plugin.text.message(player, this.questFinishedText);
+			plugin.text.message(player, questData.getEndText());
 			plugin.text.message(player, "Received: ");
 
-			if (this.rewardItemAmount > 0)
+			if (rewardData.getAmountOfItems() > 0)
 			{
 				plugin.text.message(player,
-						Integer.toString(this.rewardItemAmount)
-								+ this.rewardItem.getType().toString());
+						Integer.toString(rewardData.getAmountOfItems())
+								+ rewardData.getItem().getType().toString());
 				NPCUtilities.addItemToInventory(player.getInventory(),
-						this.rewardItem, this.rewardItemAmount);
+						rewardData.getItem(), rewardData.getAmountOfItems());
 			}
 
-			if (this.coinRewardAmount > 0.0D)
+			if (rewardData.getCoins() > 0.0D)
 			{
 				plugin.text.message(player,
-						Double.toString(this.coinRewardAmount) + " Coins");
+						Double.toString(rewardData.getCoins()) + " Coins");
 			}
 
-			plugin.text.message(player, "for finishing " + this.questName);
+			plugin.text.message(player, "for finishing " + questData.getStartText());
 
-			if (isQuestAttachedToRandomNPC)
+			if (flags.isRandom())
 			{
-				isActiveQuestNPC = false;
+				flags.setActive(false);
 			}
 		}
 		else
@@ -89,8 +85,7 @@ public class KillCreatureQuest implements Quest
 	@Override
 	public void questStart(Player player, PlayerData playerData)
 	{
-		if (playerData.activeQuestData != null
-				|| playerData.activeQuestData.quest != null)
+		if (playerData.activeQuestData.isPlayerOnQuest())
 		{
 			plugin.text
 					.message(player,
@@ -98,19 +93,16 @@ public class KillCreatureQuest implements Quest
 		}
 		else
 		{
-			plugin.text.message(player, "Accepted quest: " + questName);
-			plugin.text.message(player, questText);
-
-			ActiveQuestData questData = new ActiveQuestData();
-			questData.quest = this;
-			questData.questCounter = 0;
+			plugin.text.message(player, "Accepted quest: " + questData.getName());
+			plugin.text.message(player, questData.getStartText());
+			playerData.activeQuestData.startNewQuest(this, killNeededCounter);
 		}
 	}
 
 	@Override
 	public boolean isQuestFinished(PlayerData playerData)
 	{
-		if (playerData.activeQuestData.questCounter >= killNeededCounter)
+		if (playerData.activeQuestData.getObjectiveCounter() >= killNeededCounter)
 		{
 			return true;
 		}
@@ -125,34 +117,19 @@ public class KillCreatureQuest implements Quest
 	{
 
 	}
-
+	
 	@Override
-	public String getQuestName()
+	public QuestData getQuestData()
 	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getQuestId()
-	{
-		// TODO Auto-generated method stub
-		return "";
-	}
-
-	@Override
-	public String getQuestText()
-	{
-		// TODO Auto-generated method stub
-		return null;
+		return questData;
 	}
 
 	@Override
 	public void questUpdate(Player player, PlayerData playerData)
 	{
 		plugin.text.message(player, "You have killed "
-				+ playerData.activeQuestData.questCounter + " of "
-				+ killNeededCounter + " " + questTargetCreature + "s.");
+				+ playerData.activeQuestData.getObjectiveCounter() + " of "
+				+ killNeededCounter + " " + this.creatureToBeKilled.getName() + "s.");
 	}
 
 }

@@ -6,7 +6,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Cow;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Ghast;
+import org.bukkit.entity.Giant;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Slime;
+import org.bukkit.entity.Spider;
+import org.bukkit.entity.Squid;
+import org.bukkit.entity.Wolf;
+import org.bukkit.entity.Zombie;
 
 // Misc. methods
 public class Util 
@@ -43,6 +59,72 @@ public class Util
 	public static int secondsSince(Timestamp timestamp)
 	{
 		return (int)((now().getTime() - timestamp.getTime()) / 1000);
+	}
+	
+	public static CreatureType getCreatureTypeFromEntity(Creature creature)
+	{
+		
+		if(creature instanceof Spider)
+		{
+			return CreatureType.SPIDER;
+		}
+		else if(creature instanceof Wolf)
+		{
+			return CreatureType.WOLF;
+		}
+		else if(creature instanceof Creeper)
+		{
+			return CreatureType.CREEPER;
+		}
+		else if(creature instanceof Slime)
+		{
+			return CreatureType.SLIME;
+		}
+		else if(creature instanceof Skeleton)
+		{
+			return CreatureType.SKELETON;
+		}
+		else if(creature instanceof Zombie)
+		{
+			return CreatureType.ZOMBIE;
+		}
+		else if(creature instanceof PigZombie)
+		{
+			return CreatureType.PIG_ZOMBIE;
+		}
+		else if(creature instanceof Squid)
+		{
+			return CreatureType.SQUID;
+		}
+		else if(creature instanceof Chicken)
+		{
+			return CreatureType.CHICKEN;
+		}
+		else if(creature instanceof Cow)
+		{
+			return CreatureType.COW;
+		}
+		else if(creature instanceof Ghast)
+		{
+			return CreatureType.GHAST;
+		}
+		else if(creature instanceof Pig)
+		{
+			return CreatureType.PIG;
+		}
+		else if(creature instanceof Sheep)
+		{
+			return CreatureType.SHEEP;
+		}
+
+		else if(creature instanceof Giant)
+		{
+			return CreatureType.GIANT;
+		}
+		else 
+		{
+			return CreatureType.MONSTER;
+		}		
 	}
 	
 	

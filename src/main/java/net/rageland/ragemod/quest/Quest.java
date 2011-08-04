@@ -14,12 +14,8 @@ public abstract interface Quest
 	public boolean isQuestFinished(PlayerData playerData);
 
 	public void presentQuest(Player player, PlayerData playerData);
-
-	public String getQuestName();
-
-	public String getQuestId();
-
-	public String getQuestText();
+	
+	public QuestData getQuestData();
 
 	public void questUpdate(Player player, PlayerData playerData);
 
