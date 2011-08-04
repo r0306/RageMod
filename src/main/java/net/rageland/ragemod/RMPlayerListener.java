@@ -314,7 +314,7 @@ public class RMPlayerListener extends PlayerListener
 	        		PlayerTown currentTown = plugin.playerTowns.getCurrentTown(player.getLocation());
 	        		if( currentTown != null )
 	        		{
-	        			plugin.text.message(player, "Now entering the " + currentTown.townLevel.name.toLowerCase() + " of " + currentTown.townName);
+	        			plugin.text.message(player, "Now entering the " + currentTown.townLevel.name.toLowerCase() + " of " + currentTown.getCodedName());
 	        			playerData.currentTown = currentTown;
 	        			
 	        		}
@@ -324,7 +324,7 @@ public class RMPlayerListener extends PlayerListener
 	        		PlayerTown currentTown = plugin.playerTowns.getCurrentTown(player.getLocation());
 	        		if( currentTown == null )
 	        		{
-	        			plugin.text.message(player, "Now leaving the " + playerData.currentTown.townLevel.name.toLowerCase() + " of " + playerData.currentTown.townName);
+	        			plugin.text.message(player, "Now leaving the " + playerData.currentTown.townLevel.name.toLowerCase() + " of " + playerData.currentTown.getCodedName());
 	        			playerData.currentTown = null;
 	        			
 	        		}

@@ -183,6 +183,7 @@ public class LotCommands
 		if( !plugin.zones.isInCapitol(player.getLocation()) )
 		{
 			plugin.text.message(player, "You must be in " + plugin.config.Capitol_Name + " to use this command.");
+			return;
 		}
 		
 		Lot lot = plugin.lots.findCurrentLot(player.getLocation());

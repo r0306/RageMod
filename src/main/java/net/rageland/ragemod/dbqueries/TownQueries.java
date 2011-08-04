@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -45,7 +46,7 @@ public class TownQueries {
     	{
     		conn = rageDB.getConnection();
         	preparedStatement = conn.prepareStatement(
-				"SELECT pt.ID_PlayerTown, pt.TownName, pt.XCoord, pt.ZCoord, " +
+				"SELECT pt.ID_PlayerTown, pt.TownName, pt.XCoord, pt.YCoord, pt.ZCoord, " +
 				"	pt.TownLevel, " +
 				"	IFNULL(f.ID_Faction, 0) as ID_Faction, pt.TreasuryBalance, pt.MinimumBalance, pt.BankruptDate, p.Name AS Mayor " +
 				"FROM PlayerTowns pt " +
@@ -60,7 +61,7 @@ public class TownQueries {
         		currentTown = new PlayerTown(plugin);
         		currentTown.id_PlayerTown = rs.getInt("ID_PlayerTown");
         		currentTown.townName = rs.getString("TownName");
-        		currentTown.centerPoint = new Location2D(rs.getInt("XCoord"), rs.getInt("ZCoord"));
+        		currentTown.centerPoint = new Location(plugin.getServer().getWorld("world"), rs.getInt("XCoord"), rs.getInt("YCoord"), rs.getInt("ZCoord"));
         		currentTown.id_Faction = rs.getInt("ID_Faction");
         		currentTown.treasuryBalance = rs.getFloat("TreasuryBalance");
         		currentTown.minimumBalance = rs.getFloat("MinimumBalance");
@@ -125,16 +126,16 @@ public class TownQueries {
 		PlayerData playerData = plugin.players.get(player.getName());
 		
     	try
-    	{
+    	{    		
     		conn = rageDB.getConnection();
-    		// TODO: Set default treasury balance from config
     		// Insert the new town into the PlayerTowns table
     		preparedStatement = conn.prepareStatement(
-    				"INSERT INTO PlayerTowns (TownName, XCoord, ZCoord, ID_Faction, TreasuryBalance, TownLevel, DateCreated) " +
-    				"VALUES ('" + townName + "', " + (int)player.getLocation().getX() + ", " + (int)player.getLocation().getZ() + ", " +  
+    				"INSERT INTO PlayerTowns (TownName, XCoord, YCoord, ZCoord, ID_Faction, TreasuryBalance, MinimumBalance, TownLevel, DateCreated) " +
+    				"VALUES ('" + townName + "', " + (int)player.getLocation().getX() + ", " + (int)player.getLocation().getY() + ", " + 
+    						(int)player.getLocation().getZ() + ", " +  
     				"(SELECT ID_Faction FROM Players WHERE ID_Player = " + playerData.id_Player + "), " + 
-    				plugin.config.townLevels.get(1).minimumBalance + ", 1, NOW())",
-    				Statement.RETURN_GENERATED_KEYS);        		
+    				plugin.config.townLevels.get(1).minimumBalance + ", " + plugin.config.townLevels.get(1).minimumBalance + ", 1, NOW())",
+    				Statement.RETURN_GENERATED_KEYS);   
     		preparedStatement.executeUpdate();
     		
     		// Retrieve the new auto-increment town ID 

@@ -17,6 +17,7 @@ import net.rageland.ragemod.data.PlayerTowns;
 import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.data.TownLevel;
 
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -43,13 +44,13 @@ public class TownCommands
 		if( split.length < 2 || split.length > 3 )
 		{
 			plugin.text.message(player, "Town commands: <required> [optional]");
-			if( playerData.isMayor )
+			if( playerData.isMayor && !playerData.townName.equals("") )
 				plugin.text.message(player, "   /town add <player_name>   (adds a new resident)");
 			if( playerData.townName.equals("") )
 				plugin.text.message(player, "   /town create [town_name]   (creates a new town)");
 			if( !playerData.townName.equals("") )
 				plugin.text.message(player, "   /town deposit <amount>   (deposits into town treasury)");
-			if( playerData.isMayor )
+			if( playerData.isMayor && !playerData.townName.equals(""))
 				plugin.text.message(player, "   /town evict <player_name>   (removes a resident)");
 			if( playerData.townName.equals("") )
 				plugin.text.message(player, "   /town info <town_name>   (gives info on selected town)");
@@ -59,13 +60,13 @@ public class TownCommands
 				plugin.text.message(player, "   /town leave   (leaves your current town)");
 			if( true )
 				plugin.text.message(player, "   /town list [faction]   (lists all towns in the world)");
-			if( playerData.isMayor )
+			if( playerData.isMayor && !playerData.townName.equals("") )
 				plugin.text.message(player, "   /town minimum <amount>   (sets the min. treasury balance)");
 			if( playerData.townName.equals("") )
 				plugin.text.message(player, "   /town residents <town_name>   (lists all residents of town)");
 			else
 				plugin.text.message(player, "   /town residents [town_name]   (lists all residents of town)");
-			if( playerData.isMayor )
+			if( playerData.isMayor && !playerData.townName.equals("") )
 				plugin.text.message(player, "   /town upgrade [confirm]   (upgrades your town)");
 			if( !playerData.townName.equals("") )
 				plugin.text.message(player, "   /town withdrawl <amount>   (withdrawls from town treasury)");
@@ -256,9 +257,6 @@ public class TownCommands
 			return;
 		}
 		
-		// Subtract from player balance
-		holdings.subtract(cost);
-		
 		// TODO: Check against NPC town names
 		
 		// Create the town if name selected, otherwise return message
@@ -271,7 +269,9 @@ public class TownCommands
 			PlayerTown playerTown = new PlayerTown(plugin);
 			playerTown.id_PlayerTown = townID;
 			playerTown.townName = townName;
-			playerTown.centerPoint = new Location2D((int)player.getLocation().getX(), (int)player.getLocation().getZ());
+			playerTown.centerPoint = player.getLocation();
+					
+					//(player.getWorld(), (int)player.getLocation().getX(), (int)player.getLocation().getX(), (int)player.getLocation().getZ());
 			playerTown.id_Faction = playerData.id_Faction;
 			playerTown.bankruptDate = null;
 			playerTown.townLevel = plugin.config.townLevels.get(1);
@@ -283,6 +283,7 @@ public class TownCommands
 			
 			playerTown.buildRegion();
 			playerTown.createBorder();
+			playerTown.buildSanctumFloor();
 			
 			plugin.playerTowns.put(playerTown);
 			
@@ -292,11 +293,14 @@ public class TownCommands
 			playerData.currentTown = playerTown;
 			playerData.treasuryBalance = cost;
 			
+			// Subtract from player balance
+			holdings.subtract(cost);
+			
 			plugin.text.message(player, "Congratulations, you are the new mayor of " + playerTown.getCodedName() + "!");		
 		}
 		else
 		{
-			plugin.text.message(player, "This location is valid for a new town - to create one, type '/town create <town_name>'");
+			plugin.text.message(player, "This location is valid for a new town - to create one for " + iConomy.format(cost) + ", type '/town create <town_name>'");
 		}
 	}
 	
@@ -360,7 +364,7 @@ public class TownCommands
 		PlayerData targetPlayerData = plugin.players.get(targetPlayerName);
 		
 		// Ensure that the current player is the mayor
-		if( !playerData.isMayor )
+		if( !playerData.isMayor || playerData.townName.equals("") )
 		{
 			plugin.text.message(player, "Only town mayors can use /town evict.");
 			return;
@@ -479,14 +483,8 @@ public class TownCommands
 		Holdings holdings = iConomy.getAccount(player.getName()).getHoldings();
 		PlayerTown playerTown = plugin.playerTowns.get(playerData.townName);
 		
-		// Make sure the player is a resident of a town
-		if( playerData.townName.equals("") )
-		{
-			plugin.text.message(player, "Only town residents can use the deposit command.");
-			return;
-		}
 		// Ensure that the current player is the mayor
-		if( !playerData.isMayor )
+		if( !playerData.isMayor || playerData.townName.equals("") )
 		{
 			plugin.text.message(player, "Only town mayors can use /town minimum.");
 			return;
@@ -561,7 +559,7 @@ public class TownCommands
 		PlayerTown playerTown = plugin.playerTowns.get(playerData.townName);
 		
 		// Ensure that the current player is the mayor
-		if( !playerData.isMayor )
+		if( !playerData.isMayor || playerData.townName.equals("") )
 		{
 			plugin.text.message(player, "Only town mayors can use '/town upgrade'.");
 			return;
@@ -608,6 +606,7 @@ public class TownCommands
 			playerTown.minimumBalance = targetLevel.minimumBalance;
 			playerTown.buildRegion();
 			playerTown.createBorder();
+			playerTown.buildSanctumFloor();
 			plugin.playerTowns.put(playerTown);
 			
 			plugin.database.townQueries.townUpgrade(playerTown.townName, (targetLevel.initialCost - targetLevel.minimumBalance));

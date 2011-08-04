@@ -20,6 +20,7 @@ public class Text
 	private Pattern copperPattern;
 	private Pattern urlPattern;
 	private Pattern townPattern;
+	private Pattern numberPattern;
 	
 	private ChatColor DEFAULT_COLOR = ChatColor.GREEN;
 	
@@ -28,7 +29,7 @@ public class Text
 	{
 		this.plugin = plugin;
 		
-		 playerPattern = Pattern.compile("<p(.)>(.+)</p.>");
+		 playerPattern = Pattern.compile("<p(.)>(\\w+)</p.>");
 		 townPattern = Pattern.compile("<t(.)>(.+)</t.>");
 		 
 		 commandPattern = Pattern.compile("( /[a-zA-Z]+)");
@@ -38,6 +39,7 @@ public class Text
 		 silverPattern = Pattern.compile("([\\d,]+ Silver)");
 		 copperPattern = Pattern.compile("([\\d,]+ Copper)");
 		 urlPattern = Pattern.compile("(http://\\S+)");
+		 numberPattern = Pattern.compile("(\\s)([\\d+,-]+)");
 		 
 	}
 	
@@ -51,7 +53,10 @@ public class Text
 	public void message(Player player, String message, ChatColor color)
 	{
 		message = color + message;
+		
 		message = highlightPlayers(message, color);
+		message = highlightTowns(message, color);
+		
 		message = highlightCommands(message, color);
 		message = highlightRequired(message, color);
 		message = highlightOptional(message, color);
@@ -59,7 +64,7 @@ public class Text
 		message = highlightSilver(message, color);
 		message = highlightCopper(message, color);
 		message = highlightURL(message, color);
-		message = highlightTowns(message, color);
+		message = highlightNumbers(message, color);
 		
 		player.sendMessage(message);
 	}
@@ -69,15 +74,22 @@ public class Text
 	{
 		player.sendMessage(DEFAULT_COLOR + message);
 	}
+	public void messageBasic(Player player, String message, ChatColor color)
+	{
+		player.sendMessage(color + message);
+	}
 	
 	
 	private String highlightPlayers(String message, ChatColor color)
 	{
 		Matcher matcher = playerPattern.matcher(message);
 	    ChatColor playerColor = ChatColor.GRAY;		// bad code
-	    if( matcher.find() )
-	    {
-	    	if( matcher.group(1).equals("o") )		// owner
+	    
+	    
+	    StringBuffer sb = new StringBuffer();
+        while( matcher.find() )
+        {
+        	if( matcher.group(1).equals("o") )		// owner
 	    		playerColor = ChatColor.GOLD;
 	    	else if( matcher.group(1).equals("a") )	// admin
 	    		playerColor = ChatColor.YELLOW;
@@ -93,9 +105,13 @@ public class Text
 	    		playerColor = ChatColor.GRAY;
 	    	else if( matcher.group(1).equals("t") )	// tourist
 	    		playerColor = ChatColor.DARK_GRAY;
-	    }
-	   
-	    return matcher.replaceAll(playerColor + "$2" + color);
+        	
+        	matcher.appendReplacement(sb, playerColor + "$2" + color);
+        }
+        matcher.appendTail(sb);
+        
+        return sb.toString();
+
 	}
 	private String highlightTowns(String message, ChatColor color)
 	{
@@ -112,6 +128,11 @@ public class Text
 	    return matcher.replaceAll(townColor + "$2" + color);
 	}
 	
+	private String highlightNumbers(String message, ChatColor color)
+	{
+	    Matcher matcher = numberPattern.matcher(message);
+	    return matcher.replaceAll("$1" + ChatColor.WHITE + "$2" + color);
+	}
 	private String highlightCommands(String message, ChatColor color)
 	{
 	    Matcher matcher = commandPattern.matcher(message);

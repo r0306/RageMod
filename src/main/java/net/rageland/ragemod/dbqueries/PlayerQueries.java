@@ -1,5 +1,7 @@
 package net.rageland.ragemod.dbqueries;
 
+// TODO: Consider fetching all players that have logged in in the last 24 hours on server startup.  May save some lag
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

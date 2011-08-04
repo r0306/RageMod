@@ -57,11 +57,12 @@ public class PlayerTowns {
  	public HashMap<String, Integer> checkForNearbyTowns(Location location)
  	{
  		HashMap<String, Integer> townList = new HashMap<String, Integer>();
- 		double distance; 
+ 		double distance;
+ 		Location2D location2D = new Location2D(location);
  		
  		for( PlayerTown town : towns.values() )
  		{
- 			distance = town.centerPoint.distance(location);
+ 			distance = location2D.distance(town.centerPoint);
  			if( distance < plugin.config.Town_MIN_DISTANCE_BETWEEN )
  				townList.put(town.townName, (int)distance);
  		}
@@ -84,9 +85,11 @@ public class PlayerTowns {
     // Checks to see if nearby enemy capitols are too close; used by /townupgrade
     public boolean areEnemyCapitolsTooClose(PlayerTown playerTown)
     {
+    	Location2D location2D = new Location2D(playerTown.centerPoint);
+    	
     	for( PlayerTown town : towns.values () )
     	{
-    		if( town.isCapitol() && town.centerPoint.distance(playerTown.centerPoint) < plugin.config.Town_MIN_DISTANCE_ENEMY_CAPITOL )
+    		if( town.isCapitol() && location2D.distance(town.centerPoint) < plugin.config.Town_MIN_DISTANCE_ENEMY_CAPITOL )
     		{
     			return true;
     		}

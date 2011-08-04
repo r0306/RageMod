@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 
 import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
@@ -23,7 +24,7 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	// PlayerTowns table
 	public int id_PlayerTown;
 	public String townName;
-	public Location2D centerPoint;
+	public Location centerPoint;
 	public int id_Faction;
 	public double treasuryBalance;
 	public double minimumBalance;
@@ -36,6 +37,8 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	public TownLevel townLevel;				// Corresponds to the HashMap TownLevels in Config
 	
 	public Region2D region;
+	public Region3D sanctumFloor;  			// A 20x20 region in the center of the city
+	public Region3D sanctumRoom;
 	public World world;
 	
 	private RageMod plugin;
@@ -64,6 +67,7 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	public PlayerTown (RageMod plugin)
 	{		
 		this.plugin = plugin;
+		residents = new ArrayList<String>();
 	}
 	
 	// Implementing Comparable for sorting purposes
@@ -178,12 +182,6 @@ public class PlayerTown implements Comparable<PlayerTown> {
             }
         }
 	}
-	
-	// Create the floor of the inner sanctum
-	public void buildSanctumFloor()
-	{
-		
-	}
 
 	// Returns the town name with special tags to be interpreted by the messaging methods
 	public String getCodedName() 
@@ -206,6 +204,126 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	}
 	
 	
+	
+	
+	
+	
+	
+	// Builds the inner sanctum floor
+	public void buildSanctumFloor() 
+	{
+		
+		// Pinpoint the top-right corner
+		int cornerX = (int)this.centerPoint.getX() - 10; // - 10;
+		int cornerY = (int)this.centerPoint.getY() - 1;
+		int cornerZ = (int)this.centerPoint.getZ() - 10; // - 10;
+		Block currentBlock;
+		
+		ArrayList<String> layout = RageConfig.buildSanctumFloor(this.townLevel.level);
+		
+	    //		c: Cobblestone
+	    //		d: Dirt
+	    //		p: Wood Planks
+	    //		s: Stone
+	    //		t: Tile (slab)
+	    //		o: Obsidian
+		//		O: Obsidian stack 2-high w/ glowstone on top
+	    //		g: Glowstone
+		//		G: Glowstone stack 2-high
+	    //		w: Wool (of appropriate color)
+	    //		-: Portal (inside)
+	    //		|: Portal (outside)
+	    //		b: Bedrock
+	    //		L: Liquid (water/lava)
+	    //		n: Snow
+	    //		i: Iron Block
+	    //		S: Special faction block (lapis/netherrack)
+		for( int x = 0; x < 20; x++ )
+		{
+			for( int z = 0; z < 20; z++ )
+			{
+				currentBlock = world.getBlockAt(cornerX + x, cornerY, cornerZ + z);
+				
+				// Clear the air above the floor
+				world.getBlockAt(cornerX + x, cornerY + 1, cornerZ + z).setType(Material.AIR);
+				world.getBlockAt(cornerX + x, cornerY + 2, cornerZ + z).setType(Material.AIR);
+				world.getBlockAt(cornerX + x, cornerY + 3, cornerZ + z).setType(Material.AIR);
+				world.getBlockAt(cornerX + x, cornerY + 4, cornerZ + z).setType(Material.AIR);
+				world.getBlockAt(cornerX + x, cornerY + 5, cornerZ + z).setType(Material.AIR);
+				
+				// Create bedrock below the floor, to hold liquids
+				world.getBlockAt(cornerX + x, cornerY - 1, cornerZ + z).setType(Material.BEDROCK);
+				world.getBlockAt(cornerX + x, cornerY - 2, cornerZ + z).setType(Material.BEDROCK);
+				
+				// Set the floor block(s)
+				switch( layout.get(x).charAt(z) )
+				{
+					case 'c':
+						currentBlock.setType(Material.COBBLESTONE); break;
+					case 'd':
+						currentBlock.setType(Material.DIRT); break;
+					case 'p':
+						currentBlock.setType(Material.WOOD); break;
+					case 's':
+						currentBlock.setType(Material.STONE); break;
+					case 't':
+						currentBlock.setType(Material.DOUBLE_STEP); break;
+					case 'o':
+						currentBlock.setType(Material.OBSIDIAN); break;
+					case 'O':
+						currentBlock.setType(Material.OBSIDIAN);
+						world.getBlockAt(cornerX + x, cornerY + 1, cornerZ + z).setType(Material.OBSIDIAN);
+						world.getBlockAt(cornerX + x, cornerY + 2, cornerZ + z).setType(Material.OBSIDIAN);
+						world.getBlockAt(cornerX + x, cornerY + 3, cornerZ + z).setType(Material.OBSIDIAN);
+						break;
+					case 'g':
+						currentBlock.setType(Material.GLOWSTONE); break;
+					case 'G':
+						currentBlock.setType(Material.GLOWSTONE); 
+						world.getBlockAt(cornerX + x, cornerY + 1, cornerZ + z).setType(Material.GLOWSTONE);
+						break;
+					case 'w':
+						currentBlock.setType(Material.WOOL); 
+						currentBlock.setData((byte) Byte.valueOf(String.valueOf(plugin.factions.getWoolColor(this.id_Faction))));
+						break;
+					case '-':
+						currentBlock.setType(Material.OBSIDIAN); 
+						world.getBlockAt(cornerX + x, cornerY + 1, cornerZ + z).setType(Material.PORTAL);
+						world.getBlockAt(cornerX + x, cornerY + 2, cornerZ + z).setType(Material.PORTAL);
+						world.getBlockAt(cornerX + x, cornerY + 3, cornerZ + z).setType(Material.PORTAL);
+						world.getBlockAt(cornerX + x, cornerY + 4, cornerZ + z).setType(Material.OBSIDIAN);
+						break;
+					case '|':
+						currentBlock.setType(Material.OBSIDIAN); 
+						world.getBlockAt(cornerX + x, cornerY + 1, cornerZ + z).setType(Material.OBSIDIAN);
+						world.getBlockAt(cornerX + x, cornerY + 2, cornerZ + z).setType(Material.OBSIDIAN);
+						world.getBlockAt(cornerX + x, cornerY + 3, cornerZ + z).setType(Material.OBSIDIAN);
+						world.getBlockAt(cornerX + x, cornerY + 4, cornerZ + z).setType(Material.OBSIDIAN);
+						break;
+					case 'b':
+						currentBlock.setType(Material.BEDROCK); break;
+					case 'L':
+						currentBlock.setType(Material.GLASS);
+						world.getBlockAt(cornerX + x, cornerY - 1, cornerZ + z).setType(plugin.factions.getLiquidBlock(this.id_Faction));
+						break;
+					case 'n':
+						currentBlock.setType(Material.SNOW_BLOCK); break;
+					case 'i':
+						currentBlock.setType(Material.IRON_BLOCK); break;
+					case 'S':
+						currentBlock.setType(plugin.factions.getSpecialBlock(this.id_Faction)); break;
+						
+						
+						
+				}
+			}
+		}
+		
+
+		
+
+		
+	}
 	
 	
 	
