@@ -31,9 +31,9 @@ public class QuestEndNPCEntity extends NPCEntity
 	 */
 	public void rightClickAction(Player player)
 	{
-		Util.message(player, "Quest: " + quest.getQuestName());
-		Util.message(player, quest.getQuestText());
-		Util.message(player, "[Left click npc to accept]");
+		player.sendMessage("Quest: " + quest.getQuestName());
+		player.sendMessage(quest.getQuestText());
+		player.sendMessage("[Left click npc to accept]");	
 	}
 
 	/**
@@ -54,13 +54,12 @@ public class QuestEndNPCEntity extends NPCEntity
 			}
 			else
 			{
-				Util.message(player,
-						"You havent finished your quest. What are you waiting for?");
+				player.sendMessage("You havent finished your quest. What are you waiting for?");
 			}
 		}
 		else
 		{
-			Util.message(player, "Sorry, I can't help you with anything.");
+			player.sendMessage("Sorry, I can't help you with anything.");
 		}
 
 	}
