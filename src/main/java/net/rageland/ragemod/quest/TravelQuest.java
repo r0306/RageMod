@@ -43,10 +43,10 @@ public class TravelQuest implements Quest
 	}
 
 	@Override
-	public int getQuestId()
+	public String getQuestId()
 	{
 		// TODO Auto-generated method stub
-		return 0;
+		return "";
 	}
 
 	@Override

@@ -2,6 +2,12 @@ package net.rageland.ragemod.quest;
 
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Contains data about the reward of a quest. Each quest
+ * consist of a RewardData object.
+ * @author Jorgen
+ *
+ */
 public class RewardData
 {
 

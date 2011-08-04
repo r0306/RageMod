@@ -52,19 +52,19 @@ public class RewardQuest implements Quest
 
 				if (rewardData.getAmountOfItems() > 0)
 				{
-//					player.sendMessage(ChatColor.DARK_GREEN
-//							+ Integer.toString(this.rewardItemAmount)
-//							+ ChatColor.GOLD
-//							+ this.rewardItem.getType().toString());
-//					NPCUtilities.addItemToInventory(player.getInventory(),
-//							this.rewardItem, this.rewardItemAmount);
-//				}
-//
-//				if (this.coinRewardAmount > 0.0D)
-//				{
-//					player.sendMessage(ChatColor.DARK_GREEN
-//							+ Double.toString(this.coinRewardAmount)
-//							+ ChatColor.GOLD + " Coins");		// DC: Check out iConomy.format() - I'm thinking of changing the currency name
+					player.sendMessage(ChatColor.DARK_GREEN
+							+ Integer.toString(rewardData.getAmountOfItems())
+							+ ChatColor.GOLD
+							+ rewardData.getItem().getType().toString());
+					NPCUtilities.addItemToInventory(player.getInventory(),
+							rewardData.getItem(), rewardData.getAmountOfItems());
+				}
+
+				if (rewardData.getCoins() > 0.0D)
+				{
+					player.sendMessage(ChatColor.DARK_GREEN
+							+ Double.toString(rewardData.getCoins())
+							+ ChatColor.GOLD + " Coins");		// DC: Check out iConomy.format() - I'm thinking of changing the currency name
 				}
 
 				player.sendMessage(" ");
@@ -106,10 +106,9 @@ public class RewardQuest implements Quest
 	}
 
 	@Override
-	public int getQuestId()
+	public String getQuestId()
 	{
-//		return questData.getId();
-		return 0;		// TOOD: remove this (DC)
+		return questData.getId();
 	}
 
 	@Override

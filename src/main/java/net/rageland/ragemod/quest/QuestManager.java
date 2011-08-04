@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 public class QuestManager
 {
 	private RageMod plugin;
-	public HashMap<Integer, Quest> quests = new HashMap<Integer, Quest>();
+	public HashMap<String, Quest> quests = new HashMap<String, Quest>();
 
 	public QuestManager(RageMod plugin)
 	{
