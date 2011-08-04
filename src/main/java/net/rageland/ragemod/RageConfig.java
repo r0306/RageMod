@@ -22,6 +22,7 @@ public class RageConfig {
 	// General settings
 	public String SERVER_NAME = "Rageland";
 	public boolean DISABLE_NON_LOT_CODE;
+	public String OWNER_NAME = "TheIcarusKid";		// For sending certain debug notifications
 	
 	// Database settings
 	public String DB_URL;
@@ -85,7 +86,7 @@ public class RageConfig {
     // 1 hour: 3600
     // 1 day:  86400
     // 1 week: 604800
-    public int Task_TOWN_UPKEEP = 86400;			// Charge taxes for player towns
+    public int Task_TOWN_UPKEEP = 10;			// Charge taxes for player towns
     public int Task_FILL_SANDLOT = 86400;		// Replenish sand in public sand mine
     
     public RageConfig (RageMod plugin)

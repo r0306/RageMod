@@ -179,4 +179,11 @@ public class PlayerData
 		return "<p" + colorCode + ">" + this.name + "</p" + colorCode + ">";
 	}
 	
+	// Updates the playerData in the database
+	public void update()
+	{
+		plugin.database.playerQueries.updatePlayer(this);
+	}
+	
+	
 }

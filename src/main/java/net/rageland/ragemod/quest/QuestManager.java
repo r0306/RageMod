@@ -15,10 +15,10 @@ public class QuestManager
 	public QuestManager(RageMod plugin)
 	{
 		this.plugin = plugin;
-		RewardQuest testRewardQuest = new RewardQuest(1, "TestRewardQuest",
-				"Hooray, you found me. Could you tell me where I am?",
-				"Thanks you so much. Enjoy your reward.", new ItemStack(
-						Material.COBBLESTONE), 200, 50.0D, true, true);
-		quests.put(Integer.valueOf(1), testRewardQuest);
+//		RewardQuest testRewardQuest = new RewardQuest(1, "TestRewardQuest",
+//				"Hooray, you found me. Could you tell me where I am?",
+//				"Thanks you so much. Enjoy your reward.", new ItemStack(
+//						Material.COBBLESTONE), 200, 50.0D, true, true);
+//		quests.put(Integer.valueOf(1), testRewardQuest);
 	}
 }

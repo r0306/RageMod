@@ -95,7 +95,8 @@ public class PlayerTowns {
     	return false;	// No too-close capitols found
     }
 
-	public PlayerTown getCurrentTown(Location location) 
+	// Gets the town that the location is in, if any
+    public PlayerTown getCurrentTown(Location location) 
 	{
 		for( PlayerTown town : towns.values() )
     	{
@@ -108,6 +109,13 @@ public class PlayerTowns {
 		// Location not inside any town; return null
 		return null;
 	}
+    
+    // Removes the town from the list for deletions
+    public void remove(PlayerTown playerTown)
+    {
+    	towns.remove(playerTown);
+    }
+    
 
 }
 

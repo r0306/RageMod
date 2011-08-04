@@ -68,6 +68,7 @@ public class TownQueries {
         		currentTown.townLevel = plugin.config.townLevels.get(rs.getInt("TownLevel"));
         		currentTown.mayor = rs.getString("Mayor");
         		currentTown.world = plugin.getServer().getWorld("world");
+        		currentTown.residents = getTownResidents(currentTown.id_PlayerTown);
         		
         		currentTown.buildRegion();	 
         		
@@ -80,7 +81,7 @@ public class TownQueries {
         	return towns;
         		        	
     	} catch (Exception e) {
-    		System.out.println("Error in RageDB.LoadPlayerTowns: " + e.getMessage());
+    		System.out.println("Error in TownQueries.LoadPlayerTowns: " + e.getMessage());
 		} finally {
 			rageDB.close(rs, preparedStatement, conn);
 		}
@@ -107,7 +108,7 @@ public class TownQueries {
     		preparedStatement.executeUpdate();	
         		        		        	
     	} catch (SQLException e) {
-    		System.out.println("Error in RageDB.TownAdd(): " + e.getMessage());
+    		System.out.println("Error in TownQueries.TownAdd(): " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
@@ -150,7 +151,7 @@ public class TownQueries {
     		return townID;
         		        		        	
     	} catch (SQLException e) {
-    		System.out.println("Error in RageDB.TownCreate(): " + e.getMessage());
+    		System.out.println("Error in TownQueries.TownCreate(): " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
@@ -174,11 +175,11 @@ public class TownQueries {
     		conn = rageDB.getConnection();
     		// Update the Players table to remove the town association
     		preparedStatement = conn.prepareStatement(
-    				"UPDATE Players SET ID_PlayerTown = NULL, IsMayor = 0, Spawn_IsSet = 0 WHERE ID_Player = " + playerData.id_Player);
+    				"UPDATE Players SET ID_PlayerTown = NULL, IsMayor = 0, Spawn_XCoord = NULL WHERE ID_Player = " + playerData.id_Player);
     		preparedStatement.executeUpdate();	
     	} 
     	catch (SQLException e) {
-    		System.out.println("Error in RageDB.TownLeave(): " + e.getMessage());
+    		System.out.println("Error in TownQueries.TownLeave(): " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
@@ -203,7 +204,7 @@ public class TownQueries {
     		preparedStatement.executeUpdate();	
     	} 
     	catch (SQLException e) {
-    		System.out.println("Error in RageDB.TownUpgrade(): " + e.getMessage());
+    		System.out.println("Error in TownQueries.TownUpgrade(): " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
@@ -223,13 +224,13 @@ public class TownQueries {
     	{
     		conn = rageDB.getConnection();
     		preparedStatement = conn.prepareStatement(
-    				"SELECT COUNT (ID_Player) FROM Players WHERE ID_PlayerTown = " + playerTown.id_PlayerTown);
+    				"SELECT COUNT(*) FROM Players WHERE ID_PlayerTown = " + playerTown.id_PlayerTown);
     		rs = preparedStatement.executeQuery();
     		rs.next();
     		return rs.getInt(1);
     	} 
     	catch (SQLException e) {
-    		System.out.println("Error in RageDB.CountResidents(): " + e.getMessage());
+    		System.out.println("Error in TownQueries.CountResidents(): " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
@@ -241,13 +242,12 @@ public class TownQueries {
 	}
 	
 	// Returns all residents for a particular town, with mayor first
-	public ArrayList<String> listTownResidents(String townName) 
+	public ArrayList<String> getTownResidents(int id_PlayerTown) 
 	{
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
 	    ResultSet rs = null;
 	    
-		PlayerTown playerTown = plugin.playerTowns.get(townName);
 		ArrayList<String> residents = new ArrayList<String>();
 		
     	try
@@ -255,7 +255,7 @@ public class TownQueries {
     		conn = rageDB.getConnection();
     		preparedStatement = conn.prepareStatement(
     				"SELECT Name FROM Players p " +
-    				"WHERE ID_PlayerTown = " + playerTown.id_PlayerTown + " " +
+    				"WHERE ID_PlayerTown = " + id_PlayerTown + " " +
     				"ORDER BY IsMayor DESC ");
     		rs = preparedStatement.executeQuery();
         	
@@ -267,7 +267,7 @@ public class TownQueries {
         		
     	} 
     	catch (SQLException e) {
-    		System.out.println("Error in RageDB.ListTownResidents(): " + e.getMessage());
+    		System.out.println("Error in TownQueries.ListTownResidents(): " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		    return residents;
@@ -300,7 +300,7 @@ public class TownQueries {
     		preparedStatement.executeUpdate();	
     	} 
     	catch (SQLException e) {
-    		System.out.println("Error in RageDB.townDeposit(): " + e.getMessage());
+    		System.out.println("Error in TownQueries.townDeposit(): " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
@@ -324,7 +324,36 @@ public class TownQueries {
     		preparedStatement.executeUpdate();	
     	} 
     	catch (SQLException e) {
-    		System.out.println("Error in RageDB.townSetMinimumBalance(): " + e.getMessage());
+    		System.out.println("Error in TownQueries.townSetMinimumBalance(): " + e.getMessage());
+		    System.out.println("SQLState: " + e.getSQLState());
+		    System.out.println("VendorError: " + e.getErrorCode());
+		} finally {
+			rageDB.close(rs, preparedStatement, conn);
+		}
+		
+	}
+
+	// Updates all of the town's information in the database
+	public void update(PlayerTown playerTown) 
+	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
+		try
+    	{
+			conn = rageDB.getConnection();
+    		// Update all town info
+    		preparedStatement = conn.prepareStatement(
+    				"UPDATE PlayerTowns SET " +
+    				"TreasuryBalance = " + playerTown.treasuryBalance + ", " + 
+    				"MinimumBalance = " + playerTown.minimumBalance + ", " + 
+    				"BankruptDate = " + (playerTown.bankruptDate == null ? "null" : "'" + playerTown.bankruptDate + "'") + ", " +
+    				"IsDeleted = " + playerTown.isDeleted + " " + 
+    				"WHERE ID_PlayerTown = " + playerTown.id_PlayerTown);
+    		preparedStatement.executeUpdate();	
+    	} 
+    	catch (SQLException e) {
+    		System.out.println("Error in TownQueries.update(): " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {

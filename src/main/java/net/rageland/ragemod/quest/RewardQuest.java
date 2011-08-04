@@ -8,6 +8,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.iConomy.iConomy;
+
 public class RewardQuest implements Quest
 {
 	private QuestData questData;
@@ -50,19 +52,19 @@ public class RewardQuest implements Quest
 
 				if (rewardData.getAmountOfItems() > 0)
 				{
-					player.sendMessage(ChatColor.DARK_GREEN
-							+ Integer.toString(this.rewardItemAmount)
-							+ ChatColor.GOLD
-							+ this.rewardItem.getType().toString());
-					NPCUtilities.addItemToInventory(player.getInventory(),
-							this.rewardItem, this.rewardItemAmount);
-				}
-
-				if (this.coinRewardAmount > 0.0D)
-				{
-					player.sendMessage(ChatColor.DARK_GREEN
-							+ Double.toString(this.coinRewardAmount)
-							+ ChatColor.GOLD + " Coins");
+//					player.sendMessage(ChatColor.DARK_GREEN
+//							+ Integer.toString(this.rewardItemAmount)
+//							+ ChatColor.GOLD
+//							+ this.rewardItem.getType().toString());
+//					NPCUtilities.addItemToInventory(player.getInventory(),
+//							this.rewardItem, this.rewardItemAmount);
+//				}
+//
+//				if (this.coinRewardAmount > 0.0D)
+//				{
+//					player.sendMessage(ChatColor.DARK_GREEN
+//							+ Double.toString(this.coinRewardAmount)
+//							+ ChatColor.GOLD + " Coins");		// DC: Check out iConomy.format() - I'm thinking of changing the currency name
 				}
 
 				player.sendMessage(" ");
@@ -104,9 +106,10 @@ public class RewardQuest implements Quest
 	}
 
 	@Override
-	public String getQuestId()
+	public int getQuestId()
 	{
-		return questData.getId();
+//		return questData.getId();
+		return 0;		// TOOD: remove this (DC)
 	}
 
 	@Override

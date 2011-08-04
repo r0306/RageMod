@@ -1,6 +1,7 @@
 package net.rageland.ragemod.data;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.bukkit.Location;
@@ -15,6 +16,8 @@ import net.rageland.ragemod.RageMod;
 
 // TODO: Figure out how to make the constructor more graceful and safer - the current buildRegion() setup is asking for null pointer errors
 
+// TODO: Store resident list in memory, there's no reason to be always pulling that from the database
+
 public class PlayerTown implements Comparable<PlayerTown> {
 	
 	// PlayerTowns table
@@ -26,6 +29,9 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	public double minimumBalance;
 	public Timestamp bankruptDate;
 	public String mayor;					// Name of mayor
+	public boolean isDeleted = false;
+	
+	public ArrayList<String> residents;
 		
 	public TownLevel townLevel;				// Corresponds to the HashMap TownLevels in Config
 	
@@ -184,6 +190,19 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	{
 		char colorCode = plugin.factions.getColorCode(this.id_Faction);
 		return "<t" + colorCode + ">" + this.townName + "</t" + colorCode + ">";
+	}
+	
+	// Updates the town info in the database
+	public void update()
+	{
+		plugin.database.townQueries.update(this);
+	}
+
+	// Removes a resident from the town
+	public void removeResident(String playerName) 
+	{
+		plugin.database.townQueries.townLeave(playerName);
+		this.residents.remove(playerName);
 	}
 	
 	

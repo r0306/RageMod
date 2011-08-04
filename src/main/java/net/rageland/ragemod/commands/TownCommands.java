@@ -166,6 +166,7 @@ public class TownCommands
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
 		PlayerData targetPlayerData = plugin.players.get(targetPlayerName);
+		PlayerTown playerTown = plugin.playerTowns.get(playerData.townName);
 		
 		// Check to see if target player exists
 		if( targetPlayerData == null )
@@ -174,7 +175,7 @@ public class TownCommands
 			return;
 		}
 		// Ensure that the current player is the mayor
-		if( !playerData.isMayor )
+		if( !playerData.isMayor || playerTown == null )
 		{
 			plugin.text.message(player, "Only town mayors can use '/town add'.");
 			return;
@@ -182,7 +183,7 @@ public class TownCommands
 		// Ensure that the target player is not currently a resident of a town
 		if( !targetPlayerData.townName.equals("") )
 		{
-			plugin.text.message(player, targetPlayerData.getCodedName() + " is already a resident of '" + plugin.playerTowns.get(targetPlayerData.townName).getCodedName() + "'.");
+			plugin.text.message(player, targetPlayerData.getCodedName() + " is already a resident of '" + playerTown.getCodedName() + "'.");
 			return;
 		}		
 		// Ensure that the target player is the same faction as the mayor
@@ -191,7 +192,7 @@ public class TownCommands
 			plugin.text.message(player, "You can only add players that are the same faction as you.");
 			return;
 		}
-		if( plugin.playerTowns.get(playerData.townName).isFull() )
+		if( playerTown.isFull() )
 		{
 			plugin.text.message(player, "Your town already has the maximum number of residents for its level.");
 			return;
@@ -203,9 +204,11 @@ public class TownCommands
 		// Update the playerData
 		targetPlayerData.townName = playerData.townName;
 		// This will give the player's balance back if they were a previous resident of the town
-		targetPlayerData.treasuryBalance = plugin.database.playerQueries.getPlayerTreasuryBalance(targetPlayerData.id_Player, plugin.playerTowns.get(playerData.townName).id_PlayerTown);
+		targetPlayerData.treasuryBalance = plugin.database.playerQueries.getPlayerTreasuryBalance(targetPlayerData.id_Player, playerTown.id_PlayerTown);
 		
-		plugin.text.message(player, targetPlayerData.getCodedName() + " is now a resident of " + plugin.playerTowns.get(playerData.townName).getCodedName() + ".");		
+		playerTown.residents.add(targetPlayerData.name);
+		
+		plugin.text.message(player, targetPlayerData.getCodedName() + " is now a resident of " + playerTown.getCodedName() + ".");		
 	}
 	
 	// /town  create <town_name>
@@ -276,6 +279,7 @@ public class TownCommands
 			playerTown.minimumBalance = plugin.config.townLevels.get(1).minimumBalance;
 			playerTown.mayor = playerData.name;
 			playerTown.world = player.getWorld();
+			playerTown.residents.add(playerData.name);
 			
 			playerTown.buildRegion();
 			playerTown.createBorder();
@@ -377,9 +381,14 @@ public class TownCommands
 		// Remove the target from the player's town
 		plugin.database.townQueries.townLeave(targetPlayerName);
 		
+		// TODO: This causes two updates to the same table in the database.  Expand updatePlayer() to include town info
+		
 		// Update the playerData
 		targetPlayerData.townName = "";
 		targetPlayerData.spawn_IsSet = false;
+		targetPlayerData.logonMessageQueue += "You have been evicted from " + plugin.playerTowns.get(playerData.townName).getCodedName() + " by " + 
+				playerData.getCodedName() + ".<br>";
+		plugin.database.playerQueries.updatePlayer(targetPlayerData);
 		
 		plugin.text.message(player, targetPlayerData.getCodedName() + " is no longer a resident of " + plugin.playerTowns.get(playerData.townName).getCodedName() + ".");		
 	}
@@ -531,9 +540,7 @@ public class TownCommands
 		
 		plugin.text.message(player, "Residents of " + plugin.playerTowns.get(playerTown.townName).getCodedName() + ":");
 		
-		ArrayList<String> residents = plugin.database.townQueries.listTownResidents(townName);
-		
-		for( String resident : residents )
+		for( String resident : playerTown.residents )
 		{
 			if( isMayor )
 			{

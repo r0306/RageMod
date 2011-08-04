@@ -67,6 +67,7 @@ public class Tasks {
 		double cost = plugin.config.Town_UPKEEP_PER_PLAYER;
 		Holdings holdings;
 		PlayerData playerData;
+		ArrayList<String> evictList;
 		
 		if( plugin.config.DISABLE_NON_LOT_CODE )
 			return;
@@ -78,8 +79,10 @@ public class Tasks {
 			// Set the total amount needed to be collected
 			remaining = town.getLevel().upkeepCost;
 			
+			evictList = new ArrayList<String>();
+			
 			// Move through each town resident to collect money
-			for( String playerName : plugin.database.townQueries.listTownResidents(town.townName))
+			for( String playerName : town.residents )
 			{
 				holdings = iConomy.getAccount(playerName).getHoldings();
 				playerData = plugin.players.get(playerName);
@@ -96,23 +99,30 @@ public class Tasks {
 					playerData.treasuryBalance -= cost;
 					town.treasuryBalance -= cost;
 					remaining -= cost;
-					plugin.database.playerQueries.updatePlayer(playerData);
+					playerData.update();
+					plugin.database.townQueries.townDeposit(town.id_PlayerTown, playerData.id_Player, (cost * -1));
 				}
 				// If the player doesn't have the funds in either area, evict their freeloading ass
 				else if( !playerData.isMayor )
 				{
-					playerData.townName = "";
+					System.out.println("Automatically evicting " + playerData.name + " from " + town.townName + ".");
 					playerData.spawn_IsSet = false;
 					playerData.treasuryBalance = 0;
 					playerData.logonMessageQueue += "You have been automatically evicted from " + 
-							plugin.playerTowns.get(playerData.townName).getCodedName() + " for insufficient funds.<br>";
+							plugin.playerTowns.get(playerData.townName).getCodedName() + " for inability to pay taxes.<br>";
+					playerData.townName = "";
 					
-					plugin.database.playerQueries.updatePlayer(playerData);
-					
-					// TODO: Inform the player of their eviction somehow
+					evictList.add(playerName);
+					playerData.update();
 					
 					// TODO: Delete the player's treasury blocks, give them money
 				}
+			}
+			
+			// Evict queued residents, if any
+			for( String evictName : evictList )
+			{
+				town.removeResident(evictName);
 			}
 			
 			// At this point we will have collected an amount of money less, equal to, or more than the town's upkeep
@@ -131,17 +141,28 @@ public class Tasks {
 					// At this point the town has been bankrupt for some time - delete after specified time
 					if( Util.daysBetween(Util.now(), town.bankruptDate) > plugin.config.Town_MAX_BANKRUPT_DAYS )
 					{
-						// TODO: Finish writing this
+						PlayerData ownerData = plugin.players.get(plugin.config.OWNER_NAME);
+						String ownerMessages = ownerData.logonMessageQueue;
+						String bankruptMessage = "The town of " + town.getCodedName() + " has been bankrupt for over " + plugin.config.Town_MAX_BANKRUPT_DAYS +
+								" days and has been set to deleted.<br>";
+						
+						if( !ownerMessages.contains(bankruptMessage) )
+						{
+							ownerMessages += bankruptMessage;
+							ownerData.update();
+						}
+						
+						town.isDeleted = true;
+						plugin.playerTowns.remove(town);
 					}
 				}
-				
 			}
 			else
 			{
-				// TODO: Set bankrupt date null
+				town.bankruptDate = null;
 			}
 			
-			plugin.playerTowns.put(town);	
+			town.update();		// Update town info in database
 		}
 	}
 

@@ -17,8 +17,8 @@ public class RageTimer implements Runnable
 	{
 		
 		// Process per-minute tasks (separated out for efficiency)
-		if( secondHand == 0 )
-		{
+		//if( secondHand == 0 )
+		//{
 			// Process town upkeep/taxes
 			if( plugin.tasks.getSeconds("TOWN_UPKEEP") > plugin.config.Task_TOWN_UPKEEP )
 			{
@@ -35,7 +35,7 @@ public class RageTimer implements Runnable
 			
 				
 			
-		}
+		//}
 		
 		
 		
