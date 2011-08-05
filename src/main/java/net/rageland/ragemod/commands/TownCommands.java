@@ -281,7 +281,7 @@ public class TownCommands
 			playerTown.world = player.getWorld();
 			playerTown.residents.add(playerData.name);
 			
-			playerTown.buildRegion();
+			playerTown.buildRegions();
 			playerTown.createBorder();
 			playerTown.buildSanctumFloor();
 			
@@ -413,7 +413,7 @@ public class TownCommands
 		plugin.text.message(player, "Info for " + playerTown.getCodedName() + ":");
 		plugin.text.message(player, "   Faction: " + plugin.factions.getName(playerTown.id_Faction));
 		plugin.text.message(player, "   Level: " + playerTown.getLevel().name + " (" + playerTown.townLevel.level + ")");
-		plugin.text.message(player, "   Mayor: " + playerTown.mayor);
+		plugin.text.message(player, "   Mayor: " + plugin.players.get(playerTown.mayor).getCodedName());
 		if( playerData.townName.equalsIgnoreCase(townName) )
 		{
 			plugin.text.message(player, "   Total Balance: " + iConomy.format(playerTown.treasuryBalance));
@@ -604,7 +604,7 @@ public class TownCommands
 			playerTown.townLevel = plugin.config.townLevels.get(playerTown.townLevel.level + 1);
 			playerTown.treasuryBalance = playerTown.treasuryBalance - targetLevel.initialCost + targetLevel.minimumBalance;
 			playerTown.minimumBalance = targetLevel.minimumBalance;
-			playerTown.buildRegion();
+			playerTown.buildRegions();
 			playerTown.createBorder();
 			playerTown.buildSanctumFloor();
 			plugin.playerTowns.put(playerTown);

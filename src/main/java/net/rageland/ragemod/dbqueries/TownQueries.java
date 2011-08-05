@@ -71,7 +71,7 @@ public class TownQueries {
         		currentTown.world = plugin.getServer().getWorld("world");
         		currentTown.residents = getTownResidents(currentTown.id_PlayerTown);
         		
-        		currentTown.buildRegion();	 
+        		currentTown.buildRegions();	 
         		
         		if(currentTown.townName != null)
         			towns.put(currentTown.townName.toLowerCase(), currentTown);	 

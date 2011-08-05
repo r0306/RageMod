@@ -68,8 +68,8 @@ public class DebugCommands
 		player.sendMessage(ChatColor.GOLD + "Gold: Player (Owner)");
 		player.sendMessage(ChatColor.RED + "Red: Player (Red Faction)");
 		player.sendMessage(ChatColor.DARK_RED + "Dark Red: Town (Red Faction), Player (Red Member)");
-		player.sendMessage(ChatColor.LIGHT_PURPLE + "Light Purple");
-		player.sendMessage(ChatColor.DARK_PURPLE + "Dark Purple");
+		player.sendMessage(ChatColor.LIGHT_PURPLE + "Light Purple: Battle messages");
+		player.sendMessage(ChatColor.DARK_PURPLE + "Dark Purple: Important battle messages");
 		player.sendMessage(ChatColor.BLUE + "Blue: Player (Blue Faction)");
 		player.sendMessage(ChatColor.DARK_BLUE + "Dark Blue: Town Name (Blue Faction), Player (Blue Member)");
 		player.sendMessage(ChatColor.AQUA + "Aqua: NPC quests/shops/etc. ");

@@ -53,6 +53,7 @@ public class PlayerData
 	public String townName = "";
 	public boolean isMayor = false;
 	public double treasuryBalance = 0;
+	public int treasuryBlocks;				// Number of gold blocks stored in town's treasury
 	
 	// Lot info
 	public ArrayList<Lot> lots = new ArrayList<Lot>();

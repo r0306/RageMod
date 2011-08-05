@@ -17,6 +17,8 @@ public class TownLevel
 	
 	public boolean isCapitol = false;		// Capitols can only be attained by factions and have special requirements
 	
+	public int treasuryLevel;				// The number of treasury blocks allowed per player
+	
 	public ArrayList<String> sanctumFloor;	// Encoded layout of inner sanctum floor (char = block)
 	
 

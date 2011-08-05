@@ -25,7 +25,7 @@ public class PlayerQueries {
 			"SELECT p.ID_Player, p.Name, IFNULL(p.ID_Faction, 0) as ID_Faction, p.IsMember, p.MemberExpiration, p.Bounty, p.ExtraBounty, " +
     		"   (p.Home_XCoord IS NOT NULL) AS Home_IsSet, p.Home_XCoord, p.Home_YCoord, p.Home_ZCoord, p.Home_LastUsed, " +
     		"	(p.Spawn_XCoord IS NOT NULL) AS Spawn_IsSet, p.Spawn_XCoord, p.Spawn_YCoord, p.Spawn_ZCoord, p.Spawn_LastUsed, " +
-    		"	IFNULL(pt.TownName, '') as TownName, p.IsMayor, IFNULL(p.LogonMessageQueue, '') as LogonMessageQueue " +
+    		"	IFNULL(pt.TownName, '') as TownName, p.IsMayor, IFNULL(p.LogonMessageQueue, '') as LogonMessageQueue, p.TreasuryBlocks " +
     		"FROM Players p " +
     		"LEFT JOIN PlayerTowns pt ON p.ID_PlayerTown = pt.ID_PlayerTown ";
 	
@@ -106,6 +106,7 @@ public class PlayerQueries {
 		playerData.extraBounty = rs.getFloat("ExtraBounty");
 		playerData.townName = rs.getString("TownName");
 		playerData.isMayor = rs.getBoolean("IsMayor");
+		playerData.treasuryBlocks = rs.getInt("TreasuryBlocks");
 		
 		// Set the player's isMember boolean based on the expiration date
 		if( playerData.memberExpiration == null )
@@ -140,10 +141,8 @@ public class PlayerQueries {
 			{
 				playerData.townName = "";
 				playerData.treasuryBalance = 0;
-			}
-			
+			}	
 		}
-			
 		
     	return playerData;
 	}	
@@ -231,6 +230,8 @@ public class PlayerQueries {
 				"Bounty = " + playerData.bounty + ", " +
 				"ExtraBounty = " + playerData.extraBounty + ", " +
 				"LogonMessageQueue = '" + playerData.logonMessageQueue + "', " +
+				"TreasuryBlocks = " + playerData.treasuryBlocks + ", " +
+				
     			"Home_LastUsed = " + (playerData.home_LastUsed == null ? "null" : "'" + playerData.home_LastUsed + "'") + ", " +
     			"Spawn_LastUsed = " + (playerData.spawn_LastUsed == null ? "null" : "'" + playerData.spawn_LastUsed + "'") + ", ";
     		

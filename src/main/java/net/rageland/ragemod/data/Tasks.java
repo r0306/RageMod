@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -19,7 +20,8 @@ import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.RageZones;
 import net.rageland.ragemod.Util;
 
-// TODO: Use the bukkit scheduler - the current method will not work with java.Timer
+// TODO: Create a task to check for imbalance between player treasuryBlock levels and actual gold blocks in the treasury.
+//		 If there is a mismatch, either delete the extra block or pick a resident to deduct the block level from (give them equivalent money)
 
 public class Tasks {
 		
@@ -29,7 +31,6 @@ public class Tasks {
 	public Tasks(RageMod plugin)
 	{
 		this.plugin = plugin;
-		
 	}
 	
 	
@@ -58,13 +59,18 @@ public class Tasks {
 			return (int)((Util.now().getTime() - tasks.get(taskName).getTime()) / 1000);
 	}
 	
-	// *** TASK CODE ***
 	
-	// Charge taxes for player towns
+	
+	// *****  TASK CODE  *****
+	
+	// Charge taxes for player towns and give money for treasury blocks
 	public void processTownUpkeeps()
 	{
 		double remaining;
 		double cost = plugin.config.Town_UPKEEP_PER_PLAYER;
+		int totalBlocks = 0;
+		int actualBlocks;
+		int income;
 		Holdings holdings;
 		PlayerData playerData;
 		ArrayList<String> evictList;
@@ -74,8 +80,66 @@ public class Tasks {
 		
 		System.out.println("Beginning town upkeep processing...");
 		
+		// Notify players of incoming lag
+		for( Player onlinePlayer : plugin.getServer().getOnlinePlayers() )
+		{
+			plugin.text.messageBasic(onlinePlayer, "Beginning Ragemod upkeep tasks, hold on tight...", ChatColor.DARK_GREEN); // TODO: Store colors in config
+		}
+		
 		for( PlayerTown town : plugin.playerTowns.getAll() )
 		{
+			// *****  INCOME  *****
+			// Move through each town resident to give money
+			for( String playerName : town.residents )
+			{
+				playerData = plugin.players.get(playerName);
+				income = playerData.treasuryBlocks * plugin.config.Town_INCOME_PER_BLOCK;
+				playerData.treasuryBalance += income;
+				playerData.update();
+				town.treasuryBalance += income;
+				plugin.database.townQueries.townDeposit(town.id_PlayerTown, playerData.id_Player, (income));
+				totalBlocks += playerData.treasuryBlocks;
+			}
+			
+			if( totalBlocks > 0 )
+				System.out.println("Awarded " + town.townName + " " + iConomy.format(totalBlocks * plugin.config.Town_INCOME_PER_BLOCK) + " for treasury blocks.");
+			
+			// *****  SANCTUM CLEANUP  *****
+			// Make sure the number of physical blocks in the treasury matches the database values
+			actualBlocks = town.countTreasuryBlocks();
+			
+			if( actualBlocks > totalBlocks )
+			{
+				System.out.println("WARNING: " + town.townName + " has " + actualBlocks + " gold blocks in its sanctum, yet only " + totalBlocks + 
+						" are recorded in the database.  Deleting " + (actualBlocks - totalBlocks) + " blocks to correct this.");
+				town.removeTreasuryBlocks(actualBlocks - totalBlocks);
+			}
+			else if( actualBlocks < totalBlocks )
+			{
+				int difference = totalBlocks - actualBlocks;
+				System.out.println("WARNING: " + town.townName + " has " + actualBlocks + " gold blocks in its sanctum, but " + totalBlocks + 
+						" are recorded in the database.  Removing " + difference + " blocks from database to correct this.");
+				
+				// Go through the residents one by one, lowering their block values until the discrepancy is resolved.
+				// It will go through players that appear earliest in the database first, but as this situation should never
+				// happen in actual play, it shouldn't be a problem
+				for( String playerName : town.residents )
+				{
+					playerData = plugin.players.get(playerName);
+					if( playerData.treasuryBlocks > 0 )
+					{
+						playerData.treasuryBlocks--;
+						iConomy.getAccount(playerData.name).getHoldings().add(plugin.config.PRICE_GOLD * 9);
+						playerData.update();
+						difference--;
+						if( difference == 0 )
+							break;
+					}
+				}
+			}
+			
+			// *****  TAXES  *****
+			
 			// Set the total amount needed to be collected
 			remaining = town.getLevel().upkeepCost;
 			
@@ -116,6 +180,8 @@ public class Tasks {
 					playerData.update();
 					
 					// TODO: Delete the player's treasury blocks, give them money
+					//				... wait a minute.  If the player had a treasury block, they wouldn't get evicted, would they :P
+					//				This DOES need to get written for town.leave and town.evict though.
 				}
 			}
 			

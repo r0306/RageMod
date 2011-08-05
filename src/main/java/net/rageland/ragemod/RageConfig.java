@@ -23,6 +23,7 @@ public class RageConfig {
 	public String SERVER_NAME = "Rageland";
 	public boolean DISABLE_NON_LOT_CODE;
 	public String OWNER_NAME = "TheIcarusKid";		// For sending certain debug notifications
+	public int PRICE_GOLD = 2;						// The amount of money a gold ingot is worth
 	
 	// Database settings
 	public String DB_URL;
@@ -40,6 +41,7 @@ public class RageConfig {
     public int Town_DISTANCE_BETWEEN_BEDS = 6;
     public double Town_UPKEEP_PER_PLAYER = 1.00;
     public int Town_MAX_BANKRUPT_DAYS = 7;
+    public int Town_INCOME_PER_BLOCK = 1;			// The amount of money per day for each treasury block
     
     public  HashMap<Integer, TownLevel> townLevels;
     
@@ -144,6 +146,7 @@ public class RageConfig {
     	townLevel.minimumBalance = 100;
     	townLevel.maxResidents = 5;
     	townLevel.maxNPCs = 1;
+    	townLevel.treasuryLevel = 0;
     	townLevel.sanctumFloor = buildSanctumFloor(townLevel.level);
     	townLevels.put(1, townLevel);
     	
@@ -156,6 +159,7 @@ public class RageConfig {
     	townLevel.minimumBalance = 200;
     	townLevel.maxResidents = 10;
     	townLevel.maxNPCs = 2;
+    	townLevel.treasuryLevel = 1;
     	townLevels.put(2, townLevel);
     	
     	townLevel = new TownLevel();
@@ -167,6 +171,7 @@ public class RageConfig {
     	townLevel.minimumBalance = 300;
     	townLevel.maxResidents = 15;
     	townLevel.maxNPCs = 3;
+    	townLevel.treasuryLevel = 2;
     	townLevels.put(3, townLevel);
     	
     	townLevel = new TownLevel();
@@ -178,6 +183,7 @@ public class RageConfig {
     	townLevel.minimumBalance = 500;
     	townLevel.maxResidents = 25;
     	townLevel.maxNPCs = 4;
+    	townLevel.treasuryLevel = 2;
     	townLevels.put(4, townLevel);
     	
     	townLevel = new TownLevel();
@@ -189,6 +195,7 @@ public class RageConfig {
     	townLevel.minimumBalance = 1000;
     	townLevel.maxResidents = 50;
     	townLevel.maxNPCs = 6;
+    	townLevel.treasuryLevel = 3;
     	townLevel.isCapitol = true;
     	townLevels.put(5, townLevel);
     }

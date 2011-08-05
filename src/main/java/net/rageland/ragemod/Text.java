@@ -39,7 +39,7 @@ public class Text
 		 silverPattern = Pattern.compile("([\\d,]+ Silver)");
 		 copperPattern = Pattern.compile("([\\d,]+ Copper)");
 		 urlPattern = Pattern.compile("(http://\\S+)");
-		 numberPattern = Pattern.compile("(\\s)([\\d+,-]+)");
+		 numberPattern = Pattern.compile("(\\s)([\\d+,-\\.]+)");
 		 
 	}
 	

@@ -59,6 +59,11 @@ public class RMBlockListener extends BlockListener
     	if( plugin.config.DISABLE_NON_LOT_CODE )
     		return;
     	
+    	
+    	
+    	
+    	
+    	
     	// Bed breaking - clear spawn and home
     	if( block.getType() == Material.BED_BLOCK )
     	{
@@ -98,6 +103,7 @@ public class RMBlockListener extends BlockListener
     	Player player = event.getPlayer();
     	PlayerData playerData = plugin.players.get(player.getName());
     	Block block = event.getBlock();
+    	Location location = block.getLocation();
     	
     	if (event.isCancelled()) 
         {
@@ -115,31 +121,39 @@ public class RMBlockListener extends BlockListener
     	if( plugin.config.DISABLE_NON_LOT_CODE )
     		return;
     	
-    	// Bed placement - set spawn and home
-    	if( block.getType() == Material.BED_BLOCK )
+    	// *** ZONE A (Neutral Zone) ***
+    	if( plugin.zones.isInZoneA(location) )
     	{
-    		// /home: bed inside capitol lot
-			if( plugin.zones.isInZoneA(block.getLocation()) && playerData.isMember )
-			{
-				for( Lot lot : playerData.lots )
-				{
-					if( lot.canSetHome() && lot.isInside(block.getLocation()) )
-					{
-						if( playerData.home_IsSet )
-						{
-							plugin.text.message(player, "You already have a bed inside your lot.");
-							event.setCancelled(true);
-							return;
-						}
-						playerData.setHome(block.getLocation());
-		    			plugin.text.message(player, "Your home location has now been set.");
-		    			// Update both memory and database
-		    			plugin.database.playerQueries.updatePlayer(playerData);
-					}
-				}
-			}
-			// /spawn: for beds in player towns
-			else if( plugin.zones.isInZoneB(block.getLocation()) )
+    		// Bed placement - set spawn and home
+        	if( block.getType() == Material.BED_BLOCK )
+        	{
+        		// /home: bed inside capitol lot
+    			if( playerData.isMember )
+    			{
+    				for( Lot lot : playerData.lots )
+    				{
+    					if( lot.canSetHome() && lot.isInside(block.getLocation()) )
+    					{
+    						if( playerData.home_IsSet )
+    						{
+    							plugin.text.message(player, "You already have a bed inside your lot.");
+    							event.setCancelled(true);
+    							return;
+    						}
+    						playerData.setHome(block.getLocation());
+    		    			plugin.text.message(player, "Your home location has now been set.");
+    		    			// Update both memory and database
+    		    			plugin.database.playerQueries.updatePlayer(playerData);
+    					}
+    				}
+    			}
+        	}	
+    	}
+    	// *** ZONE B (War Zone) ***
+    	else if( plugin.zones.isInZoneB(location) )
+    	{
+    		// /spawn: for beds in player towns
+			if( block.getType() == Material.BED_BLOCK )
 			{
 				PlayerTown playerTown = plugin.playerTowns.getCurrentTown(block.getLocation());
 
@@ -171,6 +185,8 @@ public class RMBlockListener extends BlockListener
 	    		}
 			}
     	}
+        	
+    	
     }
     
     // Generic permission edit handler that handles multiple types of block editing
@@ -196,11 +212,11 @@ public class RMBlockListener extends BlockListener
     			Lot lot = plugin.lots.findCurrentLot(location);
     			
     			if( lot == null && !RageMod.permissionHandler.has(player, "ragemod.build.capitol") )
-    				plugin.text.message(player, "You don't have permission to edit city infrastructure.");
+    				plugin.text.messageBasic(player, "You don't have permission to edit city infrastructure.");
     			else
     			{
     				if( lot.owner.equals("") )
-    					plugin.text.message(player, "You cannot edit unclaimed lots.");
+    					plugin.text.messageBasic(player, "You cannot edit unclaimed lots.");
     				else
     				{
     					// Check to see if the player has permission to build in this lot
@@ -220,11 +236,33 @@ public class RMBlockListener extends BlockListener
     	{
     		PlayerTown playerTown = plugin.playerTowns.getCurrentTown(location);
     		
-    		// Players can only build inside their own towns
-    		if( playerTown != null && !playerTown.townName.equals(playerData.townName) && !RageMod.permissionHandler.has(player, "ragemod.build.anytown") )
+    		if( playerTown != null )
     		{
-    			plugin.text.message(player, "You can only build inside of your own town.");
-    			return false;
+        		// Players can only build inside their own towns
+    			if( !playerTown.townName.equals(playerData.townName) && !RageMod.permissionHandler.has(player, "ragemod.build.anytown") ) 
+    			{		
+    				plugin.text.messageBasic(player, "You can only build inside of your own town.");
+    				return false;
+    			}
+    			else if( playerTown.isInsideSanctumFloor(location) )
+    			{
+    				plugin.text.messageBasic(player, "You cannot modify the inner sanctum floor.");
+    				return false;
+    			}
+    			else if( playerTown.isInsideSanctum(location) )
+    			{
+    				if( block.getType() != Material.TORCH && block.getType() != Material.GOLD_BLOCK ) 
+    				{
+    					plugin.text.messageBasic(player, "Only torches and gold blocks can be placed inside the inner sanctum.");
+        				return false;
+    				}
+    				else if( block.getType() == Material.GOLD_BLOCK )
+    				{
+    					return playerTown.processGoldBlock(event);
+    				}
+    			
+    				
+    			}
     		}
     	}
     	

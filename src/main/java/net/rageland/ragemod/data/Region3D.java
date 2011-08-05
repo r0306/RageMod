@@ -3,8 +3,6 @@ package net.rageland.ragemod.data;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-// TODO: Make the coords ambidextrous (ie. write an isBetween method)
-
 public class Region3D 
 {
 	public Location nwCorner;
@@ -24,12 +22,24 @@ public class Region3D
 		}
 	}
 	
+	public Region3D( World world, double x1, double y1, double z1, double x2, double y2, double z2 )
+	{
+		nwCorner = new Location(world, x1, y1, z1);
+		seCorner = new Location(world, x2, y2, z2);
+	}
+	
 	// Tests to see whether the current Location is inside the region
 	public boolean isInside(Location loc)
 	{
-		return ((loc.getX() >= nwCorner.getX() && loc.getX() < (seCorner.getX())) &&
-				(loc.getY() >= nwCorner.getY() && loc.getY() < (seCorner.getY())) &&
-				(loc.getZ() <= nwCorner.getZ() && loc.getZ() > (seCorner.getZ())));   // Stupid Z axis is reversed
+		return isBetween(loc.getX(), nwCorner.getX(), seCorner.getX()) &&
+				isBetween(loc.getY(), nwCorner.getY(), seCorner.getY()) &&
+				isBetween(loc.getZ(), nwCorner.getZ(), seCorner.getZ());
+
+	}
+	
+	private boolean isBetween(double test, double a1, double a2)
+	{
+		return (test >= a1 && test <= a2) || (test <= a1 && test >= a2);
 	}
 	
 

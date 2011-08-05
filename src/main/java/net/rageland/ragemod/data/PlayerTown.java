@@ -4,11 +4,15 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
@@ -83,10 +87,14 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	}
 	
 	// Creates the region
-	public void buildRegion()
+	public void buildRegions()
 	{
 		region = new Region2D(centerPoint.getX() - (townLevel.size / 2), centerPoint.getZ() + (townLevel.size / 2),
 							  centerPoint.getX() + (townLevel.size / 2), centerPoint.getZ() - (townLevel.size / 2));
+		sanctumFloor = new Region3D(world, centerPoint.getX() - 10, centerPoint.getY() - 1, centerPoint.getZ() + 9,
+									centerPoint.getX() + 9, centerPoint.getY() - 3, centerPoint.getZ() - 10);
+		sanctumRoom = new Region3D(world, centerPoint.getX() - 10, centerPoint.getY() + 4, centerPoint.getZ() + 9,
+				centerPoint.getX() + 9, centerPoint.getY(), centerPoint.getZ() - 10);
 	}
 	
 	// Checks to see whether the town is already at maximum level; used by /townupgrade
@@ -100,7 +108,7 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	
 	public boolean isCapitol()
 	{
-		return plugin.config.townLevels.get(townLevel).isCapitol;
+		return townLevel.isCapitol;
 	}
 
 	// Checks to see if the town already has its maximum number of residents
@@ -203,12 +211,148 @@ public class PlayerTown implements Comparable<PlayerTown> {
 		this.residents.remove(playerName);
 	}
 	
+	// Checks to see if a block is part of the sanctum floor
+	public boolean isInsideSanctumFloor(Location location) 
+	{
+		return this.sanctumFloor.isInside(location);
+	}
+	
+	// Checks to see if a block is part of the sanctum room
+	public boolean isInsideSanctum(Location location) 
+	{
+		return this.sanctumRoom.isInside(location);
+	}
+	
+	// Processes placing and breaking of gold blocks in the inner sanctum (treasury)
+	public boolean processGoldBlock(BlockEvent rawEvent) 
+	{
+		// Block broken (withdrawl or theft)
+		if( rawEvent instanceof BlockBreakEvent )
+		{
+			BlockBreakEvent event = (BlockBreakEvent)rawEvent;
+			Player player = event.getPlayer();
+	    	PlayerData playerData = plugin.players.get(player.getName());
+	    	
+	    	// Town resident
+	    	if( playerData.townName.equals(this.townName) )
+	    	{
+	    		// Make sure the player has enough blocks deposited
+	    		if( playerData.treasuryBlocks < 1 )
+	    		{
+	    			plugin.text.messageBasic(player, "You don't have any gold blocks deposited in the treasury.");
+	    			return false;
+	    		}
+	    		else
+	    		{
+	    			playerData.treasuryBlocks--;
+	    			playerData.update();
+	    			plugin.text.message(player, "You now have " + playerData.treasuryBlocks + " block" + 
+	    					(playerData.treasuryBlocks == 1 ? "" : "s") + " deposited into the treasury.", ChatColor.GOLD);
+	    			return true;
+	    		}
+	    	}
+		}
+		else if( rawEvent instanceof BlockPlaceEvent )
+		{
+			BlockPlaceEvent event = (BlockPlaceEvent)rawEvent;
+			Player player = event.getPlayer();
+	    	PlayerData playerData = plugin.players.get(player.getName());
+	    	
+	    	// Town resident
+	    	if( playerData.townName.equals(this.townName) )
+	    	{
+	    		// Neutral town are not allowed to have treasuries
+	    		if( this.id_Faction == 0 )
+	    		{
+	    			plugin.text.messageBasic(player, "Neutral towns cannot use treasury blocks.");
+	    			return false;
+	    		}
+	    		if( this.townLevel.treasuryLevel == 0 )
+	    		{
+	    			plugin.text.messageBasic(player, this.townLevel.name + "s are not allowed treasury blocks - upgrade your town to create income.");
+	    			return false;
+	    		}
+	    		
+	    		// See if the placement would exceed the town's treasury level
+	    		if( playerData.treasuryBlocks + 1 > this.townLevel.treasuryLevel )
+	    		{
+	    			plugin.text.messageBasic(player, "Your town only allows " + this.townLevel.treasuryLevel + " treasury block" + 
+	    					(this.townLevel.treasuryLevel == 1 ? "" : "s") + " per resident.");
+	    			return false;
+	    		}
+	    		else
+	    		{
+	    			playerData.treasuryBlocks++;
+	    			playerData.update();
+	    			plugin.text.message(player, "You now have " + playerData.treasuryBlocks + " block" + 
+	    					(playerData.treasuryBlocks == 1 ? "" : "s") + " deposited into the treasury.", ChatColor.GOLD);
+	    			return true;
+	    		}
+	    	}
+		}
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	// Checks for the number of gold blocks in the sanctumRoom region
+	public int countTreasuryBlocks() 
+	{
+		int total = 0;
+		
+		for( int x = (int)sanctumRoom.nwCorner.getX(); x <= (int)sanctumRoom.seCorner.getX(); x++ )
+		{
+			for( int z = (int)sanctumRoom.nwCorner.getZ(); z >= (int)sanctumRoom.seCorner.getZ(); z-- )
+			{
+				for( int y = (int)sanctumRoom.nwCorner.getY(); y >= (int)sanctumRoom.seCorner.getY(); y-- )
+				{
+					if( world.getBlockAt(x, y, z).getType() == Material.GOLD_BLOCK )
+						total++;
+				}
+			}
+		}
+		
+		return total;
+	}
+	
+	// Removes erroneous gold blocks from the sanctum (compensates treasury)
+	public void removeTreasuryBlocks(int blocksToRemove) 
+	{
+		// Give money to treasury (9 ingots in a block)
+		this.treasuryBalance += blocksToRemove * plugin.config.PRICE_GOLD * 9;
+		
+		// Clear the blocks
+		for( int x = (int)sanctumRoom.nwCorner.getX(); x <= (int)sanctumRoom.seCorner.getX(); x++ )
+		{
+			for( int z = (int)sanctumRoom.nwCorner.getZ(); z >= (int)sanctumRoom.seCorner.getZ(); z-- )
+			{
+				for( int y = (int)sanctumRoom.nwCorner.getY(); y >= (int)sanctumRoom.seCorner.getY(); y-- )
+				{
+					if( world.getBlockAt(x, y, z).getType() == Material.GOLD_BLOCK )
+					{
+						world.getBlockAt(x, y, z).setType(Material.AIR);
+						blocksToRemove--;
+						if( blocksToRemove <= 0 )
+							return;
+					}
+				}
+			}
+		}
+		
+	}
 	
 	
 	
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	// TODO: Pull this out into a separate file
 	// Builds the inner sanctum floor
 	public void buildSanctumFloor() 
 	{
@@ -245,11 +389,14 @@ public class PlayerTown implements Comparable<PlayerTown> {
 				currentBlock = world.getBlockAt(cornerX + x, cornerY, cornerZ + z);
 				
 				// Clear the air above the floor
-				world.getBlockAt(cornerX + x, cornerY + 1, cornerZ + z).setType(Material.AIR);
-				world.getBlockAt(cornerX + x, cornerY + 2, cornerZ + z).setType(Material.AIR);
-				world.getBlockAt(cornerX + x, cornerY + 3, cornerZ + z).setType(Material.AIR);
-				world.getBlockAt(cornerX + x, cornerY + 4, cornerZ + z).setType(Material.AIR);
-				world.getBlockAt(cornerX + x, cornerY + 5, cornerZ + z).setType(Material.AIR);
+				if( this.townLevel.level == 1 )
+				{
+					world.getBlockAt(cornerX + x, cornerY + 1, cornerZ + z).setType(Material.AIR);
+					world.getBlockAt(cornerX + x, cornerY + 2, cornerZ + z).setType(Material.AIR);
+					world.getBlockAt(cornerX + x, cornerY + 3, cornerZ + z).setType(Material.AIR);
+					world.getBlockAt(cornerX + x, cornerY + 4, cornerZ + z).setType(Material.AIR);
+					world.getBlockAt(cornerX + x, cornerY + 5, cornerZ + z).setType(Material.AIR);
+				}
 				
 				// Create bedrock below the floor, to hold liquids
 				world.getBlockAt(cornerX + x, cornerY - 1, cornerZ + z).setType(Material.BEDROCK);
@@ -318,12 +465,13 @@ public class PlayerTown implements Comparable<PlayerTown> {
 				}
 			}
 		}
-		
-
-		
-
-		
 	}
+
+
+
+
+
+
 	
 	
 	
