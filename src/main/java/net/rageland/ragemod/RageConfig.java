@@ -23,7 +23,6 @@ public class RageConfig {
 	public String SERVER_NAME = "Rageland";
 	public boolean DISABLE_NON_LOT_CODE;
 	public String OWNER_NAME = "TheIcarusKid";		// For sending certain debug notifications
-	public int PRICE_GOLD = 2;						// The amount of money a gold ingot is worth
 	
 	// Database settings
 	public String DB_URL;
@@ -31,6 +30,7 @@ public class RageConfig {
     public String DB_DRIVER;
     public String DB_USER;
     public String DB_PASSWORD;
+    public long DB_TIMEOUT;			// The timeout (in ms) for individual connections, regardless of status.  Should be less than WAIT_TIMEOUT on MySQL
     
     // Town settings
     public int Town_MIN_DISTANCE_BETWEEN = 400;
@@ -41,9 +41,13 @@ public class RageConfig {
     public int Town_DISTANCE_BETWEEN_BEDS = 6;
     public double Town_UPKEEP_PER_PLAYER = 1.00;
     public int Town_MAX_BANKRUPT_DAYS = 7;
-    public int Town_INCOME_PER_BLOCK = 1;			// The amount of money per day for each treasury block
     
-    public  HashMap<Integer, TownLevel> townLevels;
+    // Money settings
+	public int PRICE_GOLD = 2;						// The amount of money a gold ingot is worth
+    public int INCOME_PER_BLOCK = 1;				// The amount of money per day for each treasury block
+    public int DEFAULT_PORTAL_COST = 1;				// The amount of money to enter Travel Zone
+    
+    public HashMap<Integer, TownLevel> townLevels;
     
     // Zone settings
     public String Zone_NAME_A = "the Neutral Zone";
@@ -52,6 +56,7 @@ public class RageConfig {
     public int Zone_BORDER_B = 2000;  // Distance from spawn
     public String Zone_NAME_C = "The Wilds";
     public int Zone_BORDER_C = 2500;  // Distance from spawn
+    public String Zone_TZ_CENTER = "0,64,0";
 
     // Lot settings
     public int Lot_X_OFFSET;			// How to convert the web X coordinates to in-game coords
@@ -91,6 +96,7 @@ public class RageConfig {
     public int Task_TOWN_UPKEEP = 86400;			// Charge taxes for player towns
     public int Task_FILL_SANDLOT = 86400;		// Replenish sand in public sand mine
     
+    
     public RageConfig (RageMod plugin)
     {
     	this.plugin = plugin;
@@ -111,7 +117,8 @@ public class RageConfig {
 		DB_NAME = pluginConfig.getString("database.name");
 		DB_DRIVER = pluginConfig.getString("database.driver");
 		DB_USER = pluginConfig.getString("database.user");
-		DB_PASSWORD = pluginConfig.getString("database.password");  
+		DB_PASSWORD = pluginConfig.getString("database.password"); 
+		DB_TIMEOUT = pluginConfig.getInt("database.timeout", 20000000);
 		
 		this.Lot_X_OFFSET = pluginConfig.getInt("lots.x_offset", -384); 
 		this.Lot_Z_OFFSET = pluginConfig.getInt("lots.z_offset", 416); 

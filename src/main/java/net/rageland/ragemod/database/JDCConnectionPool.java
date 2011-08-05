@@ -69,15 +69,16 @@ public class JDCConnectionPool {
 
    public Vector<JDCConnection> connections;
    private String url, user, password;
-   final private long timeout=20000000; 			// TODO: This was 60000
+   private long timeout = 190000; 			// TODO: This was 20000000
    private ConnectionReaper reaper;
    private ConnectionKeepAlive pinger;
    final private int poolsize=20;
 
-   public JDCConnectionPool(String url, String user, String password) {
+   public JDCConnectionPool(String url, String user, String password, long timeout) {
       this.url = url;
       this.user = user;
       this.password = password;
+      this.timeout = timeout;
       connections = new Vector<JDCConnection>(poolsize);
       reaper = new ConnectionReaper(this);
       reaper.start();

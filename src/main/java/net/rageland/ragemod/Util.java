@@ -2,10 +2,9 @@ package net.rageland.ragemod;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Cow;
 import org.bukkit.entity.Creature;
@@ -15,7 +14,6 @@ import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Giant;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.PigZombie;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Slime;
@@ -125,6 +123,21 @@ public class Util
 		{
 			return CreatureType.MONSTER;
 		}		
+	}
+	
+	// Parses a set of coordinates from the config file
+	public static Location getLocationFromCoords(World world, String coords)
+	{
+		String[] split = coords.split(",");
+		try
+		{
+			return new Location(world, Double.parseDouble(split[0]), Double.parseDouble(split[1]), Double.parseDouble(split[2]));
+		}
+		catch( Exception ex )
+		{
+			System.out.println("ERROR: Invalid coordinate string passed to Util.getLocationFromCoords()");
+			return null;
+		}
 	}
 	
 	

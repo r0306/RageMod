@@ -41,6 +41,7 @@ public class RageDB {
     protected String driver;
     protected String user;
     protected String password;
+    protected long timeout;
              
     private RageMod plugin;
     public TownQueries townQueries;
@@ -63,10 +64,11 @@ public class RageDB {
     	driver = config.DB_DRIVER;
     	user = config.DB_USER;
     	password = config.DB_PASSWORD;
+    	timeout = config.DB_TIMEOUT;
     	
         try
         {
-        	connectionDriver = new JDCConnectionDriver(driver, url + databaseName, user, password);
+        	connectionDriver = new JDCConnectionDriver(driver, url + databaseName, user, password, timeout);
         }
         catch(Exception e)
         {

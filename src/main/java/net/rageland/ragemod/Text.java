@@ -1,5 +1,7 @@
 package net.rageland.ragemod;
 
+// TODO: Combine SilverPattern w/ NumberPattern and CopperPattern
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -156,7 +158,7 @@ public class Text
 	private String highlightSilver(String message, ChatColor color)
 	{
 	    Matcher matcher = silverPattern.matcher(message);
-	    return matcher.replaceAll(ChatColor.GRAY + "$1" + color);
+	    return matcher.replaceAll(ChatColor.WHITE + "$1" + color);
 	}
 	private String highlightCopper(String message, ChatColor color)
 	{

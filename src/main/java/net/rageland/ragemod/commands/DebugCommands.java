@@ -2,6 +2,7 @@ package net.rageland.ragemod.commands;
 
 import java.util.ArrayList;
 
+import net.rageland.ragemod.Build;
 import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
@@ -111,114 +112,13 @@ public class DebugCommands
 		}
 		
 		// Pinpoint the top-left corner
-		int cornerX = (int)player.getLocation().getX() - 2; // - 10;
+		int cornerX = (int)player.getLocation().getX() - 2; 
 		int cornerY = (int)player.getLocation().getY() - 1;
-		int cornerZ = (int)player.getLocation().getZ() - 2; // - 10;
-		Block currentBlock;
+		int cornerZ = (int)player.getLocation().getZ() - 10; 
 		
-		ArrayList<String> layout = RageConfig.buildSanctumFloor(level);
+		Build.sanctumFloor(plugin, world, cornerX, cornerY, cornerZ, level, playerData.id_Faction);
 		
-	    //		c: Cobblestone
-	    //		d: Dirt
-	    //		p: Wood Planks
-	    //		s: Stone
-	    //		t: Tile (slab)
-	    //		o: Obsidian
-		//		O: Obsidian stack 2-high w/ glowstone on top
-	    //		g: Glowstone
-		//		G: Glowstone stack 2-high
-	    //		w: Wool (of appropriate color)
-	    //		-: Portal (inside)
-	    //		|: Portal (outside)
-	    //		b: Bedrock
-	    //		L: Liquid (water/lava)
-	    //		n: Snow
-	    //		i: Iron Block
-	    //		S: Special faction block (lapis/netherrack)
-		for( int x = 0; x < 20; x++ )
-		{
-			for( int z = 0; z < 20; z++ )
-			{
-				currentBlock = world.getBlockAt(cornerX + x, cornerY, cornerZ + z);
-				
-				// Clear the air above the floor
-				world.getBlockAt(cornerX + x, cornerY + 1, cornerZ + z).setType(Material.AIR);
-				world.getBlockAt(cornerX + x, cornerY + 2, cornerZ + z).setType(Material.AIR);
-				world.getBlockAt(cornerX + x, cornerY + 3, cornerZ + z).setType(Material.AIR);
-				world.getBlockAt(cornerX + x, cornerY + 4, cornerZ + z).setType(Material.AIR);
-				world.getBlockAt(cornerX + x, cornerY + 5, cornerZ + z).setType(Material.AIR);
-				
-				// Create bedrock below the floor, to hold liquids
-				world.getBlockAt(cornerX + x, cornerY - 1, cornerZ + z).setType(Material.BEDROCK);
-				world.getBlockAt(cornerX + x, cornerY - 2, cornerZ + z).setType(Material.BEDROCK);
-				
-				// Set the floor block(s)
-				switch( layout.get(x).charAt(z) )
-				{
-					case 'c':
-						currentBlock.setType(Material.COBBLESTONE); break;
-					case 'd':
-						currentBlock.setType(Material.DIRT); break;
-					case 'p':
-						currentBlock.setType(Material.WOOD); break;
-					case 's':
-						currentBlock.setType(Material.STONE); break;
-					case 't':
-						currentBlock.setType(Material.DOUBLE_STEP); break;
-					case 'o':
-						currentBlock.setType(Material.OBSIDIAN); break;
-					case 'O':
-						currentBlock.setType(Material.OBSIDIAN);
-						world.getBlockAt(cornerX + x, cornerY + 1, cornerZ + z).setType(Material.OBSIDIAN);
-						world.getBlockAt(cornerX + x, cornerY + 2, cornerZ + z).setType(Material.OBSIDIAN);
-						world.getBlockAt(cornerX + x, cornerY + 3, cornerZ + z).setType(Material.OBSIDIAN);
-						break;
-					case 'g':
-						currentBlock.setType(Material.GLOWSTONE); break;
-					case 'G':
-						currentBlock.setType(Material.GLOWSTONE); 
-						world.getBlockAt(cornerX + x, cornerY + 1, cornerZ + z).setType(Material.GLOWSTONE);
-						break;
-					case 'w':
-						currentBlock.setType(Material.WOOL); 
-						currentBlock.setData((byte) Byte.valueOf(String.valueOf(plugin.factions.getWoolColor(playerData.id_Faction))));
-						break;
-					case '-':
-						currentBlock.setType(Material.OBSIDIAN); 
-						world.getBlockAt(cornerX + x, cornerY + 1, cornerZ + z).setType(Material.PORTAL);
-						world.getBlockAt(cornerX + x, cornerY + 2, cornerZ + z).setType(Material.PORTAL);
-						world.getBlockAt(cornerX + x, cornerY + 3, cornerZ + z).setType(Material.PORTAL);
-						world.getBlockAt(cornerX + x, cornerY + 4, cornerZ + z).setType(Material.OBSIDIAN);
-						break;
-					case '|':
-						currentBlock.setType(Material.OBSIDIAN); 
-						world.getBlockAt(cornerX + x, cornerY + 1, cornerZ + z).setType(Material.OBSIDIAN);
-						world.getBlockAt(cornerX + x, cornerY + 2, cornerZ + z).setType(Material.OBSIDIAN);
-						world.getBlockAt(cornerX + x, cornerY + 3, cornerZ + z).setType(Material.OBSIDIAN);
-						world.getBlockAt(cornerX + x, cornerY + 4, cornerZ + z).setType(Material.OBSIDIAN);
-						break;
-					case 'b':
-						currentBlock.setType(Material.BEDROCK); break;
-					case 'L':
-						currentBlock.setType(Material.GLASS);
-						world.getBlockAt(cornerX + x, cornerY - 1, cornerZ + z).setType(plugin.factions.getLiquidBlock(playerData.id_Faction));
-						break;
-					case 'n':
-						currentBlock.setType(Material.SNOW_BLOCK); break;
-					case 'i':
-						currentBlock.setType(Material.IRON_BLOCK); break;
-					case 'S':
-						currentBlock.setType(plugin.factions.getSpecialBlock(playerData.id_Faction)); break;
-						
-						
-						
-				}
-			}
-		}
 		
-
-		
-
 		
 	}
 

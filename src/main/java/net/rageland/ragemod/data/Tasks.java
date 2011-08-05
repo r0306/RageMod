@@ -93,7 +93,7 @@ public class Tasks {
 			for( String playerName : town.residents )
 			{
 				playerData = plugin.players.get(playerName);
-				income = playerData.treasuryBlocks * plugin.config.Town_INCOME_PER_BLOCK;
+				income = playerData.treasuryBlocks * plugin.config.INCOME_PER_BLOCK;
 				playerData.treasuryBalance += income;
 				playerData.update();
 				town.treasuryBalance += income;
@@ -102,7 +102,7 @@ public class Tasks {
 			}
 			
 			if( totalBlocks > 0 )
-				System.out.println("Awarded " + town.townName + " " + iConomy.format(totalBlocks * plugin.config.Town_INCOME_PER_BLOCK) + " for treasury blocks.");
+				System.out.println("Awarded " + town.townName + " " + iConomy.format(totalBlocks * plugin.config.INCOME_PER_BLOCK) + " for treasury blocks.");
 			
 			// *****  SANCTUM CLEANUP  *****
 			// Make sure the number of physical blocks in the treasury matches the database values

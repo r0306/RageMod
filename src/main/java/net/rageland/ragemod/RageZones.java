@@ -20,12 +20,16 @@ public class RageZones {
     public int ZoneC_Border;
     
     public World world;
+    public World nether;
     public Location2D WorldSpawn;
     
     private Region2D Capitol_RegionA;
     private Region2D Capitol_RegionB;
-    
     public static Region3D Capitol_SandLot;
+    
+    // Travel Zone
+    public Location TZ_Center;
+    
     
 	public enum Action {
 		TOWN_CREATE;
@@ -46,6 +50,7 @@ public class RageZones {
     {
     	plugin = ragemod;
     	world = plugin.getServer().getWorld("world");
+    	nether = plugin.getServer().getWorld("world_nether");
     	
     	// TODO: This feels redundant.  Maybe it will make more sense when the config is loading from a file.
     	ZoneA_Name = config.Zone_NAME_A;
@@ -59,6 +64,9 @@ public class RageZones {
     	Capitol_RegionA = new Region2D(config.Capitol_X1a, config.Capitol_Z1a, config.Capitol_X2a, config.Capitol_Z2a);
     	Capitol_RegionB = new Region2D(config.Capitol_X1b, config.Capitol_Z1b, config.Capitol_X2b, config.Capitol_Z2b);
     	Capitol_SandLot = new Region3D(world, config.Capitol_SANDLOT);
+    	
+    	// Load the Travel Zone
+    	TZ_Center = Util.getLocationFromCoords(nether, config.Zone_TZ_CENTER);
     	
     	WorldSpawn = new Location2D(world.getSpawnLocation());
     	
@@ -97,7 +105,7 @@ public class RageZones {
     	else if( zone == Zone.OUTSIDE )
     		return "Outside All Zones";
     	else if( zone == Zone.UNKNOWN)
-    		return "Uknown";
+    		return "Unknown";
     	else
     		return "Error: Zone unrecognized";
     }

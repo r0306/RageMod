@@ -39,6 +39,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.World;
@@ -357,8 +358,42 @@ public class RMPlayerListener extends PlayerListener
     	{
     		event.setRespawnLocation(playerData.getSpawnLocation());
     	}
-    	
-    	
+    }
+    
+    // Player portal usage
+    public void onPlayerPortal(PlayerPortalEvent event)
+    {
+	    Player player = event.getPlayer();
+	    PlayerData playerData = plugin.players.get(player.getName());
+	    World world = player.getWorld();
+	    
+	    event.setTo(plugin.zones.TZ_Center);		// temp
+	    
+	    // Portals in normal world
+	    if( world.getName().equalsIgnoreCase("world") )
+	    {
+	    	// *** ZONE A (Neutral Zone) ***
+	    	if( playerData.currentZone == RageZones.Zone.A && plugin.zones.isInCapitol(player.getLocation()) )
+	    	{
+	    		// All portals from the capitol will go to the center of the Travel Zone
+	    		event.setTo(plugin.zones.TZ_Center);
+	    	}
+	    }
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+//	
+//	    player = event.getPlayer();
+//	    if (player.getWorld().getName().equalsIgnoreCase("world_nether"))
+//	    this.teleportPlayerBack(player, event);
+//	    else
+//	    this.savePlayerPortal(player, event);
     }
     
     
