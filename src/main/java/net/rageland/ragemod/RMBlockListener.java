@@ -86,12 +86,19 @@ public class RMBlockListener extends BlockListener
 			{
 				PlayerTown playerTown = plugin.playerTowns.getCurrentTown(block.getLocation());
 
-	    		if( playerTown != null && playerTown.townName.equals(playerData.townName) )
+	    		if( playerTown != null )
 	    		{
-	    			playerData.clearSpawn();
-	    			plugin.text.message(player, "You no longer have a spawn point.");
-	    			// Update both memory and database
-	    			plugin.database.playerQueries.updatePlayer(playerData);
+	    			if( playerData.getSpawn() != null && playerData.getSpawn().distance(block.getLocation()) < plugin.config.Town_DISTANCE_BETWEEN_BEDS )
+	    			{
+		    			plugin.text.message(player, "You no longer have a spawn point.");
+	    				playerData.clearSpawn();
+		    			playerData.update();
+	    			}
+	    			else
+	    			{
+	    				plugin.text.message(player, "You can only move your own bed.");
+	    				event.setCancelled(true);
+	    			}
 	    		}
 			}
     	}
@@ -134,16 +141,18 @@ public class RMBlockListener extends BlockListener
     				{
     					if( lot.canSetHome() && lot.isInside(block.getLocation()) )
     					{
-    						if( playerData.home_IsSet )
+    						if( playerData.getHome() != null )
     						{
-    							plugin.text.message(player, "You already have a bed inside your lot.");
+    							plugin.text.message(player, "You already have a bed inside your lot (use /home clear to fix errors).");
     							event.setCancelled(true);
     							return;
     						}
-    						playerData.setHome(block.getLocation());
+    						
+    						Location loc = block.getLocation();
+    						playerData.setHome(new Location(loc.getWorld(), loc.getX(), loc.getY() + 2, loc.getZ()));
     		    			plugin.text.message(player, "Your home location has now been set.");
     		    			// Update both memory and database
-    		    			plugin.database.playerQueries.updatePlayer(playerData);
+    		    			playerData.update();
     					}
     				}
     			}
@@ -159,9 +168,9 @@ public class RMBlockListener extends BlockListener
 
 	    		if( playerTown != null && playerTown.townName.equals(playerData.townName) )
 	    		{
-	    			if( playerData.spawn_IsSet )
+	    			if( playerData.getSpawn() != null )
 					{
-						plugin.text.message(player, "You already have a bed inside your town.");
+						plugin.text.message(player, "You already have a bed inside your town (use /spawn clear to fix errors).");
 						event.setCancelled(true);
 						return;
 					}
@@ -172,14 +181,15 @@ public class RMBlockListener extends BlockListener
 	    			{
 	    				if( block.getLocation().distance(spawns.get(resident)) < plugin.config.Town_DISTANCE_BETWEEN_BEDS && !resident.equals(playerData.name) )
 	    				{
-	    					plugin.text.message(player, "This bed is too close to " + resident + "'s bed - spawn not set.");
+	    					plugin.text.parse(player, "This bed is too close to " + resident + "'s bed - spawn not set.");
 	    					event.setCancelled(true);
 	    					return;
 	    				}
 	    			}
 	    			
-	    			playerData.setSpawn(block.getLocation());
-	    			plugin.text.message(player, "Your spawn location has now been set.");
+	    			Location loc = block.getLocation();
+	    			playerData.setSpawn(new Location(loc.getWorld(), loc.getX(), loc.getY() + 2, loc.getZ()));
+	    			plugin.text.parse(player, "Your spawn location has now been set.");
 	    			// Update both memory and database
 	    			plugin.database.playerQueries.updatePlayer(playerData);
 	    		}
@@ -203,7 +213,7 @@ public class RMBlockListener extends BlockListener
     		// If the player is below y=22, make sure they have permission to mine below city (don't check lots)
     		if( location.getY() < 22 && !RageMod.permissionHandler.has(player, "ragemod.mine.capitol"))
     		{
-    			plugin.text.message(player, "You don't have permission to mine under the city.");
+    			plugin.text.parse(player, "You don't have permission to mine under the city.");
     			return false;
     		}
     		// See if the player is inside a lot, and if they own it
@@ -212,17 +222,17 @@ public class RMBlockListener extends BlockListener
     			Lot lot = plugin.lots.findCurrentLot(location);
     			
     			if( lot == null && !RageMod.permissionHandler.has(player, "ragemod.build.capitol") )
-    				plugin.text.messageBasic(player, "You don't have permission to edit city infrastructure.");
+    				plugin.text.message(player, "You don't have permission to edit city infrastructure.");
     			else
     			{
     				if( lot.owner.equals("") )
-    					plugin.text.messageBasic(player, "You cannot edit unclaimed lots.");
+    					plugin.text.message(player, "You cannot edit unclaimed lots.");
     				else
     				{
     					// Check to see if the player has permission to build in this lot
     					PlayerData ownerData = plugin.players.get(lot.owner);
     					if( !ownerData.lotPermissions.contains(playerData.name) )
-    						plugin.text.message(player, "This lot is owned by " + lot.owner + ".");
+    						plugin.text.parse(player, "This lot is owned by " + lot.owner + ".");
     					else
     						return true;
     				}
@@ -241,19 +251,19 @@ public class RMBlockListener extends BlockListener
         		// Players can only build inside their own towns
     			if( !playerTown.townName.equals(playerData.townName) && !RageMod.permissionHandler.has(player, "ragemod.build.anytown") ) 
     			{		
-    				plugin.text.messageBasic(player, "You can only build inside of your own town.");
+    				plugin.text.message(player, "You can only build inside of your own town.");
     				return false;
     			}
     			else if( playerTown.isInsideSanctumFloor(location) )
     			{
-    				plugin.text.messageBasic(player, "You cannot modify the inner sanctum floor.");
+    				plugin.text.message(player, "You cannot modify the inner sanctum floor.");
     				return false;
     			}
     			else if( playerTown.isInsideSanctum(location) )
     			{
     				if( block.getType() != Material.TORCH && block.getType() != Material.GOLD_BLOCK ) 
     				{
-    					plugin.text.messageBasic(player, "Only torches and gold blocks can be placed inside the inner sanctum.");
+    					plugin.text.message(player, "Only torches and gold blocks can be placed inside the inner sanctum.");
         				return false;
     				}
     				else if( block.getType() == Material.GOLD_BLOCK )

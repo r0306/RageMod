@@ -2,6 +2,7 @@ package net.rageland.ragemod;
 
 import java.util.ArrayList;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -123,6 +124,29 @@ public class Build
 			portalBlock.setType(Material.FIRE);
 			break;		// only one block is needed, trying to light more of them causes the portal to break
 		}
+	}
+
+	// Checks for any nearby bed blocks and deletes them
+	public static void clearNearbyBeds(Location location) 
+	{
+		Block currentBlock;
+		int locX = (int)(location.getX());
+		int locY = (int)(location.getY());
+		int locZ = (int)(location.getZ());
+		
+		
+		for( int x = locX - 2; x < locX + 2; x++ )
+		{
+			for( int y = locY - 2; y < locY + 2; y++ )
+			{
+				for( int z = locZ - 2; z < locZ + 2; z++ )
+				{
+					currentBlock = location.getWorld().getBlockAt(x, y, z);
+					if( currentBlock.getType() == Material.BED_BLOCK )
+						currentBlock.setType(Material.AIR);	
+				}
+			}
+		}	
 	}
 
 }

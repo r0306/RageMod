@@ -1,7 +1,5 @@
 package net.rageland.ragemod;
 
-// TODO: Combine SilverPattern w/ NumberPattern and CopperPattern
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,8 +16,6 @@ public class Text
 	private Pattern requiredPattern;
 	private Pattern optionalPattern;
 	private Pattern parenthesesPattern;
-	private Pattern silverPattern;
-	private Pattern copperPattern;
 	private Pattern urlPattern;
 	private Pattern townPattern;
 	private Pattern numberPattern;
@@ -31,40 +27,38 @@ public class Text
 	{
 		this.plugin = plugin;
 		
-		 playerPattern = Pattern.compile("<p(.)>(\\w+)</p.>");
-		 townPattern = Pattern.compile("<t(.)>(.+)</t.>");
+		playerPattern = Pattern.compile("<p(.)>(\\w+)</p.>");
+		townPattern = Pattern.compile("<t(.)>(.+)</t.>");
 		 
-		 commandPattern = Pattern.compile("( /[a-zA-Z]+)");
-		 requiredPattern = Pattern.compile("(<.+>)");
-		 optionalPattern = Pattern.compile("(\\[.+\\])");
-		 parenthesesPattern = Pattern.compile("([(].+[)])");
-		 silverPattern = Pattern.compile("([\\d,]+ Silver)");
-		 copperPattern = Pattern.compile("([\\d,]+ Copper)");
-		 urlPattern = Pattern.compile("(http://\\S+)");
-		 numberPattern = Pattern.compile("(\\s)([\\d+,-\\.]+)");
+		commandPattern = Pattern.compile("( /[a-zA-Z]+)");
+		requiredPattern = Pattern.compile("(<.+>)");
+		optionalPattern = Pattern.compile("(\\[.+\\])");
+		parenthesesPattern = Pattern.compile("([(].+[)])");
+		urlPattern = Pattern.compile("(http://\\S+)");
+		numberPattern = Pattern.compile("(\\s)([\\d+,-\\.]+( " + plugin.config.CURRENCY_NAME + ")?( " + plugin.config.CURRENCY_MINOR + ")?)");
 		 
 	}
 	
 	// Handles default color 
-	public void message(Player player, String message)
+	public void parse(Player player, String message)
 	{
-		message(player, message, DEFAULT_COLOR);
+		parse(player, message, DEFAULT_COLOR);
 	}
 	
 	// Formats player messages with colors
-	public void message(Player player, String message, ChatColor color)
+	public void parse(Player player, String message, ChatColor color)
 	{
 		message = color + message;
 		
+		// Process XML codes first 
 		message = highlightPlayers(message, color);
 		message = highlightTowns(message, color);
 		
+		// Parse for basic text
 		message = highlightCommands(message, color);
 		message = highlightRequired(message, color);
 		message = highlightOptional(message, color);
 		message = highlightParentheses(message, color);
-		message = highlightSilver(message, color);
-		message = highlightCopper(message, color);
 		message = highlightURL(message, color);
 		message = highlightNumbers(message, color);
 		
@@ -72,11 +66,11 @@ public class Text
 	}
 	
 	// Sends a message without parsing, for speed
-	public void messageBasic(Player player, String message)
+	public void message(Player player, String message)
 	{
 		player.sendMessage(DEFAULT_COLOR + message);
 	}
-	public void messageBasic(Player player, String message, ChatColor color)
+	public void message(Player player, String message, ChatColor color)
 	{
 		player.sendMessage(color + message);
 	}
@@ -154,16 +148,6 @@ public class Text
 	{
 	    Matcher matcher = parenthesesPattern.matcher(message);
 	    return matcher.replaceAll(ChatColor.GRAY + "$1" + color);
-	}
-	private String highlightSilver(String message, ChatColor color)
-	{
-	    Matcher matcher = silverPattern.matcher(message);
-	    return matcher.replaceAll(ChatColor.WHITE + "$1" + color);
-	}
-	private String highlightCopper(String message, ChatColor color)
-	{
-	    Matcher matcher = copperPattern.matcher(message);
-	    return matcher.replaceAll(ChatColor.DARK_GRAY + "$1" + color);
 	}
 	private String highlightURL(String message, ChatColor color)
 	{

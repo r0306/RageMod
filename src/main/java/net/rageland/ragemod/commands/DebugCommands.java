@@ -32,13 +32,13 @@ public class DebugCommands
 	{
 		if( split.length < 2 || split.length > 3 )
 		{
-			plugin.text.message(player, "Debug commands: <required> [optional]");
+			plugin.text.parse(player, "Debug commands: <required> [optional]");
 			if( true )
-				plugin.text.message(player, "   /debug colors   (displays all chat colors)");
+				plugin.text.parse(player, "   /debug colors   (displays all chat colors)");
 			if( true )
-				plugin.text.message(player, "   /debug donation  (displays amount of donations)");
+				plugin.text.parse(player, "   /debug donation  (displays amount of donations)");
 			if( true )
-				plugin.text.message(player, "   /debug sanctum <level> (attempts to build sanctum floor)");
+				plugin.text.parse(player, "   /debug sanctum <level> (attempts to build sanctum floor)");
 		}
 		else if( split[1].equalsIgnoreCase("colors") )
 		{
@@ -53,10 +53,10 @@ public class DebugCommands
 			if( split.length == 3 )
 				this.sanctum(player, split[2]); 
 			else
-    			plugin.text.message(player, "Usage: /debug sanctum <level>"); 
+    			plugin.text.parse(player, "Usage: /debug sanctum <level>"); 
 		}
 		else
-			plugin.text.message(player, "Type /debug to see a list of available commands.");
+			plugin.text.parse(player, "Type /debug to see a list of available commands.");
 	}
 	
 	// /debug colors
@@ -86,7 +86,7 @@ public class DebugCommands
 		PlayerData playerData = plugin.players.get(player.getName());
 		int donation = plugin.database.playerQueries.getRecentDonations(playerData.id_Player);
 		
-		plugin.text.message(player, "The database records you with a total donation of $" + donation + " in the last month.");
+		plugin.text.parse(player, "The database records you with a total donation of $" + donation + " in the last month.");
 	}
 
 	public void sanctum(Player player, String levelString) 
@@ -101,13 +101,13 @@ public class DebugCommands
 		}
 		catch( Exception ex )
 		{
-			plugin.text.message(player, "Invalid level.");
+			plugin.text.parse(player, "Invalid level.");
 			return;
 		}
 		
 		if( level < 1 || level > 5 )
 		{
-			plugin.text.message(player, "Invalid level.");
+			plugin.text.parse(player, "Invalid level.");
 			return;
 		}
 		

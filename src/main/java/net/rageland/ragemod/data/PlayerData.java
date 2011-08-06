@@ -34,19 +34,21 @@ public class PlayerData
 	public boolean persistentInDatabase;
 	
 	// Home (used for capitol lots)
-	public boolean home_IsSet;
-	public World home_World;
-	public int home_X;
-	public int home_Y;
-	public int home_Z;
+//	public boolean home_IsSet;
+	private Location home_Location;
+//	public World home_World;
+//	public int home_X;
+//	public int home_Y;
+//	public int home_Z;
 	public Timestamp home_LastUsed;
 	
 	// Spawn (used for player town beds)
-	public boolean spawn_IsSet;
-	public World spawn_World;
-	public int spawn_X;
-	public int spawn_Y;
-	public int spawn_Z;
+//	public boolean spawn_IsSet;
+	private Location spawn_Location;
+//	public World spawn_World;
+//	public int spawn_X;
+//	public int spawn_Y;
+//	public int spawn_Z;
 	public Timestamp spawn_LastUsed;
 	
 	// Town info
@@ -88,33 +90,37 @@ public class PlayerData
 	// Sets the spawn location when bed clicked
 	public void setSpawn(Location location)
 	{
-		spawn_IsSet = true;
-		spawn_World = location.getWorld();
-		spawn_X = (int)location.getX();
-		spawn_Y = (int)location.getY() + 2;
-		spawn_Z = (int)location.getZ();
+		spawn_Location = location;
 	}
 	
 	// Returns a Location object of the spawn location
-	public Location getSpawnLocation()
+	public Location getSpawn()
 	{
-		return new Location(spawn_World, spawn_X + .5, spawn_Y, spawn_Z + .5);
+		return spawn_Location;
 	}
 	
 	// Sets the home location when bed clicked
 	public void setHome(Location location)
 	{
-		home_IsSet = true;
-		home_World = location.getWorld();
-		home_X = (int)location.getX();
-		home_Y = (int)location.getY() + 2;
-		home_Z = (int)location.getZ();
+		home_Location = location;
 	}
 	
 	// Returns a Location object of the home location
-	public Location getHomeLocation()
+	public Location getHome()
 	{
-		return new Location(home_World, home_X + .5, home_Y, home_Z + .5);
+		return home_Location;
+	}
+	
+	// Clears the spawn location when bed is broken	
+	public void clearSpawn() 
+	{
+		spawn_Location = null;
+	}
+	
+	// Clears the home location when bed is broken	
+	public void clearHome() 
+	{
+		home_Location = null;
 	}
 	
 	// Checks whether the current location is inside one of the player's lots
@@ -145,18 +151,6 @@ public class PlayerData
 			return false;
 		}
 			
-	}
-	
-	// Clears the spawn location when bed is broken	
-	public void clearSpawn() 
-	{
-		spawn_IsSet = false;
-	}
-	
-	// Clears the home location when bed is broken	
-	public void clearHome() 
-	{
-		home_IsSet = false;
 	}
 	
 	// Returns the player name with special color tags to be interpreted by the messaging methods

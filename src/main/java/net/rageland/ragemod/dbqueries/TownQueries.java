@@ -163,6 +163,7 @@ public class TownQueries {
     	return -1;
     }
 	
+	// TODO: Remove this, update() will make it redundant
 	// Reset the player's town affiliation - used by both Leave and Evict
 	public void townLeave(String playerName)
     { 

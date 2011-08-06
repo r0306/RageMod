@@ -83,7 +83,7 @@ public class Tasks {
 		// Notify players of incoming lag
 		for( Player onlinePlayer : plugin.getServer().getOnlinePlayers() )
 		{
-			plugin.text.messageBasic(onlinePlayer, "Beginning Ragemod upkeep tasks, hold on tight...", ChatColor.DARK_GREEN); // TODO: Store colors in config
+			plugin.text.message(onlinePlayer, "Beginning Ragemod upkeep tasks, hold on tight...", ChatColor.DARK_GREEN); // TODO: Store colors in config
 		}
 		
 		for( PlayerTown town : plugin.playerTowns.getAll() )
@@ -170,7 +170,7 @@ public class Tasks {
 				else if( !playerData.isMayor )
 				{
 					System.out.println("Automatically evicting " + playerData.name + " from " + town.townName + ".");
-					playerData.spawn_IsSet = false;
+					playerData.clearSpawn();
 					playerData.treasuryBalance = 0;
 					playerData.logonMessageQueue += "You have been automatically evicted from " + 
 							plugin.playerTowns.get(playerData.townName).getCodedName() + " for inability to pay taxes.<br>";
@@ -245,7 +245,7 @@ public class Tasks {
 		{
 			if( plugin.zones.isInSandlot(player.getLocation()) )
 			{
-				plugin.text.message(player, "Automatically refilling sand lot - get out of the way!");
+				plugin.text.parse(player, "Automatically refilling sand lot - get out of the way!");
 				player.teleport(world.getSpawnLocation());
 			}
 		}

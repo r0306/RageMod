@@ -114,18 +114,17 @@ public class PlayerQueries {
 		else
 			playerData.isMember = playerData.memberExpiration.getTime() > Util.now().getTime();
 		
-		playerData.home_IsSet = rs.getBoolean("Home_IsSet");
-		playerData.home_X = rs.getInt("Home_XCoord");
-		playerData.home_Y = rs.getInt("Home_YCoord");
-		playerData.home_Z = rs.getInt("Home_ZCoord");
+		if( rs.getBoolean("Home_IsSet") )
+		{
+			playerData.setHome(new Location(plugin.getServer().getWorld("world"), rs.getInt("Home_XCoord") + .5, rs.getInt("Home_YCoord"), rs.getInt("Home_ZCoord") + .5));
+		}
+		if( rs.getBoolean("Spawn_IsSet") )
+		{
+			playerData.setSpawn(new Location(plugin.getServer().getWorld("world"), rs.getInt("Spawn_XCoord") + .5, rs.getInt("Spawn_YCoord"), rs.getInt("Spawn_ZCoord") + .5));
+		}
+
 		playerData.home_LastUsed = rs.getTimestamp("Home_LastUsed");
-		
-		playerData.spawn_IsSet = rs.getBoolean("Spawn_IsSet");
-		playerData.spawn_X = rs.getInt("Spawn_XCoord");
-		playerData.spawn_Y = rs.getInt("Spawn_YCoord");
-		playerData.spawn_Z = rs.getInt("Spawn_ZCoord");
 		playerData.spawn_LastUsed = rs.getTimestamp("Spawn_LastUsed");
-		
 		playerData.logonMessageQueue = rs.getString("LogonMessageQueue");
 		
 		playerData.lots = rageDB.lotQueries.getLots(playerData.id_Player);
@@ -218,6 +217,8 @@ public class PlayerQueries {
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
 	    ResultSet rs = null;
+	    Location home = playerData.getHome();
+	    Location spawn = playerData.getSpawn();
 		
 		String updateString = "";
 		try
@@ -235,11 +236,11 @@ public class PlayerQueries {
     			"Home_LastUsed = " + (playerData.home_LastUsed == null ? "null" : "'" + playerData.home_LastUsed + "'") + ", " +
     			"Spawn_LastUsed = " + (playerData.spawn_LastUsed == null ? "null" : "'" + playerData.spawn_LastUsed + "'") + ", ";
     		
-    		if( playerData.home_IsSet )
+    		if( home != null )
     		{
-    			updateString += "Home_XCoord = " + playerData.home_X + ", " +
-					"Home_YCoord = " + playerData.home_Y + ", " +
-					"Home_ZCoord = " + playerData.home_Z + ", ";
+    			updateString += "Home_XCoord = " + (int)(home.getX()-.1) + ", " +		// The -.1 is to keep .5 from rounding up over and over
+					"Home_YCoord = " + (int)(home.getY()-.1) + ", " +
+					"Home_ZCoord = " + (int)(home.getZ()-.1) + ", ";
     		}
     		else
     		{
@@ -247,11 +248,11 @@ public class PlayerQueries {
 					"Home_YCoord = NULL, " +
 					"Home_ZCoord = NULL, ";
     		}
-    		if( playerData.spawn_IsSet )
+    		if( spawn != null )
     		{
-    			updateString += "Spawn_XCoord = " + playerData.spawn_X + ", " +
-					"Spawn_YCoord = " + playerData.spawn_Y + ", " +
-					"Spawn_ZCoord = " + playerData.spawn_Z + " ";
+    			updateString += "Spawn_XCoord = " + (int)(spawn.getX()-.1) + ", " +
+					"Spawn_YCoord = " + (int)(spawn.getY()-.1) + ", " +
+					"Spawn_ZCoord = " + (int)(spawn.getZ()-.1) + " ";
     		}
     		else
     		{

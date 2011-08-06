@@ -43,6 +43,8 @@ public class RageConfig {
     public int Town_MAX_BANKRUPT_DAYS = 7;
     
     // Money settings
+    public String CURRENCY_NAME = "Silver";			// iConomy's currency name
+    public String CURRENCY_MINOR = "Copper";		// Minor currency
 	public int PRICE_GOLD = 2;						// The amount of money a gold ingot is worth
     public int INCOME_PER_BLOCK = 1;				// The amount of money per day for each treasury block
     public int DEFAULT_PORTAL_COST = 1;				// The amount of money to enter Travel Zone

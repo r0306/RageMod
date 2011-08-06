@@ -19,34 +19,34 @@ public class QuestCommands
 	{
 		if(split.length != 2) 
 		{
-			plugin.text.message(player, "Quest commands: ");
-			plugin.text.message(player, "    /quest abandon (Abandons your current quest)");
-			plugin.text.message(player, "    /quest view    (Views your current quest)");
+			plugin.text.parse(player, "Quest commands: ");
+			plugin.text.parse(player, "    /quest abandon (Abandons your current quest)");
+			plugin.text.parse(player, "    /quest view    (Views your current quest)");
 		}
 		else if(split[1].equalsIgnoreCase("abandon")) 
 		{
 			if(playerData.activeQuestData.isPlayerOnQuest()) 
 			{
-				plugin.text.message(player, "Quest " + 
+				plugin.text.parse(player, "Quest " + 
 						playerData.activeQuestData.getQuest().getQuestData().getName() + 
 						" abandoned. You currently have no active quest.");
 				playerData.activeQuestData.endQuest();
 			} 
 			else
-				plugin.text.message(player, "ERROR: You're not currently on a quest.");
+				plugin.text.parse(player, "ERROR: You're not currently on a quest.");
 		} 
 		else if(split[1].equalsIgnoreCase("view"))
 		{
 			if(playerData.activeQuestData.isPlayerOnQuest())
 			{
-				plugin.text.message(player, "Active quest: " + playerData.activeQuestData.getQuest().getQuestData().getName());
-				plugin.text.message(player, "Quest text: ");
-				plugin.text.message(player, playerData.activeQuestData.getQuest().getQuestData().getStartText());
+				plugin.text.parse(player, "Active quest: " + playerData.activeQuestData.getQuest().getQuestData().getName());
+				plugin.text.parse(player, "Quest text: ");
+				plugin.text.parse(player, playerData.activeQuestData.getQuest().getQuestData().getStartText());
 				
 			}
 			else 
 			{
-				plugin.text.message(player, "ERROR: You're not currently on a quest.");
+				plugin.text.parse(player, "ERROR: You're not currently on a quest.");
 			}
 		}
 	}
