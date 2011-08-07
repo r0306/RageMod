@@ -135,7 +135,7 @@ public class Util
 		}
 		catch( Exception ex )
 		{
-			System.out.println("ERROR: Invalid coordinate string passed to Util.getLocationFromCoords()");
+			System.out.println("ERROR: Invalid coordinate string passed to Util.getLocationFromCoords(): " + coords);
 			return null;
 		}
 	}

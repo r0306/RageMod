@@ -279,9 +279,8 @@ public class TownCommands
 			playerTown.world = player.getWorld();
 			playerTown.residents.add(playerData.name);
 			
-			playerTown.buildRegions();
-			playerTown.createBorder();
-			playerTown.buildSanctumFloor();
+			playerTown.createRegions();
+			playerTown.build();
 			
 			plugin.playerTowns.put(playerTown);
 			
@@ -601,15 +600,14 @@ public class TownCommands
 			playerTown.townLevel = plugin.config.townLevels.get(playerTown.townLevel.level + 1);
 			playerTown.treasuryBalance = playerTown.treasuryBalance - targetLevel.initialCost + targetLevel.minimumBalance;
 			playerTown.minimumBalance = targetLevel.minimumBalance;
-			playerTown.buildRegions();
-			playerTown.createBorder();
-			playerTown.buildSanctumFloor();
+			playerTown.createRegions();
+			playerTown.build();
 			plugin.playerTowns.put(playerTown);
 			
 			plugin.database.townQueries.townUpgrade(playerTown.townName, (targetLevel.initialCost - targetLevel.minimumBalance));
 			
-			plugin.text.parse(player, "Congratulations, " + playerTown.townName + " has been upgraded to a " + targetLevel.name + "!");
-			plugin.text.parse(player, iConomy.format(targetLevel.initialCost) + " has been deducted from the town treasury.");
+			plugin.text.parse(player, "Congratulations, " + playerTown.getCodedName() + " has been upgraded to a " + targetLevel.name + "!");
+			plugin.text.parse(player, " " + iConomy.format(targetLevel.initialCost) + " has been deducted from the town treasury.");
 		}
 		else
 		{

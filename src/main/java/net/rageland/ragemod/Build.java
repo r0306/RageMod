@@ -2,6 +2,9 @@ package net.rageland.ragemod;
 
 import java.util.ArrayList;
 
+import net.rageland.ragemod.data.Factions;
+import net.rageland.ragemod.data.PlayerTown;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -84,7 +87,7 @@ public class Build
 						break;
 					case 'w':
 						currentBlock.setType(Material.WOOL); 
-						currentBlock.setData((byte) Byte.valueOf(String.valueOf(plugin.factions.getWoolColor(id_Faction))));
+						currentBlock.setData((byte) Byte.valueOf(String.valueOf(Factions.getWoolColor(id_Faction))));
 						break;
 					case '-':
 						currentBlock.setType(Material.OBSIDIAN); 
@@ -145,6 +148,27 @@ public class Build
 					if( currentBlock.getType() == Material.BED_BLOCK )
 						currentBlock.setType(Material.AIR);	
 				}
+			}
+		}	
+	}
+	
+	// Builds the corresponding location in the travel zone
+	public static void travelNode(Location location, int size, int id_Faction) 
+	{
+		Block currentBlock;
+		int locX = (int)(location.getX());
+		int locY = (int)(location.getY());
+		int locZ = (int)(location.getZ());
+		int offset = (int)(size / 16);			// 1/8 scale for nether, divided by 2 for distance from center
+		
+		
+		for( int x = locX - offset; x < locX + offset; x++ )
+		{
+			for( int z = locZ - offset; z < locZ + offset; z++ )
+			{
+				currentBlock = location.getWorld().getBlockAt(x, locY, z);
+				currentBlock.setType(Material.WOOL); 
+				currentBlock.setData((byte) Byte.valueOf(String.valueOf(Factions.getWoolColor(id_Faction))));	
 			}
 		}	
 	}

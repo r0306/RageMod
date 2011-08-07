@@ -287,7 +287,7 @@ public class RMPlayerListener extends PlayerListener
         				
         				if( playerData.enterLeaveMessageTime == null || Util.secondsSince(playerData.enterLeaveMessageTime) > 10 )
         				{
-        					plugin.text.parse(player, "Now leaving the capitol of " + plugin.config.Capitol_Name);
+        					plugin.text.parse(player, "Now leaving the capitol of " + plugin.config.Capitol_CodedName);
         					playerData.enterLeaveMessageTime = Util.now();
         				}
         			}
@@ -300,7 +300,7 @@ public class RMPlayerListener extends PlayerListener
         				
         				if( playerData.enterLeaveMessageTime == null || Util.secondsSince(playerData.enterLeaveMessageTime) > 10 )
         				{
-        					plugin.text.parse(player, "Now entering the capitol of " + plugin.config.Capitol_Name);
+        					plugin.text.parse(player, "Now entering the capitol of " + plugin.config.Capitol_CodedName);
         					playerData.enterLeaveMessageTime = Util.now();
         				}
         			}
@@ -367,33 +367,33 @@ public class RMPlayerListener extends PlayerListener
 	    PlayerData playerData = plugin.players.get(player.getName());
 	    World world = player.getWorld();
 	    
-	    event.setTo(plugin.zones.TZ_Center);		// temp
+	    if( plugin.config.DISABLE_NON_LOT_CODE )
+	    	return;
 	    
 	    // Portals in normal world
 	    if( world.getName().equalsIgnoreCase("world") )
 	    {
 	    	// *** ZONE A (Neutral Zone) ***
-	    	if( playerData.currentZone == RageZones.Zone.A && plugin.zones.isInCapitol(player.getLocation()) )
+	    	if( playerData.currentZone == RageZones.Zone.A )
 	    	{
 	    		// All portals from the capitol will go to the center of the Travel Zone
-	    		event.setTo(plugin.zones.TZ_Center);
+	    		if( plugin.zones.isInCapitol(player.getLocation()) )
+	    			event.setTo(plugin.zones.TZ_Center);
+	    	}
+	    	else if( playerData.currentZone == RageZones.Zone.B )
+	    	{
+	    		if( playerData.currentTown != null )
+	    			event.setTo(playerData.currentTown.travelNode);
+	    		else
+	    			event.setTo(plugin.zones.TZ_Center);
 	    	}
 	    }
+	    else if( world.getName().equalsIgnoreCase("world_nether") )
+	    {
+	    	// Temp: Make all portals go back to capitol
+	    	event.setTo(plugin.zones.Capitol_Portal);
+	    }
 	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-//	
-//	    player = event.getPlayer();
-//	    if (player.getWorld().getName().equalsIgnoreCase("world_nether"))
-//	    this.teleportPlayerBack(player, event);
-//	    else
-//	    this.savePlayerPortal(player, event);
     }
     
     

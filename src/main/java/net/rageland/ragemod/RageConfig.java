@@ -58,7 +58,8 @@ public class RageConfig {
     public int Zone_BORDER_B = 2000;  // Distance from spawn
     public String Zone_NAME_C = "The Wilds";
     public int Zone_BORDER_C = 2500;  // Distance from spawn
-    public String Zone_TZ_CENTER = "0,64,0";
+    public String Zone_TZ_CENTER = "-489,10,702";
+    public String Zone_TZ_REGION = "-229,127,1042,-749,1,522";
 
     // Lot settings
     public int Lot_X_OFFSET;			// How to convert the web X coordinates to in-game coords
@@ -71,6 +72,7 @@ public class RageConfig {
     
     // Capitol settings
     public String Capitol_Name;
+    public String Capitol_CodedName = "<tn>Rage City</tn>";
     public int Capitol_X1a;			// The NW corner of region A for capitol
     public int Capitol_Z1a;
     public int Capitol_X2a;			// The SE corner of region A for capitol
@@ -82,6 +84,7 @@ public class RageConfig {
     public String Capitol_SANDLOT;		// Auto-regen sand mine
     public int Capitol_SANDLOT_GOLD_ODDS = 100000;				// Chance (1 / x) of gold spawning in sand mine
     public int Capitol_SANDLOT_DIAMOND_ODDS = 1000000;
+    public String Capitol_PORTAL_LOCATION = "-73,68,-56";
     
     // Cooldowns (in seconds)
     public int Cooldown_Spawn = 30;

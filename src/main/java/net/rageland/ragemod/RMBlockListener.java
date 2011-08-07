@@ -269,11 +269,15 @@ public class RMBlockListener extends BlockListener
     				else if( block.getType() == Material.GOLD_BLOCK )
     				{
     					return playerTown.processGoldBlock(event);
-    				}
-    			
-    				
+    				}	
     			}
     		}
+    	}
+    	// *** TRAVEL ZONE ***
+    	else if( plugin.zones.isInTravelZone(location) )
+    	{
+    		plugin.text.message(player, "You cannot build inside the Travel Zone.");
+    		return false;
     	}
     	
     	return true;

@@ -224,7 +224,12 @@ public class RMEntityListener extends EntityListener
     			(plugin.zones.isInCapitol(event.getLocation()) || plugin.playerTowns.getCurrentTown(event.getLocation()) != null) )
     	{
     		event.setCancelled(true);
-    	}    	
+    	}   
+    	// Don't let monsters spawn inside the travel zone
+    	else if( plugin.zones.isInTravelZone(event.getLocation()) )
+    	{
+    		event.setCancelled(true);
+    	}
     }
     
     /**

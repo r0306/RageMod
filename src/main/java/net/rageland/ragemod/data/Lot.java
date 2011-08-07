@@ -27,7 +27,6 @@ public class Lot
 	public int number;
 	public LotCategory category;
 	public Region2D region;
-	public World world;
 	public String owner;			// Only necessary when loaded into the Lots global
 	
 	// Blank constructor 
@@ -138,7 +137,7 @@ public class Lot
 	// Returns a location in the center of the region for compass target
 	public Location getCenter()
 	{
-		return new Location(world, region.nwCorner.getX() - ((region.nwCorner.getX() - region.seCorner.getX()) / 2), 65,
+		return new Location(region.world, region.nwCorner.getX() - ((region.nwCorner.getX() - region.seCorner.getX()) / 2), 65,
 								   region.seCorner.getZ() - ((region.seCorner.getZ() - region.nwCorner.getZ()) / 2));
 	}
 	

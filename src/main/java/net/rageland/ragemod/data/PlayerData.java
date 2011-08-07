@@ -34,21 +34,11 @@ public class PlayerData
 	public boolean persistentInDatabase;
 	
 	// Home (used for capitol lots)
-//	public boolean home_IsSet;
 	private Location home_Location;
-//	public World home_World;
-//	public int home_X;
-//	public int home_Y;
-//	public int home_Z;
 	public Timestamp home_LastUsed;
 	
 	// Spawn (used for player town beds)
-//	public boolean spawn_IsSet;
 	private Location spawn_Location;
-//	public World spawn_World;
-//	public int spawn_X;
-//	public int spawn_Y;
-//	public int spawn_Z;
 	public Timestamp spawn_LastUsed;
 	
 	// Town info

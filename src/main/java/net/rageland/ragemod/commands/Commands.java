@@ -41,7 +41,7 @@ public class Commands
 		// Use /home clear to fix problems with beds
 		if( targetPlayerName.equalsIgnoreCase("clear") )
 		{
-			if( targetPlayerData.getHome() == null )
+			if( playerData.getHome() == null )
 			{
 				plugin.text.message(player, "You do not have a home to clear.");
 				return;
@@ -52,6 +52,7 @@ public class Commands
 				Build.clearNearbyBeds(playerData.getHome());
 				playerData.clearHome();
 				playerData.update();
+				plugin.text.message(player, "Your home has now been cleared.");
 				return;
 			}
 		}
@@ -122,6 +123,7 @@ public class Commands
 				Build.clearNearbyBeds(playerData.getSpawn());
 				playerData.clearSpawn();
 				playerData.update();
+				plugin.text.message(player, "Your spawn has now been cleared.");
 				return;
 			}
 		}
@@ -154,7 +156,7 @@ public class Commands
 		if( targetPlayerData.getSpawn() != null )			
 			destination = targetPlayerData.getSpawn();
 		else
-			destination = player.getWorld().getSpawnLocation();
+			destination = plugin.zones.world.getSpawnLocation();
 		
 		plugin.text.message(player, "Teleporting...");
 		player.teleport(destination);

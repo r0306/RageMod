@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.World;
+
 import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageDB;
 import net.rageland.ragemod.RageMod;
@@ -113,6 +115,7 @@ public class LotQueries {
 		HashMap<String, Lot> lots = new HashMap<String, Lot>();
 		Lot currentLot = null;
 		int mult = plugin.config.Lot_MULTIPLIER;
+		World world = plugin.getServer().getWorld("world");
 		
     	try
     	{
@@ -134,12 +137,11 @@ public class LotQueries {
         		currentLot.number = rs.getInt("Number");
         		currentLot.owner = rs.getString("Owner");
         		// X and Z are reversed >:(
-        		currentLot.region = new Region2D(
+        		currentLot.region = new Region2D(world, 
         				((rs.getInt("ZCoord")-1) * mult) + plugin.config.Lot_X_OFFSET,
         				((rs.getInt("XCoord")-1) * mult * -1) + plugin.config.Lot_Z_OFFSET,
         				((rs.getInt("ZCoord")-1) * mult) + plugin.config.Lot_X_OFFSET + (rs.getInt("Height") * mult),
         				((rs.getInt("XCoord")-1) * mult * -1) + plugin.config.Lot_Z_OFFSET - (rs.getInt("Width") * mult));
-        		currentLot.world = plugin.getServer().getWorld("world");
     	        
         		lots.put(currentLot.getLotCode(), currentLot);	        		
         	}
@@ -147,7 +149,7 @@ public class LotQueries {
         	return lots;				
         		        	
     	} catch (Exception e) {
-    		System.out.println("Error in RageDB.LoadLots(): " + e.getMessage());
+    		System.out.println("Error in RageDB.loadLots(): " + e.getMessage());
 		} finally {
 			rageDB.close(rs, preparedStatement, conn);
 		}
@@ -170,7 +172,7 @@ public class LotQueries {
     		preparedStatement.executeUpdate();	
     	} 
     	catch (SQLException e) {
-    		System.out.println("Error in RageDB.LotClaim(): " + e.getMessage());
+    		System.out.println("Error in RageDB.lotClaim(): " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {

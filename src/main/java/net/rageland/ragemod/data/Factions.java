@@ -42,7 +42,7 @@ public class Factions
     }
     
     // Returns the correct data value for the faction's wool color
-    public int getWoolColor(int id)
+    public static int getWoolColor(int id)
     {
     	switch(id)
     	{

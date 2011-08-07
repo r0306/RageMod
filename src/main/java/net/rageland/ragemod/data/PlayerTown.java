@@ -29,7 +29,6 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	// PlayerTowns table
 	public int id_PlayerTown;
 	public String townName;
-	public Location centerPoint;
 	public int id_Faction;
 	public double treasuryBalance;
 	public double minimumBalance;
@@ -41,9 +40,11 @@ public class PlayerTown implements Comparable<PlayerTown> {
 		
 	public TownLevel townLevel;				// Corresponds to the HashMap TownLevels in Config
 	
+	public Location centerPoint;
 	public Region2D region;
 	public Region3D sanctumFloor;  			// A 20x20 region in the center of the city
 	public Region3D sanctumRoom;
+	public Location travelNode;
 	public World world;
 	
 	private RageMod plugin;
@@ -88,14 +89,23 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	}
 	
 	// Creates the region
-	public void buildRegions()
+	public void createRegions()
 	{
-		region = new Region2D(centerPoint.getX() - (townLevel.size / 2), centerPoint.getZ() + (townLevel.size / 2),
+		region = new Region2D(world, centerPoint.getX() - (townLevel.size / 2), centerPoint.getZ() + (townLevel.size / 2),
 							  centerPoint.getX() + (townLevel.size / 2), centerPoint.getZ() - (townLevel.size / 2));
 		sanctumFloor = new Region3D(world, centerPoint.getX() - 10, centerPoint.getY() - 1, centerPoint.getZ() + 9,
 									centerPoint.getX() + 9, centerPoint.getY() - 3, centerPoint.getZ() - 10);
 		sanctumRoom = new Region3D(world, centerPoint.getX() - 10, centerPoint.getY() + 4, centerPoint.getZ() + 9,
 				centerPoint.getX() + 9, centerPoint.getY(), centerPoint.getZ() - 10);
+		travelNode = plugin.zones.getTravelNode(centerPoint);
+	}
+	
+	// Processes all block building for create and upgrade
+	public void build()
+	{
+		createBorder();
+		buildSanctumFloor();
+		buildTravelNode();
 	}
 	
 	// Checks to see whether the town is already at maximum level; used by /townupgrade
@@ -139,7 +149,7 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	}
 	
 	// Puts a border of cobblestone on the edges of the town
-	public void createBorder()
+	private void createBorder()
 	{
 		int x, z;
 		
@@ -337,22 +347,20 @@ public class PlayerTown implements Comparable<PlayerTown> {
 					}
 				}
 			}
-		}
-		
+		}	
 	}
 	
-	
-	
-	
-	
-	
-	
-	
 	// Builds the inner sanctum floor
-	public void buildSanctumFloor() 
+	private void buildSanctumFloor() 
 	{
 		Build.sanctumFloor(plugin, this.world, (int)this.centerPoint.getX() - 10, (int)this.centerPoint.getY() - 1, (int)this.centerPoint.getZ() - 10, 
 				this.townLevel.level, this.id_Faction);
+	}
+	
+	// Creates the corresponding location in the travel zone for town
+	private void buildTravelNode()
+	{
+		Build.travelNode(this.travelNode, this.townLevel.size, this.id_Faction);
 	}
 
 
