@@ -16,6 +16,7 @@ import net.rageland.ragemod.npclib.NPCManager;
 import net.rageland.ragemod.npclib.NpcEntityTargetEvent;
 import net.rageland.ragemod.quest.KillCreatureQuest;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Creeper;
@@ -93,7 +94,7 @@ public class RMEntityListener extends EntityListener
     			if( attackerData.id_Faction == defenderData.id_Faction )
     			{
     				edbeEvent.setCancelled(true);
-        			plugin.text.parse(attacker, defenderData.name + " is your ally!");
+        			plugin.text.parseNo(attacker, plugin.players.get(defenderData.name).getCodedName() + " is your ally!");
         			return;
     			}
             	
@@ -105,7 +106,7 @@ public class RMEntityListener extends EntityListener
             		if( plugin.zones.isInCapitol(defender.getLocation()) )
             		{
             			edbeEvent.setCancelled(true);
-            			plugin.text.parse(attacker, "PvP is not allowed inside " + plugin.config.Capitol_Name + ".");
+            			plugin.text.parseNo(attacker, "PvP is not allowed inside " + plugin.config.Capitol_CodedName + ".");
             			return;
             		}
             		else
@@ -114,13 +115,13 @@ public class RMEntityListener extends EntityListener
             			if( defenderData.id_Faction == 0 )
             			{
             				edbeEvent.setCancelled(true);
-                			plugin.text.parse(attacker, "You cannot attack neutral players in " + plugin.config.Zone_NAME_A + ".");
+                			plugin.text.messageNo(attacker, "You cannot attack neutral players in " + plugin.config.Zone_NAME_A + ".");
                 			return;
             			}
             			else if( attackerData.id_Faction == 0 )
             			{
             				edbeEvent.setCancelled(true);
-                			plugin.text.parse(attacker, "Neutral players cannot attack in " + plugin.config.Zone_NAME_A + ".");
+                			plugin.text.messageNo(attacker, "Neutral players cannot attack in " + plugin.config.Zone_NAME_A + ".");
                 			return;
             			}
             		}
@@ -134,14 +135,14 @@ public class RMEntityListener extends EntityListener
             		if( RageMod.permissionHandler.has(attacker, "ragemod.referee.blockpvp") )
             		{
             			edbeEvent.setCancelled(true);
-            			plugin.text.parse(attacker, "Referees may not participate in combat.");
+            			plugin.text.messageNo(attacker, "Referees may not participate in combat.");
             			return;
             		}
             		// Protect referees 
             		else if( RageMod.permissionHandler.has(defender, "ragemod.referee.blockpvp") )
             		{
             			edbeEvent.setCancelled(true);
-            			plugin.text.parse(attacker, "You cannot harm a referee.");
+            			plugin.text.messageNo(attacker, "You cannot harm a referee.");
             			return;
             		}
             		// Handle combat inside of towns
@@ -151,21 +152,21 @@ public class RMEntityListener extends EntityListener
     	        		if( defenderData.id_Faction == 0 )
     	        		{
     	        			edbeEvent.setCancelled(true);
-    	        			plugin.text.parse(attacker, "You cannot harm neutral players inside of towns.");
+    	        			plugin.text.messageNo(attacker, "You cannot harm neutral players inside of towns.");
     	        			return;
     	        		}
     	        		// Keep neutral players from harming any players
     	        		if( attackerData.id_Faction == 0 )
     	        		{
     	        			edbeEvent.setCancelled(true);
-    	        			plugin.text.parse(attacker, "Neutral players cannot attack inside of towns.");
+    	        			plugin.text.messageNo(attacker, "Neutral players cannot attack inside of towns.");
     	        			return;
     	        		}
     	        		// Protect faction players inside of their own and allied towns
     	        		if( defenderData.id_Faction == playerTown.id_Faction )
     	        		{
     	        			edbeEvent.setCancelled(true);
-    	        			plugin.text.parse(attacker, "You cannot harm " + plugin.factions.getName(defenderData.id_Faction) + " inside of their own towns.");
+    	        			plugin.text.parseNo(attacker, "You cannot harm " + plugin.factions.getCodedName(defenderData.id_Faction) + " inside of their own towns.");
     	        			return;
     	        		}
             		}
@@ -178,6 +179,7 @@ public class RMEntityListener extends EntityListener
             	{
             		// Automatically kill monsters who attack admins
                 	Creature creature = (Creature)attackerEntity;
+                	creature.setFireTicks(1);
                 	creature.damage(100);
             	}
             } 

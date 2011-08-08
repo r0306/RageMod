@@ -29,6 +29,13 @@ public class Factions
     	return factions.get(id);
     }
     
+	// Returns the faction name with special tags to be interpreted by the messaging methods
+	public String getCodedName(int id) 
+	{
+		char colorCode = getColorCode(id);
+		return "<t" + colorCode + ">" + factions.get(id) + "</t" + colorCode + ">";
+	}
+    
     // Returns the faction ID from name
     public int getID(String name)
     {

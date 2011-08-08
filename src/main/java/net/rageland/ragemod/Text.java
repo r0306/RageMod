@@ -30,7 +30,7 @@ public class Text
 		playerPattern = Pattern.compile("<p(.)>(\\w+)</p.>");
 		townPattern = Pattern.compile("<t(.)>(.+)</t.>");
 		 
-		commandPattern = Pattern.compile("( /[a-zA-Z]+)");
+		commandPattern = Pattern.compile("([\\s'])(/[a-zA-Z]+)");
 		requiredPattern = Pattern.compile("(<.+>)");
 		optionalPattern = Pattern.compile("(\\[.+\\])");
 		parenthesesPattern = Pattern.compile("([(].+[)])");
@@ -43,6 +43,10 @@ public class Text
 	public void parse(Player player, String message)
 	{
 		parse(player, message, DEFAULT_COLOR);
+	}
+	public void parseNo(Player player, String message)
+	{
+		parse(player, message, plugin.config.COLOR_NO);
 	}
 	
 	// Formats player messages with colors
@@ -59,7 +63,7 @@ public class Text
 		message = highlightRequired(message, color);
 		message = highlightOptional(message, color);
 		message = highlightParentheses(message, color);
-		message = highlightURL(message, color);
+		//message = highlightURL(message, color);				// not worth the CPU for the 2-3 URLs present in this plugin text <_<
 		message = highlightNumbers(message, color);
 		
 		player.sendMessage(message);
@@ -73,6 +77,11 @@ public class Text
 	public void message(Player player, String message, ChatColor color)
 	{
 		player.sendMessage(color + message);
+	}
+	// For messages with negative results (events cancelled, etc)
+	public void messageNo(Player player, String message)
+	{
+		player.sendMessage(plugin.config.COLOR_NO + message);
 	}
 	
 	
@@ -132,7 +141,7 @@ public class Text
 	private String highlightCommands(String message, ChatColor color)
 	{
 	    Matcher matcher = commandPattern.matcher(message);
-	    return matcher.replaceAll(ChatColor.DARK_GREEN + "$1" + color);
+	    return matcher.replaceAll("$1" + ChatColor.DARK_GREEN + "$2" + color);
 	}
 	private String highlightRequired(String message, ChatColor color)
 	{

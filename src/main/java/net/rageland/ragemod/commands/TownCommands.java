@@ -170,30 +170,30 @@ public class TownCommands
 		// Check to see if target player exists
 		if( targetPlayerData == null )
 		{
-			plugin.text.parse(player, "Player " + targetPlayerName + " does not exist.");
+			plugin.text.messageNo(player, "Player " + targetPlayerName + " does not exist.");
 			return;
 		}
 		// Ensure that the current player is the mayor
 		if( !playerData.isMayor || playerTown == null )
 		{
-			plugin.text.parse(player, "Only town mayors can use '/town add'.");
+			plugin.text.messageNo(player, "Only town mayors can use '/town add'.");
 			return;
 		}		
 		// Ensure that the target player is not currently a resident of a town
 		if( !targetPlayerData.townName.equals("") )
 		{
-			plugin.text.parse(player, targetPlayerData.getCodedName() + " is already a resident of '" + playerTown.getCodedName() + "'.");
+			plugin.text.parseNo(player, targetPlayerData.getCodedName() + " is already a resident of '" + playerTown.getCodedName() + "'.");
 			return;
 		}		
 		// Ensure that the target player is the same faction as the mayor
 		if( playerData.id_Faction != targetPlayerData.id_Faction )
 		{
-			plugin.text.parse(player, "You can only add players that are the same faction as you.");
+			plugin.text.messageNo(player, "You can only add players that are the same faction as you.");
 			return;
 		}
 		if( playerTown.isFull() )
 		{
-			plugin.text.parse(player, "Your town already has the maximum number of residents for its level.");
+			plugin.text.messageNo(player, "Your town already has the maximum number of residents for its level.");
 			return;
 		}
 		
@@ -221,19 +221,19 @@ public class TownCommands
 		// Ensure that the player is not currently a resident of a town
 		if( !playerData.townName.equals("") )
 		{
-			plugin.text.parse(player, "You are already a resident of '" + plugin.playerTowns.get(playerData.townName).getCodedName() + "'; you must use '/town leave' before you can create a new town.");
+			plugin.text.parseNo(player, "You are already a resident of '" + plugin.playerTowns.get(playerData.townName).getCodedName() + "'; you must use '/town leave' before you can create a new town.");
 			return;
 		}		
 		// Ensure that the town name is not taken
 		if( plugin.playerTowns.get(townName) != null )
 		{
-			plugin.text.message(player, "A town named " + townName + " already exists!");
+			plugin.text.messageNo(player, "A town named " + townName + " already exists!");
 			return;
 		}
 		// Ensure that the current zone is allowed to create towns
 		if( !plugin.zones.checkPermission(player.getLocation(), Action.TOWN_CREATE) )
 		{
-			plugin.text.parse(player, "You cannot create a town in this zone.");
+			plugin.text.parseNo(player, "You cannot create a town in this zone.");
 			return;
 		}
 		// Check for any towns that are too close to the current point - list all
@@ -244,14 +244,14 @@ public class TownCommands
 			{
 				message += plugin.playerTowns.get(nearbyTownName).getCodedName() + " (" + nearbyTowns.get(nearbyTownName) + "m) ";
 			}
-			plugin.text.parse(player, message);
+			plugin.text.parseNo(player, message);
 			plugin.text.parse(player, "Towns must be a minimum distance of " + plugin.config.Town_MIN_DISTANCE_BETWEEN + "m apart.");
 			return;
 		}
 		// Check to see if the player has enough money to join the specified faction
 		if( !holdings.hasEnough(cost) )
 		{
-			plugin.text.parse(player, "You need at least " + iConomy.format(cost) + " to create a " + plugin.config.townLevels.get(1).name + ".");
+			plugin.text.parseNo(player, "You need at least " + iConomy.format(cost) + " to create a " + plugin.config.townLevels.get(1).name + ".");
 			return;
 		}
 		
@@ -312,7 +312,7 @@ public class TownCommands
 		// Make sure the player is a resident of a town
 		if( playerData.townName.equals("") )
 		{
-			plugin.text.parse(player, "Only town residents can use the deposit command.");
+			plugin.text.messageNo(player, "Only town residents can use the deposit command.");
 			return;
 		}
 		// Ensure that the typed amount is a valid number
@@ -322,19 +322,19 @@ public class TownCommands
 		}
 		catch( Exception ex )
 		{
-			plugin.text.parse(player, "Invalid amount.");
+			plugin.text.messageNo(player, "Invalid amount.");
 			return;
 		}
 		// Ensure that the amount is greater than 0 (no sneaky withdrawls!)
 		if( amount <= 0 )
 		{
-			plugin.text.parse(player, "Invalid amount.");
+			plugin.text.messageNo(player, "Invalid amount.");
 			return;	
 		}
 		// Make sure the player has enough money to make the deposit
 		if( !holdings.hasEnough(amount) )
 		{
-			plugin.text.parse(player, "You only have " + iConomy.format(holdings.balance()) + ".");
+			plugin.text.parseNo(player, "You only have " + iConomy.format(holdings.balance()) + ".");
 			return;
 		}
 		
@@ -363,19 +363,19 @@ public class TownCommands
 		// Ensure that the current player is the mayor
 		if( !playerData.isMayor || playerData.townName.equals("") )
 		{
-			plugin.text.parse(player, "Only town mayors can use /town evict.");
+			plugin.text.parseNo(player, "Only town mayors can use /town evict.");
 			return;
 		}	
 		// Check to see if target player exists
 		if( targetPlayerData == null )
 		{
-			plugin.text.parse(player, "Player " + targetPlayerName + " does not exist.");
+			plugin.text.messageNo(player, "Player " + targetPlayerName + " does not exist.");
 			return;
 		}	
 		// Ensure that the target player is a resident of the mayor's town
 		if( !targetPlayerData.townName.equals(playerData.townName) )
 		{
-			plugin.text.parse(player, targetPlayerData.getCodedName() + " is not a resident of " + plugin.playerTowns.get(playerData.townName).getCodedName() + ".");
+			plugin.text.parseNo(player, targetPlayerData.getCodedName() + " is not a resident of " + plugin.playerTowns.get(playerData.townName).getCodedName() + ".");
 			return;
 		}
 		
@@ -403,7 +403,7 @@ public class TownCommands
 		// Check to see if specified town exists
 		if( playerTown == null )
 		{
-			plugin.text.parse(player, "The town '" + townName + "' does not exist.");
+			plugin.text.messageNo(player, "The town '" + townName + "' does not exist.");
 			return;
 		}
 		
@@ -428,13 +428,13 @@ public class TownCommands
 		// Ensure that the player is currently a resident of a town
 		if( townName.equals("") )
 		{
-			plugin.text.parse(player, "You do not have a town to leave.");
+			plugin.text.messageNo(player, "You do not have a town to leave.");
 			return;
 		}		
 		// Ensure that the player is not the mayor
 		if( playerData.isMayor )
 		{
-			plugin.text.parse(player, "Town mayors cannot use '/town leave'; contact an admin to shut down your town.");
+			plugin.text.parseNo(player, "Town mayors cannot use '/town leave'; contact an admin to shut down your town.");
 			return;
 		}
 		
@@ -482,7 +482,7 @@ public class TownCommands
 		// Ensure that the current player is the mayor
 		if( !playerData.isMayor || playerData.townName.equals("") )
 		{
-			plugin.text.parse(player, "Only town mayors can use /town minimum.");
+			plugin.text.parseNo(player, "Only town mayors can use /town minimum.");
 			return;
 		}	
 		// Ensure that the typed amount is a valid number
@@ -492,19 +492,19 @@ public class TownCommands
 		}
 		catch( Exception ex )
 		{
-			plugin.text.parse(player, "Invalid amount.");
+			plugin.text.messageNo(player, "Invalid amount.");
 			return;
 		}
 		// Ensure that the amount is greater than 0
 		if( amount <= 0 )
 		{
-			plugin.text.parse(player, "Invalid amount.");
+			plugin.text.messageNo(player, "Invalid amount.");
 			return;	
 		}
 		// Make sure the amount is not lower than the server-defined minimum balances
 		if( amount < playerTown.townLevel.minimumBalance )
 		{
-			plugin.text.parse(player, "The lowest minimum balance allowed for a " + playerTown.townLevel.name + " is " + 
+			plugin.text.parseNo(player, "The lowest minimum balance allowed for a " + playerTown.townLevel.name + " is " + 
 								iConomy.format(playerTown.townLevel.minimumBalance) + ".");
 			return;
 		}
@@ -528,7 +528,7 @@ public class TownCommands
 		// Check to see if specified town exists
 		if( playerTown == null )
 		{
-			plugin.text.parse(player, "The town '" + townName + "' does not exist.");
+			plugin.text.messageNo(player, "The town '" + townName + "' does not exist.");
 			return;
 		}
 		
@@ -557,13 +557,13 @@ public class TownCommands
 		// Ensure that the current player is the mayor
 		if( !playerData.isMayor || playerData.townName.equals("") )
 		{
-			plugin.text.parse(player, "Only town mayors can use '/town upgrade'.");
+			plugin.text.parseNo(player, "Only town mayors can use '/town upgrade'.");
 			return;
 		}
 		// Ensure that the town is not at its maximum level
 		if( playerTown.isAtMaxLevel() )
 		{
-			plugin.text.parse(player, "Your town is already at its maximum level.");
+			plugin.text.messageNo(player, "Your town is already at its maximum level.");
 			return;
 		}
 		
@@ -576,20 +576,20 @@ public class TownCommands
 			// ...check to see if the player's faction already has a capitol...
 			if( plugin.playerTowns.doesFactionCapitolExist(playerData.id_Faction) )
 			{
-				plugin.text.parse(player, "Your faction already has a capitol; your town cannot be upgraded further.");
+				plugin.text.messageNo(player, "Your faction already has a capitol; your town cannot be upgraded further.");
 				return;
 			}
 			// ...and make sure it is not too close to enemy capitols.
 			if( plugin.playerTowns.areEnemyCapitolsTooClose(playerTown) )
 			{
-				plugin.text.parse(player, "Your town is ineligible to be your faction's capitol; it is too close to an enemy capitol.");
+				plugin.text.messageNo(player, "Your town is ineligible to be your faction's capitol; it is too close to an enemy capitol.");
 				return;
 			}
 		}
 		// Check treasury balance
 		if( playerTown.treasuryBalance < targetLevel.initialCost )
 		{
-			plugin.text.parse(player, "You need at least " + iConomy.format(targetLevel.initialCost) + " in your treasury to upgrade your town to a " + targetLevel.name + ".");
+			plugin.text.parseNo(player, "You need at least " + iConomy.format(targetLevel.initialCost) + " in your treasury to upgrade your town to a " + targetLevel.name + ".");
 			return;
 		}
 		
@@ -628,7 +628,7 @@ public class TownCommands
 		// Make sure the player is a resident of a town
 		if( playerData.townName.equals("") )
 		{
-			plugin.text.parse(player, "Only town residents can use the deposit command.");
+			plugin.text.messageNo(player, "Only town residents can use the deposit command.");
 			return;
 		}
 		// Ensure that the typed amount is a valid number
@@ -638,25 +638,25 @@ public class TownCommands
 		}
 		catch( Exception ex )
 		{
-			plugin.text.parse(player, "Invalid amount.");
+			plugin.text.messageNo(player, "Invalid amount.");
 			return;
 		}
 		// Ensure that the amount is greater than 0
 		if( amount <= 0 )
 		{
-			plugin.text.parse(player, "Invalid amount.");
+			plugin.text.messageNo(player, "Invalid amount.");
 			return;	
 		}
 		// Make sure the player has a high enough balance to make the withdrawl
 		if( playerData.treasuryBalance < amount )
 		{
-			plugin.text.parse(player, "You only have " + iConomy.format(playerData.treasuryBalance) + " in the treasury.");
+			plugin.text.parseNo(player, "You only have " + iConomy.format(playerData.treasuryBalance) + " in the treasury.");
 			return;
 		}
 		// Make sure the withdrawl wouldn't put the town below its minimum balance
 		if( playerTown.treasuryBalance - amount < playerTown.minimumBalance )
 		{
-			plugin.text.parse(player, "This transaction would put the town below its minimum balance.");
+			plugin.text.messageNo(player, "This transaction would put the town below its minimum balance.");
 			return;
 		}
 		

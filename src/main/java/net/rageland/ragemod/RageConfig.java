@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.ChatColor;
 import org.bukkit.util.config.Configuration;
 
 import net.rageland.ragemod.data.TownLevel;
@@ -100,6 +101,10 @@ public class RageConfig {
     // 1 week: 604800
     public int Task_TOWN_UPKEEP = 86400;			// Charge taxes for player towns
     public int Task_FILL_SANDLOT = 86400;		// Replenish sand in public sand mine
+    
+    // Colors
+    public ChatColor COLOR_NO = ChatColor.DARK_RED;
+    public ChatColor COLOR_MESSAGE = ChatColor.GREEN;
     
     
     public RageConfig (RageMod plugin)
