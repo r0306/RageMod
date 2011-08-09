@@ -1,0 +1,29 @@
+Permission nodes:
+
+ragemod:
+
+	admin:				(admin-only rights)
+		smitemobs:		provides a 'shield of destruction' against most attacking mobs
+
+	build: 				(permanent building rights)
+		anylot: 		can build in any capitol lot
+		anytown:		can build in any player town
+		capitol:		can edit city infrastructure
+		travelzone:		can build in travel zone
+		
+	debug:				allows use of the /debug commands
+	
+	lot: 				(commands for lots)
+    	assign: 		give lots regardless of other values
+    	evict:		  	remove lots from players
+    	
+    ismoderator:		moderator/admin flag used for sending certain messages
+    	
+    permit: 			(gives temporary passes)
+    	capitol:		allow players to edit city infrastructure
+    	
+    referee:			(referees do not participate in war and ensure rules are being followed)
+    	blockpvp:		prevents all incoming and outgoing pvp damage
+    	inspectspawn:	allows teleporting to other players spawn points
+    
+    

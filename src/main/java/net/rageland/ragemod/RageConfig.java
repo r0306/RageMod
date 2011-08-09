@@ -102,10 +102,6 @@ public class RageConfig {
     public int Task_TOWN_UPKEEP = 86400;			// Charge taxes for player towns
     public int Task_FILL_SANDLOT = 86400;		// Replenish sand in public sand mine
     
-    // Colors
-    public ChatColor COLOR_NO = ChatColor.DARK_RED;
-    public ChatColor COLOR_MESSAGE = ChatColor.GREEN;
-    
     
     public RageConfig (RageMod plugin)
     {

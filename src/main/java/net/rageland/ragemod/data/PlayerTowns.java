@@ -49,7 +49,7 @@ public class PlayerTowns {
     // Returns all towns
     public ArrayList<PlayerTown> getAll()
     {
-    	return new ArrayList<PlayerTown>(towns.values());
+ 		return new ArrayList<PlayerTown>(towns.values());
     }
     
     

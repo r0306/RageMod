@@ -21,7 +21,8 @@ public class Text
 	private Pattern numberPattern;
 	
 	private ChatColor DEFAULT_COLOR = ChatColor.GREEN;
-	
+	private ChatColor COLOR_NO = ChatColor.DARK_RED;
+	private ChatColor BROADCAST_COLOR = ChatColor.DARK_GREEN;
 	
 	public Text( RageMod plugin )
 	{
@@ -46,11 +47,17 @@ public class Text
 	}
 	public void parseNo(Player player, String message)
 	{
-		parse(player, message, plugin.config.COLOR_NO);
+		parse(player, message, COLOR_NO);
 	}
 	
 	// Formats player messages with colors
 	public void parse(Player player, String message, ChatColor color)
+	{
+		player.sendMessage(process(message, color));
+	}
+	
+	// Perform the processing and parsing
+	private String process(String message, ChatColor color)
 	{
 		message = color + message;
 		
@@ -66,7 +73,7 @@ public class Text
 		//message = highlightURL(message, color);				// not worth the CPU for the 2-3 URLs present in this plugin text <_<
 		message = highlightNumbers(message, color);
 		
-		player.sendMessage(message);
+		return message;
 	}
 	
 	// Sends a message without parsing, for speed
@@ -81,7 +88,22 @@ public class Text
 	// For messages with negative results (events cancelled, etc)
 	public void messageNo(Player player, String message)
 	{
-		player.sendMessage(plugin.config.COLOR_NO + message);
+		player.sendMessage(COLOR_NO + message);
+	}
+	
+	// Send message to all players on server
+	public void broadcast(String message)
+	{
+		broadcast(message, BROADCAST_COLOR);
+	}
+	public void broadcast(String message, ChatColor color)
+	{
+		message = process(message, color);
+		
+		for( Player onlinePlayer : plugin.getServer().getOnlinePlayers() )
+		{
+			onlinePlayer.sendMessage(message);
+		}
 	}
 	
 	

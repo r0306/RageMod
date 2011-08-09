@@ -41,7 +41,9 @@ public class DebugCommands
 			if( true )
 				plugin.text.parse(player, "   /debug sanctum <level> (attempts to build sanctum floor)");
 			if( true )
-				plugin.text.parse(player, "   /debug translate <text> (translates the entered text)");
+				plugin.text.parse(player, "   /debug translate [text] (translates the entered text)");
+			if( true )
+				plugin.text.parse(player, "   /debug transcast <text> (translates/broadcasts the text)");
 		}
 		else if( split[1].equalsIgnoreCase("colors") )
 		{
@@ -60,10 +62,14 @@ public class DebugCommands
 		}
 		else if( split[1].equalsIgnoreCase("translate") )
 		{
+			this.translate(player, split); 
+		}
+		else if( split[1].equalsIgnoreCase("transcast") )
+		{
 			if( split.length > 2 )
-				this.translate(player, split); 
+				this.transcast(player, split); 
 			else
-    			plugin.text.parse(player, "Usage: /debug translate <text>"); 
+    			plugin.text.parse(player, "Usage: /debug transcast <text>"); 
 		}
 		else
 			plugin.text.parse(player, "Type /debug to see a list of available commands.");
@@ -86,7 +92,7 @@ public class DebugCommands
 		player.sendMessage(ChatColor.AQUA + "Aqua: NPC names, NPC towns");
 		player.sendMessage(ChatColor.DARK_AQUA + "Dark Aqua: NPC speech, Quest info");
 		player.sendMessage(ChatColor.GREEN + "Green: Ragemod messages");
-		player.sendMessage(ChatColor.DARK_GREEN + "Dark Green: Important messages, Player (Moderator)");
+		player.sendMessage(ChatColor.DARK_GREEN + "Dark Green: Important messages, Broadcasts, Player (Moderator)");
 		
 	}
 	
@@ -141,10 +147,17 @@ public class DebugCommands
 		ArrayList<String> results;
 		Language language = new Language();
 		
-		// Pull the commands out of the string
-		for( int i = 2; i < split.length; i++ )
+		if( split.length == 2 )
 		{
-			message += split[i] + " ";
+			plugin.text.parse(player, "Usage: /debug translate [text]");
+			plugin.text.parse(player, "Translating sample message...");
+			message = "Greetings, fellow traveler.  Would you like a cup of ale?";
+		}
+		else
+		{
+			// Pull the commands out of the string
+			for( int i = 2; i < split.length; i++ )
+				message += split[i] + " ";
 		}
 		
 		results = language.translate(message);
@@ -161,8 +174,32 @@ public class DebugCommands
 		{
 			plugin.text.message(player, "Error: " + ex.getMessage());
 		}
+	}
+	
+	// Translates and broadcasts the text typed by the player
+	private void transcast(Player player, String[] split) 
+	{
+		PlayerData playerData = plugin.players.get(player.getName());
+		String message = new String();
+		ArrayList<String> results;
+		Language language = new Language();
 		
+		// Pull the commands out of the string
+		for( int i = 2; i < split.length; i++ )
+			message += split[i] + " ";
 		
+		results = language.translate(message);
+		plugin.text.broadcast(playerData.getCodedName() + " has initiated a translation test:");
+		plugin.text.broadcast("[100%] " + message, ChatColor.DARK_AQUA);
+		
+		try
+		{
+			plugin.text.broadcast("[0%] " + results.get(3), ChatColor.DARK_AQUA);
+		}
+		catch( Exception ex )
+		{
+			plugin.text.message(player, "Error: " + ex.getMessage());
+		}
 	}
 
 }

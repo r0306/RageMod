@@ -81,10 +81,7 @@ public class Tasks {
 		System.out.println("Beginning town upkeep processing...");
 		
 		// Notify players of incoming lag
-		for( Player onlinePlayer : plugin.getServer().getOnlinePlayers() )
-		{
-			plugin.text.message(onlinePlayer, "Beginning Ragemod upkeep tasks, hold on tight...", ChatColor.DARK_GREEN); // TODO: Store colors in config
-		}
+		plugin.text.broadcast("Beginning Ragemod upkeep tasks, hold on tight...", ChatColor.DARK_GREEN); // TODO: Store colors in config
 		
 		for( PlayerTown town : plugin.playerTowns.getAll() )
 		{

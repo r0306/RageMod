@@ -137,7 +137,7 @@ public class Language
 		dictionary.add(new ArrayList<String>());
 		dictionary.get(6).add("zal'ruo");
 		dictionary.get(6).add("ullessa");
-		dictionary.get(6).add("roolees");
+		dictionary.get(6).add("rollels");
 		dictionary.get(6).add("xousseu");
 		dictionary.get(6).add("olåssei");
 		dictionary.get(6).add("ussisse");
@@ -199,7 +199,7 @@ public class Language
 		ArrayList<String> result = new ArrayList<String>();
 		String[] split = source.split(" ");
 		int total = split.length;
-		int index, wordIndex;
+		int wordIndex;
 		Random random = new Random();
 		
 		// Create an array of numbers that represents the words not translated yet
@@ -212,8 +212,7 @@ public class Language
 		{
 			while( toTranslate.size() > (total * (1 - ((double)i / 4))) )
 			{
-				index = random.nextInt(toTranslate.size());
-				wordIndex = toTranslate.remove(index);
+				wordIndex = toTranslate.remove(random.nextInt(toTranslate.size()));
 				split[wordIndex] = translateWord(split[wordIndex], random);
 			}
 			result.add(join(split, " "));
@@ -228,13 +227,10 @@ public class Language
 		Matcher matcher = puncPattern.matcher(word);
 
 	    if( matcher.find() )
-	    {
 	    	word = matcher.group(1);	// Separate the word without the punctuation
-	    }
 	    
 		// Find the length of the word at the specified index
 		int wordLength = word.length();
-		
 		
 		if( wordLength > 0 )
 		{
@@ -248,6 +244,8 @@ public class Language
 			// Test for capitalization
 			if( word.substring(0, 1).equals(word.substring(0, 1).toUpperCase()) )
 				newWord = newWord.substring(0, 1).toUpperCase() + newWord.substring(1);
+			
+			// Return the replaced and processed word
 			return newWord + matcher.group(2);		// Add the punctuation back	
 		}
 		else

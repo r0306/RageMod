@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import net.rageland.ragemod.RageDB;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
+import net.rageland.ragemod.data.Permits;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTowns;
 
@@ -98,6 +99,7 @@ public class PlayerQueries {
 	{
 		PlayerData playerData = new PlayerData(plugin);
 		
+		// Load basic values
 		playerData.id_Player = rs.getInt("ID_Player");
 		playerData.name = rs.getString("Name");
 		playerData.id_Faction = rs.getInt("ID_Faction");
@@ -107,6 +109,9 @@ public class PlayerQueries {
 		playerData.townName = rs.getString("TownName");
 		playerData.isMayor = rs.getBoolean("IsMayor");
 		playerData.treasuryBlocks = rs.getInt("TreasuryBlocks");
+		playerData.home_LastUsed = rs.getTimestamp("Home_LastUsed");
+		playerData.spawn_LastUsed = rs.getTimestamp("Spawn_LastUsed");
+		playerData.logonMessageQueue = rs.getString("LogonMessageQueue");
 		
 		// Set the player's isMember boolean based on the expiration date
 		if( playerData.memberExpiration == null )
@@ -122,13 +127,11 @@ public class PlayerQueries {
 		{
 			playerData.setSpawn(new Location(plugin.getServer().getWorld("world"), rs.getInt("Spawn_XCoord") + .5, rs.getInt("Spawn_YCoord"), rs.getInt("Spawn_ZCoord") + .5));
 		}
-
-		playerData.home_LastUsed = rs.getTimestamp("Home_LastUsed");
-		playerData.spawn_LastUsed = rs.getTimestamp("Spawn_LastUsed");
-		playerData.logonMessageQueue = rs.getString("LogonMessageQueue");
 		
+		// Load arrays of data
 		playerData.lots = rageDB.lotQueries.getLots(playerData.id_Player);
         playerData.lotPermissions = rageDB.lotQueries.getLotPermissions(playerData.id_Player);
+        playerData.permits = getPermits(playerData.id_Player);
 		
 		if( playerData.townName.equals("") )
 			playerData.treasuryBalance = 0;
@@ -166,7 +169,7 @@ public class PlayerQueries {
         	return rs.getDouble("Amount");	
         		        	
     	} catch (SQLException e) {
-    		System.out.println("Error in RageDB.getPlayerTreasuryBalance(): " + e.getMessage());
+    		System.out.println("Error in PlayerQueries.getPlayerTreasuryBalance(): " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
@@ -175,6 +178,40 @@ public class PlayerQueries {
     	
     	return -1;
 	}    
+	
+	// Return all permits acquired by the player
+	public Permits getPermits(int id_Player)
+	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null; 
+	    Permits permits = new Permits();
+	
+    	try
+    	{
+    		conn = rageDB.getConnection();
+        	String selectQuery = 
+        		"SELECT Type FROM Permits WHERE ID_Player_Holder = " + id_Player + " AND Expiration > NOW()";
+    		
+    		preparedStatement = conn.prepareStatement(selectQuery);	        		        	
+        	rs = preparedStatement.executeQuery();
+        	
+        	while( rs.next() )
+        	{
+        		if( rs.getString("Type").equals("CAPITOL") )
+        			permits.capitol = true;
+        	}	
+        		        	
+    	} catch (SQLException e) {
+    		System.out.println("Error in PlayerQueries.getPermits(): " + e.getMessage());
+		    System.out.println("SQLState: " + e.getSQLState());
+		    System.out.println("VendorError: " + e.getErrorCode());
+		} finally {
+			rageDB.close(rs, preparedStatement, conn);
+		}
+    	
+    	return permits;
+	} 
 	
 	// Load data from Players table for specified player; returns NULL if not found 
 	public PlayerData playerFetch(String playerName)
@@ -201,7 +238,7 @@ public class PlayerQueries {
         	}
         		        	
     	} catch (SQLException e) {
-    		System.out.println("Error in RageDB.PlayerFetch(): " + e.getMessage());
+    		System.out.println("Error in PlayerQueries.PlayerFetch(): " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
@@ -267,7 +304,7 @@ public class PlayerQueries {
     		preparedStatement.executeUpdate();	
         		        		        	
     	} catch (SQLException e) {
-    		System.out.println("Error in RageDB.updatePlayer(): " + e.getMessage());
+    		System.out.println("Error in PlayerQueries.updatePlayer(): " + e.getMessage());
     		System.out.println("updateString: " + updateString);
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
@@ -305,7 +342,7 @@ public class PlayerQueries {
         	return spawns;	
     	} 
     	catch (SQLException e) {
-    		System.out.println("Error in RageDB.getSpawnLocations(): " + e.getMessage());
+    		System.out.println("Error in PlayerQueries.getSpawnLocations(): " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
@@ -334,7 +371,7 @@ public class PlayerQueries {
         	return rs.getInt("Amount");  			        	
     	} 
 		catch (Exception e) {
-    		System.out.println("Error in RageDB.getRecentDonations(): " + e.getMessage());
+    		System.out.println("Error in PlayerQueries.getRecentDonations(): " + e.getMessage());
 		} finally {
 			rageDB.close(rs, preparedStatement, conn);
 		}
@@ -364,10 +401,36 @@ public class PlayerQueries {
     		preparedStatement.executeUpdate();       	
     	} 
 		catch (Exception e) {
-    		System.out.println("Error in RageDB.playerLogoff(): " + e.getMessage());
+    		System.out.println("Error in PlayerQueries.playerLogoff(): " + e.getMessage());
 		} finally {
 			rageDB.close(rs, preparedStatement, conn);
 		}
+	}
+
+	// Gives a permit to a player
+	public void grantPermit(int id_Player_Granter, int id_Player_Holder, String type, int numberOfDays) 
+	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
+	    
+		try
+    	{
+			conn = rageDB.getConnection();
+    		
+    		preparedStatement = conn.prepareStatement(
+    				"INSERT INTO Permits (ID_Player_Holder, ID_Player_Granter, Type, Expiration) VALUES (" +
+    				id_Player_Holder + ", " + id_Player_Granter + ", '" + type + "', ADDDATE(NOW(), " + numberOfDays + "))");
+    		preparedStatement.executeUpdate();	
+    	} 
+    	catch (SQLException e) {
+    		System.out.println("Error in PlayerQueries.grantPermit(): " + e.getMessage());
+		    System.out.println("SQLState: " + e.getSQLState());
+		    System.out.println("VendorError: " + e.getErrorCode());
+		} finally {
+			rageDB.close(rs, preparedStatement, conn);
+		}
+		
 	}
 	
 }

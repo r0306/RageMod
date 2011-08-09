@@ -17,6 +17,7 @@ import net.rageland.ragemod.commands.FactionCommands;
 import net.rageland.ragemod.commands.LotCommands;
 import net.rageland.ragemod.commands.Commands;
 import net.rageland.ragemod.commands.NPCCommands;
+import net.rageland.ragemod.commands.PermitCommands;
 import net.rageland.ragemod.commands.QuestCommands;
 import net.rageland.ragemod.commands.TownCommands;
 import net.rageland.ragemod.data.Factions;
@@ -59,6 +60,7 @@ public class RMPlayerListener extends PlayerListener
     private DebugCommands debugCommands;
     private Commands commands;
     private NPCCommands npcCommands;
+    private PermitCommands permitCommands;
 
     public RMPlayerListener(RageMod instance) 
     {
@@ -71,6 +73,7 @@ public class RMPlayerListener extends PlayerListener
         debugCommands = new DebugCommands(plugin);
         commands = new Commands(plugin);
         npcCommands = new NPCCommands(plugin);
+        permitCommands = new PermitCommands(plugin);
     }
 
     // Pull the player data from the DB and register in memory
@@ -154,25 +157,43 @@ public class RMPlayerListener extends PlayerListener
     	String[] split = event.getMessage().split(" ");
     	
     	// *** Reduce the command tree for the lot-only release ***
-    	if( plugin.config.DISABLE_NON_LOT_CODE )
+    	
+    	// ********* BASIC COMMANDS *********
+    	if(split[0].equalsIgnoreCase("/zone"))
     	{
-    		// ********* COMPASS COMMANDS *********
-        	if( split[0].equalsIgnoreCase("/compass") )
-        	{
-        		compassCommands.onCompassCommand(player, playerData, split);
-        		event.setCancelled(true);
-        	}
-        	
-        	// ********* LOT COMMANDS *********
-        	else if( split[0].equalsIgnoreCase("/lot") )
-        	{
-        		lotCommands.onLotCommand(player, playerData, split);
-        		event.setCancelled(true);
-        	}
+    		commands.zone(player);
+    		event.setCancelled(true);
     	}
-    	else
+    	// ********* COMPASS COMMANDS *********
+    	else if( split[0].equalsIgnoreCase("/compass") )
     	{
-
+    		compassCommands.onCompassCommand(player, playerData, split);
+    		event.setCancelled(true);
+    	}
+    	// ********* LOT COMMANDS *********
+    	else if( split[0].equalsIgnoreCase("/lot") )
+    	{
+    		lotCommands.onLotCommand(player, playerData, split);
+    		event.setCancelled(true);
+    	}
+    	// ********* DEBUG COMMANDS **********
+    	else if( split[0].equalsIgnoreCase("/debug") ) 
+    	{
+    		if( RageMod.permissionHandler.has(player, "ragemod.debug") )
+    			debugCommands.onDebugCommand(player, playerData, split);  
+    		else
+    			plugin.text.messageNo(player, "You do not have permission to perform that command.");
+    		event.setCancelled(true);
+    	}
+    	// ********* PERMIT COMMANDS *********
+    	if( split[0].equalsIgnoreCase("/permit") )
+    	{
+    		permitCommands.onCommand(player, playerData, split);
+    		event.setCancelled(true);
+    	}
+    	
+    	if( !plugin.config.DISABLE_NON_LOT_CODE )
+    	{
         	// ********* BASIC COMMANDS *********
         	if( split[0].equalsIgnoreCase("/spawn") )
         	{
@@ -194,33 +215,12 @@ public class RMPlayerListener extends PlayerListener
         			plugin.text.parse(player, "Usage: /home [player_name]");
         		event.setCancelled(true);
         	}
-        	else if(split[0].equalsIgnoreCase("/zone"))
-        	{
-        		commands.zone(player);
-        		event.setCancelled(true);
-        	}
-        	
-        	// ********* COMPASS COMMANDS *********
-        	else if( split[0].equalsIgnoreCase("/compass") )
-        	{
-        		compassCommands.onCompassCommand(player, playerData, split);
-        		event.setCancelled(true);
-        	}
-        	
-        	// ********* LOT COMMANDS *********
-        	else if( split[0].equalsIgnoreCase("/lot") )
-        	{
-        		lotCommands.onLotCommand(player, playerData, split);
-        		event.setCancelled(true);
-        	}
-        	
         	// ********* TOWN COMMANDS *********
         	else if( split[0].equalsIgnoreCase("/town") )
         	{
         		townCommands.onTownCommand(player, playerData, split);
         		event.setCancelled(true);
         	}
-        	
         	// ********* FACTION COMMANDS **********
         	else if(split[0].equalsIgnoreCase("/faction") )
         	{
@@ -242,17 +242,8 @@ public class RMPlayerListener extends PlayerListener
     			}
         		event.setCancelled(true);
         	}
-        	
-        	// ********* DEBUG COMMANDS **********
-        	else if(split[0].equalsIgnoreCase("/debug") && RageMod.permissionHandler.has(player, "ragemod.debug") )
-        	{
-        		debugCommands.onDebugCommand(player, playerData, split);  
-        		event.setCancelled(true);
-        	}
     	}
-    	
-    	
-    	
+    		
     }
     
     // Player movement

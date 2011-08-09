@@ -53,7 +53,6 @@ public class LotQueries {
     		preparedStatement = conn.prepareStatement(selectQuery);	        		        	
         	rs = preparedStatement.executeQuery();
         	
-        	// Test to see if result set was empty - return null if not 
         	while( rs.next() )
         	{
         		playerLots.add(plugin.lots.get(rs.getInt("ID_Lot")));	// We already have the lot info in memory; save the DB some work

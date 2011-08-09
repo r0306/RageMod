@@ -54,6 +54,9 @@ public class PlayerData
 	// Messages
 	public String logonMessageQueue = "";
 	
+	// Permits
+	public Permits permits = new Permits();
+	
 	
 	// ***** STATE (Non-DB) VALUES *****
 	

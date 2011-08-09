@@ -221,8 +221,13 @@ public class RMBlockListener extends BlockListener
     		{
     			Lot lot = plugin.lots.findCurrentLot(location);
     			
-    			if( lot == null && !RageMod.permissionHandler.has(player, "ragemod.build.capitol") )
+    			if( lot == null )
+    			{
+    				if( RageMod.permissionHandler.has(player, "ragemod.build.capitol") || playerData.permits.capitol == true )
+    					return true;
+    				
     				plugin.text.messageNo(player, "You don't have permission to edit city infrastructure.");
+    			}
     			else
     			{
     				if( lot.owner.equals("") )
@@ -274,7 +279,7 @@ public class RMBlockListener extends BlockListener
     		}
     	}
     	// *** TRAVEL ZONE ***
-    	else if( plugin.zones.isInTravelZone(location) )
+    	else if( plugin.zones.isInTravelZone(location) && !RageMod.permissionHandler.has(player, "ragemod.build.travelzone") )
     	{
     		plugin.text.messageNo(player, "You cannot build inside the Travel Zone.");
     		return false;
