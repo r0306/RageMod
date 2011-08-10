@@ -10,12 +10,12 @@ import java.util.HashMap;
 import org.bukkit.World;
 
 import net.rageland.ragemod.RageConfig;
-import net.rageland.ragemod.RageDB;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.Lot;
 import net.rageland.ragemod.data.Lots;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.Region2D;
+import net.rageland.ragemod.database.RageDB;
 
 /**
  * Contains the lot queries used for database communication.

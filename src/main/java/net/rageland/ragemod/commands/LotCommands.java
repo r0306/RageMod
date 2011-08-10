@@ -113,7 +113,7 @@ public class LotCommands
 		// Check to see if target player exists
 		if( targetPlayerData == null )
 		{
-			plugin.text.messageNo(player, "Player " + targetPlayerName + " does not exist.");
+			plugin.text.sendNo(player, "Player " + targetPlayerName + " does not exist.");
 			return;
 		}
 		// Check to see if the target player already has permission
@@ -142,13 +142,13 @@ public class LotCommands
 		// Make sure the player has permission to perform this command
 		if( !RageMod.permissionHandler.has(player, "ragemod.lot.assign") )
 		{
-			plugin.text.messageNo(player, "You do not have permission to perform that command.");
+			plugin.text.sendNo(player, "You do not have permission to perform that command.");
 			return;
 		}
 		// Check to see if target player exists
 		if( targetPlayerData == null )
 		{
-			plugin.text.messageNo(player, "Player " + targetPlayerName + " does not exist.");
+			plugin.text.sendNo(player, "Player " + targetPlayerName + " does not exist.");
 			return;
 		}
 		// lot will be null if code is invalid
@@ -199,7 +199,7 @@ public class LotCommands
 		}
 		else
 		{
-			plugin.text.messageNo(player, "You are not standing inside of a lot.");
+			plugin.text.sendNo(player, "You are not standing inside of a lot.");
 		}
 	}
 
@@ -228,7 +228,7 @@ public class LotCommands
 		if( !lot.owner.equals("") )
 		{
 			if( lot.owner.equals(playerData.name) )
-				plugin.text.messageNo(player, "You already own this lot!");
+				plugin.text.sendNo(player, "You already own this lot!");
 			else
 				plugin.text.parseNo(player, "Lot " + lot.getLotCode() + " is already owned by " + plugin.players.get(lot.owner).getCodedName() + ".");
 			return;
@@ -238,13 +238,13 @@ public class LotCommands
 		{
 			if( ownedLot.category == lot.category && (lot.category == LotCategory.WARRENS || lot.category == LotCategory.MARKET) )
 			{
-				plugin.text.messageNo(player, "You can only own one " + lot.getCategoryName() + " lot at a time.");
+				plugin.text.sendNo(player, "You can only own one " + lot.getCategoryName() + " lot at a time.");
 				return;
 			}
 			else if( (lot.category == LotCategory.COAL || lot.category == LotCategory.IRON || lot.category == LotCategory.GOLD || lot.category == LotCategory.DIAMOND) &&
 					 (ownedLot.category == LotCategory.COAL || ownedLot.category == LotCategory.IRON || ownedLot.category == LotCategory.GOLD || ownedLot.category == LotCategory.DIAMOND) )
 			{
-				plugin.text.messageNo(player, "You can only own one member lot at a time.");
+				plugin.text.sendNo(player, "You can only own one member lot at a time.");
 				return;
 			}
 		}
@@ -255,8 +255,8 @@ public class LotCommands
 			
 			if( donation < lot.getPrice() )
 			{
-				plugin.text.message(player, "To claim this lot you must be a " + lot.getCategoryName() + "-level " + plugin.config.SERVER_NAME + " member.", ChatColor.AQUA);
-				plugin.text.message(player, "Visit http://www.rageland.net/donate for more details.", ChatColor.AQUA);
+				plugin.text.send(player, "To claim this lot you must be a " + lot.getCategoryName() + "-level " + plugin.config.SERVER_NAME + " member.", ChatColor.AQUA);
+				plugin.text.send(player, "Visit http://www.rageland.net/donate for more details.", ChatColor.AQUA);
 				return;
 			}
 		}
@@ -265,8 +265,8 @@ public class LotCommands
 		{
 			if( !playerData.isMember )
 			{
-				plugin.text.message(player, "To claim a Market lot you must be an active " + plugin.config.SERVER_NAME + " member.", ChatColor.AQUA);
-				plugin.text.message(player, "Visit http://www.rageland.net/donate for more details.", ChatColor.AQUA);
+				plugin.text.send(player, "To claim a Market lot you must be an active " + plugin.config.SERVER_NAME + " member.", ChatColor.AQUA);
+				plugin.text.send(player, "Visit http://www.rageland.net/donate for more details.", ChatColor.AQUA);
 				return;
 			}
 		}
@@ -281,7 +281,7 @@ public class LotCommands
 		lot.owner = playerData.name;
 		plugin.lots.put(lot);
 		
-		plugin.text.message(player, "You now own lot " + lot.getLotCode() + ".");
+		plugin.text.send(player, "You now own lot " + lot.getLotCode() + ".");
 	}
 	
 	// /lot disallow <player_name/all>
@@ -293,7 +293,7 @@ public class LotCommands
 		{
 			if( playerData.lotPermissions.size() == 0 )
 			{
-				plugin.text.messageNo(player, "You have no permissions to disallow.");
+				plugin.text.sendNo(player, "You have no permissions to disallow.");
 				return;
 			}
 			
@@ -303,7 +303,7 @@ public class LotCommands
 			// Update the playerData
 			playerData.lotPermissions.clear();
 			
-			plugin.text.message(player, "All of your lot permissions have been cleared.");
+			plugin.text.send(player, "All of your lot permissions have been cleared.");
 		}
 		else
 		{
@@ -312,7 +312,7 @@ public class LotCommands
 			// Check to see if target player exists
 			if( targetPlayerData == null )
 			{
-				plugin.text.messageNo(player, "Player " + targetPlayerName + " does not exist.");
+				plugin.text.sendNo(player, "Player " + targetPlayerName + " does not exist.");
 				return;
 			}
 			// Check to see if the target player already has permission
@@ -341,7 +341,7 @@ public class LotCommands
 		// Make sure the player has permission to perform this command
 		if( !RageMod.permissionHandler.has(player, "ragemod.lot.evict") )
 		{
-			plugin.text.messageNo(player, "You do not have permission to perform that command.");
+			plugin.text.sendNo(player, "You do not have permission to perform that command.");
 			return;
 		}		
 		// lot will be null if invalid
@@ -353,7 +353,7 @@ public class LotCommands
 		// Make sure the lot is already claimed
 		if( lot.owner.equals("") )
 		{
-			plugin.text.messageNo(player, "Lot " + lot.getLotCode() + " is already unclaimed.");
+			plugin.text.sendNo(player, "Lot " + lot.getLotCode() + " is already unclaimed.");
 			return;
 		}
 		
@@ -379,11 +379,11 @@ public class LotCommands
 		// Make sure the player actually owns lots
 		if( playerData.lots.size() == 0 )
 		{
-			plugin.text.messageNo(player, "You do not own any lots.");
+			plugin.text.sendNo(player, "You do not own any lots.");
 			return;
 		}
 		
-		plugin.text.message(player, "You currently own the following lots:");
+		plugin.text.send(player, "You currently own the following lots:");
 		
 		for( Lot lot : playerData.lots )
 		{
@@ -394,7 +394,7 @@ public class LotCommands
 		// List all players allowed to build in their lots, if any
 		if( playerData.lotPermissions.size() > 0 )
 		{
-			plugin.text.message(player, "The following players are allowed to build in your lots:");
+			plugin.text.send(player, "The following players are allowed to build in your lots:");
 			String nameList = "";
 			for( String name : playerData.lotPermissions )
 			{
@@ -439,7 +439,7 @@ public class LotCommands
 		}
 		if( !isLotOwned )
 		{
-			plugin.text.messageNo(player, "You do not own lot " + lot.getLotCode() + ".");
+			plugin.text.sendNo(player, "You do not own lot " + lot.getLotCode() + ".");
 			return;
 		}
 		
@@ -453,7 +453,7 @@ public class LotCommands
 		lot.owner = "";
 		plugin.lots.put(lot);
 		
-		plugin.text.message(player, "You are no longer the owner of lot " + lot.getLotCode() + ".");
+		plugin.text.send(player, "You are no longer the owner of lot " + lot.getLotCode() + ".");
 	}
 
 

@@ -47,13 +47,13 @@ public class PermitCommands
 		// Make sure the player has permission to perform this command
 		if( !RageMod.permissionHandler.has(player, "ragemod.permit.capitol") )
 		{
-			plugin.text.messageNo(player, "You do not have permission to perform that command.");
+			plugin.text.sendNo(player, "You do not have permission to perform that command.");
 			return;
 		}
 		// Check to see if target player exists
 		if( targetPlayerData == null )
 		{
-			plugin.text.messageNo(player, "Player " + targetPlayerName + " does not exist.");
+			plugin.text.sendNo(player, "Player " + targetPlayerName + " does not exist.");
 			return;
 		}
 		

@@ -8,7 +8,7 @@ import net.rageland.ragemod.RageZones;
 
 public class Players {
 		
-	private HashMap<String, PlayerData> players = new HashMap<String, PlayerData>();
+	private HashMap<String, PlayerData> players;
 	private RageMod plugin;
 	
 	public Players(RageMod plugin) 

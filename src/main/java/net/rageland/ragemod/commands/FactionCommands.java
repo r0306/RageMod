@@ -76,7 +76,7 @@ public class FactionCommands
 		// Ensure the player is not already a member of a faction
 		if( playerData.id_Faction != 0 )
 		{
-			plugin.text.messageNo(player, "You are already a member of a faction.");
+			plugin.text.sendNo(player, "You are already a member of a faction.");
 			return;
 		}
 		
@@ -107,7 +107,7 @@ public class FactionCommands
 		id_Faction = plugin.factions.getID(factionName);
 		if( id_Faction == 0 )
 		{
-			plugin.text.messageNo(player, "Faction '" + factionName + "' does not exist.");
+			plugin.text.sendNo(player, "Faction '" + factionName + "' does not exist.");
 			return;
 		}
 		// Check to see if the player has enough money to join the specified faction
@@ -135,14 +135,14 @@ public class FactionCommands
 		// Ensure the player is a member of a faction
 		if( playerData.id_Faction == 0 )
 		{
-			plugin.text.messageNo(player, "You are not a member of a faction.");
+			plugin.text.sendNo(player, "You are not a member of a faction.");
 			return;
 		}
 		
 		// See if the player typed "confirm" or not
 		if( !isConfirmed )
 		{
-			plugin.text.message(player, "Are you sure?  You will need to pay the join fee again if you change your mind.");
+			plugin.text.send(player, "Are you sure?  You will need to pay the join fee again if you change your mind.");
 			plugin.text.parse(player, "Type /faction leave confirm to leave your faction.");
 		}
 		else

@@ -43,7 +43,7 @@ public class Commands
 		{
 			if( playerData.getHome() == null )
 			{
-				plugin.text.messageNo(player, "You do not have a home to clear.");
+				plugin.text.sendNo(player, "You do not have a home to clear.");
 				return;
 			}
 			else
@@ -52,7 +52,7 @@ public class Commands
 				Build.clearNearbyBeds(playerData.getHome());
 				playerData.clearHome();
 				playerData.update();
-				plugin.text.message(player, "Your home has now been cleared.");
+				plugin.text.send(player, "Your home has now been cleared.");
 				return;
 			}
 		}
@@ -60,14 +60,14 @@ public class Commands
 		// Check to see if target player exists
 		if( targetPlayerData == null )
 		{
-			plugin.text.messageNo(player, "Player " + targetPlayerName + " does not exist.");
+			plugin.text.sendNo(player, "Player " + targetPlayerName + " does not exist.");
 			return;
 		}
 		
 		// Check permissions so only mods and admins can go to another player's home
 		if( targetPlayerData.id_Player != playerData.id_Player && !RageMod.permissionHandler.has(player, "ragemod.referee.inspectspawn") )
 		{
-			plugin.text.messageNo(player, "Only mods and admins can teleport to other players' home points.");
+			plugin.text.sendNo(player, "Only mods and admins can teleport to other players' home points.");
 			return;
 		}
 		
@@ -95,7 +95,7 @@ public class Commands
 			return;
 		}
 		
-		plugin.text.message(player, "Teleporting...");
+		plugin.text.send(player, "Teleporting...");
 		player.teleport(targetPlayerData.getHome());
 		playerData.home_LastUsed = now;
 		playerData.update();
@@ -114,7 +114,7 @@ public class Commands
 		{
 			if( targetPlayerData.getSpawn() == null )
 			{
-				plugin.text.messageNo(player, "You do not have a spawn to clear.");
+				plugin.text.sendNo(player, "You do not have a spawn to clear.");
 				return;
 			}
 			else
@@ -123,7 +123,7 @@ public class Commands
 				Build.clearNearbyBeds(playerData.getSpawn());
 				playerData.clearSpawn();
 				playerData.update();
-				plugin.text.message(player, "Your spawn has now been cleared.");
+				plugin.text.send(player, "Your spawn has now been cleared.");
 				return;
 			}
 		}
@@ -131,14 +131,14 @@ public class Commands
 		// Check to see if target player exists
 		if( targetPlayerData == null )
 		{
-			plugin.text.messageNo(player, "Player " + targetPlayerName + " does not exist.");
+			plugin.text.sendNo(player, "Player " + targetPlayerName + " does not exist.");
 			return;
 		}
 		
 		// Check permissions so only mods and admins can go to another player's spawn
 		if( targetPlayerData.id_Player != playerData.id_Player && !RageMod.permissionHandler.has(player, "ragemod.referee.inspectspawn") )
 		{
-			plugin.text.messageNo(player, "Only mods and admins can teleport to other players' spawn points.");
+			plugin.text.sendNo(player, "Only mods and admins can teleport to other players' spawn points.");
 			return;
 		}
 		
@@ -158,7 +158,7 @@ public class Commands
 		else
 			destination = plugin.zones.world.getSpawnLocation();
 		
-		plugin.text.message(player, "Teleporting...");
+		plugin.text.send(player, "Teleporting...");
 		player.teleport(destination);
 		playerData.spawn_LastUsed = now;
 		plugin.database.playerQueries.updatePlayer(playerData);

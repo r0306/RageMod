@@ -1,13 +1,15 @@
-package net.rageland.ragemod;
+package net.rageland.ragemod.text;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.rageland.ragemod.RageMod;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 // Contains methods for sending and formatting messages
-public class Text 
+public class Message 
 {
 	private RageMod plugin;
 	
@@ -24,7 +26,7 @@ public class Text
 	private ChatColor COLOR_NO = ChatColor.DARK_RED;
 	private ChatColor BROADCAST_COLOR = ChatColor.DARK_GREEN;
 	
-	public Text( RageMod plugin )
+	public Message( RageMod plugin )
 	{
 		this.plugin = plugin;
 		
@@ -66,27 +68,27 @@ public class Text
 		message = highlightTowns(message, color);
 		
 		// Parse for basic text
+		message = highlightNumbers(message, color);
 		message = highlightCommands(message, color);
 		message = highlightRequired(message, color);
 		message = highlightOptional(message, color);
 		message = highlightParentheses(message, color);
 		//message = highlightURL(message, color);				// not worth the CPU for the 2-3 URLs present in this plugin text <_<
-		message = highlightNumbers(message, color);
 		
 		return message;
 	}
 	
 	// Sends a message without parsing, for speed
-	public void message(Player player, String message)
+	public void send(Player player, String message)
 	{
 		player.sendMessage(DEFAULT_COLOR + message);
 	}
-	public void message(Player player, String message, ChatColor color)
+	public void send(Player player, String message, ChatColor color)
 	{
 		player.sendMessage(color + message);
 	}
 	// For messages with negative results (events cancelled, etc)
-	public void messageNo(Player player, String message)
+	public void sendNo(Player player, String message)
 	{
 		player.sendMessage(COLOR_NO + message);
 	}
@@ -101,9 +103,7 @@ public class Text
 		message = process(message, color);
 		
 		for( Player onlinePlayer : plugin.getServer().getOnlinePlayers() )
-		{
 			onlinePlayer.sendMessage(message);
-		}
 	}
 	
 	

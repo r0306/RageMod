@@ -5,8 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 
-import net.rageland.ragemod.RageDB;
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.database.RageDB;
 
 public class FactionQueries {
 	

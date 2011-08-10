@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 
-import net.rageland.ragemod.RageDB;
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.database.RageDB;
 
 public class TaskQueries {
 	

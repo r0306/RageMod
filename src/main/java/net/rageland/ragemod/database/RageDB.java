@@ -1,6 +1,4 @@
-package net.rageland.ragemod;
-
-// TODO: Refactor into connection pooling
+package net.rageland.ragemod.database;
 
 // TODO: Prevent null pointer exception when database not found (!)
 
@@ -13,6 +11,8 @@ import java.util.ArrayList;
 import java.sql.Date;
 import java.util.HashMap;
 
+import net.rageland.ragemod.RageConfig;
+import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.Location2D;
 import net.rageland.ragemod.data.Lot;
 import net.rageland.ragemod.data.Lots;
@@ -21,11 +21,9 @@ import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.data.PlayerTowns;
 import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.data.Region2D;
-import net.rageland.ragemod.database.JDCConnection;
-import net.rageland.ragemod.database.JDCConnectionDriver;
-import net.rageland.ragemod.database.JDCConnectionPool;
 import net.rageland.ragemod.dbqueries.FactionQueries;
 import net.rageland.ragemod.dbqueries.LotQueries;
+import net.rageland.ragemod.dbqueries.NPCQueries;
 import net.rageland.ragemod.dbqueries.PlayerQueries;
 import net.rageland.ragemod.dbqueries.TaskQueries;
 import net.rageland.ragemod.dbqueries.TownQueries;
@@ -49,6 +47,7 @@ public class RageDB {
     public PlayerQueries playerQueries;
     public FactionQueries factionQueries;
     public TaskQueries taskQueries;
+    public NPCQueries npcQueries;
 
     public RageDB(RageMod instance, RageConfig config)
     {
@@ -58,6 +57,7 @@ public class RageDB {
     	playerQueries = new PlayerQueries(this, this.plugin);
     	factionQueries = new FactionQueries(this, this.plugin);
     	taskQueries = new TaskQueries(this, this.plugin);
+    	npcQueries = new NPCQueries(this, this.plugin);
     	
     	url = config.DB_URL;
     	databaseName = config.DB_NAME;

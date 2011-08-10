@@ -21,9 +21,12 @@ import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTowns;
 import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.data.Tasks;
+import net.rageland.ragemod.database.RageDB;
 import net.rageland.ragemod.npclib.NPCManager;
 import net.rageland.ragemod.quest.Quest;
 import net.rageland.ragemod.quest.QuestManager;
+import net.rageland.ragemod.text.Languages;
+import net.rageland.ragemod.text.Message;
 
 import com.iConomy.*;
 import com.nijiko.permissions.PermissionHandler;
@@ -62,12 +65,13 @@ public class RageMod extends JavaPlugin {
     public PlayerTowns playerTowns;
     public Tasks tasks;
     public Factions factions;
+    public Languages languages;
     
     // Semi-static data and methods
     public RageConfig config;
     public RageDB database;
     public RageZones zones;
-    public Text text;
+    public Message text;
     public NPCManager npcManager;
     public QuestManager questManager;
     
@@ -187,13 +191,14 @@ public class RageMod extends JavaPlugin {
         playerTowns = new PlayerTowns(this);
         tasks = new Tasks(this);
         factions = new Factions();
+        languages = new Languages(this);
         
     	server = this.getServer();
     	zones = new RageZones(this, config);
         pluginManager = server.getPluginManager();
         npcManager = new NPCManager(this);
         questManager = new QuestManager(this);
-        text = new Text(this);
+        text = new Message(this);
     }
     
     private void loadDatabaseData()
@@ -201,6 +206,7 @@ public class RageMod extends JavaPlugin {
     	playerTowns.loadPlayerTowns();
         lots.loadLots();
         tasks.loadTaskTimes();
+        languages.loadDictionaries();
     }
     
     private void startScheduledTasks()

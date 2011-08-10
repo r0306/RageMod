@@ -115,13 +115,13 @@ public class RMEntityListener extends EntityListener
             			if( defenderData.id_Faction == 0 )
             			{
             				edbeEvent.setCancelled(true);
-                			plugin.text.messageNo(attacker, "You cannot attack neutral players in " + plugin.config.Zone_NAME_A + ".");
+                			plugin.text.sendNo(attacker, "You cannot attack neutral players in " + plugin.config.Zone_NAME_A + ".");
                 			return;
             			}
             			else if( attackerData.id_Faction == 0 )
             			{
             				edbeEvent.setCancelled(true);
-                			plugin.text.messageNo(attacker, "Neutral players cannot attack in " + plugin.config.Zone_NAME_A + ".");
+                			plugin.text.sendNo(attacker, "Neutral players cannot attack in " + plugin.config.Zone_NAME_A + ".");
                 			return;
             			}
             		}
@@ -135,14 +135,14 @@ public class RMEntityListener extends EntityListener
             		if( RageMod.permissionHandler.has(attacker, "ragemod.referee.blockpvp") )
             		{
             			edbeEvent.setCancelled(true);
-            			plugin.text.messageNo(attacker, "Referees may not participate in combat.");
+            			plugin.text.sendNo(attacker, "Referees may not participate in combat.");
             			return;
             		}
             		// Protect referees 
             		else if( RageMod.permissionHandler.has(defender, "ragemod.referee.blockpvp") )
             		{
             			edbeEvent.setCancelled(true);
-            			plugin.text.messageNo(attacker, "You cannot harm a referee.");
+            			plugin.text.sendNo(attacker, "You cannot harm a referee.");
             			return;
             		}
             		// Handle combat inside of towns
@@ -152,14 +152,14 @@ public class RMEntityListener extends EntityListener
     	        		if( defenderData.id_Faction == 0 )
     	        		{
     	        			edbeEvent.setCancelled(true);
-    	        			plugin.text.messageNo(attacker, "You cannot harm neutral players inside of towns.");
+    	        			plugin.text.sendNo(attacker, "You cannot harm neutral players inside of towns.");
     	        			return;
     	        		}
     	        		// Keep neutral players from harming any players
     	        		if( attackerData.id_Faction == 0 )
     	        		{
     	        			edbeEvent.setCancelled(true);
-    	        			plugin.text.messageNo(attacker, "Neutral players cannot attack inside of towns.");
+    	        			plugin.text.sendNo(attacker, "Neutral players cannot attack inside of towns.");
     	        			return;
     	        		}
     	        		// Protect faction players inside of their own and allied towns

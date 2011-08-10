@@ -250,7 +250,7 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	    		// Make sure the player has enough blocks deposited
 	    		if( playerData.treasuryBlocks < 1 )
 	    		{
-	    			plugin.text.message(player, "You don't have any gold blocks deposited in the treasury.");
+	    			plugin.text.send(player, "You don't have any gold blocks deposited in the treasury.");
 	    			return false;
 	    		}
 	    		else
@@ -275,12 +275,12 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	    		// Neutral town are not allowed to have treasuries
 	    		if( this.id_Faction == 0 )
 	    		{
-	    			plugin.text.message(player, "Neutral towns cannot use treasury blocks.");
+	    			plugin.text.send(player, "Neutral towns cannot use treasury blocks.");
 	    			return false;
 	    		}
 	    		if( this.townLevel.treasuryLevel == 0 )
 	    		{
-	    			plugin.text.message(player, this.townLevel.name + "s are not allowed treasury blocks - upgrade your town to create income.");
+	    			plugin.text.send(player, this.townLevel.name + "s are not allowed treasury blocks - upgrade your town to create income.");
 	    			return false;
 	    		}
 	    		

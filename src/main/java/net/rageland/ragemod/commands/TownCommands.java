@@ -170,13 +170,13 @@ public class TownCommands
 		// Check to see if target player exists
 		if( targetPlayerData == null )
 		{
-			plugin.text.messageNo(player, "Player " + targetPlayerName + " does not exist.");
+			plugin.text.sendNo(player, "Player " + targetPlayerName + " does not exist.");
 			return;
 		}
 		// Ensure that the current player is the mayor
 		if( !playerData.isMayor || playerTown == null )
 		{
-			plugin.text.messageNo(player, "Only town mayors can use '/town add'.");
+			plugin.text.sendNo(player, "Only town mayors can use '/town add'.");
 			return;
 		}		
 		// Ensure that the target player is not currently a resident of a town
@@ -188,12 +188,12 @@ public class TownCommands
 		// Ensure that the target player is the same faction as the mayor
 		if( playerData.id_Faction != targetPlayerData.id_Faction )
 		{
-			plugin.text.messageNo(player, "You can only add players that are the same faction as you.");
+			plugin.text.sendNo(player, "You can only add players that are the same faction as you.");
 			return;
 		}
 		if( playerTown.isFull() )
 		{
-			plugin.text.messageNo(player, "Your town already has the maximum number of residents for its level.");
+			plugin.text.sendNo(player, "Your town already has the maximum number of residents for its level.");
 			return;
 		}
 		
@@ -227,7 +227,7 @@ public class TownCommands
 		// Ensure that the town name is not taken
 		if( plugin.playerTowns.get(townName) != null )
 		{
-			plugin.text.messageNo(player, "A town named " + townName + " already exists!");
+			plugin.text.sendNo(player, "A town named " + townName + " already exists!");
 			return;
 		}
 		// Ensure that the current zone is allowed to create towns
@@ -312,7 +312,7 @@ public class TownCommands
 		// Make sure the player is a resident of a town
 		if( playerData.townName.equals("") )
 		{
-			plugin.text.messageNo(player, "Only town residents can use the deposit command.");
+			plugin.text.sendNo(player, "Only town residents can use the deposit command.");
 			return;
 		}
 		// Ensure that the typed amount is a valid number
@@ -322,13 +322,13 @@ public class TownCommands
 		}
 		catch( Exception ex )
 		{
-			plugin.text.messageNo(player, "Invalid amount.");
+			plugin.text.sendNo(player, "Invalid amount.");
 			return;
 		}
 		// Ensure that the amount is greater than 0 (no sneaky withdrawls!)
 		if( amount <= 0 )
 		{
-			plugin.text.messageNo(player, "Invalid amount.");
+			plugin.text.sendNo(player, "Invalid amount.");
 			return;	
 		}
 		// Make sure the player has enough money to make the deposit
@@ -369,7 +369,7 @@ public class TownCommands
 		// Check to see if target player exists
 		if( targetPlayerData == null )
 		{
-			plugin.text.messageNo(player, "Player " + targetPlayerName + " does not exist.");
+			plugin.text.sendNo(player, "Player " + targetPlayerName + " does not exist.");
 			return;
 		}	
 		// Ensure that the target player is a resident of the mayor's town
@@ -403,7 +403,7 @@ public class TownCommands
 		// Check to see if specified town exists
 		if( playerTown == null )
 		{
-			plugin.text.messageNo(player, "The town '" + townName + "' does not exist.");
+			plugin.text.sendNo(player, "The town '" + townName + "' does not exist.");
 			return;
 		}
 		
@@ -428,7 +428,7 @@ public class TownCommands
 		// Ensure that the player is currently a resident of a town
 		if( townName.equals("") )
 		{
-			plugin.text.messageNo(player, "You do not have a town to leave.");
+			plugin.text.sendNo(player, "You do not have a town to leave.");
 			return;
 		}		
 		// Ensure that the player is not the mayor
@@ -492,13 +492,13 @@ public class TownCommands
 		}
 		catch( Exception ex )
 		{
-			plugin.text.messageNo(player, "Invalid amount.");
+			plugin.text.sendNo(player, "Invalid amount.");
 			return;
 		}
 		// Ensure that the amount is greater than 0
 		if( amount <= 0 )
 		{
-			plugin.text.messageNo(player, "Invalid amount.");
+			plugin.text.sendNo(player, "Invalid amount.");
 			return;	
 		}
 		// Make sure the amount is not lower than the server-defined minimum balances
@@ -528,7 +528,7 @@ public class TownCommands
 		// Check to see if specified town exists
 		if( playerTown == null )
 		{
-			plugin.text.messageNo(player, "The town '" + townName + "' does not exist.");
+			plugin.text.sendNo(player, "The town '" + townName + "' does not exist.");
 			return;
 		}
 		
@@ -563,7 +563,7 @@ public class TownCommands
 		// Ensure that the town is not at its maximum level
 		if( playerTown.isAtMaxLevel() )
 		{
-			plugin.text.messageNo(player, "Your town is already at its maximum level.");
+			plugin.text.sendNo(player, "Your town is already at its maximum level.");
 			return;
 		}
 		
@@ -576,13 +576,13 @@ public class TownCommands
 			// ...check to see if the player's faction already has a capitol...
 			if( plugin.playerTowns.doesFactionCapitolExist(playerData.id_Faction) )
 			{
-				plugin.text.messageNo(player, "Your faction already has a capitol; your town cannot be upgraded further.");
+				plugin.text.sendNo(player, "Your faction already has a capitol; your town cannot be upgraded further.");
 				return;
 			}
 			// ...and make sure it is not too close to enemy capitols.
 			if( plugin.playerTowns.areEnemyCapitolsTooClose(playerTown) )
 			{
-				plugin.text.messageNo(player, "Your town is ineligible to be your faction's capitol; it is too close to an enemy capitol.");
+				plugin.text.sendNo(player, "Your town is ineligible to be your faction's capitol; it is too close to an enemy capitol.");
 				return;
 			}
 		}
@@ -628,7 +628,7 @@ public class TownCommands
 		// Make sure the player is a resident of a town
 		if( playerData.townName.equals("") )
 		{
-			plugin.text.messageNo(player, "Only town residents can use the deposit command.");
+			plugin.text.sendNo(player, "Only town residents can use the deposit command.");
 			return;
 		}
 		// Ensure that the typed amount is a valid number
@@ -638,13 +638,13 @@ public class TownCommands
 		}
 		catch( Exception ex )
 		{
-			plugin.text.messageNo(player, "Invalid amount.");
+			plugin.text.sendNo(player, "Invalid amount.");
 			return;
 		}
 		// Ensure that the amount is greater than 0
 		if( amount <= 0 )
 		{
-			plugin.text.messageNo(player, "Invalid amount.");
+			plugin.text.sendNo(player, "Invalid amount.");
 			return;	
 		}
 		// Make sure the player has a high enough balance to make the withdrawl
@@ -656,7 +656,7 @@ public class TownCommands
 		// Make sure the withdrawl wouldn't put the town below its minimum balance
 		if( playerTown.treasuryBalance - amount < playerTown.minimumBalance )
 		{
-			plugin.text.messageNo(player, "This transaction would put the town below its minimum balance.");
+			plugin.text.sendNo(player, "This transaction would put the town below its minimum balance.");
 			return;
 		}
 		

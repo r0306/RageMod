@@ -182,7 +182,7 @@ public class RMPlayerListener extends PlayerListener
     		if( RageMod.permissionHandler.has(player, "ragemod.debug") )
     			debugCommands.onDebugCommand(player, playerData, split);  
     		else
-    			plugin.text.messageNo(player, "You do not have permission to perform that command.");
+    			plugin.text.sendNo(player, "You do not have permission to perform that command.");
     		event.setCancelled(true);
     	}
     	// ********* PERMIT COMMANDS *********

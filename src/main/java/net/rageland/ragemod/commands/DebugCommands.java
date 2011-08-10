@@ -9,7 +9,7 @@ import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.Factions;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.Players;
-import net.rageland.ragemod.language.Language;
+import net.rageland.ragemod.text.Language;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -41,7 +41,7 @@ public class DebugCommands
 			if( true )
 				plugin.text.parse(player, "   /debug sanctum <level> (attempts to build sanctum floor)");
 			if( true )
-				plugin.text.parse(player, "   /debug translate [text] (translates the entered text)");
+				plugin.text.parse(player, "   /debug translate <#> [text] (translates the entered text)");
 			if( true )
 				plugin.text.parse(player, "   /debug transcast <text> (translates/broadcasts the text)");
 		}
@@ -62,7 +62,10 @@ public class DebugCommands
 		}
 		else if( split[1].equalsIgnoreCase("translate") )
 		{
-			this.translate(player, split); 
+			if( split.length > 2 )
+				this.translate(player, split); 
+			else
+    			plugin.text.parse(player, "Usage: /debug translate <language 1-4> [text]"); 
 		}
 		else if( split[1].equalsIgnoreCase("transcast") )
 		{
@@ -102,13 +105,13 @@ public class DebugCommands
 		PlayerData playerData = plugin.players.get(player.getName());
 		int donation = plugin.database.playerQueries.getRecentDonations(playerData.id_Player);
 		
-		plugin.text.message(player, "The database records you with a total donation of $" + donation + " in the last month.");
+		plugin.text.send(player, "The database records you with a total donation of $" + donation + " in the last month.");
 	}
 
 	// /debug sanctum <level>
 	private void sanctum(Player player, String levelString) 
 	{
-		plugin.text.messageNo(player, "This command has been disabled.");
+		plugin.text.sendNo(player, "This command has been disabled.");
 		return;
 		
 //		int level;
@@ -145,22 +148,37 @@ public class DebugCommands
 	{
 		String message = new String();
 		ArrayList<String> results;
-		Language language = new Language();
+		int id_Language;
 		
-		if( split.length == 2 )
+		try
 		{
-			plugin.text.parse(player, "Usage: /debug translate [text]");
+			id_Language = Integer.parseInt(split[2]);
+		}
+		catch( Exception ex )
+		{
+			plugin.text.sendNo(player, "Invalid language (1-4).");
+			return;
+		}
+		if( id_Language < 1 || id_Language > 4 )
+		{
+			plugin.text.sendNo(player, "Invalid language (1-4).");
+			return;
+		}
+		
+		if( split.length == 3 )
+		{
+			plugin.text.parse(player, "Usage: /debug translate 1-4 [text]");
 			plugin.text.parse(player, "Translating sample message...");
 			message = "Greetings, fellow traveler.  Would you like a cup of ale?";
 		}
 		else
 		{
 			// Pull the commands out of the string
-			for( int i = 2; i < split.length; i++ )
+			for( int i = 3; i < split.length; i++ )
 				message += split[i] + " ";
 		}
 		
-		results = language.translate(message);
+		results = plugin.languages.translate(message, id_Language);
 		plugin.text.parse(player, "[100%] " + message);
 		
 		try
@@ -172,7 +190,7 @@ public class DebugCommands
 		}
 		catch( Exception ex )
 		{
-			plugin.text.message(player, "Error: " + ex.getMessage());
+			plugin.text.send(player, "Error: " + ex.getMessage());
 		}
 	}
 	
@@ -198,7 +216,7 @@ public class DebugCommands
 		}
 		catch( Exception ex )
 		{
-			plugin.text.message(player, "Error: " + ex.getMessage());
+			plugin.text.send(player, "Error: " + ex.getMessage());
 		}
 	}
 
