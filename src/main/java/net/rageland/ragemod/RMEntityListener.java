@@ -202,7 +202,7 @@ public class RMEntityListener extends EntityListener
             			if(entityCreatureType == kcQuest.getCreatureToBeKilled())
             			{
             				playerData.activeQuestData.incrementObjectiveCounter();
-            				playerData.activeQuestData.getQuest().questUpdate(attackerPlayer, playerData);
+            				playerData.activeQuestData.getQuest().statusUpdate(attackerPlayer, playerData);
             			}
             			
             		}

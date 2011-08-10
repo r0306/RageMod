@@ -46,7 +46,7 @@ public class KillCreatureQuest implements Quest
 	/**
 	 * Executed when a player is finished with the quest.
 	 */
-	public void questEnd(Player player, PlayerData playerData)
+	public void end(Player player, PlayerData playerData)
 	{
 		if (NPCUtilities.checkFreeSpace(player.getInventory(), rewardData.getItem(),
 				rewardData.getAmountOfItems()))
@@ -83,7 +83,7 @@ public class KillCreatureQuest implements Quest
 	}
 
 	@Override
-	public void questStart(Player player, PlayerData playerData)
+	public void start(Player player, PlayerData playerData)
 	{
 		if (playerData.activeQuestData.isPlayerOnQuest())
 		{
@@ -100,7 +100,7 @@ public class KillCreatureQuest implements Quest
 	}
 
 	@Override
-	public boolean isQuestFinished(PlayerData playerData)
+	public boolean isFinished(PlayerData playerData)
 	{
 		if (playerData.activeQuestData.getObjectiveCounter() >= killNeededCounter)
 		{
@@ -113,7 +113,7 @@ public class KillCreatureQuest implements Quest
 	}
 
 	@Override
-	public void presentQuest(Player player, PlayerData playerData)
+	public void present(Player player, PlayerData playerData)
 	{
 
 	}
@@ -125,7 +125,7 @@ public class KillCreatureQuest implements Quest
 	}
 
 	@Override
-	public void questUpdate(Player player, PlayerData playerData)
+	public void statusUpdate(Player player, PlayerData playerData)
 	{
 		plugin.text.parse(player, "You have killed "
 				+ playerData.activeQuestData.getObjectiveCounter() + " of "

@@ -8,35 +8,35 @@ public class GatheringQuest implements Quest
 {
 
 	@Override
-	public void questEnd(Player player, PlayerData playerData)
+	public void end(Player player, PlayerData playerData)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void questStart(Player player, PlayerData playerData)
+	public void start(Player player, PlayerData playerData)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public boolean isQuestFinished(PlayerData playerData)
+	public boolean isFinished(PlayerData playerData)
 	{
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public void presentQuest(Player player, PlayerData playerData)
+	public void present(Player player, PlayerData playerData)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void questUpdate(Player player, PlayerData playerData)
+	public void statusUpdate(Player player, PlayerData playerData)
 	{
 		// TODO Auto-generated method stub
 

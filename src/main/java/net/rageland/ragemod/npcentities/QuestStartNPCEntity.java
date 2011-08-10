@@ -32,9 +32,7 @@ public class QuestStartNPCEntity extends NPCEntity
 	 */
 	public void rightClickAction(Player player)
 	{
-		player.sendMessage("Quest: " + quest.getQuestData().getName());
-		player.sendMessage(quest.getQuestData().getStartText());
-		player.sendMessage("[Left click npc to accept]");	
+		quest.present(player, plugin.players.get(player.getName()));
 	}
 
 	/**
@@ -46,7 +44,7 @@ public class QuestStartNPCEntity extends NPCEntity
 	 */
 	public void leftClickAction(Player player)
 	{
-		quest.questStart(player, plugin.players.get(player.getName()));
+		quest.start(player, plugin.players.get(player.getName()));
 	}
 
 }

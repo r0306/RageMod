@@ -37,9 +37,9 @@ public class RewardQuest implements Quest
 	/**
 	 * For a RewardQuest type, the quest is finished when it starts. 
 	 */
-	public void questStart(Player player, PlayerData playerData)
+	public void start(Player player, PlayerData playerData)
 	{
-		presentQuest(player, playerData);
+		present(player, playerData);
 
 		if (this.isActiveQuestNPC)
 		{
@@ -86,7 +86,7 @@ public class RewardQuest implements Quest
 		}
 	}
 
-	public void presentQuest(Player player, PlayerData playerData)
+	public void present(Player player, PlayerData playerData)
 	{
 		if (this.isActiveQuestNPC)
 		{
@@ -102,21 +102,21 @@ public class RewardQuest implements Quest
 	}
 
 	@Override
-	public boolean isQuestFinished(PlayerData playerData)
+	public boolean isFinished(PlayerData playerData)
 	{
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public void questEnd(Player player, PlayerData playerData)
+	public void end(Player player, PlayerData playerData)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void questUpdate(Player player, PlayerData playerData)
+	public void statusUpdate(Player player, PlayerData playerData)
 	{
 		// TODO Auto-generated method stub
 

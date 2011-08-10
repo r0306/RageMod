@@ -7,16 +7,16 @@ import org.bukkit.entity.Player;
 public abstract interface Quest
 {
 
-	public void questEnd(Player player, PlayerData playerData);
+	public void end(Player player, PlayerData playerData);
 
-	public void questStart(Player player, PlayerData playerData);
+	public void start(Player player, PlayerData playerData);
 
-	public boolean isQuestFinished(PlayerData playerData);
+	public boolean isFinished(PlayerData playerData);
 
-	public void presentQuest(Player player, PlayerData playerData);
+	public void present(Player player, PlayerData playerData);
 	
 	public QuestData getQuestData();
 
-	public void questUpdate(Player player, PlayerData playerData);
+	public void statusUpdate(Player player, PlayerData playerData);
 
 }

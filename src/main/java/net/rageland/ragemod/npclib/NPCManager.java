@@ -190,6 +190,11 @@ public class NPCManager {
 
 		npcs.clear();
 	}
+	
+	public void storeNpcInDatabase(NPCEntity npcEntity)
+	{
+		// TODO Add NPC data to database. (Type, name, quest assigned etc.)
+	}
 
 	public void moveNPC(String id, Location l) 
 	{
