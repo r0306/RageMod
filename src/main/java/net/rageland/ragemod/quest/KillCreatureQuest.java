@@ -69,7 +69,7 @@ public class KillCreatureQuest implements Quest
 						Double.toString(rewardData.getCoins()) + " Coins");
 			}
 
-			plugin.text.parse(player, "for finishing " + questData.getStartText());
+			plugin.text.parse(player, "for finishing " + questData.getName());
 
 			if (flags.isRandom())
 			{

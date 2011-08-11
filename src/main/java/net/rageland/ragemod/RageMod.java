@@ -45,10 +45,12 @@ import org.bukkit.plugin.Plugin;
  * @author TheIcarusKid
  */
 public class RageMod extends JavaPlugin {
+	
     private RMPlayerListener playerListener;
     private RMBlockListener blockListener;
     private RMServerListener serverListener;
     private RMEntityListener entityListener;
+    private static RageMod plugin;
     
     private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
     private Server server; 
@@ -82,9 +84,18 @@ public class RageMod extends JavaPlugin {
     	
     }
     
+    public static RageMod getInstance() 
+    {
+    	if(plugin == null)
+    		plugin = new RageMod(); 
+    	
+    	return plugin;
+    }
+    
     
     public void onEnable() 
-    {           	
+    {           
+    	plugin = this;
         initializeVariables();
         registerEvents();        
         setupPermissions();   

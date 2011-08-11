@@ -61,7 +61,10 @@ public class QuestStartEndNPCEntity extends NPCEntity
 		PlayerData playerData = this.plugin.players.get(player.getName());
 		if(playerData.activeQuestData.getQuest() == quest) 
 		{
-			
+			if(quest.isFinished(playerData))
+				quest.end(player, playerData);
+			else
+				quest.statusUpdate(player, playerData);
 		} 
 		else if(playerData.activeQuestData.isPlayerOnQuest())
 		{
@@ -71,7 +74,7 @@ public class QuestStartEndNPCEntity extends NPCEntity
 		{
 			player.sendMessage("Quest: " + quest.getQuestData().getName());
 			player.sendMessage(quest.getQuestData().getStartText());
-			quest.start(player, plugin.players.get(player.getName()));
+			quest.start(player, playerData);
 		}
 	}
 }

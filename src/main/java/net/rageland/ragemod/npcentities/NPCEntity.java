@@ -149,4 +149,47 @@ public class NPCEntity extends EntityPlayer
 		return this.name;
 	}
 
+	public class SpeechTask extends TimerTask
+	{
+		private NPCEntity npcEntity;
+		private Timer timer;
+		private int speechInterval;
+		private int speechDistance;
+
+		public SpeechTask(NPCEntity npcEntity, Timer timer, int speechInterval, int speechDistance)
+		{
+			this.npcEntity = npcEntity;
+			this.timer = timer;
+			this.speechInterval = speechInterval;
+			this.speechDistance = speechDistance;
+		}
+
+		public void run()
+		{
+			/*
+			Player[] players = NPCEntity.this.plugin.getServer().getOnlinePlayers();
+
+			for (Player player : players)
+			{
+				if ((this.npcEntity == null) || (player.getLocation().distance(this.npcEntity.getBukkitEntity().getLocation()) >= speechDistance))
+				{
+					continue;
+				}
+				
+				player.sendMessage((String) NPCEntity.this.speechMessages.get(NPCEntity.this.speechCounter));
+				NPCEntity.this.speechCounter += 1;
+
+				if (NPCEntity.this.speechCounter == NPCEntity.this.speechMessages.size())
+				{
+					NPCEntity.this.speechCounter = 0;
+				}
+
+			}
+
+			if (NPCManager.npcs.containsValue(this.npcEntity))
+				this.timer.schedule(new SpeechTask(NPCEntity.this, this.npcEntity, this.timer, this.speechInterval), this.speechInterval);
+				*/
+		}
+	}
+
 }
