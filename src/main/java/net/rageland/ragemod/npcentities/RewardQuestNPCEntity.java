@@ -30,7 +30,7 @@ public class RewardQuestNPCEntity extends NPCEntity
 	 */
 	public void rightClickAction(Player player)
 	{
-		quest.presentQuest(player, this.plugin.players.get(player.getName()));
+		quest.present(player, this.plugin.players.get(player.getName()));
 	}
 
 	/**
@@ -42,6 +42,6 @@ public class RewardQuestNPCEntity extends NPCEntity
 	 */
 	public void leftClickAction(Player player)
 	{
-		quest.questStart(player, this.plugin.players.get(player.getName()));
+		quest.start(player, this.plugin.players.get(player.getName()));
 	}
 }

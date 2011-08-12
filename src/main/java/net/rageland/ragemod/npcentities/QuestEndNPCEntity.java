@@ -46,11 +46,11 @@ public class QuestEndNPCEntity extends NPCEntity
 	public void leftClickAction(Player player)
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
-		if (playerData != null && playerData.activeQuestData.getQuest() == quest)
+		if (playerData.activeQuestData.getQuest() == quest)
 		{
-			if (quest.isQuestFinished(playerData))
+			if (quest.isFinished(playerData))
 			{
-				quest.questEnd(player, playerData);
+				quest.end(player, playerData);
 			}
 			else
 			{

@@ -5,6 +5,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.World;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
+import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.quest.Quest;
 
 import org.bukkit.entity.Player;
@@ -30,9 +31,22 @@ public class QuestStartEndNPCEntity extends NPCEntity
 	 */
 	public void rightClickAction(Player player)
 	{
-		player.sendMessage("Quest: " + quest.getQuestData().getName());
-		player.sendMessage(quest.getQuestData().getStartText());
-		player.sendMessage("[Left click npc to accept]");	
+		PlayerData playerData = this.plugin.players.get(player.getName());
+		if(playerData.activeQuestData.getQuest() == quest) 
+		{
+			player.sendMessage("If you are finished with your quest, left click me.");
+		} 
+		else if(playerData.activeQuestData.isPlayerOnQuest())
+		{
+			player.sendMessage("When you are finished with your current quest, come back to see me.");
+		}
+		else
+		{
+			player.sendMessage("Quest: " + quest.getQuestData().getName());
+			player.sendMessage(quest.getQuestData().getStartText());
+			player.sendMessage("[Left click npc to accept]");	
+		}
+		
 	}
 
 	/**
@@ -44,6 +58,23 @@ public class QuestStartEndNPCEntity extends NPCEntity
 	 */
 	public void leftClickAction(Player player)
 	{
-		quest.questStart(player, plugin.players.get(player.getName()));
+		PlayerData playerData = this.plugin.players.get(player.getName());
+		if(playerData.activeQuestData.getQuest() == quest) 
+		{
+			if(quest.isFinished(playerData))
+				quest.end(player, playerData);
+			else
+				quest.statusUpdate(player, playerData);
+		} 
+		else if(playerData.activeQuestData.isPlayerOnQuest())
+		{
+			player.sendMessage("When you are finished with your current quest, come back to see me.");
+		}
+		else
+		{
+			player.sendMessage("Quest: " + quest.getQuestData().getName());
+			player.sendMessage(quest.getQuestData().getStartText());
+			quest.start(player, playerData);
+		}
 	}
 }
