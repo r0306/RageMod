@@ -22,7 +22,7 @@ public class RageConfig {
 	
 	// General settings
 	public String SERVER_NAME = "Rageland";
-	public boolean DISABLE_NON_LOT_CODE;
+	public boolean PRE_RELEASE_MODE;
 	public String OWNER_NAME = "TheIcarusKid";		// For sending certain debug notifications
 	
 	// Database settings
@@ -115,9 +115,9 @@ public class RageConfig {
     {
     	pluginConfig = plugin.getConfiguration();
     	
-    	DISABLE_NON_LOT_CODE = pluginConfig.getBoolean("general.disable_non_lot_code", false);
-		if( DISABLE_NON_LOT_CODE )
-			System.out.println("Activating Lot-only mode.");
+    	PRE_RELEASE_MODE = pluginConfig.getBoolean("general.pre_release_mode", true);
+		if( PRE_RELEASE_MODE )
+			System.out.println("Activating Pre-release mode.");
     	
     	DB_URL = pluginConfig.getString("database.url");
 		DB_NAME = pluginConfig.getString("database.name");

@@ -2,8 +2,6 @@ package net.rageland.ragemod;
 
 // TODO: Bounty
 
-// TODO: Fix onEntityDamageByEntity, I can't get it to fire on mob damage whatsoever
-
 import java.rmi.server.Skeleton;
 
 import net.rageland.ragemod.data.Factions;
@@ -83,7 +81,7 @@ public class RMEntityListener extends EntityListener
 			}
         	
             // Handle PvP
-            if( attackerEntity instanceof Player && defenderEntity instanceof Player && !plugin.config.DISABLE_NON_LOT_CODE ) 
+            if( attackerEntity instanceof Player && defenderEntity instanceof Player && !plugin.config.PRE_RELEASE_MODE ) 
             {
             	Player attacker = (Player)attackerEntity;
             	Player defender = (Player)defenderEntity;
@@ -184,7 +182,7 @@ public class RMEntityListener extends EntityListener
             	}
             } 
             // Defender is Creature, Attacker is Player
-            else if(defenderEntity instanceof Creature && attackerEntity instanceof Player && !plugin.config.DISABLE_NON_LOT_CODE)
+            else if(defenderEntity instanceof Creature && attackerEntity instanceof Player && !plugin.config.PRE_RELEASE_MODE)
             {
             	Creature defenderCreature = (Creature)defenderEntity;
             	Player attackerPlayer = (Player) attackerEntity;

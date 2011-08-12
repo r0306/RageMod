@@ -1,14 +1,5 @@
 package net.rageland.ragemod;
 
-// TODO: Make a Util class that parses player.sendMessage and highlights /commands, <required>, [optional], and (info)
-// Also create a default color
-
-// TODO: Check whether we need to clear any homes or spawns when a bed is destroyed
-
-// TODO: Make sure location checks check the world that the player is in
-
-// TODO: Add a /lot invite command to let players work together on buildings (also uninvite)
-
 import java.util.HashMap;
 
 import net.rageland.ragemod.commands.CompassCommands;
@@ -129,10 +120,6 @@ public class RMPlayerListener extends PlayerListener
     			}
     		}
     	}
-    	
-    	// Update playerD
-
-    	
     }
     
     // Register the player as logged off
@@ -192,7 +179,7 @@ public class RMPlayerListener extends PlayerListener
     		event.setCancelled(true);
     	}
     	
-    	if( !plugin.config.DISABLE_NON_LOT_CODE )
+    	if( !plugin.config.PRE_RELEASE_MODE )
     	{
         	// ********* BASIC COMMANDS *********
         	if( split[0].equalsIgnoreCase("/spawn") )
@@ -345,7 +332,7 @@ public class RMPlayerListener extends PlayerListener
     	Player player = event.getPlayer();
     	PlayerData playerData = plugin.players.get(player.getName());
     	
-    	if( playerData.getSpawn() != null && !plugin.config.DISABLE_NON_LOT_CODE )
+    	if( playerData.getSpawn() != null && !plugin.config.PRE_RELEASE_MODE )
     	{
     		event.setRespawnLocation(playerData.getSpawn());
     	}
@@ -358,7 +345,7 @@ public class RMPlayerListener extends PlayerListener
 	    PlayerData playerData = plugin.players.get(player.getName());
 	    World world = player.getWorld();
 	    
-	    if( plugin.config.DISABLE_NON_LOT_CODE )
+	    if( plugin.config.PRE_RELEASE_MODE )
 	    	return;
 	    
 	    // Portals in normal world

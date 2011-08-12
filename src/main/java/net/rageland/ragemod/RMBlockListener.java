@@ -56,7 +56,7 @@ public class RMBlockListener extends BlockListener
     	}
     	
     	// *** DISABLE ALL FURTHER CODE FOR LOT RELEASE ***
-    	if( plugin.config.DISABLE_NON_LOT_CODE )
+    	if( plugin.config.PRE_RELEASE_MODE )
     		return;
     	
     	
@@ -125,7 +125,7 @@ public class RMBlockListener extends BlockListener
     	}
     	
     	// *** DISABLE ALL FURTHER CODE FOR LOT RELEASE ***
-    	if( plugin.config.DISABLE_NON_LOT_CODE )
+    	if( plugin.config.PRE_RELEASE_MODE )
     		return;
     	
     	// *** ZONE A (Neutral Zone) ***

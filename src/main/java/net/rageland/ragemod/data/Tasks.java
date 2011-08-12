@@ -75,7 +75,7 @@ public class Tasks {
 		PlayerData playerData;
 		ArrayList<String> evictList;
 		
-		if( plugin.config.DISABLE_NON_LOT_CODE )
+		if( plugin.config.PRE_RELEASE_MODE )
 			return;
 		
 		System.out.println("Beginning town upkeep processing...");

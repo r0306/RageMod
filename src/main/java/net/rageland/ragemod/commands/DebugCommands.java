@@ -41,9 +41,9 @@ public class DebugCommands
 			if( true )
 				plugin.text.parse(player, "   /debug sanctum <level> (attempts to build sanctum floor)");
 			if( true )
-				plugin.text.parse(player, "   /debug translate <#> [text] (translates the entered text)");
+				plugin.text.parse(player, "   /debug translate [text] (translates the entered text)");
 			if( true )
-				plugin.text.parse(player, "   /debug transcast <text> (translates/broadcasts the text)");
+				plugin.text.parse(player, "   /debug transcast <#> <text> (translates/broadcasts the text)");
 		}
 		else if( split[1].equalsIgnoreCase("colors") )
 		{
@@ -62,17 +62,14 @@ public class DebugCommands
 		}
 		else if( split[1].equalsIgnoreCase("translate") )
 		{
-			if( split.length > 2 )
 				this.translate(player, split); 
-			else
-    			plugin.text.parse(player, "Usage: /debug translate <language 1-4> [text]"); 
 		}
 		else if( split[1].equalsIgnoreCase("transcast") )
 		{
 			if( split.length > 2 )
 				this.transcast(player, split); 
 			else
-    			plugin.text.parse(player, "Usage: /debug transcast <text>"); 
+    			plugin.text.parse(player, "Usage: /debug transcast 1-4 <text>"); 
 		}
 		else
 			plugin.text.parse(player, "Type /debug to see a list of available commands.");
@@ -148,6 +145,43 @@ public class DebugCommands
 	{
 		String message = new String();
 		ArrayList<String> results;
+		
+		if( split.length == 2 )
+		{
+			plugin.text.parse(player, "Usage: /debug translate [text]");
+			plugin.text.parse(player, "Translating sample message...");
+			message = "Greetings, fellow traveler.  Would you like a cup of ale?";
+		}
+		else
+		{
+			// Pull the commands out of the string
+			for( int i = 2; i < split.length; i++ )
+				message += split[i] + " ";
+		}
+		
+		try
+		{
+			plugin.text.parse(player,  "[En] " + message);
+			
+			// Translate into all 4 languages
+			for( int i = 1; i <= 4; i++ )
+			{
+				results = plugin.languages.translate(message, i);
+				plugin.text.parse(player,  "[" + plugin.languages.getAbbreviation(i) + "] " + results.get(3), ChatColor.DARK_AQUA);
+			}
+		}
+		catch( Exception ex )
+		{
+			plugin.text.send(player, "Error: " + ex.getMessage());
+		}
+	}
+	
+	// Translates and broadcasts the text typed by the player
+	private void transcast(Player player, String[] split) 
+	{
+		PlayerData playerData = plugin.players.get(player.getName());
+		String message = new String();
+		ArrayList<String> results;
 		int id_Language;
 		
 		try
@@ -165,54 +199,17 @@ public class DebugCommands
 			return;
 		}
 		
-		if( split.length == 3 )
-		{
-			plugin.text.parse(player, "Usage: /debug translate 1-4 [text]");
-			plugin.text.parse(player, "Translating sample message...");
-			message = "Greetings, fellow traveler.  Would you like a cup of ale?";
-		}
-		else
-		{
-			// Pull the commands out of the string
-			for( int i = 3; i < split.length; i++ )
-				message += split[i] + " ";
-		}
-		
-		results = plugin.languages.translate(message, id_Language);
-		plugin.text.parse(player, "[100%] " + message);
-		
-		try
-		{
-			plugin.text.parse(player, "[75%] " + results.get(0));
-			plugin.text.parse(player, "[50%] " + results.get(1));
-			plugin.text.parse(player, "[25%] " + results.get(2));
-			plugin.text.parse(player, "[0%] " + results.get(3));
-		}
-		catch( Exception ex )
-		{
-			plugin.text.send(player, "Error: " + ex.getMessage());
-		}
-	}
-	
-	// Translates and broadcasts the text typed by the player
-	private void transcast(Player player, String[] split) 
-	{
-		PlayerData playerData = plugin.players.get(player.getName());
-		String message = new String();
-		ArrayList<String> results;
-		Language language = new Language();
-		
 		// Pull the commands out of the string
-		for( int i = 2; i < split.length; i++ )
+		for( int i = 3; i < split.length; i++ )
 			message += split[i] + " ";
 		
-		results = language.translate(message);
+		results = plugin.languages.translate(message, id_Language);
 		plugin.text.broadcast(playerData.getCodedName() + " has initiated a translation test:");
-		plugin.text.broadcast("[100%] " + message, ChatColor.DARK_AQUA);
+		plugin.text.broadcast("[En] " + message, ChatColor.GREEN);
 		
 		try
 		{
-			plugin.text.broadcast("[0%] " + results.get(3), ChatColor.DARK_AQUA);
+			plugin.text.broadcast("[" + plugin.languages.getAbbreviation(id_Language) + "] " + results.get(3), ChatColor.DARK_AQUA);
 		}
 		catch( Exception ex )
 		{
