@@ -15,34 +15,17 @@ public class QuestEndNPCEntity extends NPCEntity
 	private Quest quest;
 
 	public QuestEndNPCEntity(MinecraftServer minecraftserver, World world,
-			String name, ItemInWorldManager iteminworldmanager, RageMod plugin,
-			Quest quest)
+			String name, ItemInWorldManager iteminworldmanager, Quest quest)
 	{
-		super(minecraftserver, world, name, iteminworldmanager, plugin);
+		super(minecraftserver, world, name, iteminworldmanager);
 		this.quest = quest;
 	}
 
-	/**
-	 * Method called when a right click action on the NPC is performed by a
-	 * player. *
-	 * 
-	 * @param player
-	 *            Player that right clicked the entity
-	 */
 	public void rightClickAction(Player player)
 	{
-		player.sendMessage("Quest: " + quest.getQuestData().getName());
-		player.sendMessage(quest.getQuestData().getStartText());
-		player.sendMessage("[Left click npc to accept]");	
+		leftClickAction(player);
 	}
 
-	/**
-	 * Method called when a left click action on the NPC is performed by a
-	 * player. *
-	 * 
-	 * @param player
-	 *            Player that left clicked the entity
-	 */
 	public void leftClickAction(Player player)
 	{
 		PlayerData playerData = plugin.players.get(player.getName());

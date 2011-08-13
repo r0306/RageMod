@@ -14,10 +14,9 @@ public class RewardQuestNPCEntity extends NPCEntity
 	private Quest quest;
 
 	public RewardQuestNPCEntity(MinecraftServer minecraftserver, World world,
-			String name, ItemInWorldManager iteminworldmanager, RageMod plugin,
-			Quest quest)
+			String name, ItemInWorldManager iteminworldmanager, Quest quest)
 	{
-		super(minecraftserver, world, name, iteminworldmanager, plugin);
+		super(minecraftserver, world, name, iteminworldmanager);
 		this.quest = quest;
 	}
 
@@ -30,7 +29,9 @@ public class RewardQuestNPCEntity extends NPCEntity
 	 */
 	public void rightClickAction(Player player)
 	{
-		quest.present(player, this.plugin.players.get(player.getName()));
+		player.sendMessage("Quest: " + quest.getQuestData().getName());
+		player.sendMessage(quest.getQuestData().getStartText());
+		player.sendMessage("[Left click npc to finish]");
 	}
 
 	/**

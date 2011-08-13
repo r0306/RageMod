@@ -119,6 +119,17 @@ public class NPCCommands {
 		return false;
 	}
 	
+	/**
+	 * Command format: /npc addspeechmessage <npcname> <message>
+	 */
+	private boolean isAddSpeechCommand(String[] split)
+	{
+		if(split.length == 4 && split[1].equalsIgnoreCase("addspeechmessage"))
+			return true;
+		else
+			return false;
+	}
+	
 	private void spawnAlotOfNPCS(Player player) 
 	{
 		Location l = player.getLocation();

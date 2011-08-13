@@ -16,10 +16,9 @@ public class QuestStartNPCEntity extends NPCEntity
 	private Quest quest;
 
 	public QuestStartNPCEntity(MinecraftServer minecraftserver, World world,
-			String name, ItemInWorldManager iteminworldmanager, RageMod plugin,
-			Quest quest)
+			String name, ItemInWorldManager iteminworldmanager, Quest quest)
 	{
-		super(minecraftserver, world, name, iteminworldmanager, plugin);
+		super(minecraftserver, world, name, iteminworldmanager);
 		this.quest = quest;
 	}
 
@@ -32,7 +31,9 @@ public class QuestStartNPCEntity extends NPCEntity
 	 */
 	public void rightClickAction(Player player)
 	{
-		quest.present(player, plugin.players.get(player.getName()));
+		player.sendMessage("Quest: " + quest.getQuestData().getName());
+		player.sendMessage(quest.getQuestData().getStartText());
+		player.sendMessage("[Left click npc to accept]");
 	}
 
 	/**
@@ -44,7 +45,18 @@ public class QuestStartNPCEntity extends NPCEntity
 	 */
 	public void leftClickAction(Player player)
 	{
-		quest.start(player, plugin.players.get(player.getName()));
+		PlayerData playerData = plugin.players.get(player.getName());
+		
+		if(!playerData.activeQuestData.isPlayerOnQuest())
+		{
+			player.sendMessage("Quest: " + quest.getQuestData().getName());
+			player.sendMessage(quest.getQuestData().getStartText());
+			quest.start(player, plugin.players.get(player.getName()));
+		}			
+		else
+		{
+			player.sendMessage("You are currently busy with another quest. If you want to abandon it, write '/quest abandon' and then talk to me again.");
+		}			
 	}
 
 }

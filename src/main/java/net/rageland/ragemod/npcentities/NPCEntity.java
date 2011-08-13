@@ -34,9 +34,10 @@ public class NPCEntity extends EntityPlayer
 	private long lastBounceTick;
 	private int lastBounceId;
 	protected RageMod plugin;
+	private SpeechData speechData;
 
 	public NPCEntity(MinecraftServer minecraftserver, World world, String name,
-			ItemInWorldManager iteminworldmanager, RageMod plugin)
+			ItemInWorldManager iteminworldmanager )
 	{
 
 		super(minecraftserver, world, name, iteminworldmanager);
@@ -52,30 +53,22 @@ public class NPCEntity extends EntityPlayer
 		this.lastTargetId = -1;
 		this.lastBounceId = -1;
 		this.lastBounceTick = 0L;
-		this.plugin = plugin;
+		this.speechData = new SpeechData(new ArrayList<String>(), 0, 0);
 	}
 
-	/**
-	 * Placeholder method for a right click action performed by a player on a
-	 * NPC
-	 * 
-	 * @param player
-	 *            The player that right clicks
-	 */
 	public void rightClickAction(Player player)
 	{
 
 	}
 
-	/**
-	 * Placeholder method for a left click action performed by a player on a NPC
-	 * 
-	 * @param player
-	 *            The player that left clicks
-	 */
 	public void leftClickAction(Player player)
 	{
 
+	}
+	
+	public void addSpeechMessage(String message)
+	{
+		speechData.addMessage(message);
 	}
 
 	public void actAsHurt()
@@ -153,42 +146,34 @@ public class NPCEntity extends EntityPlayer
 	{
 		private NPCEntity npcEntity;
 		private Timer timer;
-		private int speechInterval;
-		private int speechDistance;
+		private SpeechData speechData;
 
-		public SpeechTask(NPCEntity npcEntity, Timer timer, int speechInterval, int speechDistance)
+		public SpeechTask(NPCEntity npcEntity, Timer timer, SpeechData speechData)
 		{
 			this.npcEntity = npcEntity;
 			this.timer = timer;
-			this.speechInterval = speechInterval;
-			this.speechDistance = speechDistance;
+			this.speechData = speechData;
 		}
 
 		public void run()
-		{
-			/*
-			Player[] players = NPCEntity.this.plugin.getServer().getOnlinePlayers();
-
-			for (Player player : players)
+		{			
+			if(RageMod.getInstance().npcManager.npcs.containsValue(npcEntity) && speechData.getInterval() > 0)
 			{
-				if ((this.npcEntity == null) || (player.getLocation().distance(this.npcEntity.getBukkitEntity().getLocation()) >= speechDistance))
-				{
-					continue;
-				}
+				Player[] players = NPCEntity.this.plugin.getServer().getOnlinePlayers();
+				String message = speechData.getNextMessage();
 				
-				player.sendMessage((String) NPCEntity.this.speechMessages.get(NPCEntity.this.speechCounter));
-				NPCEntity.this.speechCounter += 1;
-
-				if (NPCEntity.this.speechCounter == NPCEntity.this.speechMessages.size())
+				for (Player player : players)
 				{
-					NPCEntity.this.speechCounter = 0;
+					if ((player.getLocation().distance(this.npcEntity.getBukkitEntity().getLocation()) >= speechData.getRadius()))
+					{
+						continue;
+					}					
+					player.sendMessage(message);
 				}
 
-			}
-
-			if (NPCManager.npcs.containsValue(this.npcEntity))
-				this.timer.schedule(new SpeechTask(NPCEntity.this, this.npcEntity, this.timer, this.speechInterval), this.speechInterval);
-				*/
+				if (RageMod.getInstance().npcManager.npcs.containsValue(this.npcEntity))
+					this.timer.schedule(new SpeechTask(NPCEntity.this, this.timer, speechData), speechData.getInterval());
+			}				
 		}
 	}
 

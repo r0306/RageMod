@@ -10,6 +10,7 @@ import net.minecraft.server.WorldServer;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.npcentities.NPCEntity;
 import net.rageland.ragemod.npcentities.QuestStartNPCEntity;
+import net.rageland.ragemod.npcentities.SpeechData;
 import net.rageland.ragemod.quest.Quest;
 
 import org.bukkit.Location;
@@ -25,7 +26,7 @@ import org.bukkit.event.world.WorldListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class NPCManager {
-	public static HashMap<String, NPCEntity> npcs = new HashMap<String, NPCEntity>();
+	public HashMap<String, NPCEntity> npcs = new HashMap<String, NPCEntity>();
 	private BServer server;
 	private int taskid;
 	private RageMod plugin;
@@ -39,9 +40,9 @@ public class NPCManager {
 					public void run() 
 					{
 						HashSet<String> toRemove = new HashSet<String>();
-						for (String i : NPCManager.npcs.keySet()) 
+						for (String i : RageMod.getInstance().npcManager.npcs.keySet()) 
 						{
-							net.minecraft.server.Entity j = (net.minecraft.server.Entity)NPCManager.npcs.get(i);
+							net.minecraft.server.Entity j = (net.minecraft.server.Entity)RageMod.getInstance().npcManager.npcs.get(i);
 							j.R();
 							if (j.dead) 
 							{
@@ -71,7 +72,7 @@ public class NPCManager {
 			name = tmp;
 		}
 		BWorld world = new BWorld(l.getWorld());
-		NPCEntity npcEntity = new NPCEntity(this.server.getMCServer(), world.getWorldServer(), name, new ItemInWorldManager( world.getWorldServer()), this.plugin);
+		NPCEntity npcEntity = new NPCEntity(this.server.getMCServer(), world.getWorldServer(), name, new ItemInWorldManager( world.getWorldServer()));
 		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 		world.getWorldServer().addEntity(npcEntity);
 		npcs.put(id, npcEntity);
@@ -94,7 +95,7 @@ public class NPCManager {
 			name = tmp;
 		}
 		BWorld world = new BWorld(l.getWorld());
-		QuestStartNPCEntity npcEntity = new QuestStartNPCEntity(this.server.getMCServer(), world.getWorldServer(), name, new ItemInWorldManager( world.getWorldServer()), this.plugin, quest);
+		QuestStartNPCEntity npcEntity = new QuestStartNPCEntity(this.server.getMCServer(), world.getWorldServer(), name, new ItemInWorldManager( world.getWorldServer()), quest);
 		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 		world.getWorldServer().addEntity(npcEntity);
 		npcs.put(String.valueOf(npcs.size() + 1), npcEntity);
@@ -121,14 +122,25 @@ public class NPCManager {
 													world.getWorldServer(), 
 													name, 
 													new ItemInWorldManager( 
-															world.getWorldServer()), 
-															this.plugin, 
+															world.getWorldServer()),  
 															quest
 															);
 		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 		world.getWorldServer().addEntity(npcEntity);
 		npcs.put(id, npcEntity);
 		return npcEntity;
+	}
+	
+	public void addSpeechMessage(String npcname, String message)
+	{
+		if(npcs.containsKey(npcname))
+		{
+			npcs.get(npcname).addSpeechMessage(message);
+		}
+		else
+		{
+			
+		}
 	}
 
 	public void despawnById(String id) 
@@ -263,11 +275,11 @@ public class NPCManager {
 	{
 		if ((e instanceof HumanEntity)) 
 		{
-			for (String i : npcs.keySet()) 
+			for (String i : RageMod.getInstance().npcManager.npcs.keySet()) 
 			{
-				if (((NPCEntity) npcs.get(i)).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
+				if (((NPCEntity) RageMod.getInstance().npcManager.npcs.get(i)).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
 				{
-					return (NPCEntity) npcs.get(i);
+					return (NPCEntity) RageMod.getInstance().npcManager.npcs.get(i);
 				}
 			}
 		}
@@ -330,7 +342,7 @@ public class NPCManager {
 
 		public void onChunkLoad(ChunkLoadEvent event) 
 		{
-			for (NPCEntity npc : NPCManager.npcs.values())
+			for (NPCEntity npc : RageMod.getInstance().npcManager.npcs.values())
 			{
 				if ((npc != null) && (event.getChunk() == npc.getBukkitEntity().getLocation().getBlock().getChunk())) 
 				{

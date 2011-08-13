@@ -26,15 +26,14 @@ public class KillCreatureQuest implements Quest
 			RewardData rewardData, 
 			Flags flags,
 			CreatureType creatureToBeKilled,
-			int killNeededCounter, 
-			RageMod plugin)
+			int killNeededCounter)
 	{
 		this.questData = questData;
 		this.rewardData = rewardData;
 		this.flags = flags;
 		this.creatureToBeKilled = creatureToBeKilled;
 		this.killNeededCounter = killNeededCounter;
-		this.plugin = plugin;
+		this.plugin = RageMod.getInstance();
 	}
 	
 	public CreatureType getCreatureToBeKilled()
