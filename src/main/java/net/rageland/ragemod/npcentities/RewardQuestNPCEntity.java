@@ -35,11 +35,8 @@ public class RewardQuestNPCEntity extends NPCEntity
 	}
 
 	/**
-	 * Method called when a left click action on the NPC is performed by a
-	 * player. *
-	 * 
-	 * @param player
-	 *            Player that left clicked the entity
+	 * This method starts the quest instantly, because it doesn't matter if
+	 * the player is on a quest or not when finishing a reward quest.
 	 */
 	public void leftClickAction(Player player)
 	{
