@@ -10,6 +10,7 @@ import net.rageland.ragemod.npcentities.QuestStartNPCEntity;
 import net.rageland.ragemod.npcentities.RewardQuestNPCEntity;
 import net.rageland.ragemod.npcentities.SpeechNPC;
 import net.rageland.ragemod.quest.Quest;
+import net.rageland.ragemod.quest.QuestImplementation;
 
 import org.bukkit.Location;
 
@@ -25,7 +26,7 @@ public class NPCSpawner
 		this.server = BServer.getInstance(RageMod.getInstance());		
 	}
 	
-	public void questStartNPC(String name, String npcId, Location l, Quest quest)
+	public void questStartNPC(String name, String npcId, Location l, QuestImplementation quest)
 	{		
 		if (isNpcIdUsed(npcId)) 
 		{
@@ -46,7 +47,7 @@ public class NPCSpawner
 		plugin.npcManager.getNpcs().put(npcId, npcEntity);
 	}
 	
-	public void rewardNPC(String name, String npcId, Location l, Quest quest)
+	public void rewardNPC(String name, String npcId, Location l, QuestImplementation quest)
 	{		
 		if (isNpcIdUsed(npcId)) 
 		{
@@ -67,7 +68,7 @@ public class NPCSpawner
 		plugin.npcManager.getNpcs().put(npcId, npcEntity);
 	}
 	
-	public void questEndNPC(String name, String npcId, Location l, Quest quest)
+	public void questEndNPC(String name, String npcId, Location l, QuestImplementation quest)
 	{		
 		if (isNpcIdUsed(npcId)) 
 		{
@@ -88,7 +89,7 @@ public class NPCSpawner
 		plugin.npcManager.getNpcs().put(npcId, npcEntity);
 	}
 	
-	public void questStartEndNPC(String name, String npcId, Location l, Quest quest)
+	public void questStartEndNPC(String name, String npcId, Location l, QuestImplementation quest)
 	{		
 		if (isNpcIdUsed(npcId)) 
 		{

@@ -1,24 +1,18 @@
 package net.rageland.ragemod.quest;
 
+import net.rageland.ragemod.NPCUtilities;
+import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.PlayerData;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class TravelQuest implements Quest
+public class TravelQuest extends QuestImplementation
 {
-
-	@Override
-	public void end(Player player, PlayerData playerData)
+	
+	public TravelQuest(QuestData questData, RewardData rewardData, Flags flags)
 	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void start(Player player, PlayerData playerData)
-	{
-		// TODO Auto-generated method stub
-		
+		super(questData, rewardData, flags);
 	}
 
 	/**
@@ -32,23 +26,8 @@ public class TravelQuest implements Quest
 	}
 
 	@Override
-	public void present(Player player, PlayerData playerData)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void statusUpdate(Player player, PlayerData playerData)
 	{
-		// TODO Auto-generated method stub
-		
+		// No status update for a travel quest.
 	}
-
-	@Override
-	public QuestData getQuestData()
-	{
-		return null;
-	}
-
 }

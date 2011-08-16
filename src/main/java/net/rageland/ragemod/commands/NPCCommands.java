@@ -8,6 +8,7 @@ import org.bukkit.entity.Spider;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.quest.Quest;
+import net.rageland.ragemod.quest.QuestImplementation;
 
 public class NPCCommands {
 	
@@ -55,16 +56,20 @@ public class NPCCommands {
 			plugin.npcManager.despawn(npcName);
 			// Will despawn all NPC's with npcName as name. Might need to add despawn by ID, which is unique.
 		}
+		else
+		{
+			player.sendMessage("Usage: /npc spawn <npctype> <npcname> <npcid> [questid]");
+		}
 	}
 	
-	private void spawnQuestStartNPC(Player player, Quest quest, String npcName, String npcId) 
+	private void spawnQuestStartNPC(Player player, QuestImplementation quest, String npcName, String npcId) 
 	{
 		Location l = player.getLocation();		
 		plugin.npcManager.getSpawner().questStartNPC(npcName, npcId, l, quest);
 		// Store data to database
 	}
 	
-	private void spawnRewardNPC(Player player, Quest quest, String npcName, String npcId)
+	private void spawnRewardNPC(Player player, QuestImplementation quest, String npcName, String npcId)
 	{
 		Location l = player.getLocation();
 		plugin.npcManager.getSpawner().rewardNPC(npcName, npcId, l, quest);
@@ -78,14 +83,14 @@ public class NPCCommands {
 		// Store data to database
 	}
 	
-	private void spawnQuestEndNPC(Player player, Quest quest, String npcName, String npcId)
+	private void spawnQuestEndNPC(Player player, QuestImplementation quest, String npcName, String npcId)
 	{
 		Location l = player.getLocation();
 		plugin.npcManager.getSpawner().questEndNPC(npcName, npcId, l, quest);
 		// Store data to database
 	}
 	
-	private void spawnQuestStartEndNPC(Player player, Quest quest, String npcName, String npcId)
+	private void spawnQuestStartEndNPC(Player player, QuestImplementation quest, String npcName, String npcId)
 	{
 		Location l = player.getLocation();
 		plugin.npcManager.getSpawner().questStartEndNPC(npcName, npcId, l, quest);

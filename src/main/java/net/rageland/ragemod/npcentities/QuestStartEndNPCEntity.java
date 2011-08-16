@@ -7,15 +7,16 @@ import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.quest.Quest;
+import net.rageland.ragemod.quest.QuestImplementation;
 
 import org.bukkit.entity.Player;
 
 public class QuestStartEndNPCEntity extends NPCEntity
 {
-	private Quest quest;
+	private QuestImplementation quest;
 
 	public QuestStartEndNPCEntity(MinecraftServer minecraftserver, World world,
-			String name, ItemInWorldManager iteminworldmanager, Quest quest)
+			String name, ItemInWorldManager iteminworldmanager, QuestImplementation quest)
 	{
 		super(minecraftserver, world, name, iteminworldmanager);
 		this.quest = quest;
@@ -71,9 +72,16 @@ public class QuestStartEndNPCEntity extends NPCEntity
 		}
 		else
 		{
-			player.sendMessage("Quest: " + quest.getQuestData().getName());
-			player.sendMessage(quest.getQuestData().getStartText());
-			quest.start(player, playerData);
+			if(playerData.activeQuestData.isQuestCompleted(quest.getQuestData().getId()))
+			{
+				player.sendMessage("You have already finished this quest ");
+			}
+			else
+			{
+				player.sendMessage("Quest: " + quest.getQuestData().getName());
+				player.sendMessage(quest.getQuestData().getStartText());
+				quest.start(player, playerData);
+			}			
 		}
 	}
 }

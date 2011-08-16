@@ -10,15 +10,23 @@ import org.bukkit.inventory.ItemStack;
 public class QuestManager
 {
 	private RageMod plugin;
-	public HashMap<String, Quest> quests = new HashMap<String, Quest>();
+	public HashMap<String, QuestImplementation> quests = new HashMap<String, QuestImplementation>();
 
 	public QuestManager(RageMod plugin)
 	{
 		this.plugin = plugin;
-//		RewardQuest testRewardQuest = new RewardQuest(1, "TestRewardQuest",
-//				"Hooray, you found me. Could you tell me where I am?",
-//				"Thanks you so much. Enjoy your reward.", new ItemStack(
-//						Material.COBBLESTONE), 200, 50.0D, true, true);
-//		quests.put(Integer.valueOf(1), testRewardQuest);
+		
+		QuestData testRewardQuestData = new QuestData("TestReward", "reward1", "start text reward1", "end text reward1", 0, "");
+		RewardData testRewardData = new RewardData(new ItemStack(Material.getMaterial("stone")), 10, 50);
+		Flags testFlags = new Flags(false, false);		
+		RewardQuest testRewardQuest = new RewardQuest(testRewardQuestData, testRewardData, testFlags);
+		quests.put(testRewardQuest.getQuestData().getId(), testRewardQuest);
+		
+		
+		QuestData testTravelQuestData = new QuestData("TestTravel", "travel1", "start text travel1", "end text travel1", 0, "");
+		RewardData testTravelData = new RewardData(new ItemStack(Material.getMaterial("caol")), 15, 50);
+		Flags testTravelFlags = new Flags(false, false);		
+		TravelQuest testTravelQuest = new TravelQuest(testTravelQuestData, testTravelData, testTravelFlags);
+		quests.put(testTravelQuest.getQuestData().getId(), testTravelQuest);
 	}
 }

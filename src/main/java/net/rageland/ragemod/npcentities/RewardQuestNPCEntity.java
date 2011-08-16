@@ -5,16 +5,18 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.World;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
+import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.quest.Quest;
+import net.rageland.ragemod.quest.QuestImplementation;
 
 import org.bukkit.entity.Player;
 
 public class RewardQuestNPCEntity extends NPCEntity
 {
-	private Quest quest;
+	private QuestImplementation quest;
 
 	public RewardQuestNPCEntity(MinecraftServer minecraftserver, World world,
-			String name, ItemInWorldManager iteminworldmanager, Quest quest)
+			String name, ItemInWorldManager iteminworldmanager, QuestImplementation quest)
 	{
 		super(minecraftserver, world, name, iteminworldmanager);
 		this.quest = quest;
@@ -40,6 +42,17 @@ public class RewardQuestNPCEntity extends NPCEntity
 	 */
 	public void leftClickAction(Player player)
 	{
-		quest.start(player, this.plugin.players.get(player.getName()));
+		PlayerData playerData = this.plugin.players.get(player.getName());
+		
+		if(playerData.activeQuestData.isQuestCompleted(quest.getQuestData().getId()) && !quest.isRepeatable())
+		{
+			player.sendMessage("You have already finished this quest ");
+		}
+		else
+		{
+			player.sendMessage("Quest: " + quest.getQuestData().getName());
+			player.sendMessage(quest.getQuestData().getStartText());
+			quest.start(player, this.plugin.players.get(player.getName()));
+		}
 	}
 }

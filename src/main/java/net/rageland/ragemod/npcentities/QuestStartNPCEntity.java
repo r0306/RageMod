@@ -7,16 +7,17 @@ import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.quest.Quest;
+import net.rageland.ragemod.quest.QuestImplementation;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class QuestStartNPCEntity extends NPCEntity
 {
-	private Quest quest;
+	private QuestImplementation quest;
 
 	public QuestStartNPCEntity(MinecraftServer minecraftserver, World world,
-			String name, ItemInWorldManager iteminworldmanager, Quest quest)
+			String name, ItemInWorldManager iteminworldmanager, QuestImplementation quest)
 	{
 		super(minecraftserver, world, name, iteminworldmanager);
 		this.quest = quest;
@@ -47,16 +48,27 @@ public class QuestStartNPCEntity extends NPCEntity
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
 		
-		if(!playerData.activeQuestData.isPlayerOnQuest())
+		if(playerData.activeQuestData.getQuest() == quest) 
 		{
-			player.sendMessage("Quest: " + quest.getQuestData().getName());
-			player.sendMessage(quest.getQuestData().getStartText());
-			quest.start(player, plugin.players.get(player.getName()));
-		}			
+			player.sendMessage("You are already on this quest.");
+		} 
+		else if(playerData.activeQuestData.isPlayerOnQuest())
+		{
+			player.sendMessage("When you are finished with your current quest, come back to see me.");
+		}
 		else
 		{
-			player.sendMessage("You are currently busy with another quest. If you want to abandon it, write '/quest abandon' and then talk to me again.");
-		}			
+			if(playerData.activeQuestData.isQuestCompleted(quest.getQuestData().getId()) && !quest.isRepeatable())
+			{
+				player.sendMessage("You have already finished this quest ");
+			}
+			else
+			{
+				player.sendMessage("Quest: " + quest.getQuestData().getName());
+				player.sendMessage(quest.getQuestData().getStartText());
+				quest.start(player, playerData);
+			}			
+		}		
 	}
 
 }

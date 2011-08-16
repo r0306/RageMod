@@ -7,15 +7,16 @@ import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.quest.Quest;
+import net.rageland.ragemod.quest.QuestImplementation;
 
 import org.bukkit.entity.Player;
 
 public class QuestEndNPCEntity extends NPCEntity
 {
-	private Quest quest;
+	private QuestImplementation quest;
 
 	public QuestEndNPCEntity(MinecraftServer minecraftserver, World world,
-			String name, ItemInWorldManager iteminworldmanager, Quest quest)
+			String name, ItemInWorldManager iteminworldmanager, QuestImplementation quest)
 	{
 		super(minecraftserver, world, name, iteminworldmanager);
 		this.quest = quest;

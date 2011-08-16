@@ -1,10 +1,14 @@
 package net.rageland.ragemod.quest;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class PlayerQuestData
 {
 	private Quest quest;
 	private int objectiveCounter;
 	private boolean playerOnQuest;
+	private ArrayList<String> completedQuests;
 
 	public PlayerQuestData()
 	{
@@ -14,6 +18,22 @@ public class PlayerQuestData
 	public Quest getQuest()
 	{
 		return quest;
+	}
+	
+	public void questCompleted(String questId)
+	{
+		if(!completedQuests.contains(questId))
+		{
+			completedQuests.add(questId);
+		}
+	}
+	
+	public boolean isQuestCompleted(String questId)
+	{
+		if(completedQuests.contains(questId))
+			return true;
+		else
+			return false;
 	}
 	
 	public int getObjectiveCounter()
