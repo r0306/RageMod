@@ -1,6 +1,7 @@
 package net.rageland.ragemod.quest;
 
 import net.rageland.ragemod.NPCUtilities;
+import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.PlayerData;
 
 import org.bukkit.ChatColor;
@@ -14,19 +15,15 @@ public class RewardQuest implements Quest
 {
 	private QuestData questData;
 	private RewardData rewardData;
-	private boolean isQuestAttachedToRandomNPC;
-	private boolean isActiveQuestNPC;
+	private Flags flags;
 
 	public RewardQuest(
 				QuestData questData, 
-				RewardData rewardData, 
-				boolean isRandomNPC,
-				boolean isActiveQuestNPC)
+				RewardData rewardData, Flags flags)
 	{
 		this.questData = questData;
 		this.rewardData = rewardData;
-		this.isQuestAttachedToRandomNPC = isRandomNPC;
-		this.isActiveQuestNPC = isActiveQuestNPC;
+		this.flags = flags;
 	}
 
 	public void questEnd(Player player)
@@ -41,14 +38,9 @@ public class RewardQuest implements Quest
 	{
 		present(player, playerData);
 
-		if (this.isActiveQuestNPC)
+		if (flags.isActive())
 		{
-			if (NPCUtilities.checkFreeSpace(
-							player.getInventory(),
-							rewardData.getItem(), 
-							rewardData.getAmountOfItems()
-						)
-				)
+			if (NPCUtilities.checkFreeSpace(player.getInventory(),rewardData.getItem(), rewardData.getAmountOfItems()))
 			{
 				player.sendMessage(ChatColor.LIGHT_PURPLE + questData.getEndText());
 				player.sendMessage("Received: ");
@@ -65,17 +57,16 @@ public class RewardQuest implements Quest
 
 				if (rewardData.getCoins() > 0.0D)
 				{
-					player.sendMessage(ChatColor.DARK_GREEN
-							+ Double.toString(rewardData.getCoins())
-							+ ChatColor.GOLD + " Coins");		// DC: Check out iConomy.format() - I'm thinking of changing the currency name
+					player.sendMessage(ChatColor.GOLD + " " + RageMod.getInstance().iConomy.format(rewardData.getCoins()));
+					RageMod.getInstance().iConomy.getAccount(player.getName()).getHoldings().add(rewardData.getCoins());
 				}
 
 				player.sendMessage(" ");
 				player.sendMessage("for finishing &a" + questData.getName());
 
-				if (isQuestAttachedToRandomNPC)
+				if (flags.isRandom())
 				{
-					isActiveQuestNPC = false;
+					flags.setActive(false);
 				}
 
 			}
@@ -88,7 +79,7 @@ public class RewardQuest implements Quest
 
 	public void present(Player player, PlayerData playerData)
 	{
-		if (this.isActiveQuestNPC)
+		if (flags.isActive())
 		{
 			player.sendMessage(ChatColor.DARK_GREEN + "Quest: "
 					+ ChatColor.YELLOW + "[" + questData.getName() + "]");

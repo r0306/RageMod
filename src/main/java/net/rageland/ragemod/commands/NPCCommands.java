@@ -24,61 +24,72 @@ public class NPCCommands {
 		{
 			String npcType = split[2];
 			String npcName = split[3];
-			String questId = split[4];
+			String npcId = split[4];
+			String questId = split[5];
 			
 			
 			if(npcType.equalsIgnoreCase("queststartnpc"))
 			{
-				spawnQuestStartNPC(player, plugin.questManager.quests.get(questId), npcName);
+				spawnQuestStartNPC(player, plugin.questManager.quests.get(questId), npcName, npcId);
 			} 
 			else if(npcType.equalsIgnoreCase("questrewardnpc"))
 			{
-				
+				spawnRewardNPC(player, plugin.questManager.quests.get(questId), npcName, npcId);
 			}
 			else if(npcType.equalsIgnoreCase("speechnpc"))
 			{
-				
+				spawnSpeechNPC(player, npcName, npcId);
 			}
 			else if(npcType.equalsIgnoreCase("questendnpc"))
 			{
-				
+				spawnQuestEndNPC(player, plugin.questManager.quests.get(questId), npcName, npcId);
 			}
 			else if(npcType.equalsIgnoreCase("queststartendnpc"))
 			{
-				
+				spawnQuestStartEndNPC(player, plugin.questManager.quests.get(questId), npcName, npcId);
 			}				
 		} 
 		else if( isDespawnCommand(split) )
 		{
-			
+			String npcName = split[2];
+			plugin.npcManager.despawn(npcName);
+			// Will despawn all NPC's with npcName as name. Might need to add despawn by ID, which is unique.
 		}
 	}
 	
-	private void spawnQuestStartNPC(Player player, Quest quest, String npcName) 
+	private void spawnQuestStartNPC(Player player, Quest quest, String npcName, String npcId) 
+	{
+		Location l = player.getLocation();		
+		plugin.npcManager.getSpawner().questStartNPC(npcName, npcId, l, quest);
+		// Store data to database
+	}
+	
+	private void spawnRewardNPC(Player player, Quest quest, String npcName, String npcId)
 	{
 		Location l = player.getLocation();
-		
-		plugin.npcManager.spawnQuestStartNPC(npcName, l, quest);
+		plugin.npcManager.getSpawner().rewardNPC(npcName, npcId, l, quest);
+		// Store data to database
 	}
 	
-	private void spawnQuestRewardNPC(Player player, Quest quest, String npcName)
+	private void spawnSpeechNPC(Player player, String npcName, String npcId)
 	{
-		
+		Location l = player.getLocation();
+		plugin.npcManager.getSpawner().speechNPC(npcName, npcId, l);
+		// Store data to database
 	}
 	
-	private void spawnQuestSpeechNPC(Player player, String npcName)
+	private void spawnQuestEndNPC(Player player, Quest quest, String npcName, String npcId)
 	{
-		
+		Location l = player.getLocation();
+		plugin.npcManager.getSpawner().questEndNPC(npcName, npcId, l, quest);
+		// Store data to database
 	}
 	
-	private void spawnQuestEndNPC(Player player, Quest quest, String npcName)
+	private void spawnQuestStartEndNPC(Player player, Quest quest, String npcName, String npcId)
 	{
-		
-	}
-	
-	private void spawnQuestStartEndNPC(Player player, Quest quest, String npcName)
-	{
-		
+		Location l = player.getLocation();
+		plugin.npcManager.getSpawner().questStartEndNPC(npcName, npcId, l, quest);
+		// Store data to database
 	}
 	
 	/**
@@ -90,11 +101,11 @@ public class NPCCommands {
 	 */
 	private boolean isSpawnCommand(String[] split)
 	{
-		if(split.length > 3 && split.length < 6)
+		if(split.length > 4 && split.length < 7)
 		{
 			if(split[1].equalsIgnoreCase("spawn"))
 			{
-				if(split[2].equalsIgnoreCase("speechnpc") && split.length == 4)
+				if(split[2].equalsIgnoreCase("speechnpc") && split.length == 5)
 				{
 					return true;
 				}
@@ -112,7 +123,7 @@ public class NPCCommands {
 	 */
 	private boolean isDespawnCommand(String[] split)
 	{
-		if(split.length == 3)
+		if(split.length == 3 && split[1].equalsIgnoreCase("despawn"))
 		{
 			
 		}
@@ -128,22 +139,6 @@ public class NPCCommands {
 			return true;
 		else
 			return false;
-	}
-	
-	private void spawnAlotOfNPCS(Player player) 
-	{
-		Location l = player.getLocation();
-		
-		for(int i = 0; i < 20; i++)
-		{
-			for(int j = 0; j < 5; j++)
-			{
-				l.setZ(l.getZ() + 1);
-				plugin.npcManager.spawnQuestStartNPC("TheIcarusKid", l, plugin.questManager.quests.get(1));
-			}
-			l.setZ(l.getZ() - 5);
-			l.setX(l.getX() + 1);
-		}
-	}
+	}	
 
 }

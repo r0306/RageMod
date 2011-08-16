@@ -53,7 +53,11 @@ public class NPCEntity extends EntityPlayer
 		this.lastTargetId = -1;
 		this.lastBounceId = -1;
 		this.lastBounceTick = 0L;
-		this.speechData = new SpeechData(new ArrayList<String>(), 0, 0);
+		
+		int radius = 20; 
+		int interval = 30;
+		
+		this.speechData = new SpeechData(new ArrayList<String>(), radius, interval);
 	}
 
 	public void rightClickAction(Player player)

@@ -11,6 +11,7 @@ import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.npcentities.NPCEntity;
 import net.rageland.ragemod.npcentities.QuestStartNPCEntity;
 import net.rageland.ragemod.npcentities.SpeechData;
+import net.rageland.ragemod.npcentities.SpeechNPC;
 import net.rageland.ragemod.quest.Quest;
 
 import org.bukkit.Location;
@@ -30,6 +31,7 @@ public class NPCManager {
 	private BServer server;
 	private int taskid;
 	private RageMod plugin;
+	private NPCSpawner npcSpawner;
 
 	public NPCManager(RageMod plugin) 
 	{
@@ -55,6 +57,12 @@ public class NPCManager {
 				}, 100L, 100L);
 		plugin.getServer().getPluginManager().registerEvent(Event.Type.PLUGIN_DISABLE, new SL(), Priority.Normal, plugin);
 		plugin.getServer().getPluginManager().registerEvent(Event.Type.CHUNK_LOAD, new WL(), Priority.Normal, plugin);
+		npcSpawner = new NPCSpawner();
+	}
+	
+	public NPCSpawner getSpawner()
+	{
+		return npcSpawner;
 	}
 
 	public NPCEntity spawnNPC(String name, Location l, String id) 
@@ -79,56 +87,9 @@ public class NPCManager {
 		return npcEntity;
 	}
 	
-	public QuestStartNPCEntity spawnQuestStartNPC(String name, Location l, Quest quest)
+	public HashMap<String, NPCEntity> getNpcs()
 	{
-		String id = String.valueOf(npcs.size() + 1);
-		if (npcs.containsKey(id)) 
-		{
-			this.server.getLogger().log(Level.WARNING, "NPC with that id already exists, existing NPC returned");
-			return (QuestStartNPCEntity) npcs.get(id);
-		}
-		if (name.length() > 16) 
-		{
-			String tmp = name.substring(0, 16);
-			this.server.getLogger().log(Level.WARNING, "NPCs can't have names longer than 16 characters,");
-			this.server.getLogger().log(Level.WARNING, name + " has been shortened to " + tmp);
-			name = tmp;
-		}
-		BWorld world = new BWorld(l.getWorld());
-		QuestStartNPCEntity npcEntity = new QuestStartNPCEntity(this.server.getMCServer(), world.getWorldServer(), name, new ItemInWorldManager( world.getWorldServer()), quest);
-		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
-		world.getWorldServer().addEntity(npcEntity);
-		npcs.put(String.valueOf(npcs.size() + 1), npcEntity);
-		return npcEntity;
-	}
-	
-	public NPCEntity spawnQuestStartNPC(String name, Location l, String id, Quest quest) 
-	{
-		if (npcs.containsKey(id)) 
-		{
-			this.server.getLogger().log(Level.WARNING, "NPC with that id already exists, existing NPC returned");
-			return (NPCEntity) npcs.get(id);
-		}
-		if (name.length() > 16) 
-		{
-			String tmp = name.substring(0, 16);
-			this.server.getLogger().log(Level.WARNING, "NPCs can't have names longer than 16 characters,");
-			this.server.getLogger().log(Level.WARNING, name + " has been shortened to " + tmp);
-			name = tmp;
-		}
-		BWorld world = new BWorld(l.getWorld());
-		QuestStartNPCEntity npcEntity = new QuestStartNPCEntity(
-													this.server.getMCServer(), 
-													world.getWorldServer(), 
-													name, 
-													new ItemInWorldManager( 
-															world.getWorldServer()),  
-															quest
-															);
-		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
-		world.getWorldServer().addEntity(npcEntity);
-		npcs.put(id, npcEntity);
-		return npcEntity;
+		return npcs;
 	}
 	
 	public void addSpeechMessage(String npcname, String message)
@@ -139,7 +100,7 @@ public class NPCManager {
 		}
 		else
 		{
-			
+			this.server.getLogger().log(Level.WARNING, "Invalid npc name, could not add speech message.");
 		}
 	}
 
