@@ -17,9 +17,9 @@ public class QuestStartNPCEntity extends NPCEntity
 	private QuestImplementation quest;
 
 	public QuestStartNPCEntity(MinecraftServer minecraftserver, World world,
-			String name, ItemInWorldManager iteminworldmanager, QuestImplementation quest)
+			String name, ItemInWorldManager iteminworldmanager, QuestImplementation quest, RageMod plugin)
 	{
-		super(minecraftserver, world, name, iteminworldmanager);
+		super(minecraftserver, world, name, iteminworldmanager, plugin);
 		this.quest = quest;
 	}
 

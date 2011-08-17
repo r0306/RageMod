@@ -1,0 +1,50 @@
+* General
+
+Nice weather we're having today, eh?
+The Orders pretend to work together, but they're constantly at war.
+The Rageland government's ability to enforce its laws gets weaker the further you get from the capitol.
+I heard there is a world where day lasts longer than 10 minutes.  Weird, huh?
+You would not believe how long that drought went on.
+Life may seem peaceful around here, but they call it Rageland for a reason...
+The arena games in the city are a good way to earn money.
+<po>TheIcarusKid</po> is always hiring road builders, contact him if you want to earn some cash.
+Hmm... Sandstone or smooth stone?  I can never decide.
+Obsidian looks so cool, but it takes forever to mine.
+
+
+* Dynamic
+** NPC Towns
+
+I love living in <currentNPCTown/>!  [resident only]
+I'm just stopping by to visit <currentNPCTown/>.  [guest only]
+Welcome to <currentNPCTown/>!
+I've been living in <currentNPCTown/> for many years now.
+To get to <otherNPCTown/>, take the south road until you get to the... or was it the west road?  Hmm...
+I think I'll visit <otherNPCTown/> next.  [guest only]
+I've heard that <otherNPCTown/> is lovely, but I've never had a chance to visit.  [resident only]
+
+** Players
+
+I recently got the chance to meet <playerName/>.  Seems like a nice fellow.  [previous contact]
+   - <playerName/>!  Good to see you again!
+If you ask me, <playerName/> has been abusing his powers lately.
+
+* Zone-specific
+** Capitol
+
+It's a really nice view from the mayor's office!
+I can't wait to watch some spleef!
+Welcome to <tn>Rage City</tn>!
+I'm just here to hide from the creepers.
+
+** Neutral Zone
+
+I wish I could live in <tn>Rage City</tn>.
+Life in the <z>Neutral Zone</z> can be pretty hectic.
+The <z>Neutral Zone</z> has been developing so much lately!
+
+
+
+
+
+

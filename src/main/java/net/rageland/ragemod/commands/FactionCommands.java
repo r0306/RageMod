@@ -32,13 +32,13 @@ public class FactionCommands
 	{
 		if( split.length < 2 || split.length > 3 )
 		{
-			plugin.text.parse(player, "Faction commands: <required> [optional]");
+			plugin.message.parse(player, "Faction commands: <required> [optional]");
 			if( playerData.id_Faction == 0 )
-				plugin.text.parse(player, "   /faction join     (used to join a faction)");
+				plugin.message.parse(player, "   /faction join     (used to join a faction)");
 			if( playerData.id_Faction != 0 )
-				plugin.text.parse(player, "   /faction leave    (leaves your faction)");
+				plugin.message.parse(player, "   /faction leave    (leaves your faction)");
 			if( true )
-				plugin.text.parse(player, "   /faction stats    (displays stats on each faction)");
+				plugin.message.parse(player, "   /faction stats    (displays stats on each faction)");
 		}
 		else if( split[1].equalsIgnoreCase("join") )
 		{
@@ -47,7 +47,7 @@ public class FactionCommands
 			else if( split.length == 3 )
 				this.join(player, split[2]); 
 			else
-    			plugin.text.parse(player, "Usage: /faction join [faction_name]"); 
+    			plugin.message.parse(player, "Usage: /faction join [faction_name]"); 
 		}
 		else if( split[1].equalsIgnoreCase("leave") )
 		{
@@ -56,14 +56,14 @@ public class FactionCommands
     		else if( split.length == 3 && split[2].equalsIgnoreCase("confirm"))
     			this.leave(player, true);
     		else
-    			plugin.text.parse(player, "Usage: /faction leave [confirm]");
+    			plugin.message.parse(player, "Usage: /faction leave [confirm]");
 		}
 		else if( split[1].equalsIgnoreCase("stats") )
 		{
 			this.stats(player);
 		}
 		else
-			plugin.text.parse(player, "Type /faction to see a list of available commands.");
+			plugin.message.parse(player, "Type /faction to see a list of available commands.");
 	}
 	
 	// /faction join
@@ -76,7 +76,7 @@ public class FactionCommands
 		// Ensure the player is not already a member of a faction
 		if( playerData.id_Faction != 0 )
 		{
-			plugin.text.sendNo(player, "You are already a member of a faction.");
+			plugin.message.sendNo(player, "You are already a member of a faction.");
 			return;
 		}
 		
@@ -96,10 +96,10 @@ public class FactionCommands
 		// If the player did not type a faction name, return the cost to join each faction
 		if( factionName.equals("") )
 		{
-			plugin.text.parse(player, "Current costs to join each faction (based on population):");
+			plugin.message.parse(player, "Current costs to join each faction (based on population):");
 			for( int faction : populations.keySet() )
 			{
-				plugin.text.parse(player, "   " + plugin.factions.getCodedName(faction) + ": " + iConomy.format(populations.get(faction)));
+				plugin.message.parse(player, "   " + plugin.factions.getCodedName(faction) + ": " + iConomy.format(populations.get(faction)));
 			}
 			return;
 		}
@@ -107,13 +107,13 @@ public class FactionCommands
 		id_Faction = plugin.factions.getID(factionName);
 		if( id_Faction == 0 )
 		{
-			plugin.text.sendNo(player, "Faction '" + factionName + "' does not exist.");
+			plugin.message.sendNo(player, "Faction '" + factionName + "' does not exist.");
 			return;
 		}
 		// Check to see if the player has enough money to join the specified faction
 		if( !balance.hasEnough(populations.get(id_Faction)) )
 		{
-			plugin.text.parseNo(player, "You need at least " + iConomy.format(populations.get(id_Faction)) + " to join the " + plugin.factions.getCodedName(id_Faction) + " faction.");
+			plugin.message.parseNo(player, "You need at least " + iConomy.format(populations.get(id_Faction)) + " to join the " + plugin.factions.getCodedName(id_Faction) + " faction.");
 			return;
 		}
 		
@@ -124,7 +124,7 @@ public class FactionCommands
 		playerData.id_Faction = id_Faction;
 		plugin.database.playerQueries.updatePlayer(playerData);
 		
-		plugin.text.parse(player, "Congratulations, you are now a member of the " + plugin.factions.getCodedName(id_Faction) + " faction!");
+		plugin.message.parse(player, "Congratulations, you are now a member of the " + plugin.factions.getCodedName(id_Faction) + " faction!");
 	}
 	
 	// /faction leave
@@ -135,20 +135,20 @@ public class FactionCommands
 		// Ensure the player is a member of a faction
 		if( playerData.id_Faction == 0 )
 		{
-			plugin.text.sendNo(player, "You are not a member of a faction.");
+			plugin.message.sendNo(player, "You are not a member of a faction.");
 			return;
 		}
 		
 		// See if the player typed "confirm" or not
 		if( !isConfirmed )
 		{
-			plugin.text.send(player, "Are you sure?  You will need to pay the join fee again if you change your mind.");
-			plugin.text.parse(player, "Type /faction leave confirm to leave your faction.");
+			plugin.message.send(player, "Are you sure?  You will need to pay the join fee again if you change your mind.");
+			plugin.message.parse(player, "Type /faction leave confirm to leave your faction.");
 		}
 		else
 		{
 			// Reset the player's faction
-			plugin.text.parse(player, "You are no longer a member of the " + plugin.factions.getCodedName(playerData.id_Faction) + " faction.");
+			plugin.message.parse(player, "You are no longer a member of the " + plugin.factions.getCodedName(playerData.id_Faction) + " faction.");
 			playerData.id_Faction = 0;
 			plugin.database.playerQueries.updatePlayer(playerData);
 		}
@@ -159,10 +159,10 @@ public class FactionCommands
 	{
 		HashMap<Integer, Integer> populations = plugin.database.factionQueries.getFactionPopulations();
 		
-		plugin.text.parse(player, "Current faction populations (excluding inactive players):");
+		plugin.message.parse(player, "Current faction populations (excluding inactive players):");
 		for( int faction : populations.keySet() )
 		{
-			plugin.text.parse(player, "   " + plugin.factions.getCodedName(faction) + ": " + populations.get(faction) + " players");
+			plugin.message.parse(player, "   " + plugin.factions.getCodedName(faction) + ": " + populations.get(faction) + " players");
 		}
 	}
 

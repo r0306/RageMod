@@ -37,10 +37,11 @@ public class NPCEntity extends EntityPlayer
 	private SpeechData speechData;
 
 	public NPCEntity(MinecraftServer minecraftserver, World world, String name,
-			ItemInWorldManager iteminworldmanager )
+			ItemInWorldManager iteminworldmanager, RageMod plugin )
 	{
 
 		super(minecraftserver, world, name, iteminworldmanager);
+		
 		NetworkManager netMgr = new NPCNetworkManager(new NullSocket(),
 				"NPC Manager", new NetHandler()
 				{
@@ -53,6 +54,7 @@ public class NPCEntity extends EntityPlayer
 		this.lastTargetId = -1;
 		this.lastBounceId = -1;
 		this.lastBounceTick = 0L;
+		this.plugin = plugin;
 		
 		int radius = 20; 
 		int interval = 30;
@@ -161,7 +163,7 @@ public class NPCEntity extends EntityPlayer
 
 		public void run()
 		{			
-			if(RageMod.getInstance().npcManager.npcs.containsValue(npcEntity) && speechData.getInterval() > 0)
+			if(RageMod.getInstance().npcManager.activeNPCs.containsValue(npcEntity) && speechData.getInterval() > 0)
 			{
 				Player[] players = NPCEntity.this.plugin.getServer().getOnlinePlayers();
 				String message = speechData.getNextMessage();
@@ -175,7 +177,7 @@ public class NPCEntity extends EntityPlayer
 					player.sendMessage(message);
 				}
 
-				if (RageMod.getInstance().npcManager.npcs.containsValue(this.npcEntity))
+				if (RageMod.getInstance().npcManager.activeNPCs.containsValue(this.npcEntity))
 					this.timer.schedule(new SpeechTask(NPCEntity.this, this.timer, speechData), speechData.getInterval());
 			}				
 		}

@@ -73,7 +73,7 @@ public class RageMod extends JavaPlugin {
     public RageConfig config;
     public RageDB database;
     public RageZones zones;
-    public Message text;
+    public Message message;
     public NPCManager npcManager;
     public QuestManager questManager;
     
@@ -209,7 +209,7 @@ public class RageMod extends JavaPlugin {
         pluginManager = server.getPluginManager();
         npcManager = new NPCManager(this);
         questManager = new QuestManager(this);
-        text = new Message(this);
+        message = new Message(this);
     }
     
     private void loadDatabaseData()

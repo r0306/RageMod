@@ -20,10 +20,9 @@ import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.RageZones;
 import net.rageland.ragemod.Util;
 
-// TODO: Create a task to check for imbalance between player treasuryBlock levels and actual gold blocks in the treasury.
-//		 If there is a mismatch, either delete the extra block or pick a resident to deduct the block level from (give them equivalent money)
 
-public class Tasks {
+public class Tasks 
+{
 		
 	private HashMap<String, Timestamp> tasks;
 	private RageMod plugin;
@@ -81,7 +80,7 @@ public class Tasks {
 		System.out.println("Beginning town upkeep processing...");
 		
 		// Notify players of incoming lag
-		plugin.text.broadcast("Beginning Ragemod upkeep tasks, hold on tight...", ChatColor.DARK_GREEN); // TODO: Store colors in config
+		plugin.message.broadcast("Beginning Ragemod upkeep tasks, hold on tight...", ChatColor.DARK_GREEN); // TODO: Store colors in config
 		
 		for( PlayerTown town : plugin.playerTowns.getAll() )
 		{
@@ -242,7 +241,7 @@ public class Tasks {
 		{
 			if( plugin.zones.isInSandlot(player.getLocation()) )
 			{
-				plugin.text.parse(player, "Automatically refilling sand lot - get out of the way!");
+				plugin.message.parse(player, "Automatically refilling sand lot - get out of the way!");
 				player.teleport(world.getSpawnLocation());
 			}
 		}

@@ -21,19 +21,19 @@ public class PermitCommands
 	{
 		if( split.length < 2 || split.length > 3 )
 		{
-			plugin.text.parse(player, "Permit commands: <required> [optional]");
+			plugin.message.parse(player, "Permit commands: <required> [optional]");
 			if( true )
-				plugin.text.parse(player, "   /permit capitol <player_name>   (edit city infrastructure)");	
+				plugin.message.parse(player, "   /permit capitol <player_name>   (edit city infrastructure)");	
 		}
 		else if( split[1].equalsIgnoreCase("capitol") )
 		{
 			if( split.length == 3 )
 				this.capitol(player, split[2]); 
 			else
-    			plugin.text.parse(player, "Usage: /permit capitol <player_name>"); 
+    			plugin.message.parse(player, "Usage: /permit capitol <player_name>"); 
 		}
 		else
-			plugin.text.parse(player, "Type /permit to see a list of available commands.");
+			plugin.message.parse(player, "Type /permit to see a list of available commands.");
 	}
 	
 	
@@ -47,13 +47,13 @@ public class PermitCommands
 		// Make sure the player has permission to perform this command
 		if( !RageMod.permissionHandler.has(player, "ragemod.permit.capitol") )
 		{
-			plugin.text.sendNo(player, "You do not have permission to perform that command.");
+			plugin.message.sendNo(player, "You do not have permission to perform that command.");
 			return;
 		}
 		// Check to see if target player exists
 		if( targetPlayerData == null )
 		{
-			plugin.text.sendNo(player, "Player " + targetPlayerName + " does not exist.");
+			plugin.message.sendNo(player, "Player " + targetPlayerName + " does not exist.");
 			return;
 		}
 		
@@ -64,9 +64,9 @@ public class PermitCommands
 		targetPlayerData.permits.capitol = true;
 		
 		// Notify both players
-		plugin.text.parse(player, targetPlayerData.getCodedName() + " has been granted a one-week permit to build in the city.");
+		plugin.message.parse(player, targetPlayerData.getCodedName() + " has been granted a one-week permit to build in the city.");
 		Player targetPlayer = plugin.getServer().getPlayer(targetPlayerData.name);
 		if( targetPlayer != null && targetPlayer.isOnline() )
-			plugin.text.parse(targetPlayer, playerData.getCodedName() + " has granted you a one-week permit to build in the city.");
+			plugin.message.parse(targetPlayer, playerData.getCodedName() + " has granted you a one-week permit to build in the city.");
 	}
 }

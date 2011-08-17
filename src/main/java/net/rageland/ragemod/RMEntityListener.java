@@ -92,7 +92,7 @@ public class RMEntityListener extends EntityListener
     			if( attackerData.id_Faction == defenderData.id_Faction )
     			{
     				edbeEvent.setCancelled(true);
-        			plugin.text.parseNo(attacker, plugin.players.get(defenderData.name).getCodedName() + " is your ally!");
+        			plugin.message.parseNo(attacker, plugin.players.get(defenderData.name).getCodedName() + " is your ally!");
         			return;
     			}
             	
@@ -104,7 +104,7 @@ public class RMEntityListener extends EntityListener
             		if( plugin.zones.isInCapitol(defender.getLocation()) )
             		{
             			edbeEvent.setCancelled(true);
-            			plugin.text.parseNo(attacker, "PvP is not allowed inside " + plugin.config.Capitol_CodedName + ".");
+            			plugin.message.parseNo(attacker, "PvP is not allowed inside " + plugin.config.Capitol_CodedName + ".");
             			return;
             		}
             		else
@@ -113,13 +113,13 @@ public class RMEntityListener extends EntityListener
             			if( defenderData.id_Faction == 0 )
             			{
             				edbeEvent.setCancelled(true);
-                			plugin.text.sendNo(attacker, "You cannot attack neutral players in " + plugin.config.Zone_NAME_A + ".");
+                			plugin.message.sendNo(attacker, "You cannot attack neutral players in " + plugin.config.Zone_NAME_A + ".");
                 			return;
             			}
             			else if( attackerData.id_Faction == 0 )
             			{
             				edbeEvent.setCancelled(true);
-                			plugin.text.sendNo(attacker, "Neutral players cannot attack in " + plugin.config.Zone_NAME_A + ".");
+                			plugin.message.sendNo(attacker, "Neutral players cannot attack in " + plugin.config.Zone_NAME_A + ".");
                 			return;
             			}
             		}
@@ -133,14 +133,14 @@ public class RMEntityListener extends EntityListener
             		if( RageMod.permissionHandler.has(attacker, "ragemod.referee.blockpvp") )
             		{
             			edbeEvent.setCancelled(true);
-            			plugin.text.sendNo(attacker, "Referees may not participate in combat.");
+            			plugin.message.sendNo(attacker, "Referees may not participate in combat.");
             			return;
             		}
             		// Protect referees 
             		else if( RageMod.permissionHandler.has(defender, "ragemod.referee.blockpvp") )
             		{
             			edbeEvent.setCancelled(true);
-            			plugin.text.sendNo(attacker, "You cannot harm a referee.");
+            			plugin.message.sendNo(attacker, "You cannot harm a referee.");
             			return;
             		}
             		// Handle combat inside of towns
@@ -150,21 +150,21 @@ public class RMEntityListener extends EntityListener
     	        		if( defenderData.id_Faction == 0 )
     	        		{
     	        			edbeEvent.setCancelled(true);
-    	        			plugin.text.sendNo(attacker, "You cannot harm neutral players inside of towns.");
+    	        			plugin.message.sendNo(attacker, "You cannot harm neutral players inside of towns.");
     	        			return;
     	        		}
     	        		// Keep neutral players from harming any players
     	        		if( attackerData.id_Faction == 0 )
     	        		{
     	        			edbeEvent.setCancelled(true);
-    	        			plugin.text.sendNo(attacker, "Neutral players cannot attack inside of towns.");
+    	        			plugin.message.sendNo(attacker, "Neutral players cannot attack inside of towns.");
     	        			return;
     	        		}
     	        		// Protect faction players inside of their own and allied towns
     	        		if( defenderData.id_Faction == playerTown.id_Faction )
     	        		{
     	        			edbeEvent.setCancelled(true);
-    	        			plugin.text.parseNo(attacker, "You cannot harm " + plugin.factions.getCodedName(defenderData.id_Faction) + " inside of their own towns.");
+    	        			plugin.message.parseNo(attacker, "You cannot harm " + plugin.factions.getCodedName(defenderData.id_Faction) + " inside of their own towns.");
     	        			return;
     	        		}
             		}
@@ -233,7 +233,7 @@ public class RMEntityListener extends EntityListener
     }
     
     /**
-     *  Called on entityTarget. Used for detectic right clicks on the NPC
+     *  Called on entityTarget. Used for detecting right clicks on the NPC
      */
     public void onEntityTarget(EntityTargetEvent event) 
     {    	

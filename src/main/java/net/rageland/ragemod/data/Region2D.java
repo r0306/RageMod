@@ -41,7 +41,7 @@ public class Region2D extends Region
 	public boolean isInside(Location loc)
 	{
 		return (loc.getWorld() == this.world) && ((loc.getX() >= nwCorner.getX() && loc.getX() < (seCorner.getX())) &&
-				(loc.getZ() <= nwCorner.getZ() && loc.getZ() > (seCorner.getZ())));   // Stupid Z axis is reversed
+				(loc.getZ() < nwCorner.getZ() && loc.getZ() >= (seCorner.getZ())));   // Stupid Z axis is reversed
 	}
 	
 

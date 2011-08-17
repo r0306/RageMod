@@ -1,6 +1,7 @@
 package net.rageland.ragemod.npclib;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
@@ -8,6 +9,10 @@ import java.util.logging.Level;
 import net.minecraft.server.ItemInWorldManager;
 import net.minecraft.server.WorldServer;
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.data.NPC;
+import net.rageland.ragemod.data.NPCLocation;
+import net.rageland.ragemod.data.NPCPool;
+import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.npcentities.NPCEntity;
 import net.rageland.ragemod.npcentities.QuestStartNPCEntity;
 import net.rageland.ragemod.npcentities.SpeechData;
@@ -26,32 +31,41 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.WorldListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class NPCManager {
-	public HashMap<String, NPCEntity> npcs = new HashMap<String, NPCEntity>();
+public class NPCManager 
+{
+	public HashMap<Integer, NPCEntity> activeNPCs = new HashMap<Integer, NPCEntity>();
 	private BServer server;
 	private int taskid;
 	private RageMod plugin;
 	private NPCSpawner npcSpawner;
+	
+	private HashMap<Integer, NPCLocation> npcLocations;	  // TODO: Make a pool with remaining slots
+	private NPCPool npcPool;	
 
 	public NPCManager(RageMod plugin) 
 	{
 		this.server = BServer.getInstance(plugin);
 		this.plugin = plugin;
+		
+		// On startup, pull all the NPC data from the DB into memory 		
+		this.npcLocations = plugin.database.npcQueries.loadNPCLocations();
+		this.npcPool = plugin.database.npcQueries.loadNPCs();
+		
 		this.taskid = plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() 
 		{
 					public void run() 
 					{
-						HashSet<String> toRemove = new HashSet<String>();
-						for (String i : RageMod.getInstance().npcManager.npcs.keySet()) 
+						HashSet<Integer> toRemove = new HashSet<Integer>();
+						for (int i : RageMod.getInstance().npcManager.activeNPCs.keySet()) 
 						{
-							net.minecraft.server.Entity j = (net.minecraft.server.Entity)RageMod.getInstance().npcManager.npcs.get(i);
+							net.minecraft.server.Entity j = (net.minecraft.server.Entity)RageMod.getInstance().npcManager.activeNPCs.get(i);
 							j.R();
 							if (j.dead) 
 							{
 								toRemove.add(i);
 							}
 						}
-						for (String n : toRemove)
+						for (int n : toRemove)
 							NPCManager.this.despawnById(n);
 					}
 				}, 100L, 100L);
@@ -60,17 +74,53 @@ public class NPCManager {
 		npcSpawner = new NPCSpawner();
 	}
 	
+	// Adds a new NPCLocation
+	public void addLocation(NPCLocation npcLocation)
+	{
+		npcLocations.put(npcLocation.getID(), npcLocation);
+	}
+	
+	// Gets the NPCLocation from memory.  Returns NULL for non-existent IDs
+    public NPCLocation getLocation(int id)
+    {       	
+    	if( npcLocations.containsKey(id) )
+    		return npcLocations.get(id);
+    	else
+    	{
+    		System.out.println("Warning: NPCManager.getLocation() called on non-existent id '" + id + "'");
+    		return null;
+    	}
+    }
+    
+	// Adds a new NPC
+	public void addNPC(NPC npc)
+	{
+		npcPool.add(npc);
+	}
+	
+	// Gets the NPC record from memory.  Returns NULL for non-existent IDs
+    public NPC getNPC(int id)
+    {       	
+    	return npcPool.get(id);
+    }
+    
+    // TODO: Remove this and wrap its functionality up locally
+    public NPC activate()
+    {
+    	return npcPool.activate();
+    }
+	
 	public NPCSpawner getSpawner()
 	{
 		return npcSpawner;
 	}
 
-	public NPCEntity spawnNPC(String name, Location l, String id) 
+	public NPCEntity spawnNPC(String name, Location l, int id) 
 	{
-		if (npcs.containsKey(id)) 
+		if (activeNPCs.containsKey(id)) 
 		{
 			this.server.getLogger().log(Level.WARNING, "NPC with that id already exists, existing NPC returned");
-			return (NPCEntity) npcs.get(id);
+			return (NPCEntity) activeNPCs.get(id);
 		}
 		if (name.length() > 16) 
 		{
@@ -80,23 +130,23 @@ public class NPCManager {
 			name = tmp;
 		}
 		BWorld world = new BWorld(l.getWorld());
-		NPCEntity npcEntity = new NPCEntity(this.server.getMCServer(), world.getWorldServer(), name, new ItemInWorldManager( world.getWorldServer()));
+		NPCEntity npcEntity = new NPCEntity(this.server.getMCServer(), world.getWorldServer(), name, new ItemInWorldManager( world.getWorldServer()), plugin);
 		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 		world.getWorldServer().addEntity(npcEntity);
-		npcs.put(id, npcEntity);
+		activeNPCs.put(id, npcEntity);
 		return npcEntity;
 	}
 	
-	public HashMap<String, NPCEntity> getNpcs()
+	public HashMap<Integer, NPCEntity> getNpcs()
 	{
-		return npcs;
+		return activeNPCs;
 	}
 	
 	public void addSpeechMessage(String npcname, String message)
 	{
-		if(npcs.containsKey(npcname))
+		if(activeNPCs.containsKey(npcname))
 		{
-			npcs.get(npcname).addSpeechMessage(message);
+			activeNPCs.get(npcname).addSpeechMessage(message);
 		}
 		else
 		{
@@ -104,12 +154,12 @@ public class NPCManager {
 		}
 	}
 
-	public void despawnById(String id) 
+	public void despawnById(int id) 
 	{
-		NPCEntity npc = (NPCEntity) npcs.get(id);
+		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
 		if (npc != null) 
 		{
-			npcs.remove(id);
+			activeNPCs.remove(id);
 			try 
 			{
 				npc.world.removeEntity(npc);
@@ -123,13 +173,13 @@ public class NPCManager {
 	public void despawn(String npcName) 
 	{
 		if (npcName.length() > 16) 
-		{
 			npcName = npcName.substring(0, 16);
-		}
-		HashSet<String> toRemove = new HashSet<String>();
-		for (String n : npcs.keySet()) 
+		
+		HashSet<Integer> toRemove = new HashSet<Integer>();
+		
+		for (int n : activeNPCs.keySet()) 
 		{
-			NPCEntity npc = (NPCEntity) npcs.get(n);
+			NPCEntity npc = (NPCEntity) activeNPCs.get(n);
 			if ((npc != null) && (npc.name.equals(npcName))) 
 			{
 				toRemove.add(n);
@@ -142,13 +192,14 @@ public class NPCManager {
 				}
 			}
 		}
-		for (String n : toRemove)
-			npcs.remove(n);
+		
+		for (int n : toRemove)
+			activeNPCs.remove(n);
 	}
 
 	public void despawnAll() 
 	{
-		for (NPCEntity npc : npcs.values()) 
+		for (NPCEntity npc : activeNPCs.values()) 
 		{
 			if (npc == null)
 				continue;
@@ -161,7 +212,7 @@ public class NPCManager {
 			}
 		}
 
-		npcs.clear();
+		activeNPCs.clear();
 	}
 	
 	public void storeNpcInDatabase(NPCEntity npcEntity)
@@ -169,23 +220,23 @@ public class NPCManager {
 		// TODO Add NPC data to database. (Type, name, quest assigned etc.)
 	}
 
-	public void moveNPC(String id, Location l) 
+	public void moveNPC(int id, Location l) 
 	{
-		NPCEntity npc = (NPCEntity) npcs.get(id);
+		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
 		if (npc != null)
 			npc.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 	}
 
-	public void moveNPCStatic(String id, Location l) 
+	public void moveNPCStatic(int id, Location l) 
 	{
-		NPCEntity npc = (NPCEntity) npcs.get(id);
+		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
 		if (npc != null)
 			npc.setPosition(l.getX(), l.getY(), l.getZ());
 	}
 
-	public void putNPCinbed(String id, Location bed) 
+	public void putNPCinbed(int id, Location bed) 
 	{
-		NPCEntity npc = (NPCEntity) npcs.get(id);
+		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
 		if (npc != null) 
 		{
 			npc.setPosition(bed.getX(), bed.getY(), bed.getZ());
@@ -193,23 +244,23 @@ public class NPCManager {
 		}
 	}
 
-	public void getNPCoutofbed(String id) 
+	public void getNPCoutofbed(int id) 
 	{
-		NPCEntity npc = (NPCEntity) npcs.get(id);
+		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
 		if (npc != null)
 			npc.a(true, true, true);
 	}
 
-	public void setSneaking(String id, boolean flag) 
+	public void setSneaking(int id, boolean flag) 
 	{
-		NPCEntity npc = (NPCEntity) npcs.get(id);
+		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
 		if (npc != null)
 			npc.setSneak(flag);
 	}
 
-	public NPCEntity getNPC(String id) 
+	public NPCEntity getNPCEntity(int id) 
 	{
-		return (NPCEntity) npcs.get(id);
+		return (NPCEntity) activeNPCs.get(id);
 	}
 
 	public static boolean isNPC(org.bukkit.entity.Entity e) 
@@ -217,37 +268,37 @@ public class NPCManager {
 		return ((CraftEntity) e).getHandle() instanceof NPCEntity;
 	}
 
-	public String getNPCIdFromEntity(org.bukkit.entity.Entity e) 
+	public int getNPCIdFromEntity(org.bukkit.entity.Entity e) 
 	{
 		if ((e instanceof HumanEntity)) 
 		{
-			for (String i : npcs.keySet()) 
+			for (int i : activeNPCs.keySet()) 
 			{
-				if (((NPCEntity) npcs.get(i)).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
+				if (((NPCEntity) activeNPCs.get(i)).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
 				{
 					return i;
 				}
 			}
 		}
-		return null;
+		return -1;
 	}
 
 	public static NPCEntity getNPCFromEntity(org.bukkit.entity.Entity e) 
 	{
 		if ((e instanceof HumanEntity)) 
 		{
-			for (String i : RageMod.getInstance().npcManager.npcs.keySet()) 
+			for (int i : RageMod.getInstance().npcManager.activeNPCs.keySet()) 
 			{
-				if (((NPCEntity) RageMod.getInstance().npcManager.npcs.get(i)).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
+				if (((NPCEntity) RageMod.getInstance().npcManager.activeNPCs.get(i)).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
 				{
-					return (NPCEntity) RageMod.getInstance().npcManager.npcs.get(i);
+					return (NPCEntity) RageMod.getInstance().npcManager.activeNPCs.get(i);
 				}
 			}
 		}
 		return null;
 	}
 
-	public void rename(String id, String name) 
+	public void rename(int id, String name) 
 	{
 		if (name.length() > 16) 
 		{ // Check and nag if name is too long, spawn
@@ -257,7 +308,7 @@ public class NPCManager {
 			server.getLogger().log(Level.WARNING, name + " has been shortened to " + tmp);
 			name = tmp;
 		}
-		NPCEntity npc = getNPC(id);
+		NPCEntity npc = getNPCEntity(id);
 		npc.setName(name);
 		BWorld b = new BWorld(npc.getBukkitEntity().getLocation().getWorld());
 		WorldServer s = b.getWorldServer();
@@ -303,7 +354,7 @@ public class NPCManager {
 
 		public void onChunkLoad(ChunkLoadEvent event) 
 		{
-			for (NPCEntity npc : RageMod.getInstance().npcManager.npcs.values())
+			for (NPCEntity npc : RageMod.getInstance().npcManager.activeNPCs.values())
 			{
 				if ((npc != null) && (event.getChunk() == npc.getBukkitEntity().getLocation().getBlock().getChunk())) 
 				{
@@ -313,4 +364,19 @@ public class NPCManager {
 			}
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

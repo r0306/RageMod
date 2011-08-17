@@ -12,9 +12,9 @@ public class SpeechNPC extends NPCEntity
 	
 	
 	public SpeechNPC(MinecraftServer minecraftserver, World world,
-			String name, ItemInWorldManager iteminworldmanager)
+			String name, ItemInWorldManager iteminworldmanager, RageMod plugin)
 	{
-		super(minecraftserver, world, name, iteminworldmanager);
+		super(minecraftserver, world, name, iteminworldmanager, plugin);
 	}
 	
 	/**
@@ -26,7 +26,7 @@ public class SpeechNPC extends NPCEntity
 	 */
 	public void rightClickAction(Player player)
 	{
-		
+		plugin.message.send(player, "Click!");
 	}
 
 	/**

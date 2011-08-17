@@ -24,17 +24,17 @@ public class CompassCommands
 	{
 		if( split.length < 2 || split.length > 3 )
 		{
-			plugin.text.parse(player, "Compass commands: <required> [optional]");
+			plugin.message.parse(player, "Compass commands: <required> [optional]");
 			if( true )
-				plugin.text.parse(player, "   /compass lot <lot_code>   (points compass to specified lot)");
+				plugin.message.parse(player, "   /compass lot <lot_code>   (points compass to specified lot)");
 			if( true )
-				plugin.text.parse(player, "   /compass spawn   (points compass to world spawn)");
+				plugin.message.parse(player, "   /compass spawn   (points compass to world spawn)");
 			if( !plugin.config.PRE_RELEASE_MODE )
 			{
 				if( playerData.townName.equals("") )
-					plugin.text.parse(player, "   /compass town <town_name>   (points compass to specified town)");
+					plugin.message.parse(player, "   /compass town <town_name>   (points compass to specified town)");
 				else
-					plugin.text.parse(player, "   /compass town [town_name]   (points compass to town)");
+					plugin.message.parse(player, "   /compass town [town_name]   (points compass to town)");
 			}	
 		}
 		else if( split[1].equalsIgnoreCase("lot") )
@@ -42,7 +42,7 @@ public class CompassCommands
 			if( split.length == 3 )
 				this.lot(player, split[2]); 
 			else
-    			plugin.text.parse(player, "Usage: /compass lot <lot_code>"); 
+    			plugin.message.parse(player, "Usage: /compass lot <lot_code>"); 
 		}
 		else if( split[1].equalsIgnoreCase("spawn") )
 		{
@@ -55,10 +55,10 @@ public class CompassCommands
 			else if( split.length == 3 )
 				this.town(player, split[2]);
     		else
-    			plugin.text.parse(player, "Usage: /town info <town_name>");
+    			plugin.message.parse(player, "Usage: /town info <town_name>");
 		}
 		else
-			plugin.text.parse(player, "Type /compass to see a list of available commands.");
+			plugin.message.parse(player, "Type /compass to see a list of available commands.");
 	}
 
 	// /compass lot <lot_code>
@@ -69,19 +69,19 @@ public class CompassCommands
 		// lot will be null if code is invalid
 		if( lot == null )
 		{	
-			plugin.text.parseNo(player, lotCode + " is not a valid lot code.  (consult the online map)");
+			plugin.message.parseNo(player, lotCode + " is not a valid lot code.  (consult the online map)");
 			return;
 		}
 		
 		player.setCompassTarget(lot.getCenter());
-		plugin.text.send(player, "Compass target set to lot " + lot.getLotCode() + ".");
+		plugin.message.send(player, "Compass target set to lot " + lot.getLotCode() + ".");
 	}
 
 	// /compass spawn
 	public void spawn(Player player) 
 	{
 		player.setCompassTarget(player.getServer().getWorld("world").getSpawnLocation());
-		plugin.text.send(player, "Compass target set to world spawn.");
+		plugin.message.send(player, "Compass target set to world spawn.");
 	}
 
 	// /compass town <town_name>
@@ -92,12 +92,12 @@ public class CompassCommands
 		// Check to see if specified town exists
 		if( playerTown == null )
 		{
-			plugin.text.sendNo(player, "The town '" + townName + "' does not exist.");
+			plugin.message.sendNo(player, "The town '" + townName + "' does not exist.");
 			return;
 		}
 		
 		player.setCompassTarget(playerTown.getCenter());
-		plugin.text.parse(player, "Compass target set to " + playerTown.getCodedName() + ".");
+		plugin.message.parse(player, "Compass target set to " + playerTown.getCodedName() + ".");
 		
 	}
 

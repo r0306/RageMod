@@ -17,12 +17,14 @@ public class Language
 	private String name;
 	private ArrayList<ArrayList<String>> dictionary;	// First index is word size
 	private Pattern puncPattern;
+	private Random random;
 	
 	public Language()
 	{
 		// Temp - set up sample dictionary
 		name = "Test Language";
 		puncPattern = Pattern.compile("([^\\.\\,\\!\\?\\;\\:]*)([\\.\\,\\!\\?\\;\\:]*)$");
+		random = new Random();
 		
 		dictionary = new ArrayList<ArrayList<String>>();
 		
@@ -50,7 +52,7 @@ public class Language
 		String[] split = source.split(" ");
 		int total = split.length;
 		int wordIndex;
-		Random random = new Random();
+		
 		
 		// Create an array of numbers that represents the words not translated yet
 		ArrayList<Integer> toTranslate = new ArrayList<Integer>();

@@ -90,7 +90,7 @@ public class TownQueries {
     	return null;
     }
 	
-	// Load data from Players table on login if existing player - create new row if not 
+	// Adds a new resident to the town
 	public void townAdd(String targetPlayerName, String townName)
     {
 		Connection conn = null;
@@ -117,7 +117,7 @@ public class TownQueries {
 		}
     }
 	
-	// Load data from Players table on login if existing player - create new row if not 
+	// Creates a new town
 	public int townCreate(Player player, String townName)
     {
 		Connection conn = null;

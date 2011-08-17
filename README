@@ -22,6 +22,8 @@ ragemod:
     permit: 			(gives temporary passes)
     	capitol:		allow players to edit city infrastructure
     	
+    npc:				create and manage NPCs
+    	
     referee:			(referees do not participate in war and ensure rules are being followed)
     	blockpvp:		prevents all incoming and outgoing pvp damage
     	inspectspawn:	allows teleporting to other players spawn points

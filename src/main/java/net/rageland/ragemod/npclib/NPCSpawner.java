@@ -26,7 +26,7 @@ public class NPCSpawner
 		this.server = BServer.getInstance(RageMod.getInstance());		
 	}
 	
-	public void questStartNPC(String name, String npcId, Location l, QuestImplementation quest)
+	public void questStartNPC(String name, int npcId, Location l, QuestImplementation quest)
 	{		
 		if (isNpcIdUsed(npcId)) 
 		{
@@ -41,13 +41,14 @@ public class NPCSpawner
 			name = tmp;
 		}
 		BWorld bworld = new BWorld(l.getWorld());
-		QuestStartNPCEntity npcEntity = new QuestStartNPCEntity(this.server.getMCServer(), bworld.getWorldServer(), name, new ItemInWorldManager( bworld.getWorldServer()), quest);
+		QuestStartNPCEntity npcEntity = new QuestStartNPCEntity(
+				this.server.getMCServer(), bworld.getWorldServer(), name, new ItemInWorldManager( bworld.getWorldServer()), quest, plugin);
 		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 		bworld.getWorldServer().addEntity(npcEntity);
 		plugin.npcManager.getNpcs().put(npcId, npcEntity);
 	}
 	
-	public void rewardNPC(String name, String npcId, Location l, QuestImplementation quest)
+	public void rewardNPC(String name, int npcId, Location l, QuestImplementation quest)
 	{		
 		if (isNpcIdUsed(npcId)) 
 		{
@@ -62,13 +63,14 @@ public class NPCSpawner
 			name = tmp;
 		}
 		BWorld bworld = new BWorld(l.getWorld());
-		RewardQuestNPCEntity npcEntity = new RewardQuestNPCEntity(this.server.getMCServer(), bworld.getWorldServer(), name, new ItemInWorldManager( bworld.getWorldServer()), quest);
+		RewardQuestNPCEntity npcEntity = new RewardQuestNPCEntity(
+				this.server.getMCServer(), bworld.getWorldServer(), name, new ItemInWorldManager( bworld.getWorldServer()), quest, plugin);
 		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 		bworld.getWorldServer().addEntity(npcEntity);
 		plugin.npcManager.getNpcs().put(npcId, npcEntity);
 	}
 	
-	public void questEndNPC(String name, String npcId, Location l, QuestImplementation quest)
+	public void questEndNPC(String name, int npcId, Location l, QuestImplementation quest)
 	{		
 		if (isNpcIdUsed(npcId)) 
 		{
@@ -83,13 +85,14 @@ public class NPCSpawner
 			name = tmp;
 		}
 		BWorld bworld = new BWorld(l.getWorld());
-		QuestEndNPCEntity npcEntity = new QuestEndNPCEntity(this.server.getMCServer(), bworld.getWorldServer(), name, new ItemInWorldManager( bworld.getWorldServer()), quest);
+		QuestEndNPCEntity npcEntity = new QuestEndNPCEntity(
+				this.server.getMCServer(), bworld.getWorldServer(), name, new ItemInWorldManager( bworld.getWorldServer()), quest, plugin);
 		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 		bworld.getWorldServer().addEntity(npcEntity);
 		plugin.npcManager.getNpcs().put(npcId, npcEntity);
 	}
 	
-	public void questStartEndNPC(String name, String npcId, Location l, QuestImplementation quest)
+	public void questStartEndNPC(String name, int npcId, Location l, QuestImplementation quest)
 	{		
 		if (isNpcIdUsed(npcId)) 
 		{
@@ -104,13 +107,14 @@ public class NPCSpawner
 			name = tmp;
 		}
 		BWorld bworld = new BWorld(l.getWorld());
-		QuestStartEndNPCEntity npcEntity = new QuestStartEndNPCEntity(this.server.getMCServer(), bworld.getWorldServer(), name, new ItemInWorldManager( bworld.getWorldServer()), quest);
+		QuestStartEndNPCEntity npcEntity = new QuestStartEndNPCEntity(
+				this.server.getMCServer(), bworld.getWorldServer(), name, new ItemInWorldManager( bworld.getWorldServer()), quest, plugin);
 		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 		bworld.getWorldServer().addEntity(npcEntity);
 		plugin.npcManager.getNpcs().put(npcId, npcEntity);
 	}
 	
-	public void speechNPC(String name, String npcId, Location l)
+	public void speechNPC(String name, int npcId, Location l)
 	{		
 		if (isNpcIdUsed(npcId)) 
 		{
@@ -125,13 +129,14 @@ public class NPCSpawner
 			name = tmp;
 		}
 		BWorld bworld = new BWorld(l.getWorld());
-		SpeechNPC npcEntity = new SpeechNPC(this.server.getMCServer(), bworld.getWorldServer(), name, new ItemInWorldManager( bworld.getWorldServer()));
+		SpeechNPC npcEntity = new SpeechNPC(
+				this.server.getMCServer(), bworld.getWorldServer(), name, new ItemInWorldManager( bworld.getWorldServer()), plugin);
 		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 		bworld.getWorldServer().addEntity(npcEntity);
 		plugin.npcManager.getNpcs().put(npcId, npcEntity);
 	}
 	
-	private boolean isNpcIdUsed(String npcId)
+	private boolean isNpcIdUsed(int npcId)
 	{
 		if(plugin.npcManager.getNpcs().containsKey(npcId))
 		{

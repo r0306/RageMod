@@ -250,14 +250,14 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	    		// Make sure the player has enough blocks deposited
 	    		if( playerData.treasuryBlocks < 1 )
 	    		{
-	    			plugin.text.send(player, "You don't have any gold blocks deposited in the treasury.");
+	    			plugin.message.send(player, "You don't have any gold blocks deposited in the treasury.");
 	    			return false;
 	    		}
 	    		else
 	    		{
 	    			playerData.treasuryBlocks--;
 	    			playerData.update();
-	    			plugin.text.parse(player, "You now have " + playerData.treasuryBlocks + " block" + 
+	    			plugin.message.parse(player, "You now have " + playerData.treasuryBlocks + " block" + 
 	    					(playerData.treasuryBlocks == 1 ? "" : "s") + " deposited into the treasury.", ChatColor.GOLD);
 	    			return true;
 	    		}
@@ -275,19 +275,19 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	    		// Neutral town are not allowed to have treasuries
 	    		if( this.id_Faction == 0 )
 	    		{
-	    			plugin.text.send(player, "Neutral towns cannot use treasury blocks.");
+	    			plugin.message.send(player, "Neutral towns cannot use treasury blocks.");
 	    			return false;
 	    		}
 	    		if( this.townLevel.treasuryLevel == 0 )
 	    		{
-	    			plugin.text.send(player, this.townLevel.name + "s are not allowed treasury blocks - upgrade your town to create income.");
+	    			plugin.message.send(player, this.townLevel.name + "s are not allowed treasury blocks - upgrade your town to create income.");
 	    			return false;
 	    		}
 	    		
 	    		// See if the placement would exceed the town's treasury level
 	    		if( playerData.treasuryBlocks + 1 > this.townLevel.treasuryLevel )
 	    		{
-	    			plugin.text.parse(player, "Your town only allows " + this.townLevel.treasuryLevel + " treasury block" + 
+	    			plugin.message.parse(player, "Your town only allows " + this.townLevel.treasuryLevel + " treasury block" + 
 	    					(this.townLevel.treasuryLevel == 1 ? "" : "s") + " per resident.");
 	    			return false;
 	    		}
@@ -295,7 +295,7 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	    		{
 	    			playerData.treasuryBlocks++;
 	    			playerData.update();
-	    			plugin.text.parse(player, "You now have " + playerData.treasuryBlocks + " block" + 
+	    			plugin.message.parse(player, "You now have " + playerData.treasuryBlocks + " block" + 
 	    					(playerData.treasuryBlocks == 1 ? "" : "s") + " deposited into the treasury.", ChatColor.GOLD);
 	    			return true;
 	    		}

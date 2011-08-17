@@ -33,17 +33,17 @@ public class DebugCommands
 	{
 		if( split.length < 2 )
 		{
-			plugin.text.parse(player, "Debug commands: <required> [optional]");
+			plugin.message.parse(player, "Debug commands: <required> [optional]");
 			if( true )
-				plugin.text.parse(player, "   /debug colors   (displays all chat colors)");
+				plugin.message.parse(player, "   /debug colors   (displays all chat colors)");
 			if( true )
-				plugin.text.parse(player, "   /debug donation  (displays amount of donations)");
+				plugin.message.parse(player, "   /debug donation  (displays amount of donations)");
 			if( true )
-				plugin.text.parse(player, "   /debug sanctum <level> (attempts to build sanctum floor)");
+				plugin.message.parse(player, "   /debug sanctum <level> (attempts to build sanctum floor)");
 			if( true )
-				plugin.text.parse(player, "   /debug translate [text] (translates the entered text)");
+				plugin.message.parse(player, "   /debug translate [text] (translates the entered text)");
 			if( true )
-				plugin.text.parse(player, "   /debug transcast <#> <text> (translates/broadcasts the text)");
+				plugin.message.parse(player, "   /debug transcast <#> <text> (translates/broadcasts the text)");
 		}
 		else if( split[1].equalsIgnoreCase("colors") )
 		{
@@ -58,7 +58,7 @@ public class DebugCommands
 			if( split.length == 3 )
 				this.sanctum(player, split[2]); 
 			else
-    			plugin.text.parse(player, "Usage: /debug sanctum <level>"); 
+    			plugin.message.parse(player, "Usage: /debug sanctum <level>"); 
 		}
 		else if( split[1].equalsIgnoreCase("translate") )
 		{
@@ -69,10 +69,10 @@ public class DebugCommands
 			if( split.length > 2 )
 				this.transcast(player, split); 
 			else
-    			plugin.text.parse(player, "Usage: /debug transcast 1-4 <text>"); 
+    			plugin.message.parse(player, "Usage: /debug transcast 1-4 <text>"); 
 		}
 		else
-			plugin.text.parse(player, "Type /debug to see a list of available commands.");
+			plugin.message.parse(player, "Type /debug to see a list of available commands.");
 	}
 
 	// /debug colors
@@ -102,13 +102,13 @@ public class DebugCommands
 		PlayerData playerData = plugin.players.get(player.getName());
 		int donation = plugin.database.playerQueries.getRecentDonations(playerData.id_Player);
 		
-		plugin.text.send(player, "The database records you with a total donation of $" + donation + " in the last month.");
+		plugin.message.send(player, "The database records you with a total donation of $" + donation + " in the last month.");
 	}
 
 	// /debug sanctum <level>
 	private void sanctum(Player player, String levelString) 
 	{
-		plugin.text.sendNo(player, "This command has been disabled.");
+		plugin.message.sendNo(player, "This command has been disabled.");
 		return;
 		
 //		int level;
@@ -148,8 +148,8 @@ public class DebugCommands
 		
 		if( split.length == 2 )
 		{
-			plugin.text.parse(player, "Usage: /debug translate [text]");
-			plugin.text.parse(player, "Translating sample message...");
+			plugin.message.parse(player, "Usage: /debug translate [text]");
+			plugin.message.parse(player, "Translating sample message...");
 			message = "Greetings, fellow traveler.  Would you like a cup of ale?";
 		}
 		else
@@ -161,18 +161,18 @@ public class DebugCommands
 		
 		try
 		{
-			plugin.text.parse(player,  "[En] " + message);
+			plugin.message.parse(player,  "[En] " + message);
 			
 			// Translate into all 4 languages
 			for( int i = 1; i <= 4; i++ )
 			{
 				results = plugin.languages.translate(message, i);
-				plugin.text.parse(player,  "[" + plugin.languages.getAbbreviation(i) + "] " + results.get(3), ChatColor.DARK_AQUA);
+				plugin.message.parse(player,  "[" + plugin.languages.getAbbreviation(i) + "] " + results.get(3), ChatColor.DARK_AQUA);
 			}
 		}
 		catch( Exception ex )
 		{
-			plugin.text.send(player, "Error: " + ex.getMessage());
+			plugin.message.send(player, "Error: " + ex.getMessage());
 		}
 	}
 	
@@ -190,12 +190,12 @@ public class DebugCommands
 		}
 		catch( Exception ex )
 		{
-			plugin.text.sendNo(player, "Invalid language (1-4).");
+			plugin.message.sendNo(player, "Invalid language (1-4).");
 			return;
 		}
 		if( id_Language < 1 || id_Language > 4 )
 		{
-			plugin.text.sendNo(player, "Invalid language (1-4).");
+			plugin.message.sendNo(player, "Invalid language (1-4).");
 			return;
 		}
 		
@@ -204,16 +204,16 @@ public class DebugCommands
 			message += split[i] + " ";
 		
 		results = plugin.languages.translate(message, id_Language);
-		plugin.text.broadcast(playerData.getCodedName() + " has initiated a translation test:");
-		plugin.text.broadcast("[En] " + message, ChatColor.GREEN);
+		plugin.message.broadcast(playerData.getCodedName() + " has initiated a translation test:");
+		plugin.message.broadcast("[En] " + message, ChatColor.GREEN);
 		
 		try
 		{
-			plugin.text.broadcast("[" + plugin.languages.getAbbreviation(id_Language) + "] " + results.get(3), ChatColor.DARK_AQUA);
+			plugin.message.broadcast("[" + plugin.languages.getAbbreviation(id_Language) + "] " + results.get(3), ChatColor.DARK_AQUA);
 		}
 		catch( Exception ex )
 		{
-			plugin.text.send(player, "Error: " + ex.getMessage());
+			plugin.message.send(player, "Error: " + ex.getMessage());
 		}
 	}
 

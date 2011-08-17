@@ -50,12 +50,12 @@ public class KillCreatureQuest implements Quest
 		if (NPCUtilities.checkFreeSpace(player.getInventory(), rewardData.getItem(),
 				rewardData.getAmountOfItems()))
 		{
-			plugin.text.parse(player, questData.getEndText());
-			plugin.text.parse(player, "Received: ");
+			plugin.message.parse(player, questData.getEndText());
+			plugin.message.parse(player, "Received: ");
 
 			if (rewardData.getAmountOfItems() > 0)
 			{
-				plugin.text.parse(player,
+				plugin.message.parse(player,
 						Integer.toString(rewardData.getAmountOfItems())
 								+ rewardData.getItem().getType().toString());
 				NPCUtilities.addItemToInventory(player.getInventory(),
@@ -64,11 +64,11 @@ public class KillCreatureQuest implements Quest
 
 			if (rewardData.getCoins() > 0.0D)
 			{
-				plugin.text.parse(player,
+				plugin.message.parse(player,
 						Double.toString(rewardData.getCoins()) + " Coins");
 			}
 
-			plugin.text.parse(player, "for finishing " + questData.getName());
+			plugin.message.parse(player, "for finishing " + questData.getName());
 
 			if (flags.isRandom())
 			{
@@ -86,14 +86,14 @@ public class KillCreatureQuest implements Quest
 	{
 		if (playerData.activeQuestData.isPlayerOnQuest())
 		{
-			plugin.text
+			plugin.message
 					.parse(player,
 							"You are already on a quest. To abandon the quest write /quest abandon");
 		}
 		else
 		{
-			plugin.text.parse(player, "Accepted quest: " + questData.getName());
-			plugin.text.parse(player, questData.getStartText());
+			plugin.message.parse(player, "Accepted quest: " + questData.getName());
+			plugin.message.parse(player, questData.getStartText());
 			playerData.activeQuestData.startNewQuest(this, killNeededCounter);
 		}
 	}
@@ -126,7 +126,7 @@ public class KillCreatureQuest implements Quest
 	@Override
 	public void statusUpdate(Player player, PlayerData playerData)
 	{
-		plugin.text.parse(player, "You have killed "
+		plugin.message.parse(player, "You have killed "
 				+ playerData.activeQuestData.getObjectiveCounter() + " of "
 				+ killNeededCounter + " " + this.creatureToBeKilled.getName() + "s.");
 	}

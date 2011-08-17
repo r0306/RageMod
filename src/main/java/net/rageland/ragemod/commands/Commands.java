@@ -26,7 +26,7 @@ public class Commands
 	// /zone
 	public void zone(Player player)
 	{
-		plugin.text.parse(player, "Your current zone is " + plugin.zones.getName(player.getLocation()) 
+		plugin.message.parse(player, "Your current zone is " + plugin.zones.getName(player.getLocation()) 
 				+ " and distance from spawn is " + (int)plugin.zones.getDistanceFromSpawn(player.getLocation()));
 	}
 
@@ -43,7 +43,7 @@ public class Commands
 		{
 			if( playerData.getHome() == null )
 			{
-				plugin.text.sendNo(player, "You do not have a home to clear.");
+				plugin.message.sendNo(player, "You do not have a home to clear.");
 				return;
 			}
 			else
@@ -52,7 +52,7 @@ public class Commands
 				Build.clearNearbyBeds(playerData.getHome());
 				playerData.clearHome();
 				playerData.update();
-				plugin.text.send(player, "Your home has now been cleared.");
+				plugin.message.send(player, "Your home has now been cleared.");
 				return;
 			}
 		}
@@ -60,21 +60,21 @@ public class Commands
 		// Check to see if target player exists
 		if( targetPlayerData == null )
 		{
-			plugin.text.sendNo(player, "Player " + targetPlayerName + " does not exist.");
+			plugin.message.sendNo(player, "Player " + targetPlayerName + " does not exist.");
 			return;
 		}
 		
 		// Check permissions so only mods and admins can go to another player's home
 		if( targetPlayerData.id_Player != playerData.id_Player && !RageMod.permissionHandler.has(player, "ragemod.referee.inspectspawn") )
 		{
-			plugin.text.sendNo(player, "Only mods and admins can teleport to other players' home points.");
+			plugin.message.sendNo(player, "Only mods and admins can teleport to other players' home points.");
 			return;
 		}
 		
 		// See if player has an active membership
 		if( !playerData.isMember )
 		{
-			plugin.text.parseNo(player, "Only active Rageland members can use /home.");
+			plugin.message.parseNo(player, "Only active Rageland members can use /home.");
 			return;
 		}
 		
@@ -84,18 +84,18 @@ public class Commands
 			int secondsSinceLastUse = (int)((now.getTime() - playerData.home_LastUsed.getTime()) / 1000);
 			if( secondsSinceLastUse < plugin.config.Cooldown_Home )
 			{
-				plugin.text.parseNo(player, "Spell /home is not ready yet (" + Util.formatCooldown(plugin.config.Cooldown_Home - secondsSinceLastUse) + " left)");
+				plugin.message.parseNo(player, "Spell /home is not ready yet (" + Util.formatCooldown(plugin.config.Cooldown_Home - secondsSinceLastUse) + " left)");
 				return;
 			}
 		}
 		// Make sure the player has set a home
 		if( targetPlayerData.getHome() == null )			
 		{
-			plugin.text.parseNo(player, "You have not yet set a /home (place a bed inside your lot).");
+			plugin.message.parseNo(player, "You have not yet set a /home (place a bed inside your lot).");
 			return;
 		}
 		
-		plugin.text.send(player, "Teleporting...");
+		plugin.message.send(player, "Teleporting...");
 		player.teleport(targetPlayerData.getHome());
 		playerData.home_LastUsed = now;
 		playerData.update();
@@ -114,7 +114,7 @@ public class Commands
 		{
 			if( targetPlayerData.getSpawn() == null )
 			{
-				plugin.text.sendNo(player, "You do not have a spawn to clear.");
+				plugin.message.sendNo(player, "You do not have a spawn to clear.");
 				return;
 			}
 			else
@@ -123,7 +123,7 @@ public class Commands
 				Build.clearNearbyBeds(playerData.getSpawn());
 				playerData.clearSpawn();
 				playerData.update();
-				plugin.text.send(player, "Your spawn has now been cleared.");
+				plugin.message.send(player, "Your spawn has now been cleared.");
 				return;
 			}
 		}
@@ -131,14 +131,14 @@ public class Commands
 		// Check to see if target player exists
 		if( targetPlayerData == null )
 		{
-			plugin.text.sendNo(player, "Player " + targetPlayerName + " does not exist.");
+			plugin.message.sendNo(player, "Player " + targetPlayerName + " does not exist.");
 			return;
 		}
 		
 		// Check permissions so only mods and admins can go to another player's spawn
 		if( targetPlayerData.id_Player != playerData.id_Player && !RageMod.permissionHandler.has(player, "ragemod.referee.inspectspawn") )
 		{
-			plugin.text.sendNo(player, "Only mods and admins can teleport to other players' spawn points.");
+			plugin.message.sendNo(player, "Only mods and admins can teleport to other players' spawn points.");
 			return;
 		}
 		
@@ -148,7 +148,7 @@ public class Commands
 			int secondsSinceLastUse = (int)((now.getTime() - playerData.spawn_LastUsed.getTime()) / 1000);
 			if( secondsSinceLastUse < plugin.config.Cooldown_Spawn )
 			{
-				plugin.text.parseNo(player, "Spell /spawn is not ready yet (" + Util.formatCooldown(plugin.config.Cooldown_Spawn - secondsSinceLastUse) + " left)");
+				plugin.message.parseNo(player, "Spell /spawn is not ready yet (" + Util.formatCooldown(plugin.config.Cooldown_Spawn - secondsSinceLastUse) + " left)");
 				return;
 			}
 		}
@@ -158,7 +158,7 @@ public class Commands
 		else
 			destination = plugin.zones.world.getSpawnLocation();
 		
-		plugin.text.send(player, "Teleporting...");
+		plugin.message.send(player, "Teleporting...");
 		player.teleport(destination);
 		playerData.spawn_LastUsed = now;
 		plugin.database.playerQueries.updatePlayer(playerData);
