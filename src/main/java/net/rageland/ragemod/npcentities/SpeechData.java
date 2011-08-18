@@ -31,7 +31,7 @@ public class SpeechData
 		}
 		else
 		{
-			return "This NPC doesn't contain any speech. Bug";
+			return "I have nothing to say to you.";
 		}
 	}
 	

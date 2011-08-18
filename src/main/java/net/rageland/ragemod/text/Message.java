@@ -25,6 +25,8 @@ public class Message
 	private ChatColor DEFAULT_COLOR = ChatColor.GREEN;
 	private ChatColor COLOR_NO = ChatColor.DARK_RED;
 	private ChatColor BROADCAST_COLOR = ChatColor.DARK_GREEN;
+	private ChatColor NPC_NAME_COLOR = ChatColor.AQUA;
+	private ChatColor NPC_TEXT_COLOR = ChatColor.DARK_AQUA;
 	
 	public Message( RageMod plugin )
 	{
@@ -104,6 +106,15 @@ public class Message
 		
 		for( Player onlinePlayer : plugin.getServer().getOnlinePlayers() )
 			onlinePlayer.sendMessage(message);
+	}
+	
+	// Speech from NPCs
+	public void talk(Player player, String name, String message)
+	{
+		// Trim off the color code from the NPC name
+		name = name.substring(2);
+		
+		player.sendMessage(NPC_NAME_COLOR + name + ChatColor.WHITE + ": " + NPC_TEXT_COLOR + message);
 	}
 	
 	

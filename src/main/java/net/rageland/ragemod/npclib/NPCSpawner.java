@@ -108,7 +108,8 @@ public class NPCSpawner
 		}
 		BWorld bworld = new BWorld(l.getWorld());
 		QuestStartEndNPCEntity npcEntity = new QuestStartEndNPCEntity(
-				this.server.getMCServer(), bworld.getWorldServer(), name, new ItemInWorldManager( bworld.getWorldServer()), quest, plugin);
+				this.server.getMCServer(), bworld.getWorldServer(), name, 
+				new ItemInWorldManager( bworld.getWorldServer()), quest, plugin);
 		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 		bworld.getWorldServer().addEntity(npcEntity);
 		plugin.npcManager.getNpcs().put(npcId, npcEntity);
@@ -130,7 +131,8 @@ public class NPCSpawner
 		}
 		BWorld bworld = new BWorld(l.getWorld());
 		SpeechNPC npcEntity = new SpeechNPC(
-				this.server.getMCServer(), bworld.getWorldServer(), name, new ItemInWorldManager( bworld.getWorldServer()), plugin);
+				this.server.getMCServer(), bworld.getWorldServer(), name, 
+				new ItemInWorldManager( bworld.getWorldServer()), plugin, l);
 		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 		bworld.getWorldServer().addEntity(npcEntity);
 		plugin.npcManager.getNpcs().put(npcId, npcEntity);

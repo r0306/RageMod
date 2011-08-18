@@ -1,5 +1,7 @@
 package net.rageland.ragemod.commands;
 
+import java.util.ArrayList;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
@@ -7,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Spider;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.NPC;
+import net.rageland.ragemod.data.NPCData;
 import net.rageland.ragemod.data.NPCLocation;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.quest.Quest;
@@ -226,20 +228,30 @@ public class NPCCommands {
 	 */
 	private void spawn(Player player, String id_NPCLocation) 
 	{
-		Location location;
-		NPC npc;
+		PlayerData playerData = plugin.players.get(player.getName());
+		NPCLocation location;
+		NPCData npc;
 		
 		try
 		{
-			location = plugin.npcManager.getLocation(Integer.parseInt(id_NPCLocation));
+			// Get the NPC location
+			location = plugin.npcManager.activateLocation(Integer.parseInt(id_NPCLocation));
 			if( location == null )
-				throw new Exception(id_NPCLocation + " is an invalid location ID.");
+				throw new Exception(id_NPCLocation + " is already in use or is an invalid location ID.");
 			
-			npc = plugin.npcManager.activate();
+			// Activate a random NPC from the pool
+			npc = plugin.npcManager.activateRandomNPC();
 			if( npc == null )
 				throw new Exception("There are no more NPCs in the pool to activate.");
 			
+			// Register the NPC instance and spawn the NPC
+			plugin.database.npcQueries.createInstance(npc.id_NPC, location.getID(), 30, playerData.id_Player);
 			plugin.npcManager.getSpawner().speechNPC(ChatColor.DARK_AQUA + npc.name, npc.id_NPC, location);
+			
+			// Get two new phrases for the speech NPC to say
+			ArrayList<String> phrases = plugin.database.npcQueries.getPhrases(2);
+			for( String phrase : phrases )
+				plugin.npcManager.getNPCEntity(npc.id_NPC).addSpeechMessage(phrase);
 		}
 		catch( Exception ex )
 		{
@@ -260,7 +272,7 @@ public class NPCCommands {
 		try
 		{
 			// Add the NPC to memory
-			NPC npc = new NPC();
+			NPCData npc = new NPCData();
 			npc.id_NPCRace = 5;		// temp: 5 for humans
 			npc.id_NPCTown = 0;		// 0 = no town
 			npc.name = name;

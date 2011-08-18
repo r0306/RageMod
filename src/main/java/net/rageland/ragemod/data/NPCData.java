@@ -1,6 +1,6 @@
 package net.rageland.ragemod.data;
 
-public class NPC 
+public class NPCData 
 {
 	public int id_NPC;
 	public int id_NPCRace;

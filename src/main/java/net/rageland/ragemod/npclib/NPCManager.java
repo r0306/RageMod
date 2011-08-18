@@ -4,13 +4,16 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.logging.Level;
 
 import net.minecraft.server.ItemInWorldManager;
 import net.minecraft.server.WorldServer;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.NPC;
+import net.rageland.ragemod.data.NPCData;
+import net.rageland.ragemod.data.NPCInstance;
 import net.rageland.ragemod.data.NPCLocation;
+import net.rageland.ragemod.data.NPCLocationPool;
 import net.rageland.ragemod.data.NPCPool;
 import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.npcentities.NPCEntity;
@@ -19,6 +22,7 @@ import net.rageland.ragemod.npcentities.SpeechData;
 import net.rageland.ragemod.npcentities.SpeechNPC;
 import net.rageland.ragemod.quest.Quest;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
@@ -33,81 +37,109 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class NPCManager 
 {
-	public HashMap<Integer, NPCEntity> activeNPCs = new HashMap<Integer, NPCEntity>();
 	private BServer server;
 	private int taskid;
 	private RageMod plugin;
 	private NPCSpawner npcSpawner;
+	private Random random;
 	
-	private HashMap<Integer, NPCLocation> npcLocations;	  // TODO: Make a pool with remaining slots
+	// Data storage
+	public HashMap<Integer, NPCEntity> activeNPCs = new HashMap<Integer, NPCEntity>();
+	private NPCLocationPool npcLocationPool;
 	private NPCPool npcPool;	
+	private ArrayList<NPCInstance> npcInstances;
 
 	public NPCManager(RageMod plugin) 
 	{
 		this.server = BServer.getInstance(plugin);
 		this.plugin = plugin;
+		random = new Random();
 		
 		// On startup, pull all the NPC data from the DB into memory 		
-		this.npcLocations = plugin.database.npcQueries.loadNPCLocations();
+		this.npcLocationPool = plugin.database.npcQueries.loadNPCLocations();
 		this.npcPool = plugin.database.npcQueries.loadNPCs();
 		
 		this.taskid = plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() 
 		{
-					public void run() 
+			public void run() 
+			{
+				HashSet<Integer> toRemove = new HashSet<Integer>();
+				for (int i : RageMod.getInstance().npcManager.activeNPCs.keySet()) 
+				{
+					net.minecraft.server.Entity j = (net.minecraft.server.Entity)RageMod.getInstance().npcManager.activeNPCs.get(i);
+					j.R();
+					if (j.dead) 
 					{
-						HashSet<Integer> toRemove = new HashSet<Integer>();
-						for (int i : RageMod.getInstance().npcManager.activeNPCs.keySet()) 
-						{
-							net.minecraft.server.Entity j = (net.minecraft.server.Entity)RageMod.getInstance().npcManager.activeNPCs.get(i);
-							j.R();
-							if (j.dead) 
-							{
-								toRemove.add(i);
-							}
-						}
-						for (int n : toRemove)
-							NPCManager.this.despawnById(n);
+						toRemove.add(i);
 					}
-				}, 100L, 100L);
+				}
+				for (int n : toRemove)
+					NPCManager.this.despawnById(n);
+			}
+		}, 100L, 100L);
 		plugin.getServer().getPluginManager().registerEvent(Event.Type.PLUGIN_DISABLE, new SL(), Priority.Normal, plugin);
 		plugin.getServer().getPluginManager().registerEvent(Event.Type.CHUNK_LOAD, new WL(), Priority.Normal, plugin);
 		npcSpawner = new NPCSpawner();
 	}
 	
+	// Used on startup to create NPC entities for all stored instances
+	public void spawnAllInstances() 
+	{
+		this.npcInstances = plugin.database.npcQueries.loadInstances();
+		
+		// Retrieve a number of phrases based on the number of NPC instances
+		ArrayList<String> phrases = plugin.database.npcQueries.getPhrases(this.npcInstances.size() * 2);
+		
+		// Spawn all NPCs with active Instances
+		for( NPCInstance instance : this.npcInstances )
+		{
+			// TODO: Support multiple NPC types
+			plugin.npcManager.getSpawner().speechNPC(instance.getColorName(), instance.getNPCid(), instance.getLocation());
+			
+			// Add two phrases to the NPC
+			plugin.npcManager.getNPCEntity(instance.getNPCid()).addSpeechMessage(phrases.remove(random.nextInt(phrases.size())));
+			plugin.npcManager.getNPCEntity(instance.getNPCid()).addSpeechMessage(phrases.remove(random.nextInt(phrases.size())));
+		}
+	}
+
 	// Adds a new NPCLocation
 	public void addLocation(NPCLocation npcLocation)
 	{
-		npcLocations.put(npcLocation.getID(), npcLocation);
+		npcLocationPool.add(npcLocation);
 	}
 	
 	// Gets the NPCLocation from memory.  Returns NULL for non-existent IDs
     public NPCLocation getLocation(int id)
     {       	
-    	if( npcLocations.containsKey(id) )
-    		return npcLocations.get(id);
-    	else
-    	{
-    		System.out.println("Warning: NPCManager.getLocation() called on non-existent id '" + id + "'");
-    		return null;
-    	}
+    	return npcLocationPool.get(id);
+    }
+    
+    // TODO: Remove this and wrap its functionality up locally
+    public NPCLocation activateLocation(int id)
+    {
+    	return npcLocationPool.activate(id);
     }
     
 	// Adds a new NPC
-	public void addNPC(NPC npc)
+	public void addNPC(NPCData npc)
 	{
 		npcPool.add(npc);
 	}
 	
 	// Gets the NPC record from memory.  Returns NULL for non-existent IDs
-    public NPC getNPC(int id)
+    public NPCData getNPC(int id)
     {       	
     	return npcPool.get(id);
     }
     
     // TODO: Remove this and wrap its functionality up locally
-    public NPC activate()
+    public NPCData activateNPC(int id)
     {
-    	return npcPool.activate();
+    	return npcPool.activate(id);
+    }
+    public NPCData activateRandomNPC()
+    {
+    	return npcPool.activateRandom();
     }
 	
 	public NPCSpawner getSpawner()
@@ -130,7 +162,7 @@ public class NPCManager
 			name = tmp;
 		}
 		BWorld world = new BWorld(l.getWorld());
-		NPCEntity npcEntity = new NPCEntity(this.server.getMCServer(), world.getWorldServer(), name, new ItemInWorldManager( world.getWorldServer()), plugin);
+		NPCEntity npcEntity = new NPCEntity(this.server.getMCServer(), world.getWorldServer(), name, new ItemInWorldManager( world.getWorldServer()), plugin, l);
 		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 		world.getWorldServer().addEntity(npcEntity);
 		activeNPCs.put(id, npcEntity);

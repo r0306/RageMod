@@ -218,6 +218,7 @@ public class RageMod extends JavaPlugin {
         lots.loadLots();
         tasks.loadTaskTimes();
         languages.loadDictionaries();
+        npcManager.spawnAllInstances();
     }
     
     private void startScheduledTasks()

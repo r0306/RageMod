@@ -1,5 +1,6 @@
 package net.rageland.ragemod.npcentities;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import net.minecraft.server.ItemInWorldManager;
@@ -12,9 +13,9 @@ public class SpeechNPC extends NPCEntity
 	
 	
 	public SpeechNPC(MinecraftServer minecraftserver, World world,
-			String name, ItemInWorldManager iteminworldmanager, RageMod plugin)
+			String name, ItemInWorldManager iteminworldmanager, RageMod plugin, Location location)
 	{
-		super(minecraftserver, world, name, iteminworldmanager, plugin);
+		super(minecraftserver, world, name, iteminworldmanager, plugin, location);
 	}
 	
 	/**
@@ -26,7 +27,9 @@ public class SpeechNPC extends NPCEntity
 	 */
 	public void rightClickAction(Player player)
 	{
-		plugin.message.send(player, "Click!");
+		plugin.message.talk(player, this.name, this.speechData.getNextMessage());
+		//plugin.message.talk(player, this.name, "My yaw: " + this.yaw + "; Your yaw: " + player.getLocation().getYaw());
+		this.facePlayer(player);
 	}
 
 	/**

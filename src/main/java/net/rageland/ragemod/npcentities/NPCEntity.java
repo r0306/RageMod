@@ -1,5 +1,6 @@
 package net.rageland.ragemod.npcentities;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -13,12 +14,15 @@ import net.minecraft.server.Packet18ArmAnimation;
 import net.minecraft.server.World;
 import net.minecraft.server.WorldServer;
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.data.NPCData;
+import net.rageland.ragemod.data.NPCLocation;
 import net.rageland.ragemod.npclib.NPCNetHandler;
 import net.rageland.ragemod.npclib.NPCNetworkManager;
 import net.rageland.ragemod.npclib.NpcEntityTargetEvent;
 import net.rageland.ragemod.npclib.NullSocket;
 import net.rageland.ragemod.npclib.NpcEntityTargetEvent.NpcTargetReason;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.HumanEntity;
@@ -34,10 +38,11 @@ public class NPCEntity extends EntityPlayer
 	private long lastBounceTick;
 	private int lastBounceId;
 	protected RageMod plugin;
-	private SpeechData speechData;
+	protected SpeechData speechData;
+	private Location location;
 
 	public NPCEntity(MinecraftServer minecraftserver, World world, String name,
-			ItemInWorldManager iteminworldmanager, RageMod plugin )
+			ItemInWorldManager iteminworldmanager, RageMod plugin, Location location )
 	{
 
 		super(minecraftserver, world, name, iteminworldmanager);
@@ -55,6 +60,7 @@ public class NPCEntity extends EntityPlayer
 		this.lastBounceId = -1;
 		this.lastBounceTick = 0L;
 		this.plugin = plugin;
+		this.location = location;
 		
 		int radius = 20; 
 		int interval = 30;
@@ -146,6 +152,19 @@ public class NPCEntity extends EntityPlayer
 	public String getName()
 	{
 		return this.name;
+	}
+	
+	// Sets the yaw & pitch to face the player interacting with NPC
+	public void facePlayer(Player player)
+	{
+		float yaw = (float) ((Math.atan2( 
+				this.location.getX() - player.getLocation().getX(), player.getLocation().getZ() - this.location.getZ()) * 180) / Math.PI);
+		float pitch = (float) ((Math.atan(this.location.getY() - player.getLocation().getY()) * 180) / Math.PI);
+		this.setPositionRotation(this.location.getX(), this.location.getY(), this.location.getZ(), yaw, pitch);
+//		this.location.setX(this.location.getX() + .1);
+//		this.yaw = this.yaw + 180;
+//		if( this.yaw > 360 )
+//			this.yaw -= 360;
 	}
 
 	public class SpeechTask extends TimerTask

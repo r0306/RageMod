@@ -10,6 +10,8 @@ The arena games in the city are a good way to earn money.
 <po>TheIcarusKid</po> is always hiring road builders, contact him if you want to earn some cash.
 Hmm... Sandstone or smooth stone?  I can never decide.
 Obsidian looks so cool, but it takes forever to mine.
+Hi there!
+
 
 
 * Dynamic
@@ -27,7 +29,8 @@ I've heard that <otherNPCTown/> is lovely, but I've never had a chance to visit.
 
 I recently got the chance to meet <playerName/>.  Seems like a nice fellow.  [previous contact]
    - <playerName/>!  Good to see you again!
-If you ask me, <playerName/> has been abusing his powers lately.
+If you ask me, <playerName/> has been abusing his powers lately.  [staff]
+Hello <currentPlayer/>!
 
 * Zone-specific
 ** Capitol
