@@ -7,15 +7,15 @@ import net.minecraft.server.ItemInWorldManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.World;
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.data.NPCInstance;
 
 public class SpeechNPC extends NPCEntity
 {	
 	
 	
-	public SpeechNPC(MinecraftServer minecraftserver, World world,
-			String name, ItemInWorldManager iteminworldmanager, RageMod plugin, Location location)
+	public SpeechNPC(NPCInstance instance)
 	{
-		super(minecraftserver, world, name, iteminworldmanager, plugin, location);
+		super(instance);
 	}
 	
 	/**

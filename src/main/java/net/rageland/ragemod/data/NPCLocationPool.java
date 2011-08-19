@@ -47,7 +47,24 @@ public class NPCLocationPool
     		return null;
 
     	reserveNPCLocations.remove(id);
+    	npcLocations.get(id).activate();
     	return npcLocations.get(id);
+    }
+    
+    // Returns an NPCLocation to the pool
+    public void deactivate(int id)
+    {
+    	if( reserveNPCLocations.contains(id) || npcLocations.get(id) == null )
+    		return;
+    	
+    	reserveNPCLocations.add(id);
+    	npcLocations.get(id).deactivate();
+    }
+    
+    // Returns a list of all locations
+    public ArrayList<NPCLocation> getAllLocations()
+    {
+    	return new ArrayList<NPCLocation>(npcLocations.values());
     }
 	
 	

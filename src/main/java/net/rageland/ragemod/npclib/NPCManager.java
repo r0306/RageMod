@@ -40,14 +40,14 @@ public class NPCManager
 	private BServer server;
 	private int taskid;
 	private RageMod plugin;
-	private NPCSpawner npcSpawner;
+	//private NPCSpawner npcSpawner;
 	private Random random;
 	
 	// Data storage
-	public HashMap<Integer, NPCEntity> activeNPCs = new HashMap<Integer, NPCEntity>();
+	private HashMap<Integer, NPCInstance> activeNPCs = new HashMap<Integer, NPCInstance>();
 	private NPCLocationPool npcLocationPool;
 	private NPCPool npcPool;	
-	private ArrayList<NPCInstance> npcInstances;
+	private ArrayList<NPCInstance> npcInstances;	// TODO: Remove this?  <_<
 
 	public NPCManager(RageMod plugin) 
 	{
@@ -66,7 +66,7 @@ public class NPCManager
 				HashSet<Integer> toRemove = new HashSet<Integer>();
 				for (int i : RageMod.getInstance().npcManager.activeNPCs.keySet()) 
 				{
-					net.minecraft.server.Entity j = (net.minecraft.server.Entity)RageMod.getInstance().npcManager.activeNPCs.get(i);
+					net.minecraft.server.Entity j = (net.minecraft.server.Entity)RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity();
 					j.R();
 					if (j.dead) 
 					{
@@ -79,26 +79,32 @@ public class NPCManager
 		}, 100L, 100L);
 		plugin.getServer().getPluginManager().registerEvent(Event.Type.PLUGIN_DISABLE, new SL(), Priority.Normal, plugin);
 		plugin.getServer().getPluginManager().registerEvent(Event.Type.CHUNK_LOAD, new WL(), Priority.Normal, plugin);
-		npcSpawner = new NPCSpawner();
+		//npcSpawner = new NPCSpawner();
 	}
 	
 	// Used on startup to create NPC entities for all stored instances
 	public void spawnAllInstances() 
 	{
-		this.npcInstances = plugin.database.npcQueries.loadInstances();
+		ArrayList<NPCInstance> npcInstances = plugin.database.npcQueries.loadInstances();
 		
 		// Retrieve a number of phrases based on the number of NPC instances
-		ArrayList<String> phrases = plugin.database.npcQueries.getPhrases(this.npcInstances.size() * 2);
+		ArrayList<String> phrases = plugin.database.npcQueries.getPhrases(npcInstances.size() * 2);
 		
 		// Spawn all NPCs with active Instances
-		for( NPCInstance instance : this.npcInstances )
+		for( NPCInstance instance : npcInstances )
 		{
-			// TODO: Support multiple NPC types
-			plugin.npcManager.getSpawner().speechNPC(instance.getColorName(), instance.getNPCid(), instance.getLocation());
-			
-			// Add two phrases to the NPC
-			plugin.npcManager.getNPCEntity(instance.getNPCid()).addSpeechMessage(phrases.remove(random.nextInt(phrases.size())));
-			plugin.npcManager.getNPCEntity(instance.getNPCid()).addSpeechMessage(phrases.remove(random.nextInt(phrases.size())));
+			try
+			{
+				instance.spawn();
+				
+				// Add two phrases to the NPC
+				instance.getEntity().addSpeechMessage(phrases.remove(random.nextInt(phrases.size())));
+				instance.getEntity().addSpeechMessage(phrases.remove(random.nextInt(phrases.size())));
+			}
+			catch( Exception ex )
+			{
+				System.out.println("Error spawning NPC Instance #" + instance.getID() + ": " + ex.getMessage());
+			}
 		}
 	}
 
@@ -118,6 +124,20 @@ public class NPCManager
     public NPCLocation activateLocation(int id)
     {
     	return npcLocationPool.activate(id);
+    }
+    public void deactivateLocation(NPCLocation location)
+    {
+    	npcLocationPool.deactivate(location.getID());
+    }
+    public void deactivateLocation(int id)
+    {
+    	npcLocationPool.deactivate(id);
+    }
+    
+    // Return all locations
+    public ArrayList<NPCLocation> getAllLocations()
+    {
+    	return npcLocationPool.getAllLocations();
     }
     
 	// Adds a new NPC
@@ -141,54 +161,58 @@ public class NPCManager
     {
     	return npcPool.activateRandom();
     }
+    public void deactivateNPC(int id)
+    {
+    	npcPool.deactivate(id);
+    }
 	
-	public NPCSpawner getSpawner()
-	{
-		return npcSpawner;
-	}
+//	public NPCSpawner getSpawner()
+//	{
+//		return npcSpawner;
+//	}
 
-	public NPCEntity spawnNPC(String name, Location l, int id) 
-	{
-		if (activeNPCs.containsKey(id)) 
-		{
-			this.server.getLogger().log(Level.WARNING, "NPC with that id already exists, existing NPC returned");
-			return (NPCEntity) activeNPCs.get(id);
-		}
-		if (name.length() > 16) 
-		{
-			String tmp = name.substring(0, 16);
-			this.server.getLogger().log(Level.WARNING, "NPCs can't have names longer than 16 characters,");
-			this.server.getLogger().log(Level.WARNING, name + " has been shortened to " + tmp);
-			name = tmp;
-		}
-		BWorld world = new BWorld(l.getWorld());
-		NPCEntity npcEntity = new NPCEntity(this.server.getMCServer(), world.getWorldServer(), name, new ItemInWorldManager( world.getWorldServer()), plugin, l);
-		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
-		world.getWorldServer().addEntity(npcEntity);
-		activeNPCs.put(id, npcEntity);
-		return npcEntity;
-	}
+//	public NPCEntity spawnNPC(String name, Location l, int id) 
+//	{
+//		if (activeNPCs.containsKey(id)) 
+//		{
+//			this.server.getLogger().log(Level.WARNING, "NPC with that id already exists, existing NPC returned");
+//			return (NPCEntity) activeNPCs.get(id).getEntity();
+//		}
+//		if (name.length() > 14) 
+//		{
+//			String tmp = name.substring(0, 14);
+//			this.server.getLogger().log(Level.WARNING, "NPCs can't have names longer than 14 characters,");
+//			this.server.getLogger().log(Level.WARNING, name + " has been shortened to " + tmp);
+//			name = tmp;
+//		}
+//		BWorld world = new BWorld(l.getWorld());
+//		NPCEntity npcEntity = new NPCEntity(this.server.getMCServer(), world.getWorldServer(), name, new ItemInWorldManager( world.getWorldServer()), plugin, l);
+//		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
+//		world.getWorldServer().addEntity(npcEntity);
+//		activeNPCs.put(id, npcEntity);
+//		return npcEntity;
+//	}
 	
-	public HashMap<Integer, NPCEntity> getNpcs()
-	{
-		return activeNPCs;
-	}
+//	public HashMap<Integer, NPCEntity> getNpcs()
+//	{
+//		return activeNPCs;
+//	}
 	
-	public void addSpeechMessage(String npcname, String message)
-	{
-		if(activeNPCs.containsKey(npcname))
-		{
-			activeNPCs.get(npcname).addSpeechMessage(message);
-		}
-		else
-		{
-			this.server.getLogger().log(Level.WARNING, "Invalid npc name, could not add speech message.");
-		}
-	}
+//	public void addSpeechMessage(String npcname, String message)
+//	{
+//		if(activeNPCs.containsKey(npcname))
+//		{
+//			activeNPCs.get(npcname).addSpeechMessage(message);
+//		}
+//		else
+//		{
+//			this.server.getLogger().log(Level.WARNING, "Invalid npc name, could not add speech message.");
+//		}
+//	}
 
 	public void despawnById(int id) 
 	{
-		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
+		NPCEntity npc = (NPCEntity) activeNPCs.get(id).getEntity();
 		if (npc != null) 
 		{
 			activeNPCs.remove(id);
@@ -202,39 +226,44 @@ public class NPCManager
 		}
 	}
 
-	public void despawn(String npcName) 
-	{
-		if (npcName.length() > 16) 
-			npcName = npcName.substring(0, 16);
-		
-		HashSet<Integer> toRemove = new HashSet<Integer>();
-		
-		for (int n : activeNPCs.keySet()) 
-		{
-			NPCEntity npc = (NPCEntity) activeNPCs.get(n);
-			if ((npc != null) && (npc.name.equals(npcName))) 
-			{
-				toRemove.add(n);
-				try 
-				{
-					npc.world.removeEntity(npc);
-				} catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		for (int n : toRemove)
-			activeNPCs.remove(n);
-	}
-
+//	public void despawn(String npcName) 
+//	{
+//		if (npcName.length() > 16) 
+//			npcName = npcName.substring(0, 16);
+//		
+//		HashSet<Integer> toRemove = new HashSet<Integer>();
+//		
+//		for (int n : activeNPCs.keySet()) 
+//		{
+//			NPCEntity npc = (NPCEntity) activeNPCs.get(n);
+//			if ((npc != null) && (npc.name.equals(npcName))) 
+//			{
+//				toRemove.add(n);
+//				try 
+//				{
+//					npc.world.removeEntity(npc);
+//				} catch (Exception e)
+//				{
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//		
+//		for (int n : toRemove)
+//			activeNPCs.remove(n);
+//	}
+//
 	public void despawnAll() 
 	{
-		for (NPCEntity npc : activeNPCs.values()) 
+		for (NPCInstance instance : activeNPCs.values()) 
 		{
+			if (instance == null)
+				continue;
+			
+			NPCEntity npc = instance.getEntity();
 			if (npc == null)
 				continue;
+			
 			try 
 			{
 				npc.world.removeEntity(npc);
@@ -246,53 +275,48 @@ public class NPCManager
 
 		activeNPCs.clear();
 	}
-	
-	public void storeNpcInDatabase(NPCEntity npcEntity)
-	{
-		// TODO Add NPC data to database. (Type, name, quest assigned etc.)
-	}
-
-	public void moveNPC(int id, Location l) 
-	{
-		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
-		if (npc != null)
-			npc.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
-	}
-
-	public void moveNPCStatic(int id, Location l) 
-	{
-		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
-		if (npc != null)
-			npc.setPosition(l.getX(), l.getY(), l.getZ());
-	}
-
-	public void putNPCinbed(int id, Location bed) 
-	{
-		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
-		if (npc != null) 
-		{
-			npc.setPosition(bed.getX(), bed.getY(), bed.getZ());
-			npc.a((int) bed.getX(), (int) bed.getY(), (int) bed.getZ());
-		}
-	}
-
-	public void getNPCoutofbed(int id) 
-	{
-		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
-		if (npc != null)
-			npc.a(true, true, true);
-	}
-
-	public void setSneaking(int id, boolean flag) 
-	{
-		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
-		if (npc != null)
-			npc.setSneak(flag);
-	}
+//
+//	public void moveNPC(int id, Location l) 
+//	{
+//		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
+//		if (npc != null)
+//			npc.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
+//	}
+//
+//	public void moveNPCStatic(int id, Location l) 
+//	{
+//		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
+//		if (npc != null)
+//			npc.setPosition(l.getX(), l.getY(), l.getZ());
+//	}
+//
+//	public void putNPCinbed(int id, Location bed) 
+//	{
+//		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
+//		if (npc != null) 
+//		{
+//			npc.setPosition(bed.getX(), bed.getY(), bed.getZ());
+//			npc.a((int) bed.getX(), (int) bed.getY(), (int) bed.getZ());
+//		}
+//	}
+//
+//	public void getNPCoutofbed(int id) 
+//	{
+//		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
+//		if (npc != null)
+//			npc.a(true, true, true);
+//	}
+//
+//	public void setSneaking(int id, boolean flag) 
+//	{
+//		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
+//		if (npc != null)
+//			npc.setSneak(flag);
+//	}
 
 	public NPCEntity getNPCEntity(int id) 
 	{
-		return (NPCEntity) activeNPCs.get(id);
+		return (NPCEntity) activeNPCs.get(id).getEntity();
 	}
 
 	public static boolean isNPC(org.bukkit.entity.Entity e) 
@@ -306,7 +330,7 @@ public class NPCManager
 		{
 			for (int i : activeNPCs.keySet()) 
 			{
-				if (((NPCEntity) activeNPCs.get(i)).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
+				if (((NPCEntity) activeNPCs.get(i).getEntity()).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
 				{
 					return i;
 				}
@@ -321,44 +345,44 @@ public class NPCManager
 		{
 			for (int i : RageMod.getInstance().npcManager.activeNPCs.keySet()) 
 			{
-				if (((NPCEntity) RageMod.getInstance().npcManager.activeNPCs.get(i)).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
+				if (((NPCEntity) RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity()).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
 				{
-					return (NPCEntity) RageMod.getInstance().npcManager.activeNPCs.get(i);
+					return (NPCEntity) RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity();
 				}
 			}
 		}
 		return null;
 	}
 
-	public void rename(int id, String name) 
-	{
-		if (name.length() > 16) 
-		{ // Check and nag if name is too long, spawn
-		  // NPC anyway with shortened name.
-			String tmp = name.substring(0, 16);
-			server.getLogger().log(Level.WARNING, "NPCs can't have names longer than 16 characters,");
-			server.getLogger().log(Level.WARNING, name + " has been shortened to " + tmp);
-			name = tmp;
-		}
-		NPCEntity npc = getNPCEntity(id);
-		npc.setName(name);
-		BWorld b = new BWorld(npc.getBukkitEntity().getLocation().getWorld());
-		WorldServer s = b.getWorldServer();
-		try 
-		{
-			Method m = s.getClass().getDeclaredMethod("d", new Class[] { Entity.class });
-			m.setAccessible(true);
-			m.invoke(s, (Entity) npc);
-			m = s.getClass().getDeclaredMethod("c", new Class[] { Entity.class });
-			m.setAccessible(true);
-			m.invoke(s, (Entity) npc);
-		} 
-		catch (Exception ex) 
-		{
-			ex.printStackTrace();
-		}
-		s.everyoneSleeping();
-	}
+//	public void rename(int id, String name) 
+//	{
+//		if (name.length() > 16) 
+//		{ // Check and nag if name is too long, spawn
+//		  // NPC anyway with shortened name.
+//			String tmp = name.substring(0, 16);
+//			server.getLogger().log(Level.WARNING, "NPCs can't have names longer than 16 characters,");
+//			server.getLogger().log(Level.WARNING, name + " has been shortened to " + tmp);
+//			name = tmp;
+//		}
+//		NPCEntity npc = getNPCEntity(id);
+//		npc.setName(name);
+//		BWorld b = new BWorld(npc.getBukkitEntity().getLocation().getWorld());
+//		WorldServer s = b.getWorldServer();
+//		try 
+//		{
+//			Method m = s.getClass().getDeclaredMethod("d", new Class[] { Entity.class });
+//			m.setAccessible(true);
+//			m.invoke(s, (Entity) npc);
+//			m = s.getClass().getDeclaredMethod("c", new Class[] { Entity.class });
+//			m.setAccessible(true);
+//			m.invoke(s, (Entity) npc);
+//		} 
+//		catch (Exception ex) 
+//		{
+//			ex.printStackTrace();
+//		}
+//		s.everyoneSleeping();
+//	}
 
 	private class SL extends ServerListener 
 	{
@@ -386,8 +410,12 @@ public class NPCManager
 
 		public void onChunkLoad(ChunkLoadEvent event) 
 		{
-			for (NPCEntity npc : RageMod.getInstance().npcManager.activeNPCs.values())
+			for (NPCInstance npcInstance : RageMod.getInstance().npcManager.activeNPCs.values())
 			{
+				NPCEntity npc = null;
+				if( npcInstance != null )
+					npc = npcInstance.getEntity();
+				
 				if ((npc != null) && (event.getChunk() == npc.getBukkitEntity().getLocation().getBlock().getChunk())) 
 				{
 					BWorld world = new BWorld(event.getWorld());
@@ -396,6 +424,29 @@ public class NPCManager
 			}
 		}
 	}
+
+	// Adds a new instance to the HashMap
+	public void addInstance(int id_NPCInstance, NPCInstance instance) 
+	{
+		this.activeNPCs.put(id_NPCInstance, instance);
+	}
+
+	// Checks to see if the entity is contained by activeNPCs
+	public boolean contains(NPCEntity npcEntity) 
+	{
+		for( NPCInstance instance : activeNPCs.values() )
+		{
+			if( instance.getEntity() == npcEntity )
+				return true;
+		}
+		return false;
+	}
+	
+    // Return all instances
+    public ArrayList<NPCInstance> getAllInstances()
+    {
+    	return new ArrayList<NPCInstance>(activeNPCs.values());
+    }
 	
 	
 	

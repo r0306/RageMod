@@ -1,5 +1,6 @@
 package net.rageland.ragemod;
 
+import net.rageland.ragemod.RageZones.Quadrant;
 import net.rageland.ragemod.data.Location2D;
 import net.rageland.ragemod.data.Region2D;
 import net.rageland.ragemod.data.Region3D;
@@ -37,12 +38,22 @@ public class RageZones {
 		TOWN_CREATE;
 	}
 	
-	public static enum Zone {
+	public static enum Zone 
+	{
+		CAPITOL,
 		A,
 		B,
 		C,
 		OUTSIDE,
 		UNKNOWN;
+	}
+	
+	public static enum Quadrant 
+	{
+		NW,
+		NE,
+		SW,
+		SE;
 	}
 	
 	private RageMod plugin;
@@ -110,8 +121,10 @@ public class RageZones {
     {
     	if( zone == Zone.A )
     		return ZoneA_Name;
+    	else if( zone == Zone.CAPITOL )
+    		return plugin.config.Capitol_Name;
     	else if( zone == Zone.B )
-    		return ZoneB_Name;
+        		return ZoneB_Name;
     	else if( zone == Zone.C )
     		return ZoneC_Name;
     	else if( zone == Zone.OUTSIDE )
@@ -122,12 +135,11 @@ public class RageZones {
     		return "Error: Zone unrecognized";
     }
     
-    // Calculates the player's current zone based on their location
-    public Zone getCurrentZone(Location location)
+    // Calculates the location's current zone based on their location
+    public Zone getZone(Location location)
     {
     	if(!(location.getWorld().getName().equals("world")))
     		return Zone.UNKNOWN;
-    
     	
 		double distanceFromSpawn = worldSpawn.distance(location);
     	
@@ -139,6 +151,25 @@ public class RageZones {
     		return Zone.C;
     	else if( distanceFromSpawn > ZoneC_Border )
     		return Zone.OUTSIDE;
+    	else
+    		return null;
+    }
+    
+    // Calculates the locations current quadrant based on their location
+    // Uses the main world's spawn coords as a center point, regardless of actual world
+    public Quadrant getQuadrant(Location location)
+    {
+    	double x = location.getX() - worldSpawn.getX();
+    	double z = location.getZ() - worldSpawn.getZ();
+    	
+    	if( z >= 0 && x < 0 )
+    		return Quadrant.NW;
+    	else if( z < 0 && x < 0 )
+    		return Quadrant.NE;
+    	else if( z >= 0 && x >= 0 )
+    		return Quadrant.SW;
+    	else if( z < 0 && x >= 0 )
+    		return Quadrant.SE;
     	else
     		return null;
     }
@@ -210,6 +241,24 @@ public class RageZones {
     			TZ_Center.getY(),
     			((centerPoint.getZ() - worldSpawn.getZ()) / 8) + TZ_Center.getZ());
     }
+
+	public String quadrantName(Quadrant quadrant) 
+	{
+		switch(quadrant)
+		{
+			case NW:
+				return "NW"; 
+			case NE:
+				return "NE"; 
+			case SW:
+				return "SW"; 
+			case SE:
+				return "SE"; 
+			default:
+				return "Error";
+				
+		}
+	}
     
 
 }

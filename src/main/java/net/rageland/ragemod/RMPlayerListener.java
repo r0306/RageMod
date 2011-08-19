@@ -74,7 +74,7 @@ public class RMPlayerListener extends PlayerListener
     	PlayerData playerData = plugin.players.playerLogin(player.getName());    	  
     	
 		// Set the state info
-    	playerData.currentZone = plugin.zones.getCurrentZone(player.getLocation());
+    	playerData.currentZone = plugin.zones.getZone(player.getLocation());
     	playerData.currentTown = plugin.playerTowns.getCurrentTown(player.getLocation());
     	playerData.isInCapitol = plugin.zones.isInCapitol(player.getLocation()); 
     	
@@ -244,9 +244,9 @@ public class RMPlayerListener extends PlayerListener
         	event.getFrom().getBlockZ() != event.getTo().getBlockZ() )
         {
         	// Check to see if the player has changed zones
-        	if( playerData.currentZone != plugin.zones.getCurrentZone(player.getLocation()))
+        	if( playerData.currentZone != plugin.zones.getZone(player.getLocation()))
         	{
-        		playerData.currentZone = plugin.zones.getCurrentZone(player.getLocation());
+        		playerData.currentZone = plugin.zones.getZone(player.getLocation());
         		plugin.message.parse(player, "Your current zone is now " + plugin.zones.getName(playerData.currentZone));        		
         	}
         	

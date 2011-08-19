@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,8 +13,10 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.NPCData;
 import net.rageland.ragemod.data.NPCInstance;
+import net.rageland.ragemod.data.NPCInstance.NPCType;
 import net.rageland.ragemod.data.NPCLocation;
 import net.rageland.ragemod.data.NPCLocationPool;
 import net.rageland.ragemod.data.NPCPool;
@@ -107,7 +110,7 @@ public class NPCQueries
         				rs.getDouble("YCoord"),
         				rs.getDouble("ZCoord"),
         				rs.getFloat("Yaw"),
-        				rs.getFloat("Pitch"));
+        				rs.getFloat("Pitch"), plugin);
         		
         		location.setIDs(rs.getInt("ID_NPCLocation"), rs.getInt("ID_NPCTown"), rs.getInt("ID_NPCRace"));
         		locationPool.add(location);
@@ -236,20 +239,21 @@ public class NPCQueries
 	}
 	
 	// Enter a new NPC instance into the database
-	public int createInstance(int id_NPC, int id_NPCLocation, int ttlMinutes, int id_Player_Creator) 
+	public NPCInstance createInstance(int id_NPC, int id_NPCLocation, int ttlMinutes, int id_Player_Creator, NPCType type) 
 	{
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
 	    ResultSet rs = null;
+	    NPCInstance instance = null;
 		
     	try
     	{    		
     		conn = rageDB.getConnection();
     		// Insert the new town into the PlayerTowns table
     		preparedStatement = conn.prepareStatement(
-    				"INSERT INTO NPCInstances (ID_NPC, ID_NPCLocation, SpawnTime, DespawnTime, ID_Player_Creator) " +
+    				"INSERT INTO NPCInstances (ID_NPC, ID_NPCLocation, SpawnTime, DespawnTime, ID_Player_Creator, Type) " +
     				"VALUES (" + id_NPC + ", '" + id_NPCLocation + "', NOW(), NOW() + INTERVAL " + ttlMinutes + " MINUTE, " +
-    						id_Player_Creator + ")",
+    						id_Player_Creator + ", " + type.getValue() + ")",
     				Statement.RETURN_GENERATED_KEYS);   
     		preparedStatement.executeUpdate();
     		
@@ -258,7 +262,9 @@ public class NPCQueries
     		rs.next();
     		int instanceID = rs.getInt(1);
     		
-    		return instanceID;
+    		instance = new NPCInstance(plugin, instanceID, type, Util.minutesFromNow(ttlMinutes));
+    		
+    		return instance;
         		        		        	
     	} catch (SQLException e) {
     		System.out.println("Error in NPCQueries.createInstance(): " + e.getMessage());
@@ -267,7 +273,7 @@ public class NPCQueries
 		}
     	
     	System.out.println("Error: NPCQueries.createInstance() returned -1");
-    	return -1;
+    	return null;
 	}
 
 	// Loads all active NPC instances
@@ -283,7 +289,7 @@ public class NPCQueries
     	{
     		conn = rageDB.getConnection();
         	preparedStatement = conn.prepareStatement(
-				"SELECT ID_NPCInstance, ID_NPC, ID_NPCLocation, DespawnTime " +
+				"SELECT ID_NPCInstance, ID_NPC, ID_NPCLocation, DespawnTime, Type " +
 				"FROM NPCInstances " +
 				"WHERE (DespawnTime IS NULL OR DespawnTime > NOW()) AND IsDisabled = 0");
         	
@@ -291,12 +297,12 @@ public class NPCQueries
         	
         	while ( rs.next() ) 
         	{	        		
-        		instance = new NPCInstance(plugin);
-        		instance.id_NPCInstance = rs.getInt("ID_NPCInstance");
-        		instance.activate(rs.getInt("ID_NPC"), rs.getInt("ID_NPCLocation"));
-        		instance.despawnTime = rs.getTimestamp("DespawnTime");
+        		instance = new NPCInstance(plugin, rs.getInt("ID_NPCInstance"), NPCType.getType(rs.getInt("Type")), rs.getTimestamp("DespawnTime"));
 
-        		instances.add(instance);
+        		if( instance.activate(rs.getInt("ID_NPC"), rs.getInt("ID_NPCLocation")) )
+        			instances.add(instance);
+        		else
+        			System.out.println("ERROR: Could not activate NPC instance #" + instance.getID());
         	}			
         	
         	return instances;
@@ -328,26 +334,28 @@ public class NPCQueries
 				"LIMIT " + number);
         	
         	rs = preparedStatement.executeQuery();
-        	rs.next();
-        	phrases.add(rs.getString("Text"));
-        	updateQuery = "ID_NPCSpeech = " + String.valueOf(rs.getInt("ID_NPCSpeech"));
         	
-        	
-        	while ( rs.next() ) 
-        	{	        		
+        	if( rs.next() )
+        	{
         		phrases.add(rs.getString("Text"));
-        		updateQuery += " OR ID_NPCSpeech = " + String.valueOf(rs.getInt("ID_NPCSpeech"));
-        	}	
-        	
-        	// Update the database to show that the phrases have been used
-        	preparedStatement = conn.prepareStatement(
-    				"UPDATE NPCSpeech SET Uses = Uses + 1 WHERE " + updateQuery);
-    		preparedStatement.executeUpdate();
-        	
-        	return phrases;
+        		updateQuery = "ID_NPCSpeech = " + String.valueOf(rs.getInt("ID_NPCSpeech"));
+        		
+            	while ( rs.next() ) 
+            	{	        		
+            		phrases.add(rs.getString("Text"));
+            		updateQuery += " OR ID_NPCSpeech = " + String.valueOf(rs.getInt("ID_NPCSpeech"));
+            	}	
+            	
+            	// Update the database to show that the phrases have been used
+            	preparedStatement = conn.prepareStatement(
+        				"UPDATE NPCSpeech SET Uses = Uses + 1 WHERE " + updateQuery);
+        		preparedStatement.executeUpdate();
+            	
+            	return phrases;
+        	}
         		        	
     	} catch (Exception e) {
-    		System.out.println("Error in NPCQueries.loadInstances(): " + e.getMessage());
+    		System.out.println("Error in NPCQueries.getPhrases(): " + e.getMessage());
 		} finally {
 			rageDB.close(rs, preparedStatement, conn);
 		}

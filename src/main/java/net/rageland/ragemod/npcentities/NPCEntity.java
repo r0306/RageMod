@@ -15,7 +15,9 @@ import net.minecraft.server.World;
 import net.minecraft.server.WorldServer;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.NPCData;
+import net.rageland.ragemod.data.NPCInstance;
 import net.rageland.ragemod.data.NPCLocation;
+import net.rageland.ragemod.npclib.BWorld;
 import net.rageland.ragemod.npclib.NPCNetHandler;
 import net.rageland.ragemod.npclib.NPCNetworkManager;
 import net.rageland.ragemod.npclib.NpcEntityTargetEvent;
@@ -39,13 +41,13 @@ public class NPCEntity extends EntityPlayer
 	private int lastBounceId;
 	protected RageMod plugin;
 	protected SpeechData speechData;
-	private Location location;
+	protected NPCInstance instance;
+	protected Location location;
 
-	public NPCEntity(MinecraftServer minecraftserver, World world, String name,
-			ItemInWorldManager iteminworldmanager, RageMod plugin, Location location )
-	{
-
-		super(minecraftserver, world, name, iteminworldmanager);
+	public NPCEntity( NPCInstance instance )
+	{		
+		super(instance.server.getMCServer(), instance.world.getWorldServer(), 
+				instance.getColorName(), new ItemInWorldManager( instance.world.getWorldServer()));
 		
 		NetworkManager netMgr = new NPCNetworkManager(new NullSocket(),
 				"NPC Manager", new NetHandler()
@@ -55,12 +57,13 @@ public class NPCEntity extends EntityPlayer
 						return true;
 					}
 				});
-		this.netServerHandler = new NPCNetHandler(minecraftserver, netMgr, this);
+		
+		this.netServerHandler = new NPCNetHandler(instance.server.getMCServer(), netMgr, this);
 		this.lastTargetId = -1;
 		this.lastBounceId = -1;
 		this.lastBounceTick = 0L;
-		this.plugin = plugin;
-		this.location = location;
+		this.plugin = instance.plugin;
+		this.instance = instance;
 		
 		int radius = 20; 
 		int interval = 30;
@@ -157,10 +160,11 @@ public class NPCEntity extends EntityPlayer
 	// Sets the yaw & pitch to face the player interacting with NPC
 	public void facePlayer(Player player)
 	{
-		float yaw = (float) ((Math.atan2( 
-				this.location.getX() - player.getLocation().getX(), player.getLocation().getZ() - this.location.getZ()) * 180) / Math.PI);
-		float pitch = (float) ((Math.atan(this.location.getY() - player.getLocation().getY()) * 180) / Math.PI);
-		this.setPositionRotation(this.location.getX(), this.location.getY(), this.location.getZ(), yaw, pitch);
+		float yaw = (float) ((Math.atan2(instance.getLocation().getX() - player.getLocation().getX(), 
+				player.getLocation().getZ() - instance.getLocation().getZ()) * 180) / Math.PI);
+		float pitch = (float) ((Math.atan(instance.getLocation().getY() - player.getLocation().getY()) * 180) / Math.PI);
+		
+		this.setPositionRotation(instance.getLocation().getX(), instance.getLocation().getY(), instance.getLocation().getZ(), yaw, pitch);
 //		this.location.setX(this.location.getX() + .1);
 //		this.yaw = this.yaw + 180;
 //		if( this.yaw > 360 )
@@ -182,7 +186,7 @@ public class NPCEntity extends EntityPlayer
 
 		public void run()
 		{			
-			if(RageMod.getInstance().npcManager.activeNPCs.containsValue(npcEntity) && speechData.getInterval() > 0)
+			if(RageMod.getInstance().npcManager.contains(npcEntity) && speechData.getInterval() > 0)
 			{
 				Player[] players = NPCEntity.this.plugin.getServer().getOnlinePlayers();
 				String message = speechData.getNextMessage();
@@ -196,7 +200,7 @@ public class NPCEntity extends EntityPlayer
 					player.sendMessage(message);
 				}
 
-				if (RageMod.getInstance().npcManager.activeNPCs.containsValue(this.npcEntity))
+				if (RageMod.getInstance().npcManager.contains(this.npcEntity))
 					this.timer.schedule(new SpeechTask(NPCEntity.this, this.timer, speechData), speechData.getInterval());
 			}				
 		}

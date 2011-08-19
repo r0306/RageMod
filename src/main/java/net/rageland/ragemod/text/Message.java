@@ -143,6 +143,8 @@ public class Message
 	    		playerColor = ChatColor.GRAY;
 	    	else if( matcher.group(1).equals("t") )	// tourist
 	    		playerColor = ChatColor.DARK_GRAY;
+	    	else if( matcher.group(1).equals("n") )	// NPC
+	    		playerColor = ChatColor.AQUA;
         	
         	matcher.appendReplacement(sb, playerColor + "$2" + color);
         }

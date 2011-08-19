@@ -48,6 +48,7 @@ public class NPCPool
     		return null;
 
     	reserveNPCs.remove(id);
+    	npcs.get(id).activate();
     	return npcs.get(id);
     }
     
@@ -61,8 +62,20 @@ public class NPCPool
 
     	int id_NPC = removeList.remove(random.nextInt(reserveNPCs.size()));
     	reserveNPCs.remove(id_NPC);
+    	npcs.get(id_NPC).activate();
     	return npcs.get(id_NPC);
     }
+
+    // Returns an NPC to the pool
+    public void deactivate(int id)
+    {
+    	if( reserveNPCs.contains(id) || npcs.get(id) == null )
+    		return;
+    	
+    	reserveNPCs.add(id);
+    	npcs.get(id).deactivate();
+    }
+
 	
 	
 }

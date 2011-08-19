@@ -8,5 +8,18 @@ public class NPCData
 	public boolean isBilingual;
 	public int id_NPCTown;
 	
+	private boolean inUse = false;
+	
+	// Sets the current location to "in use"
+	public void activate()
+	{
+		this.inUse = true;
+	}
+	
+	// Sets the current location to "in reserve"
+	public void deactivate()
+	{
+		this.inUse = false;
+	}
 	
 }

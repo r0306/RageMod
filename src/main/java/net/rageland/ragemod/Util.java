@@ -59,6 +59,12 @@ public class Util
 		return (int)((now().getTime() - timestamp.getTime()) / 1000);
 	}
 	
+	// Returns a Timestamp representing minutes from now
+	public static Timestamp minutesFromNow(int minutes)
+	{
+		return new Timestamp(now().getTime() + (minutes * 60000));
+	}
+	
 	public static CreatureType getCreatureTypeFromEntity(Creature creature)
 	{
 		
