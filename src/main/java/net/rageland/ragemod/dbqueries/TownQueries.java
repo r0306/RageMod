@@ -15,9 +15,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.Location2D;
+import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
-import net.rageland.ragemod.data.PlayerTowns;
+import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.database.RageDB;
 
@@ -58,9 +59,7 @@ public class TownQueries {
         	
         	while ( rs.next() ) 
         	{	        		
-        		currentTown = new PlayerTown(plugin);
-        		currentTown.id_PlayerTown = rs.getInt("ID_PlayerTown");
-        		currentTown.townName = rs.getString("TownName");
+        		currentTown = new PlayerTown(plugin, rs.getInt("ID_PlayerTown"), rs.getString("TownName"), plugin.getServer().getWorld("world"));
         		currentTown.centerPoint = new Location(plugin.getServer().getWorld("world"), rs.getInt("XCoord"), rs.getInt("YCoord"), rs.getInt("ZCoord"));
         		currentTown.id_Faction = rs.getInt("ID_Faction");
         		currentTown.treasuryBalance = rs.getFloat("TreasuryBalance");
@@ -68,13 +67,12 @@ public class TownQueries {
         		currentTown.bankruptDate = rs.getTimestamp("BankruptDate");
         		currentTown.townLevel = plugin.config.townLevels.get(rs.getInt("TownLevel"));
         		currentTown.mayor = rs.getString("Mayor");
-        		currentTown.world = plugin.getServer().getWorld("world");
-        		currentTown.residents = getTownResidents(currentTown.id_PlayerTown);
+        		currentTown.residents = getTownResidents(currentTown.getID());
         		
         		currentTown.createRegions();	 
         		
-        		if(currentTown.townName != null)
-        			towns.put(currentTown.townName.toLowerCase(), currentTown);	 
+        		if(currentTown.getName() != null)
+        			towns.put(currentTown.getName().toLowerCase(), currentTown);	 
         		else
         			System.out.println("Town name was null for " + rs.getInt("ID_PlayerTown") + " in loadPlayerTowns()");
         	}			
@@ -220,13 +218,13 @@ public class TownQueries {
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
 	    ResultSet rs = null; 
-		PlayerTown playerTown = plugin.playerTowns.get(townName);
+		PlayerTown playerTown = (PlayerTown)plugin.towns.get(townName);
 		
     	try
     	{
     		conn = rageDB.getConnection();
     		preparedStatement = conn.prepareStatement(
-    				"SELECT COUNT(*) FROM Players WHERE ID_PlayerTown = " + playerTown.id_PlayerTown);
+    				"SELECT COUNT(*) FROM Players WHERE ID_PlayerTown = " + playerTown.getID());
     		rs = preparedStatement.executeQuery();
     		rs.next();
     		return rs.getInt(1);
@@ -351,7 +349,7 @@ public class TownQueries {
     				"MinimumBalance = " + playerTown.minimumBalance + ", " + 
     				"BankruptDate = " + (playerTown.bankruptDate == null ? "null" : "'" + playerTown.bankruptDate + "'") + ", " +
     				"IsDeleted = " + playerTown.isDeleted + " " + 
-    				"WHERE ID_PlayerTown = " + playerTown.id_PlayerTown);
+    				"WHERE ID_PlayerTown = " + playerTown.getID());
     		preparedStatement.executeUpdate();	
     	} 
     	catch (SQLException e) {
@@ -363,5 +361,7 @@ public class TownQueries {
 		}
 		
 	}
+
+
 
 }

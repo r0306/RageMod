@@ -14,7 +14,7 @@ import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.Permits;
 import net.rageland.ragemod.data.PlayerData;
-import net.rageland.ragemod.data.PlayerTowns;
+import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.database.RageDB;
 
 public class PlayerQueries {
@@ -137,8 +137,8 @@ public class PlayerQueries {
 			playerData.treasuryBalance = 0;
 		else
 		{
-			if(plugin.playerTowns.get(playerData.townName) != null)
-				playerData.treasuryBalance = this.getPlayerTreasuryBalance(playerData.id_Player, plugin.playerTowns.get(playerData.townName).id_PlayerTown);
+			if(plugin.towns.get(playerData.townName) != null)
+				playerData.treasuryBalance = this.getPlayerTreasuryBalance(playerData.id_Player, plugin.towns.get(playerData.townName).getID());
 			else 
 			{
 				playerData.townName = "";

@@ -15,7 +15,8 @@ import net.rageland.ragemod.data.Factions;
 import net.rageland.ragemod.data.Lot;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
-import net.rageland.ragemod.data.PlayerTowns;
+import net.rageland.ragemod.data.Town;
+import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.data.Players;
 
 import org.bukkit.ChatColor;
@@ -75,7 +76,7 @@ public class RMPlayerListener extends PlayerListener
     	
 		// Set the state info
     	playerData.currentZone = plugin.zones.getZone(player.getLocation());
-    	playerData.currentTown = plugin.playerTowns.getCurrentTown(player.getLocation());
+    	playerData.currentTown = plugin.towns.getCurrentTown(player.getLocation());
     	playerData.isInCapitol = plugin.zones.isInCapitol(player.getLocation()); 
     	
     	// Display any messages they have from actions that happened while they were offline
@@ -282,15 +283,39 @@ public class RMPlayerListener extends PlayerListener
         					playerData.enterLeaveMessageTime = Util.now();
         				}
         			}
+        			else
+        			{
+        				// See if the player has entered or left a Town
+        	        	if( playerData.currentTown == null )
+        	        	{
+        	        		Town currentTown = plugin.towns.getCurrentTown(player.getLocation());
+        	        		if( currentTown != null )
+        	        		{
+        	        			plugin.message.parse(player, "Now entering the " + currentTown.townLevel.name.toLowerCase() + " of " + currentTown.getCodedName());
+        	        			playerData.currentTown = currentTown;
+        	        			
+        	        		}
+        	        	}
+        	        	else
+        	        	{
+        	        		Town currentTown = plugin.towns.getCurrentTown(player.getLocation());
+        	        		if( currentTown == null )
+        	        		{
+        	        			plugin.message.parse(player, "Now leaving the " + playerData.currentTown.townLevel.name.toLowerCase() + " of " + playerData.currentTown.getCodedName());
+        	        			playerData.currentTown = null;
+        	        			
+        	        		}
+        	        	}
+        			}
         		}
         	}
         	// *** ZONE B (War Zone) ***
         	else if( playerData.currentZone == RageZones.Zone.B )
         	{
-	        	// See if the player has entered or left a PlayerTown
+	        	// See if the player has entered or left a Town
 	        	if( playerData.currentTown == null )
 	        	{
-	        		PlayerTown currentTown = plugin.playerTowns.getCurrentTown(player.getLocation());
+	        		Town currentTown = plugin.towns.getCurrentTown(player.getLocation());
 	        		if( currentTown != null )
 	        		{
 	        			plugin.message.parse(player, "Now entering the " + currentTown.townLevel.name.toLowerCase() + " of " + currentTown.getCodedName());
@@ -300,7 +325,7 @@ public class RMPlayerListener extends PlayerListener
 	        	}
 	        	else
 	        	{
-	        		PlayerTown currentTown = plugin.playerTowns.getCurrentTown(player.getLocation());
+	        		Town currentTown = plugin.towns.getCurrentTown(player.getLocation());
 	        		if( currentTown == null )
 	        		{
 	        			plugin.message.parse(player, "Now leaving the " + playerData.currentTown.townLevel.name.toLowerCase() + " of " + playerData.currentTown.getCodedName());
@@ -360,8 +385,11 @@ public class RMPlayerListener extends PlayerListener
 	    	}
 	    	else if( playerData.currentZone == RageZones.Zone.B )
 	    	{
-	    		if( playerData.currentTown != null )
-	    			event.setTo(playerData.currentTown.travelNode);
+	    		if( playerData.currentTown != null && playerData.currentTown instanceof PlayerTown )
+	    		{
+	    			PlayerTown currentTown = (PlayerTown)playerData.currentTown;
+	    			event.setTo(currentTown.travelNode);
+	    		}
 	    		else
 	    			event.setTo(plugin.zones.TZ_Center);
 	    	}

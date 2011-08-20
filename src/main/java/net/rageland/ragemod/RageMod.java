@@ -18,7 +18,7 @@ import org.bukkit.util.config.Configuration;
 import net.rageland.ragemod.data.Factions;
 import net.rageland.ragemod.data.Lots;
 import net.rageland.ragemod.data.PlayerData;
-import net.rageland.ragemod.data.PlayerTowns;
+import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.data.Tasks;
 import net.rageland.ragemod.database.RageDB;
@@ -64,7 +64,7 @@ public class RageMod extends JavaPlugin {
     // Global data
     public Lots lots;
     public Players players;
-    public PlayerTowns playerTowns;
+    public Towns towns;
     public Tasks tasks;
     public Factions factions;
     public Languages languages;
@@ -199,7 +199,7 @@ public class RageMod extends JavaPlugin {
         
         lots = new Lots(this);
         players = new Players(this);
-        playerTowns = new PlayerTowns(this);
+        towns = new Towns(this);
         tasks = new Tasks(this);
         factions = new Factions();
         languages = new Languages(this);
@@ -214,10 +214,11 @@ public class RageMod extends JavaPlugin {
     
     private void loadDatabaseData()
     {
-    	playerTowns.loadPlayerTowns();
+    	towns.loadTowns();
         lots.loadLots();
         tasks.loadTaskTimes();
         languages.loadDictionaries();
+        npcManager.associateLocations();
         npcManager.spawnAllInstances();
     }
     

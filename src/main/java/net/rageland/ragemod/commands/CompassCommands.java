@@ -6,7 +6,8 @@ import net.rageland.ragemod.data.Lot;
 import net.rageland.ragemod.data.Lots;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
-import net.rageland.ragemod.data.PlayerTowns;
+import net.rageland.ragemod.data.Town;
+import net.rageland.ragemod.data.Towns;
 
 import org.bukkit.entity.Player;
 
@@ -87,17 +88,17 @@ public class CompassCommands
 	// /compass town <town_name>
 	public void town(Player player, String townName) 
 	{
-		PlayerTown playerTown = plugin.playerTowns.get(townName);
+		Town town = plugin.towns.get(townName);
 		
 		// Check to see if specified town exists
-		if( playerTown == null )
+		if( town == null )
 		{
 			plugin.message.sendNo(player, "The town '" + townName + "' does not exist.");
 			return;
 		}
 		
-		player.setCompassTarget(playerTown.getCenter());
-		plugin.message.parse(player, "Compass target set to " + playerTown.getCodedName() + ".");
+		player.setCompassTarget(town.getCenter());
+		plugin.message.parse(player, "Compass target set to " + town.getCodedName() + ".");
 		
 	}
 

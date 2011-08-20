@@ -11,12 +11,14 @@ import net.rageland.ragemod.RageZones.Action;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.Factions;
 import net.rageland.ragemod.data.Location2D;
+import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
-import net.rageland.ragemod.data.PlayerTowns;
+import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.data.TownLevel;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -57,7 +59,7 @@ public class TownCommands
 			if( !playerData.isMayor && !playerData.townName.equals("") )
 				plugin.message.parse(player, "   /town leave   (leaves your current town)");
 			if( true )
-				plugin.message.parse(player, "   /town list [faction]   (lists all towns in the world)");
+				plugin.message.parse(player, "   /town list [npc/faction]   (lists all towns in the world)");
 			if( playerData.isMayor && !playerData.townName.equals("") )
 				plugin.message.parse(player, "   /town minimum <amount>   (sets the min. treasury balance)");
 			if( playerData.townName.equals("") )
@@ -165,7 +167,7 @@ public class TownCommands
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
 		PlayerData targetPlayerData = plugin.players.get(targetPlayerName);
-		PlayerTown playerTown = plugin.playerTowns.get(playerData.townName);
+		PlayerTown playerTown = (PlayerTown)plugin.towns.get(playerData.townName);
 		
 		// Check to see if target player exists
 		if( targetPlayerData == null )
@@ -203,7 +205,7 @@ public class TownCommands
 		// Update the playerData
 		targetPlayerData.townName = playerData.townName;
 		// This will give the player's balance back if they were a previous resident of the town
-		targetPlayerData.treasuryBalance = plugin.database.playerQueries.getPlayerTreasuryBalance(targetPlayerData.id_Player, playerTown.id_PlayerTown);
+		targetPlayerData.treasuryBalance = plugin.database.playerQueries.getPlayerTreasuryBalance(targetPlayerData.id_Player, playerTown.getID());
 		
 		playerTown.residents.add(targetPlayerData.name);
 		
@@ -214,18 +216,18 @@ public class TownCommands
 	public void create(Player player, String townName)
 	{		
 		PlayerData playerData = plugin.players.get(player.getName());
-		HashMap<String, Integer> nearbyTowns = plugin.playerTowns.checkForNearbyTowns(player.getLocation());
+		HashMap<String, Integer> nearbyTowns = plugin.towns.checkForNearbyTowns(player.getLocation());
 		Holdings holdings = iConomy.getAccount(player.getName()).getHoldings();
 		int cost = plugin.config.townLevels.get(1).initialCost;
 
 		// Ensure that the player is not currently a resident of a town
 		if( !playerData.townName.equals("") )
 		{
-			plugin.message.parseNo(player, "You are already a resident of '" + plugin.playerTowns.get(playerData.townName).getCodedName() + "'; you must use '/town leave' before you can create a new town.");
+			plugin.message.parseNo(player, "You are already a resident of '" + plugin.towns.get(playerData.townName).getCodedName() + "'; you must use '/town leave' before you can create a new town.");
 			return;
 		}		
 		// Ensure that the town name is not taken
-		if( plugin.playerTowns.get(townName) != null )
+		if( plugin.towns.get(townName) != null )
 		{
 			plugin.message.sendNo(player, "A town named " + townName + " already exists!");
 			return;
@@ -242,7 +244,7 @@ public class TownCommands
 			String message = "You are too close to the following towns: ";
 			for( String nearbyTownName : nearbyTowns.keySet() )
 			{
-				message += plugin.playerTowns.get(nearbyTownName).getCodedName() + " (" + nearbyTowns.get(nearbyTownName) + "m) ";
+				message += plugin.towns.get(nearbyTownName).getCodedName() + " (" + nearbyTowns.get(nearbyTownName) + "m) ";
 			}
 			plugin.message.parseNo(player, message);
 			plugin.message.parse(player, "Towns must be a minimum distance of " + plugin.config.Town_MIN_DISTANCE_BETWEEN + "m apart.");
@@ -264,25 +266,21 @@ public class TownCommands
 			int townID = plugin.database.townQueries.townCreate(player, townName);
 			
 			// Update PlayerTowns
-			PlayerTown playerTown = new PlayerTown(plugin);
-			playerTown.id_PlayerTown = townID;
-			playerTown.townName = townName;
+			PlayerTown playerTown = new PlayerTown(plugin, townID, townName, player.getWorld());
 			playerTown.centerPoint = player.getLocation();
 					
-					//(player.getWorld(), (int)player.getLocation().getX(), (int)player.getLocation().getX(), (int)player.getLocation().getZ());
 			playerTown.id_Faction = playerData.id_Faction;
 			playerTown.bankruptDate = null;
 			playerTown.townLevel = plugin.config.townLevels.get(1);
 			playerTown.treasuryBalance = plugin.config.townLevels.get(1).minimumBalance;
 			playerTown.minimumBalance = plugin.config.townLevels.get(1).minimumBalance;
 			playerTown.mayor = playerData.name;
-			playerTown.world = player.getWorld();
 			playerTown.residents.add(playerData.name);
 			
 			playerTown.createRegions();
 			playerTown.build();
 			
-			plugin.playerTowns.put(playerTown);
+			plugin.towns.add(playerTown);
 			
 			// Update the playerData
 			playerData.townName = townName;
@@ -307,7 +305,7 @@ public class TownCommands
 		PlayerData playerData = plugin.players.get(player.getName());
 		double amount;
 		Holdings holdings = iConomy.getAccount(player.getName()).getHoldings();
-		PlayerTown playerTown = plugin.playerTowns.get(playerData.townName);
+		PlayerTown playerTown = (PlayerTown)plugin.towns.get(playerData.townName);
 		
 		// Make sure the player is a resident of a town
 		if( playerData.townName.equals("") )
@@ -342,11 +340,11 @@ public class TownCommands
 		holdings.subtract(amount);
 		
 		// Update the database
-		plugin.database.townQueries.townDeposit(playerTown.id_PlayerTown, playerData.id_Player, amount);
+		plugin.database.townQueries.townDeposit(playerTown.getID(), playerData.id_Player, amount);
 		
 		// Update the town data
 		playerTown.treasuryBalance += amount; 
-		plugin.playerTowns.put(playerTown);
+		plugin.towns.add(playerTown);
 		
 		// Update the player data
 		playerData.treasuryBalance += amount;
@@ -375,7 +373,7 @@ public class TownCommands
 		// Ensure that the target player is a resident of the mayor's town
 		if( !targetPlayerData.townName.equals(playerData.townName) )
 		{
-			plugin.message.parseNo(player, targetPlayerData.getCodedName() + " is not a resident of " + plugin.playerTowns.get(playerData.townName).getCodedName() + ".");
+			plugin.message.parseNo(player, targetPlayerData.getCodedName() + " is not a resident of " + plugin.towns.get(playerData.townName).getCodedName() + ".");
 			return;
 		}
 		
@@ -387,18 +385,19 @@ public class TownCommands
 		// Update the playerData
 		targetPlayerData.townName = "";
 		targetPlayerData.clearSpawn();
-		targetPlayerData.logonMessageQueue += "You have been evicted from " + plugin.playerTowns.get(playerData.townName).getCodedName() + " by " + 
+		targetPlayerData.logonMessageQueue += "You have been evicted from " + plugin.towns.get(playerData.townName).getCodedName() + " by " + 
 				playerData.getCodedName() + ".<br>";
 		targetPlayerData.update();
 		
-		plugin.message.parse(player, targetPlayerData.getCodedName() + " is no longer a resident of " + plugin.playerTowns.get(playerData.townName).getCodedName() + ".");		
+		plugin.message.parse(player, targetPlayerData.getCodedName() + " is no longer a resident of " + plugin.towns.get(playerData.townName).getCodedName() + ".");		
 	}
 	
 	// /town info [town_name]
 	public void info(Player player, String townName) 
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
-		PlayerTown playerTown = plugin.playerTowns.get(townName);
+		
+		PlayerTown playerTown = (PlayerTown)plugin.towns.get(townName);
 		
 		// Check to see if specified town exists
 		if( playerTown == null )
@@ -447,25 +446,37 @@ public class TownCommands
 		playerData.clearSpawn();
 		playerData.treasuryBalance = 0;
 		
-		plugin.message.parse(player, "You are no longer a resident of " + plugin.playerTowns.get(townName).getCodedName() + ".");		
+		plugin.message.parse(player, "You are no longer a resident of " + plugin.towns.get(townName).getCodedName() + ".");		
 	}
 	
 	// /town list [faction]
 	public void list(Player player, String factionName) 
 	{
-		ArrayList<PlayerTown> towns = plugin.playerTowns.getAll();
+		ArrayList<PlayerTown> playerTowns = plugin.towns.getAllPlayerTowns();
+		ArrayList<NPCTown> npcTowns = plugin.towns.getAllNPCTowns();
 		
 		// TODO: Implement page # functionality 
 		
 		// Sorts the towns by level
-		Collections.sort(towns);
+		Collections.sort(playerTowns);
+		
+		if( factionName.equalsIgnoreCase("npc") )
+		{
+			plugin.message.send(player, "NPC Towns:");
+			for( NPCTown town : npcTowns )
+			{
+				plugin.message.parse(player, "   " + town.getCodedName() + " (" + town.townLevel.name + ") " +
+						ChatColor.WHITE + town.getQuadrant().toString());
+			}
+			return;
+		}
 		
 		if( factionName.equals("") )
-			plugin.message.parse(player, "List of all towns: (" + towns.size() + ")");
+			plugin.message.parse(player, "List of all player towns: (" + playerTowns.size() + ")");
 		else
 			plugin.message.parse(player, "List of all towns for " + factionName + " faction:");
 		
-		for( PlayerTown town : towns )
+		for( PlayerTown town : playerTowns )
 		{
 			if( plugin.factions.getName(town.id_Faction).equalsIgnoreCase(factionName) || factionName.equals("") )
 				plugin.message.parse(player, town.getCodedName() + " (" + town.getLevel().name + ")");
@@ -477,7 +488,7 @@ public class TownCommands
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
 		double amount;
-		PlayerTown playerTown = plugin.playerTowns.get(playerData.townName);
+		PlayerTown playerTown = (PlayerTown)plugin.towns.get(playerData.townName);
 		
 		// Ensure that the current player is the mayor
 		if( !playerData.isMayor || playerData.townName.equals("") )
@@ -510,11 +521,11 @@ public class TownCommands
 		}
 		
 		// Update the database
-		plugin.database.townQueries.townSetMinimumBalance(playerTown.id_PlayerTown, amount);
+		plugin.database.townQueries.townSetMinimumBalance(playerTown.getID(), amount);
 		
 		// Update the town data
 		playerTown.minimumBalance = amount; 
-		plugin.playerTowns.put(playerTown);
+		plugin.towns.add(playerTown);
 		
 		plugin.message.parse(player, "Your town's treasury minimum balance is now " + iConomy.format(amount) + ".");
 	}
@@ -522,7 +533,7 @@ public class TownCommands
 	// /town residents [town_name]
 	public void residents(Player player, String townName) 
 	{
-		PlayerTown playerTown = plugin.playerTowns.get(townName);
+		PlayerTown playerTown = (PlayerTown)plugin.towns.get(townName);
 		boolean isMayor = true;
 		
 		// Check to see if specified town exists
@@ -532,7 +543,7 @@ public class TownCommands
 			return;
 		}
 		
-		plugin.message.parse(player, "Residents of " + plugin.playerTowns.get(playerTown.townName).getCodedName() + ":");
+		plugin.message.parse(player, "Residents of " + playerTown.getCodedName() + ":");
 		
 		for( String resident : playerTown.residents )
 		{
@@ -552,7 +563,7 @@ public class TownCommands
 	public void upgrade(Player player, boolean isConfirmed)
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
-		PlayerTown playerTown = plugin.playerTowns.get(playerData.townName);
+		PlayerTown playerTown = (PlayerTown)plugin.towns.get(playerData.townName);
 		
 		// Ensure that the current player is the mayor
 		if( !playerData.isMayor || playerData.townName.equals("") )
@@ -574,13 +585,13 @@ public class TownCommands
 		if( targetLevel.isCapitol )
 		{
 			// ...check to see if the player's faction already has a capitol...
-			if( plugin.playerTowns.doesFactionCapitolExist(playerData.id_Faction) )
+			if( plugin.towns.doesFactionCapitolExist(playerData.id_Faction) )
 			{
 				plugin.message.sendNo(player, "Your faction already has a capitol; your town cannot be upgraded further.");
 				return;
 			}
 			// ...and make sure it is not too close to enemy capitols.
-			if( plugin.playerTowns.areEnemyCapitolsTooClose(playerTown) )
+			if( plugin.towns.areEnemyCapitolsTooClose(playerTown) )
 			{
 				plugin.message.sendNo(player, "Your town is ineligible to be your faction's capitol; it is too close to an enemy capitol.");
 				return;
@@ -602,9 +613,9 @@ public class TownCommands
 			playerTown.minimumBalance = targetLevel.minimumBalance;
 			playerTown.createRegions();
 			playerTown.build();
-			plugin.playerTowns.put(playerTown);
+			plugin.towns.add(playerTown);
 			
-			plugin.database.townQueries.townUpgrade(playerTown.townName, (targetLevel.initialCost - targetLevel.minimumBalance));
+			plugin.database.townQueries.townUpgrade(playerTown.getName(), (targetLevel.initialCost - targetLevel.minimumBalance));
 			
 			plugin.message.parse(player, "Congratulations, " + playerTown.getCodedName() + " has been upgraded to a " + targetLevel.name + "!");
 			plugin.message.parse(player, " " + iConomy.format(targetLevel.initialCost) + " has been deducted from the town treasury.");
@@ -623,7 +634,7 @@ public class TownCommands
 		PlayerData playerData = plugin.players.get(player.getName());
 		double amount;
 		Holdings holdings = iConomy.getAccount(player.getName()).getHoldings();
-		PlayerTown playerTown = plugin.playerTowns.get(playerData.townName);
+		PlayerTown playerTown = (PlayerTown)plugin.towns.get(playerData.townName);
 		
 		// Make sure the player is a resident of a town
 		if( playerData.townName.equals("") )
@@ -664,11 +675,11 @@ public class TownCommands
 		holdings.add(amount);
 		
 		// Update the database
-		plugin.database.townQueries.townDeposit(playerTown.id_PlayerTown, playerData.id_Player, (amount * -1));
+		plugin.database.townQueries.townDeposit(playerTown.getID(), playerData.id_Player, (amount * -1));
 		
 		// Update the town data
 		playerTown.treasuryBalance -= amount; 
-		plugin.playerTowns.put(playerTown);
+		plugin.towns.add(playerTown);
 		
 		// Update the player data
 		playerData.treasuryBalance -= amount;

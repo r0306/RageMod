@@ -1,5 +1,7 @@
 package net.rageland.ragemod.commands;
 
+// TODO: Add removal commands
+
 import java.util.ArrayList;
 import java.util.logging.Level;
 
@@ -11,11 +13,14 @@ import org.bukkit.entity.Spider;
 
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
+import net.rageland.ragemod.data.Location2D;
 import net.rageland.ragemod.data.NPCData;
 import net.rageland.ragemod.data.NPCInstance;
 import net.rageland.ragemod.data.NPCLocation;
+import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.NPCInstance.NPCType;
+import net.rageland.ragemod.data.Town;
 import net.rageland.ragemod.quest.Quest;
 import net.rageland.ragemod.quest.QuestImplementation;
 
@@ -30,7 +35,7 @@ public class NPCCommands {
 	
 	public void onNPCCommand(Player player, PlayerData playerData, String[] split) 
 	{
-		if( split.length < 2 || split.length > 3 )
+		if( split.length < 2 || split.length > 5 )
 		{
 			plugin.message.parse(player, "NPC commands: <required> [optional]");
 			if( true )
@@ -41,6 +46,8 @@ public class NPCCommands {
 				plugin.message.parse(player, "   /npc listloc   (lists all NPCLocations)");
 			if( true )
 				plugin.message.parse(player, "   /npc newloc   (creates a new NPCLocation at your point)");
+			if( true )
+				plugin.message.parse(player, "   /npc newtown <name> <lvl> <x,z,x,z>   (new NPCTown)");
 			if( true )
 				plugin.message.parse(player, "   /npc spawn <locID>   (spawns a random NPC at location)");
 			if( true )
@@ -64,6 +71,13 @@ public class NPCCommands {
 		else if( split[1].equalsIgnoreCase("newloc") )
 		{
 			this.newloc(player); 
+		}
+		else if( split[1].equalsIgnoreCase("newtown") )
+		{
+			if( split.length == 5 )
+				this.newtown(player, split[2], split[3], split[4]); 
+			else
+    			plugin.message.parse(player, "Usage: /npc newtown <name> <lvl> <x,z,x,z>");  
 		}
 		else if( split[1].equalsIgnoreCase("spawn") )
 		{
@@ -175,6 +189,8 @@ public class NPCCommands {
 
 
 
+
+
 	/**
 	 * To be a valid spawn command, format is:
 	 * 
@@ -233,12 +249,22 @@ public class NPCCommands {
 		
 		try
 		{
+			NPCLocation npcLocation = new NPCLocation(player.getLocation(), plugin);
+			int townID = 0;
+			
+			// See if the location is inside a town
+			Town town = plugin.towns.getCurrentTown(npcLocation);
+			if( town != null )
+			{
+				townID = town.getID();
+				town.addNPCLocation(npcLocation); 
+			}
+			
 			// Add the NPCLocation to the database
-			int id_NPCLocation = plugin.database.npcQueries.createNPCLocation(player.getLocation(), 0, 0, playerData.id_Player);
+			int id_NPCLocation = plugin.database.npcQueries.createNPCLocation(player.getLocation(), townID, 0, playerData.id_Player);
 			
 			// Add the NPCLocation to memory
-			NPCLocation npcLocation = new NPCLocation(player.getLocation(), plugin);
-			npcLocation.setIDs(id_NPCLocation, 0, 0);
+			npcLocation.setIDs(id_NPCLocation, townID, 0);
 			plugin.npcManager.addLocation(npcLocation);
 			
 			plugin.message.send(player, "Successfully added NPCLocation #" + id_NPCLocation + ".");
@@ -344,7 +370,7 @@ public class NPCCommands {
 		for( NPCLocation location : plugin.npcManager.getAllLocations() )
 		{
 			plugin.message.parse(player, " " + location.getID() + ": " + plugin.zones.getName(location.getZone()) + " (" + 
-					plugin.zones.quadrantName(location.getQuadrant()) + ") " + 
+					location.getQuadrant().toString() + ") " + 
 					(location.isActivated() ? ChatColor.GOLD + "ACTIVE" : ""));
 		}
 	}
@@ -379,8 +405,35 @@ public class NPCCommands {
 		{
 			plugin.message.parse(player, " " + instance.getCodedName() + ": Loc. " + instance.getLocation().getID() + ", " + 
 					plugin.zones.getName(instance.getLocation().getZone()) + " (" + 
-					plugin.zones.quadrantName(instance.getLocation().getQuadrant()) + ")");
+					instance.getLocation().getQuadrant().toString() + ")");
 		}
+	}
+	
+	// Creates a new town
+	private void newtown(Player player, String name, String levelString, String coords) 
+	{
+		String[] split = coords.split(",");
+		try
+		{
+			int level = Integer.parseInt(levelString);
+			int id_NPCTown = plugin.database.npcQueries.createNPCTown(player, name, 
+					Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]),
+					level);
+			
+			NPCTown town = new NPCTown(plugin, id_NPCTown, name, player.getLocation().getWorld());
+			town.id_NPCRace = 5;	// temp
+    		town.townLevel = plugin.config.townLevels.get(level);
+    		
+			town.createRegion(coords);
+			plugin.towns.add(town);
+			
+			plugin.message.send(player, "Successfully created NPCTown " + name + ".");
+		}
+		catch( Exception ex )
+		{
+			plugin.message.sendNo(player, "Error: " + ex.getMessage());
+			return;
+		}	
 		
 	}
 	

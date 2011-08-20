@@ -447,6 +447,17 @@ public class NPCManager
     {
     	return new ArrayList<NPCInstance>(activeNPCs.values());
     }
+
+    // Associates NPCLocations with NPCTowns, called on startup
+	public void associateLocations() 
+	{
+		for( NPCLocation location : this.npcLocationPool.getAllLocations() )
+		{
+			if( location.getTown() != null )
+				location.getTown().addNPCLocation(location);
+		}
+		
+	}
 	
 	
 	

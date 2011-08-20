@@ -6,7 +6,7 @@ import net.rageland.ragemod.data.Lot;
 import net.rageland.ragemod.data.Lots;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
-import net.rageland.ragemod.data.PlayerTowns;
+import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.data.Players;
 
 import org.bukkit.block.Block;
@@ -84,7 +84,7 @@ public class RMBlockListener extends BlockListener
 			// /spawn: for beds in player towns
 			else if( plugin.zones.isInZoneB(block.getLocation()) )
 			{
-				PlayerTown playerTown = plugin.playerTowns.getCurrentTown(block.getLocation());
+				PlayerTown playerTown = (PlayerTown)plugin.towns.getCurrentTown(block.getLocation());
 
 	    		if( playerTown != null )
 	    		{
@@ -164,9 +164,9 @@ public class RMBlockListener extends BlockListener
     		// /spawn: for beds in player towns
 			if( block.getType() == Material.BED_BLOCK )
 			{
-				PlayerTown playerTown = plugin.playerTowns.getCurrentTown(block.getLocation());
+				PlayerTown playerTown = (PlayerTown)plugin.towns.getCurrentTown(block.getLocation());
 
-	    		if( playerTown != null && playerTown.townName.equals(playerData.townName) )
+	    		if( playerTown != null && playerTown.getName().equals(playerData.townName) )
 	    		{
 	    			if( playerData.getSpawn() != null )
 					{
@@ -176,7 +176,7 @@ public class RMBlockListener extends BlockListener
 					}
 	    			
 	    			// Make sure the location is not too close to another player's spawn
-	    			HashMap<String, Location> spawns = plugin.database.playerQueries.getSpawnLocations(playerTown.id_PlayerTown);
+	    			HashMap<String, Location> spawns = plugin.database.playerQueries.getSpawnLocations(playerTown.getID());
 	    			for( String resident : spawns.keySet() )
 	    			{
 	    				if( block.getLocation().distance(spawns.get(resident)) < plugin.config.Town_DISTANCE_BETWEEN_BEDS && !resident.equals(playerData.name) )
@@ -217,7 +217,7 @@ public class RMBlockListener extends BlockListener
     			return false;
     		}
     		// See if the player is inside a lot, and if they own it
-    		else if( !playerData.isInsideLot(location) && !RageMod.permissionHandler.has(player, "ragemod.build.anylot") )
+    		else if( !playerData.isInsideOwnLot(location) && !RageMod.permissionHandler.has(player, "ragemod.build.anylot") )
     		{
     			Lot lot = plugin.lots.findCurrentLot(location);
     			
@@ -249,12 +249,12 @@ public class RMBlockListener extends BlockListener
     	// *** ZONE B (War Zone) ***
     	else if( plugin.zones.isInZoneB(location) )
     	{
-    		PlayerTown playerTown = plugin.playerTowns.getCurrentTown(location);
+    		PlayerTown playerTown = (PlayerTown)plugin.towns.getCurrentTown(location);
     		
     		if( playerTown != null )
     		{
         		// Players can only build inside their own towns
-    			if( !playerTown.townName.equals(playerData.townName) && !RageMod.permissionHandler.has(player, "ragemod.build.anytown") ) 
+    			if( !playerTown.getName().equals(playerData.townName) && !RageMod.permissionHandler.has(player, "ragemod.build.anytown") ) 
     			{		
     				plugin.message.sendNo(player, "You can only build inside of your own town.");
     				return false;

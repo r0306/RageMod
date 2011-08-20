@@ -73,7 +73,7 @@ public class RageConfig {
     
     // Capitol settings
     public String Capitol_Name;
-    public String Capitol_CodedName = "<tn>Rage City</tn>";
+    public String Capitol_CodedName = "<tc>Rage City</tc>";
     public int Capitol_X1a;			// The NW corner of region A for capitol
     public int Capitol_Z1a;
     public int Capitol_X2a;			// The SE corner of region A for capitol

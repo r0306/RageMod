@@ -1,5 +1,7 @@
 package net.rageland.ragemod.data;
 
+import net.rageland.ragemod.Util;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -37,11 +39,26 @@ public class Region2D extends Region
 		seCorner = new Location2D(l2);
 	}
 	
+	public Region2D( World world, String coords )
+	{
+		String[] split = coords.split(",");
+		try
+		{
+			nwCorner = new Location2D(Double.parseDouble(split[0]), Double.parseDouble(split[1]));
+			seCorner = new Location2D(Double.parseDouble(split[2]), Double.parseDouble(split[3]));
+			this.world = world;
+		}
+		catch( Exception ex )
+		{
+			System.out.println("ERROR: Invalid coordinate string passed to Region2D constructor");
+		}
+	}
+	
 	// Tests to see whether the current Location is inside the region
 	public boolean isInside(Location loc)
 	{
-		return (loc.getWorld() == this.world) && ((loc.getX() >= nwCorner.getX() && loc.getX() < (seCorner.getX())) &&
-				(loc.getZ() < nwCorner.getZ() && loc.getZ() >= (seCorner.getZ())));   // Stupid Z axis is reversed
+		return (loc.getWorld() == this.world) && (Util.isBetween(loc.getX(), nwCorner.getX(), seCorner.getX()) &&
+				(Util.isBetween(loc.getZ(), nwCorner.getZ(), seCorner.getZ())));   
 	}
 	
 

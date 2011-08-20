@@ -1,5 +1,7 @@
 package net.rageland.ragemod.data;
 
+import net.rageland.ragemod.Util;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -34,17 +36,13 @@ public class Region3D extends Region
 	public boolean isInside(Location loc)
 	{
 		return (loc.getWorld() == this.world) && 
-				(isBetween(loc.getX(), nwCorner.getX(), seCorner.getX()) &&
-				isBetween(loc.getY(), nwCorner.getY(), seCorner.getY()) &&
-				isBetween(loc.getZ(), nwCorner.getZ(), seCorner.getZ()));
+				(Util.isBetween(loc.getX(), nwCorner.getX(), seCorner.getX()) &&
+				Util.isBetween(loc.getY(), nwCorner.getY(), seCorner.getY()) &&
+				Util.isBetween(loc.getZ(), nwCorner.getZ(), seCorner.getZ()));
 
 	}
 	
-	// Checks to see whether the number is between the two extremes
-	private boolean isBetween(double test, double a1, double a2)
-	{
-		return (test >= a1 && test <= a2) || (test <= a1 && test >= a2);
-	}
+
 	
 
 

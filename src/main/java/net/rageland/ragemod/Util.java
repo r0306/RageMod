@@ -146,5 +146,18 @@ public class Util
 		}
 	}
 	
+	// Returns the point between the two points
+	public static double between(double x1, double x2)
+	{
+		return x1 - ((x1 - x2) / 2) ;
+	}
+	
+	// Checks to see whether the number is between the two extremes
+	public static boolean isBetween(double test, double a1, double a2)
+	{
+		return (test >= a1 && test <= a2) || (test <= a1 && test >= a2);
+	}
+	
+	
 	
 }

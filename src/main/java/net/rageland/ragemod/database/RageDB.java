@@ -18,7 +18,7 @@ import net.rageland.ragemod.data.Lot;
 import net.rageland.ragemod.data.Lots;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
-import net.rageland.ragemod.data.PlayerTowns;
+import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.data.Region2D;
 import net.rageland.ragemod.dbqueries.FactionQueries;

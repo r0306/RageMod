@@ -24,11 +24,9 @@ import net.rageland.ragemod.RageMod;
 
 // TODO: Store resident list in memory, there's no reason to be always pulling that from the database
 
-public class PlayerTown implements Comparable<PlayerTown> {
+public class PlayerTown extends Town implements Comparable<PlayerTown> {
 	
 	// PlayerTowns table
-	public int id_PlayerTown;
-	public String townName;
 	public int id_Faction;
 	public double treasuryBalance;
 	public double minimumBalance;
@@ -37,42 +35,15 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	public boolean isDeleted = false;
 	
 	public ArrayList<String> residents;
-		
-	public TownLevel townLevel;				// Corresponds to the HashMap TownLevels in Config
 	
-	public Location centerPoint;
-	public Region2D region;
 	public Region3D sanctumFloor;  			// A 20x20 region in the center of the city
 	public Region3D sanctumRoom;
 	public Location travelNode;
-	public World world;
-	
-	private RageMod plugin;
-	
-	
-	// Constructor: All data
-//	public PlayerTown (int _id_PlayerTown, String _townName, int _xCoord, int _zCoord, String _faction, 
-//			float _treasuryBalance, Date _bankruptDate, String _townLevel, float _upkeepCost, int _size, int _maxNPCs)
-//	{
-//		 ID_PlayerTown = _id_PlayerTown;
-//		 TownName = _townName;
-//		 XCoord = _xCoord;
-//		 ZCoord = _zCoord;
-//		 Faction = _faction;
-//		 TreasuryBalance = _treasuryBalance;
-//		 BankruptDate = _bankruptDate;
-//			
-//		 // TownLevels table
-//		 TownLevel = _townLevel;
-//		 UpkeepCost = _upkeepCost;
-//		 Size = _size;
-//		 MaxNPCs = _maxNPCs;
-//	}
 	
 	// Constructor: Blank
-	public PlayerTown (RageMod plugin)
+	public PlayerTown (RageMod plugin, int id, String name, World world)
 	{		
-		this.plugin = plugin;
+		super(plugin, id, name, world);
 		residents = new ArrayList<String>();
 	}
 	
@@ -85,10 +56,10 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	// Comparison
 	public boolean equals(PlayerTown otherTown)
 	{
-		return otherTown.id_PlayerTown == this.id_PlayerTown;
+		return otherTown.id == this.id;
 	}
 	
-	// Creates the region
+	// Creates the regions
 	public void createRegions()
 	{
 		region = new Region2D(world, centerPoint.getX() - (townLevel.size / 2), centerPoint.getZ() + (townLevel.size / 2),
@@ -125,7 +96,7 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	// Checks to see if the town already has its maximum number of residents
 	public boolean isFull() 
 	{
-		int numberOfResidents = plugin.database.townQueries.countResidents(townName);
+		int numberOfResidents = plugin.database.townQueries.countResidents(name);
 		
 		return numberOfResidents >= townLevel.maxResidents;
 	}
@@ -134,18 +105,6 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	public TownLevel getLevel()
 	{
 		return townLevel;
-	}
-	
-	// Returns whether or not the specified location is inside the region
-	public boolean isInside(Location location)
-	{
-		return region.isInside(location);
-	}
-	
-	// Returns a Location at the center of the town
-	public Location getCenter()
-	{
-		return new Location(world, centerPoint.getX(), 65, centerPoint.getZ());
 	}
 	
 	// Puts a border of cobblestone on the edges of the town
@@ -206,7 +165,7 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	public String getCodedName() 
 	{
 		char colorCode = plugin.factions.getColorCode(this.id_Faction);
-		return "<t" + colorCode + ">" + this.townName + "</t" + colorCode + ">";
+		return "<t" + colorCode + ">" + this.name + "</t" + colorCode + ">";
 	}
 	
 	// Updates the town info in the database
@@ -245,7 +204,7 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	    	PlayerData playerData = plugin.players.get(player.getName());
 	    	
 	    	// Town resident
-	    	if( playerData.townName.equals(this.townName) )
+	    	if( playerData.townName.equals(this.name) )
 	    	{
 	    		// Make sure the player has enough blocks deposited
 	    		if( playerData.treasuryBlocks < 1 )
@@ -270,7 +229,7 @@ public class PlayerTown implements Comparable<PlayerTown> {
 	    	PlayerData playerData = plugin.players.get(player.getName());
 	    	
 	    	// Town resident
-	    	if( playerData.townName.equals(this.townName) )
+	    	if( playerData.townName.equals(this.name) )
 	    	{
 	    		// Neutral town are not allowed to have treasuries
 	    		if( this.id_Faction == 0 )

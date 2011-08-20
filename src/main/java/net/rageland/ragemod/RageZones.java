@@ -242,23 +242,24 @@ public class RageZones {
     			((centerPoint.getZ() - worldSpawn.getZ()) / 8) + TZ_Center.getZ());
     }
 
-	public String quadrantName(Quadrant quadrant) 
-	{
-		switch(quadrant)
-		{
-			case NW:
-				return "NW"; 
-			case NE:
-				return "NE"; 
-			case SW:
-				return "SW"; 
-			case SE:
-				return "SE"; 
-			default:
-				return "Error";
-				
-		}
-	}
+//  enum.toString().  Who knew?  XD
+//	public String quadrantName(Quadrant quadrant) 
+//	{
+//		switch(quadrant)
+//		{
+//			case NW:
+//				return "NW"; 
+//			case NE:
+//				return "NE"; 
+//			case SW:
+//				return "SW"; 
+//			case SE:
+//				return "SE"; 
+//			default:
+//				return "Error";
+//				
+//		}
+//	}
     
 
 }

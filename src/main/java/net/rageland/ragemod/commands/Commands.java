@@ -9,7 +9,7 @@ import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.RageZones;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.PlayerData;
-import net.rageland.ragemod.data.PlayerTowns;
+import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.data.Players;
 
 import org.bukkit.Location;

@@ -7,7 +7,7 @@ import java.rmi.server.Skeleton;
 import net.rageland.ragemod.data.Factions;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
-import net.rageland.ragemod.data.PlayerTowns;
+import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.npcentities.NPCEntity;
 import net.rageland.ragemod.npclib.NPCManager;
@@ -127,7 +127,7 @@ public class RMEntityListener extends EntityListener
             	// *** ZONE B (War Zone) ***
             	else if( plugin.zones.isInZoneB(defender.getLocation()) )
             	{
-            		PlayerTown playerTown = plugin.playerTowns.getCurrentTown(defender.getLocation());
+            		PlayerTown playerTown = (PlayerTown)plugin.towns.getCurrentTown(defender.getLocation());
             		
             		// Keep referees from participating in combat
             		if( RageMod.permissionHandler.has(attacker, "ragemod.referee.blockpvp") )
@@ -221,7 +221,7 @@ public class RMEntityListener extends EntityListener
     	// Don't let monsters spawn inside player towns or the capitol
     	if( (event.getCreatureType() == CreatureType.CREEPER || event.getCreatureType() == CreatureType.SKELETON ||
     			event.getCreatureType() == CreatureType.ZOMBIE || event.getCreatureType() == CreatureType.SPIDER) && 
-    			(plugin.zones.isInCapitol(event.getLocation()) || plugin.playerTowns.getCurrentTown(event.getLocation()) != null) )
+    			(plugin.zones.isInCapitol(event.getLocation()) || plugin.towns.getCurrentTown(event.getLocation()) != null) )
     	{
     		event.setCancelled(true);
     	}   

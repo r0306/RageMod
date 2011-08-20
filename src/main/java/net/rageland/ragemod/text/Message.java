@@ -75,7 +75,6 @@ public class Message
 		message = highlightRequired(message, color);
 		message = highlightOptional(message, color);
 		message = highlightParentheses(message, color);
-		//message = highlightURL(message, color);				// not worth the CPU for the 2-3 URLs present in this plugin text <_<
 		
 		return message;
 	}
@@ -163,6 +162,10 @@ public class Message
 	    		townColor = ChatColor.BLUE;
 	    	else if( matcher.group(1).equals("r") )	// red
 	    		townColor = ChatColor.RED;
+	    	else if( matcher.group(1).equals("p") ) // npc
+	    		townColor = ChatColor.AQUA;
+	    	else if( matcher.group(1).equals("c") ) // Rage City
+	    		townColor = ChatColor.YELLOW;
 	    }
 	   
 	    return matcher.replaceAll(townColor + "$2" + color);

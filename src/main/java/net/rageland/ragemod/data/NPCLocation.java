@@ -10,8 +10,8 @@ import org.bukkit.World;
 public class NPCLocation extends Location
 {
 	private int id_NPCLocation;
-	private int id_NPCTown;		// A value of 0 indicates not inside an NPC town
-	private int id_NPCRace;		// A value of 0 indicates no preference for NPC race
+	private int id_NPCTown = 0;		// A value of 0 indicates not inside an NPC town
+	private int id_NPCRace;			// A value of 0 indicates no preference for NPC race
 	private RageMod plugin;
 	private Zone zone;	
 	private Quadrant quadrant;
@@ -61,6 +61,15 @@ public class NPCLocation extends Location
 	public int getID()
 	{
 		return id_NPCLocation;
+	}
+	
+	// Returns the NPCTown, if any
+	public NPCTown getTown()
+	{
+		if( this.id_NPCTown != 0 )
+			return plugin.towns.getNPCTown(id_NPCTown);
+		else
+			return null;
 	}
 	
 	// Gets the Zone that this location is in

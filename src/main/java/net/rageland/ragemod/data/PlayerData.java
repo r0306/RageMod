@@ -62,7 +62,7 @@ public class PlayerData
 	
 	// Current location
 	public Zone currentZone;
-	public PlayerTown currentTown;
+	public Town currentTown;
 	public boolean isInCapitol;
 	public Timestamp enterLeaveMessageTime = null;		// Prevent message spam by only allowing a message every 10 seconds (while people work on walls, etc)
 	
@@ -117,7 +117,7 @@ public class PlayerData
 	}
 	
 	// Checks whether the current location is inside one of the player's lots
-	public boolean isInsideLot(Location location)
+	public boolean isInsideOwnLot(Location location)
 	{
 		if(!location.getWorld().getName().equalsIgnoreCase("world"))
 			return false;
