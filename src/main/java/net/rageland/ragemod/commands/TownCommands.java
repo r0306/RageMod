@@ -11,9 +11,11 @@ import net.rageland.ragemod.RageZones.Action;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.Factions;
 import net.rageland.ragemod.data.Location2D;
+import net.rageland.ragemod.data.NPCLocation;
 import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
+import net.rageland.ragemod.data.Town;
 import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.data.TownLevel;
@@ -397,24 +399,43 @@ public class TownCommands
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
 		
-		PlayerTown playerTown = (PlayerTown)plugin.towns.get(townName);
+		Town town = plugin.towns.get(townName);
 		
 		// Check to see if specified town exists
-		if( playerTown == null )
+		if( town == null )
 		{
 			plugin.message.sendNo(player, "The town '" + townName + "' does not exist.");
 			return;
 		}
 		
-		plugin.message.parse(player, "Info for " + playerTown.getCodedName() + ":");
-		plugin.message.parse(player, "   Faction: " + plugin.factions.getName(playerTown.id_Faction));
-		plugin.message.parse(player, "   Level: " + playerTown.getLevel().name + " (" + playerTown.townLevel.level + ")");
-		plugin.message.parse(player, "   Mayor: " + plugin.players.get(playerTown.mayor).getCodedName());
-		if( playerData.townName.equalsIgnoreCase(townName) )
+		if( town instanceof PlayerTown )
 		{
-			plugin.message.parse(player, "   Total Balance: " + iConomy.format(playerTown.treasuryBalance));
-			plugin.message.parse(player, "   Minimum Balance:  " + iConomy.format(playerTown.minimumBalance));
-			plugin.message.parse(player, "   Your Balance:  " + iConomy.format(playerData.treasuryBalance));
+			PlayerTown playerTown = (PlayerTown)town;
+			
+			plugin.message.parse(player, "Info for " + playerTown.getCodedName() + ":");
+			plugin.message.parse(player, "   Faction: " + plugin.factions.getName(playerTown.id_Faction));
+			plugin.message.parse(player, "   Level: " + playerTown.getLevel().name + " (" + playerTown.townLevel.level + ")");
+			plugin.message.parse(player, "   Mayor: " + plugin.players.get(playerTown.mayor).getCodedName());
+			if( playerData.townName.equalsIgnoreCase(townName) )
+			{
+				plugin.message.parse(player, "   Total Balance: " + iConomy.format(playerTown.treasuryBalance));
+				plugin.message.parse(player, "   Minimum Balance:  " + iConomy.format(playerTown.minimumBalance));
+				plugin.message.parse(player, "   Your Balance:  " + iConomy.format(playerData.treasuryBalance));
+			}
+		}
+		else if( town instanceof NPCTown )
+		{
+			NPCTown npcTown = (NPCTown)town;
+			
+			plugin.message.parse(player, "Info for " + npcTown.getCodedName() + ":");
+			plugin.message.parse(player, "   Level: " + npcTown.townLevel.name + " (" + npcTown.townLevel.level + ")");
+			
+			for( NPCLocation location : npcTown.getNPCLocations() )
+			{
+				plugin.message.parse(player, "   Loc. #" + location.getID() + 
+						" (" + (int)location.getX() + "," + (int)location.getY() + "," + (int)location.getZ() + ")" +
+						" " + (location.isActivated() ? location.getInstance().getCodedName() : ""));
+			}
 		}
 	}
 	
@@ -465,8 +486,9 @@ public class TownCommands
 			plugin.message.send(player, "NPC Towns:");
 			for( NPCTown town : npcTowns )
 			{
-				plugin.message.parse(player, "   " + town.getCodedName() + " (" + town.townLevel.name + ") " +
-						ChatColor.WHITE + town.getQuadrant().toString());
+				plugin.message.parse(player, "   " + town.getCodedName() + ChatColor.YELLOW + town.getQuadrant().toString() + 
+						 " (" + town.townLevel.name + ") " +
+						 town.getNPCLocations().size() + ChatColor.WHITE + " locations");
 			}
 			return;
 		}

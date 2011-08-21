@@ -16,6 +16,7 @@ import net.rageland.ragemod.data.NPCLocation;
 import net.rageland.ragemod.data.NPCLocationPool;
 import net.rageland.ragemod.data.NPCPool;
 import net.rageland.ragemod.data.PlayerTown;
+import net.rageland.ragemod.data.NPCInstance.NPCType;
 import net.rageland.ragemod.npcentities.NPCEntity;
 import net.rageland.ragemod.npcentities.QuestStartNPCEntity;
 import net.rageland.ragemod.npcentities.SpeechData;
@@ -47,7 +48,6 @@ public class NPCManager
 	private HashMap<Integer, NPCInstance> activeNPCs = new HashMap<Integer, NPCInstance>();
 	private NPCLocationPool npcLocationPool;
 	private NPCPool npcPool;	
-	private ArrayList<NPCInstance> npcInstances;	// TODO: Remove this?  <_<
 
 	public NPCManager(RageMod plugin) 
 	{
@@ -79,7 +79,6 @@ public class NPCManager
 		}, 100L, 100L);
 		plugin.getServer().getPluginManager().registerEvent(Event.Type.PLUGIN_DISABLE, new SL(), Priority.Normal, plugin);
 		plugin.getServer().getPluginManager().registerEvent(Event.Type.CHUNK_LOAD, new WL(), Priority.Normal, plugin);
-		//npcSpawner = new NPCSpawner();
 	}
 	
 	// Used on startup to create NPC entities for all stored instances
@@ -253,12 +252,22 @@ public class NPCManager
 //			activeNPCs.remove(n);
 //	}
 //
-	public void despawnAll() 
+	public void despawnAll(boolean deleteInstances) 
 	{
 		for (NPCInstance instance : activeNPCs.values()) 
 		{
 			if (instance == null)
 				continue;
+			
+			if( deleteInstances ) 
+			{
+				// Return the NPC and Location back to the pool
+				npcPool.deactivate(instance.getNPCid());
+				npcLocationPool.deactivate(instance.getLocation().getID());
+				
+				// TODO: Wrap this all up inside of NPCInstance
+				plugin.database.npcQueries.disableInstance(instance.getID());
+			}
 			
 			NPCEntity npc = instance.getEntity();
 			if (npc == null)
@@ -395,7 +404,7 @@ public class NPCManager
 		{
 			if (event.getPlugin() == NPCManager.this.plugin) 
 			{
-				NPCManager.this.despawnAll();
+				NPCManager.this.despawnAll(false);
 				NPCManager.this.plugin.getServer().getScheduler().cancelTask(NPCManager.this.taskid);
 			}
 		}
@@ -456,7 +465,69 @@ public class NPCManager
 			if( location.getTown() != null )
 				location.getTown().addNPCLocation(location);
 		}
+	}
+	
+	// Return all active NPCs not in any NPCTown
+	public ArrayList<NPCInstance> getNonTownInstances()
+	{
+		ArrayList<NPCInstance> instances = new ArrayList<NPCInstance>();
 		
+		for( NPCInstance instance : activeNPCs.values() )
+		{
+			if( instance.getLocation().getTown() == null )
+				instances.add(instance);
+		}
+		
+		return instances;
+	}
+	
+	// Spawns a random NPC at a non-town location
+	public NPCInstance spawnRandomNonTown()
+	{
+		NPCLocation location;
+		NPCData npc;
+		NPCInstance instance;
+		
+		try
+		{
+			// Get a random NPCLocation from the reserve pool
+			location = this.npcLocationPool.activateRandomNonTown();
+			if( location == null )
+				throw new Exception("Could not activate an NPCLocation.");
+			
+			// Activate a random NPC from the pool
+			npc = this.npcPool.activateRandom();
+			if( npc == null )
+			{
+				this.deactivateLocation(location);
+				throw new Exception("There are no more NPCs in the pool to activate.");
+			}
+			
+			// Register the NPC instance and spawn the NPC
+			instance = plugin.database.npcQueries.createInstance(
+					npc.id_NPC, location.getID(), this.generateTTL(), 0, NPCType.SPEECH);
+			instance.setData(npc, location);
+			instance.spawn();
+			
+			// Get two new phrases for the speech NPC to say
+			ArrayList<String> phrases = plugin.database.npcQueries.getPhrases(2);
+			for( String phrase : phrases )
+				instance.getEntity().addSpeechMessage(phrase);
+					
+			return instance;
+		}
+		catch( Exception ex )
+		{
+			System.out.println("Error in NPCManager.spawnRandomNonTown(): " + ex.getMessage());
+		}
+		
+		return null;
+	}
+	
+	// Generate a random time to live in minutes
+	public int generateTTL()
+	{
+		return random.nextInt(plugin.config.NPC_TTL_MAX - plugin.config.NPC_TTL_MIN) + plugin.config.NPC_TTL_MIN;
 	}
 	
 	

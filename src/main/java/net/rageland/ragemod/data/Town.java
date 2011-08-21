@@ -75,4 +75,10 @@ public abstract class Town
 		this.npcLocations.add(npcLocation);
 	}
 	
+	// Return a list of all NPCLocations
+	public ArrayList<NPCLocation> getNPCLocations()
+	{
+		return npcLocations;
+	}
+	
 }

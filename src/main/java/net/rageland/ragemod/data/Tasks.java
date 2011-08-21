@@ -266,6 +266,21 @@ public class Tasks
 		}
 		
 	}
+
+	// Spawn and despawn NPCs in the world
+	public void spawnNPCs() 
+	{
+		// Spawn non-town NPCs
+		ArrayList<NPCInstance> nonTownInstances = plugin.npcManager.getNonTownInstances();
+		
+		for( int i = nonTownInstances.size(); i < plugin.config.NPC_TOTAL_NONTOWN; i++ )
+		{
+			NPCInstance instance = plugin.npcManager.spawnRandomNonTown();
+			if( instance != null )
+				System.out.println("Spawned NPC " + instance.getName() + " at location #" + instance.getLocation().getID() + ".");
+		}
+		
+	}
 	
 	
 }

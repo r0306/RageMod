@@ -40,7 +40,7 @@ public class Message
 		optionalPattern = Pattern.compile("(\\[.+\\])");
 		parenthesesPattern = Pattern.compile("([(].+[)])");
 		urlPattern = Pattern.compile("(http://\\S+)");
-		numberPattern = Pattern.compile("(\\s)([\\d+,-\\.]+( " + plugin.config.CURRENCY_NAME + ")?( " + plugin.config.CURRENCY_MINOR + ")?)");
+		numberPattern = Pattern.compile("(\\s)([\\d+,-\\.#]+( " + plugin.config.CURRENCY_NAME + ")?( " + plugin.config.CURRENCY_MINOR + ")?)");
 		 
 	}
 	

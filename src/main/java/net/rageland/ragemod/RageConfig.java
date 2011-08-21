@@ -83,8 +83,8 @@ public class RageConfig {
     public int Capitol_X2b;			// The SE corner of region B for capitol
     public int Capitol_Z2b;
     public String Capitol_SANDLOT;		// Auto-regen sand mine
-    public int Capitol_SANDLOT_GOLD_ODDS = 100000;				// Chance (1 / x) of gold spawning in sand mine
-    public int Capitol_SANDLOT_DIAMOND_ODDS = 1000000;
+    public int Capitol_SANDLOT_GOLD_ODDS = 50000;				// Chance (1 / x) of gold spawning in sand mine
+    public int Capitol_SANDLOT_DIAMOND_ODDS = 500000;
     public String Capitol_PORTAL_LOCATION = "-73,68,-56";
     
     // Cooldowns (in seconds)
@@ -100,7 +100,12 @@ public class RageConfig {
     // 1 day:  86400
     // 1 week: 604800
     public int Task_TOWN_UPKEEP = 86400;			// Charge taxes for player towns
-    public int Task_FILL_SANDLOT = 86400;		// Replenish sand in public sand mine
+    public int Task_FILL_SANDLOT = 86400;			// Replenish sand in public sand mine
+    
+    // NPC settings
+    public int NPC_TOTAL_NONTOWN = 5;			// Number of NPCs to spawn outside of NPCTowns
+    public int NPC_TTL_MIN = 360;				// Minimum length of minutes to keep NPC instances
+    public int NPC_TTL_MAX = 4320;			// Maximum length of minutes to keep NPC instances
     
     
     public RageConfig (RageMod plugin)

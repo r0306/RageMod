@@ -41,6 +41,8 @@ public class NPCCommands {
 			if( true )
 				plugin.message.parse(player, "   /npc create <name>   (enters a new NPC into the database)");
 			if( true )
+				plugin.message.parse(player, "   /npc despawnall   (clears all NPCs on server)");
+			if( true )
 				plugin.message.parse(player, "   /npc list   (lists all active NPCs)");
 			if( true )
 				plugin.message.parse(player, "   /npc listloc   (lists all NPCLocations)");
@@ -51,6 +53,8 @@ public class NPCCommands {
 			if( true )
 				plugin.message.parse(player, "   /npc spawn <locID>   (spawns a random NPC at location)");
 			if( true )
+				plugin.message.parse(player, "   /npc spawnall   (forces server-wide NPC spawning)");
+			if( true )
 				plugin.message.parse(player, "   /npc tploc <locID>  (teleports to the NPCLocation)");
 		}
 		else if( split[1].equalsIgnoreCase("create") )
@@ -59,6 +63,10 @@ public class NPCCommands {
 				this.create(player, split[2]); 
 			else
     			plugin.message.parse(player, "Usage: /npc create <name>");  
+		}
+		else if( split[1].equalsIgnoreCase("despawnall") )
+		{
+			this.despawnall(player); 
 		}
 		else if( split[1].equalsIgnoreCase("listloc") )
 		{
@@ -85,6 +93,10 @@ public class NPCCommands {
 				this.spawn(player, split[2]); 
 			else
     			plugin.message.parse(player, "Usage: /npc spawn <locID>");  
+		}
+		else if( split[1].equalsIgnoreCase("spawnall") )
+		{
+			this.spawnall(player); 
 		}
 		else if( split[1].equalsIgnoreCase("tploc") )
 		{
@@ -147,6 +159,8 @@ public class NPCCommands {
 //			player.sendMessage("Usage: /npc spawn <npctype> <npcname> <npcid> [questid]");
 //		}
 	}
+
+
 
 
 //
@@ -314,7 +328,7 @@ public class NPCCommands {
 			for( String phrase : phrases )
 				instance.getEntity().addSpeechMessage(phrase);
 					
-			plugin.message.send(player, "Successfully spawned " + npc.name + " at location #" + location.getID() + ".");
+			plugin.message.parse(player, "Successfully spawned " + instance.getCodedName() + " at location #" + location.getID() + ".");
 		}
 		catch( Exception ex )
 		{
@@ -365,13 +379,14 @@ public class NPCCommands {
 	// TODO: add granularity
 	private void listloc(Player player) 
 	{
-		plugin.message.send(player, "List of all NPC locations:");
+		plugin.message.send(player, "List of all non-town NPC locations:");
 		
 		for( NPCLocation location : plugin.npcManager.getAllLocations() )
 		{
-			plugin.message.parse(player, " " + location.getID() + ": " + plugin.zones.getName(location.getZone()) + " (" + 
-					location.getQuadrant().toString() + ") " + 
-					(location.isActivated() ? ChatColor.GOLD + "ACTIVE" : ""));
+			if( location.getTown() == null )
+				plugin.message.parse(player, " " + location.getID() + ": " + plugin.zones.getName(location.getZone()) + " (" + 
+						location.getQuadrant().toString() + ") " + 
+						(location.isActivated() ? ChatColor.GOLD + "ACTIVE" : ""));
 		}
 	}
 	
@@ -387,6 +402,7 @@ public class NPCCommands {
 			if( location == null )
 				throw new Exception(id_NPCLocation + " is an invalid location ID.");
 			
+			plugin.message.send(player, "Teleporting...");
 			player.teleport(location);
 		}
 		catch( Exception ex )
@@ -399,13 +415,20 @@ public class NPCCommands {
 	// Lists all currently spawned NPCs
 	private void list(Player player) 
 	{
-		plugin.message.send(player, "List of all active NPCs:");
+		ArrayList<NPCInstance> instances = plugin.npcManager.getAllInstances();
 		
-		for( NPCInstance instance : plugin.npcManager.getAllInstances() )
+		if( instances.size() == 0 )
+			plugin.message.send(player, "There are no currently active NPCs.");
+		else
 		{
-			plugin.message.parse(player, " " + instance.getCodedName() + ": Loc. " + instance.getLocation().getID() + ", " + 
-					plugin.zones.getName(instance.getLocation().getZone()) + " (" + 
-					instance.getLocation().getQuadrant().toString() + ")");
+			plugin.message.send(player, "List of all active NPCs:");
+			
+			for( NPCInstance instance : plugin.npcManager.getAllInstances() )
+			{
+				plugin.message.parse(player, " " + instance.getCodedName() + ": Loc. " + instance.getLocation().getID() + ", " + 
+						plugin.zones.getName(instance.getLocation().getZone()) + " (" + 
+						instance.getLocation().getQuadrant().toString() + ")");
+			}
 		}
 	}
 	
@@ -434,7 +457,20 @@ public class NPCCommands {
 			plugin.message.sendNo(player, "Error: " + ex.getMessage());
 			return;
 		}	
-		
+	}
+	
+	// Kicks off the server-wide NPC random generation and cleanup task
+	private void spawnall(Player player) 
+	{
+		 plugin.tasks.spawnNPCs();
+		 plugin.message.send(player, "Spawned " + plugin.npcManager.getAllInstances().size() + " NPCs.");
+	}
+	
+	// Clears all NPCs on the server
+	private void despawnall(Player player) 
+	{
+		plugin.npcManager.despawnAll(true);
+		plugin.message.send(player, "Cleared all NPCs.");
 	}
 	
 

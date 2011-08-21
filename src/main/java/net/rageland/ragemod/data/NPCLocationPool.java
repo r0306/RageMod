@@ -10,6 +10,7 @@ public class NPCLocationPool
 {
 	private HashSet<Integer> reserveNPCLocations;		// A list of all npcLocations that are not currently spawned
 	private HashMap<Integer, NPCLocation> npcLocations;
+	private HashSet<Integer> reserveNonTownLocations;	// Non-associated locations
 	
 	private Random random;
 
@@ -17,14 +18,19 @@ public class NPCLocationPool
 	{
 		 npcLocations = new HashMap<Integer, NPCLocation>();
 		 reserveNPCLocations = new HashSet<Integer>();
+		 reserveNonTownLocations = new HashSet<Integer>();
 		 random = new Random();
 	}
 	
 	// Adds an NPCLocation to the lists
-	public void add(NPCLocation NPCLocation)
+	public void add(NPCLocation npcLocation)
 	{
-		npcLocations.put(NPCLocation.getID(), NPCLocation);
-		reserveNPCLocations.add(NPCLocation.getID());
+		npcLocations.put(npcLocation.getID(), npcLocation);
+		reserveNPCLocations.add(npcLocation.getID());
+		if( npcLocation.getTownID() == 0 )
+		{
+			reserveNonTownLocations.add(npcLocation.getID());
+		}
 	}
 	
 	// Gets data on specified NPCLocation
@@ -48,7 +54,34 @@ public class NPCLocationPool
 
     	reserveNPCLocations.remove(id);
     	npcLocations.get(id).activate();
+    	if( npcLocations.get(id).getTownID() == 0 )
+    		reserveNonTownLocations.remove(id);
+    	
     	return npcLocations.get(id);
+    }
+    
+    // Finds a random NPCLocation from the pool and sets it as active
+    public NPCLocation activateRandom()
+    {
+    	if( reserveNPCLocations.size() == 0 )
+    		return null;
+    	
+    	ArrayList<Integer> removeList = new ArrayList<Integer>(reserveNPCLocations);
+    	int id_NPCLocation = removeList.remove(random.nextInt(reserveNPCLocations.size()));
+
+    	return this.activate(id_NPCLocation);
+    }
+    
+    // Finds a random NPCLocation from the pool without a town
+    public NPCLocation activateRandomNonTown()
+    {
+    	if( reserveNonTownLocations.size() == 0 )
+    		return null;
+    	
+    	ArrayList<Integer> removeList = new ArrayList<Integer>(reserveNonTownLocations);
+    	int id_NPCLocation = removeList.remove(random.nextInt(reserveNonTownLocations.size()));
+
+    	return this.activate(id_NPCLocation);
     }
     
     // Returns an NPCLocation to the pool
@@ -59,6 +92,8 @@ public class NPCLocationPool
     	
     	reserveNPCLocations.add(id);
     	npcLocations.get(id).deactivate();
+    	if( npcLocations.get(id).getTownID() == 0 )
+			reserveNonTownLocations.add(id);
     }
     
     // Returns a list of all locations
@@ -66,6 +101,7 @@ public class NPCLocationPool
     {
     	return new ArrayList<NPCLocation>(npcLocations.values());
     }
+
 	
 	
 }

@@ -10,12 +10,13 @@ import org.bukkit.World;
 public class NPCLocation extends Location
 {
 	private int id_NPCLocation;
-	private int id_NPCTown = 0;		// A value of 0 indicates not inside an NPC town
+	private int id_NPCTown;			// A value of 0 indicates not inside an NPC town
 	private int id_NPCRace;			// A value of 0 indicates no preference for NPC race
 	private RageMod plugin;
 	private Zone zone;	
 	private Quadrant quadrant;
 	private boolean inUse = false;
+	private NPCInstance instance;
 	
 	// Default constructor
 	public NPCLocation(World world, double x, double y, double z, float yaw, float pitch, RageMod plugin)
@@ -63,6 +64,12 @@ public class NPCLocation extends Location
 		return id_NPCLocation;
 	}
 	
+	// Returns the NPCTown ID
+	public int getTownID()
+	{
+		return id_NPCTown;
+	}
+	
 	// Returns the NPCTown, if any
 	public NPCTown getTown()
 	{
@@ -94,6 +101,18 @@ public class NPCLocation extends Location
 			this.quadrant = plugin.zones.getQuadrant(this);
 		
 		return this.quadrant;
+	}
+	
+	// Sets the attached instance
+	public void setInstance(NPCInstance instance)
+	{
+		this.instance = instance;
+	}
+	
+	// Gets the attached instance, if any
+	public NPCInstance getInstance()
+	{
+		return instance;
 	}
 
 }

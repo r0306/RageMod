@@ -174,7 +174,17 @@ public class NPCInstance
 		entity.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
 		world.getWorldServer().addEntity(entity);
 		plugin.npcManager.addInstance(this.id_NPCInstance, this);
+		location.setInstance(this);
 	}
+	
+	// Returns the NPC and Location back to the pool
+//	public void deactivate()
+//	{
+//		this.data.deactivate();
+//		this.location.deactivate();
+//	}
+	
+	// 
 
 
 	

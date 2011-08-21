@@ -250,6 +250,9 @@ public class NPCQueries
 		
     	try
     	{    		
+    		if( id_NPC == 0 )
+    			throw new Exception("Attempted to create instance with NPC ID 0");
+    		
     		conn = rageDB.getConnection();
     		// Insert the new town into the PlayerTowns table
     		preparedStatement = conn.prepareStatement(
@@ -268,13 +271,12 @@ public class NPCQueries
     		
     		return instance;
         		        		        	
-    	} catch (SQLException e) {
+    	} catch (Exception e) {
     		System.out.println("Error in NPCQueries.createInstance(): " + e.getMessage());
 		} finally {
 			rageDB.close(rs, preparedStatement, conn);
 		}
     	
-    	System.out.println("Error: NPCQueries.createInstance() returned -1");
     	return null;
 	}
 
@@ -438,6 +440,28 @@ public class NPCQueries
 		}
     	
     	return null;
+	}
+
+	// Deletes an NPCInstance
+	public void disableInstance(int id) 
+	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
+		
+    	try
+    	{    		
+    		conn = rageDB.getConnection();
+    		// Insert the new town into the PlayerTowns table
+    		preparedStatement = conn.prepareStatement(
+    				"UPDATE NPCInstances SET IsDisabled = 1 WHERE ID_NPCInstance = " + id);;   
+    		preparedStatement.executeUpdate();
+        		        		        	
+    	} catch (SQLException e) {
+    		System.out.println("Error in NPCQueries.disableInstance(): " + e.getMessage());
+		} finally {
+			rageDB.close(rs, preparedStatement, conn);
+		}
 	}
 	
 
