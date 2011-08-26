@@ -8,17 +8,25 @@ import java.util.Random;
 // Storage class for all data relating to NPC pool
 public class NPCPool 
 {
+	// Master list
 	private HashMap<Integer, NPCData> npcs;
+	
+	// Reserve lists
 	private HashSet<Integer> reserveNPCs;		// A list of all NPCs that are not currently spawned
-	// TODO: List of NPCs for each NPC town
+	private HashMap<Integer, HashSet<Integer>> floatingNPCs;		// <ID_NPCRace, ID_NPC>  all NPCs that can spawn anywhere
+	private HashMap<Integer, HashSet<Integer>> residentNPCs;		// <ID_NPCTown, ID_NPC>  all NPCs that are fixed to a specific town
 	
 	private Random random;
 
 	public NPCPool()
 	{
 		 npcs = new HashMap<Integer, NPCData>();
-		 reserveNPCs = new HashSet<Integer>();
 		 random = new Random();
+		 
+		 // Set up the reserve lists
+		 reserveNPCs = new HashSet<Integer>();
+		 floatingNPCs = new HashMap<Integer, HashSet<Integer>>();
+		 residentNPCs = new HashMap<Integer, HashSet<Integer>>();
 	}
 	
 	// Adds an NPC to the lists
@@ -26,6 +34,19 @@ public class NPCPool
 	{
 		npcs.put(npc.id_NPC, npc);
 		reserveNPCs.add(npc.id_NPC);
+		
+		if( npc.id_NPCTown == 0 )
+		{
+			if( !floatingNPCs.containsKey(npc.id_NPCRace) )
+				floatingNPCs.put(npc.id_NPCRace, new HashSet<Integer>());
+			floatingNPCs.get(npc.id_NPCRace).add(npc.id_NPC);
+		}
+    	else
+    	{
+    		if( !residentNPCs.containsKey(npc.id_NPCTown) )
+    			residentNPCs.put(npc.id_NPCTown, new HashSet<Integer>());
+    		residentNPCs.get(npc.id_NPCTown).add(npc.id_NPC);
+    	}
 	}
 	
 	// Gets data on specified NPC
@@ -47,23 +68,41 @@ public class NPCPool
     	if( !reserveNPCs.contains(id) )
     		return null;
 
+    	NPCData npc = npcs.get(id);
+    	
+    	// Remove the NPC from all appropriate lists
     	reserveNPCs.remove(id);
-    	npcs.get(id).activate();
-    	return npcs.get(id);
+    	if( npc.id_NPCTown == 0 )
+    		floatingNPCs.get(npc.id_NPCRace).remove(id);
+    	else
+    		residentNPCs.get(npc.id_NPCTown).remove(id);
+    	
+    	npc.activate();
+    	return npc;
     }
     
     // Finds a random NPC from the pool and sets it as active
-    public NPCData activateRandom()
+    public NPCData activateRandomFloating(int id_NPCRace)	// 0 = any race
     {
     	if( reserveNPCs.size() == 0 )
     		return null;
     	
-    	ArrayList<Integer> removeList = new ArrayList<Integer>(reserveNPCs);
+    	ArrayList<Integer> removeList = new ArrayList<Integer>();
+    	
+    	if( id_NPCRace == 0 )
+    	{
+    		// Add all races
+    		for( HashSet<Integer> set : floatingNPCs.values() )
+    			removeList.addAll(set);
+    	}
+    	else
+    		removeList.addAll(floatingNPCs.get(id_NPCRace));
+    				
+    	if( removeList.size() == 0 )
+    		return null;
 
-    	int id_NPC = removeList.remove(random.nextInt(reserveNPCs.size()));
-    	reserveNPCs.remove(id_NPC);
-    	npcs.get(id_NPC).activate();
-    	return npcs.get(id_NPC);
+    	int id_NPC = removeList.get(random.nextInt(removeList.size()));
+    	return activate(id_NPC);    
     }
 
     // Returns an NPC to the pool
@@ -72,9 +111,29 @@ public class NPCPool
     	if( reserveNPCs.contains(id) || npcs.get(id) == null )
     		return;
     	
+    	NPCData npc = npcs.get(id);
+    	
     	reserveNPCs.add(id);
+    	if( npc.id_NPCTown == 0 )
+			floatingNPCs.get(npc.id_NPCRace).add(npc.id_NPC);
+    	else
+    		residentNPCs.get(npc.id_NPCTown).add(npc.id_NPC);
+    	
     	npcs.get(id).deactivate();
     }
+
+	// Activates a random NPC in a town
+    public NPCData activateRandomInTown(int id) 
+	{
+    	if( reserveNPCs.size() == 0 || residentNPCs.get(id).size() == 0 )
+    		return null;
+    	
+    	ArrayList<Integer> removeList = new ArrayList<Integer>();
+    	removeList.addAll(residentNPCs.get(id));
+
+    	int id_NPC = removeList.get(random.nextInt(removeList.size()));
+    	return activate(id_NPC);  
+	}
 
 	
 	

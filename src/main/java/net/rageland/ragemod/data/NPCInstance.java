@@ -176,6 +176,12 @@ public class NPCInstance
 		plugin.npcManager.addInstance(this.id_NPCInstance, this);
 		location.setInstance(this);
 	}
+
+	// Returns whether the despawnTime is in the past
+	public boolean isExpired() 
+	{
+		return Util.now().getTime() > despawnTime.getTime();
+	}
 	
 	// Returns the NPC and Location back to the pool
 //	public void deactivate()

@@ -8,18 +8,24 @@ import java.util.Random;
 // Storage class for all data relating to NPCLocation pool
 public class NPCLocationPool 
 {
-	private HashSet<Integer> reserveNPCLocations;		// A list of all npcLocations that are not currently spawned
 	private HashMap<Integer, NPCLocation> npcLocations;
-	private HashSet<Integer> reserveNonTownLocations;	// Non-associated locations
+	
+	// Reserve lists
+	private HashSet<Integer> reserveNPCLocations;					// A list of all npcLocations that are not currently spawned
+	private HashSet<Integer> floatingLocations;						// <ID_NPC>  NPCLocations not tied to any NPCTown
+	private HashMap<Integer, HashSet<Integer>> residentLocations;	// <ID_NPCTown, ID_NPC>  all NPCLocations that are fixed to a specific town
 	
 	private Random random;
 
 	public NPCLocationPool()
 	{
 		 npcLocations = new HashMap<Integer, NPCLocation>();
-		 reserveNPCLocations = new HashSet<Integer>();
-		 reserveNonTownLocations = new HashSet<Integer>();
 		 random = new Random();
+		 
+		 // Set up the reserve lists
+		 reserveNPCLocations = new HashSet<Integer>();
+		 floatingLocations = new HashSet<Integer>();
+		 residentLocations = new HashMap<Integer, HashSet<Integer>>();
 	}
 	
 	// Adds an NPCLocation to the lists
@@ -27,9 +33,16 @@ public class NPCLocationPool
 	{
 		npcLocations.put(npcLocation.getID(), npcLocation);
 		reserveNPCLocations.add(npcLocation.getID());
+		
 		if( npcLocation.getTownID() == 0 )
 		{
-			reserveNonTownLocations.add(npcLocation.getID());
+			floatingLocations.add(npcLocation.getID());
+		}
+		else
+		{
+			if( !residentLocations.containsKey(npcLocation.getTownID()) )
+    			residentLocations.put(npcLocation.getTownID(), new HashSet<Integer>());
+    		residentLocations.get(npcLocation.getTownID()).add(npcLocation.getID());
 		}
 	}
 	
@@ -51,35 +64,30 @@ public class NPCLocationPool
     {
     	if( !reserveNPCLocations.contains(id) )
     		return null;
+    	
+    	NPCLocation location = npcLocations.get(id);
 
+    	// Remove the NPC from all appropriate lists
     	reserveNPCLocations.remove(id);
-    	npcLocations.get(id).activate();
-    	if( npcLocations.get(id).getTownID() == 0 )
-    		reserveNonTownLocations.remove(id);
     	
-    	return npcLocations.get(id);
-    }
-    
-    // Finds a random NPCLocation from the pool and sets it as active
-    public NPCLocation activateRandom()
-    {
-    	if( reserveNPCLocations.size() == 0 )
-    		return null;
+    	if( location.getTownID() == 0 )
+    		floatingLocations.remove(id);
+    	else
+    		residentLocations.get(location.getTownID()).remove(id);
     	
-    	ArrayList<Integer> removeList = new ArrayList<Integer>(reserveNPCLocations);
-    	int id_NPCLocation = removeList.remove(random.nextInt(reserveNPCLocations.size()));
-
-    	return this.activate(id_NPCLocation);
+    	location.activate();
+    	
+    	return location;
     }
     
     // Finds a random NPCLocation from the pool without a town
-    public NPCLocation activateRandomNonTown()
+    public NPCLocation activateRandomFloating()
     {
-    	if( reserveNonTownLocations.size() == 0 )
+    	if( floatingLocations.size() == 0 )
     		return null;
     	
-    	ArrayList<Integer> removeList = new ArrayList<Integer>(reserveNonTownLocations);
-    	int id_NPCLocation = removeList.remove(random.nextInt(reserveNonTownLocations.size()));
+    	ArrayList<Integer> removeList = new ArrayList<Integer>(floatingLocations);
+    	int id_NPCLocation = removeList.get(random.nextInt(removeList.size()));
 
     	return this.activate(id_NPCLocation);
     }
@@ -93,7 +101,9 @@ public class NPCLocationPool
     	reserveNPCLocations.add(id);
     	npcLocations.get(id).deactivate();
     	if( npcLocations.get(id).getTownID() == 0 )
-			reserveNonTownLocations.add(id);
+			floatingLocations.add(id);
+    	else
+    		residentLocations.get(npcLocations.get(id).getTownID()).add(npcLocations.get(id).getID());
     }
     
     // Returns a list of all locations
@@ -101,6 +111,30 @@ public class NPCLocationPool
     {
     	return new ArrayList<NPCLocation>(npcLocations.values());
     }
+
+    // Returns a list of all locations for a given town
+	public ArrayList<NPCLocation> getActiveTownLocations(int id) 
+	{
+		ArrayList<NPCLocation> locations = new ArrayList<NPCLocation>();
+		
+		for( NPCLocation location : npcLocations.values() )
+			if( location.getTownID() == id && location.isActivated() )
+				locations.add(location);
+				
+		return locations;
+	}
+
+	// Pulls a random NPCLocation from a town
+	public NPCLocation activateRandomInTown(int id) 
+	{
+		if( residentLocations.get(id) == null || residentLocations.get(id).size() == 0 )
+    		return null;
+    	
+    	ArrayList<Integer> removeList = new ArrayList<Integer>(residentLocations.get(id));
+    	int id_NPCLocation = removeList.get(random.nextInt(removeList.size()));
+
+    	return this.activate(id_NPCLocation);
+	}
 
 	
 	

@@ -3,6 +3,7 @@ package net.rageland.ragemod.data;
 // TODO: Redo this and PlayerTown... the amount of public is making things messy...
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.bukkit.Location;
 import org.bukkit.World;

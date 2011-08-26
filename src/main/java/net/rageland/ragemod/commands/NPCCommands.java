@@ -310,7 +310,7 @@ public class NPCCommands {
 				throw new Exception(id_NPCLocation + " is already in use or is an invalid location ID.");
 			
 			// Activate a random NPC from the pool
-			npc = plugin.npcManager.activateRandomNPC();
+			npc = plugin.npcManager.activateRandomFloatingNPC();
 			if( npc == null )
 			{
 				plugin.npcManager.deactivateLocation(location);

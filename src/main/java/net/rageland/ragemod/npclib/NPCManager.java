@@ -15,6 +15,7 @@ import net.rageland.ragemod.data.NPCInstance;
 import net.rageland.ragemod.data.NPCLocation;
 import net.rageland.ragemod.data.NPCLocationPool;
 import net.rageland.ragemod.data.NPCPool;
+import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.data.NPCInstance.NPCType;
 import net.rageland.ragemod.npcentities.NPCEntity;
@@ -156,9 +157,9 @@ public class NPCManager
     {
     	return npcPool.activate(id);
     }
-    public NPCData activateRandomNPC()
+    public NPCData activateRandomFloatingNPC()
     {
-    	return npcPool.activateRandom();
+    	return npcPool.activateRandomFloating(0);
     }
     public void deactivateNPC(int id)
     {
@@ -209,77 +210,46 @@ public class NPCManager
 //		}
 //	}
 
-	public void despawnById(int id) 
+	// Despawn one NPC by ID
+    public void despawnById(int id) 
 	{
-		NPCEntity npc = (NPCEntity) activeNPCs.get(id).getEntity();
-		if (npc != null) 
+		NPCInstance instance = activeNPCs.get(id);
+		despawn(instance);
+		activeNPCs.remove(id);
+	}
+	
+	// Despawn the NPC
+	private void despawn(NPCInstance instance)
+	{
+		if (instance == null)
+			return;
+		
+		// Return the NPC and Location back to the pool
+		npcPool.deactivate(instance.getNPCid());
+		npcLocationPool.deactivate(instance.getLocation().getID());
+		
+		NPCEntity npc = instance.getEntity();
+		if (npc == null)
+			return;
+		
+		try 
 		{
-			activeNPCs.remove(id);
-			try 
-			{
-				npc.world.removeEntity(npc);
-			} catch (Exception e) 
-			{
-				e.printStackTrace();
-			}
+			npc.world.removeEntity(npc);
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
 		}
 	}
 
-//	public void despawn(String npcName) 
-//	{
-//		if (npcName.length() > 16) 
-//			npcName = npcName.substring(0, 16);
-//		
-//		HashSet<Integer> toRemove = new HashSet<Integer>();
-//		
-//		for (int n : activeNPCs.keySet()) 
-//		{
-//			NPCEntity npc = (NPCEntity) activeNPCs.get(n);
-//			if ((npc != null) && (npc.name.equals(npcName))) 
-//			{
-//				toRemove.add(n);
-//				try 
-//				{
-//					npc.world.removeEntity(npc);
-//				} catch (Exception e)
-//				{
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//		
-//		for (int n : toRemove)
-//			activeNPCs.remove(n);
-//	}
-//
+	// Despawn all active NPCs
 	public void despawnAll(boolean deleteInstances) 
 	{
 		for (NPCInstance instance : activeNPCs.values()) 
 		{
-			if (instance == null)
-				continue;
-			
-			if( deleteInstances ) 
-			{
-				// Return the NPC and Location back to the pool
-				npcPool.deactivate(instance.getNPCid());
-				npcLocationPool.deactivate(instance.getLocation().getID());
-				
-				// TODO: Wrap this all up inside of NPCInstance
+			if( deleteInstances && instance != null ) 
 				plugin.database.npcQueries.disableInstance(instance.getID());
-			}
 			
-			NPCEntity npc = instance.getEntity();
-			if (npc == null)
-				continue;
-			
-			try 
-			{
-				npc.world.removeEntity(npc);
-			} catch (Exception e) 
-			{
-				e.printStackTrace();
-			}
+			despawn(instance);
 		}
 
 		activeNPCs.clear();
@@ -468,7 +438,7 @@ public class NPCManager
 	}
 	
 	// Return all active NPCs not in any NPCTown
-	public ArrayList<NPCInstance> getNonTownInstances()
+	public ArrayList<NPCInstance> getFloatingInstances()
 	{
 		ArrayList<NPCInstance> instances = new ArrayList<NPCInstance>();
 		
@@ -482,43 +452,31 @@ public class NPCManager
 	}
 	
 	// Spawns a random NPC at a non-town location
-	public NPCInstance spawnRandomNonTown()
+	public NPCInstance spawnRandomFloating()
 	{
 		NPCLocation location;
 		NPCData npc;
-		NPCInstance instance;
 		
 		try
 		{
 			// Get a random NPCLocation from the reserve pool
-			location = this.npcLocationPool.activateRandomNonTown();
+			location = this.npcLocationPool.activateRandomFloating();
 			if( location == null )
 				throw new Exception("Could not activate an NPCLocation.");
 			
 			// Activate a random NPC from the pool
-			npc = this.npcPool.activateRandom();
+			npc = this.npcPool.activateRandomFloating(0);
 			if( npc == null )
 			{
 				this.deactivateLocation(location);
 				throw new Exception("There are no more NPCs in the pool to activate.");
 			}
 			
-			// Register the NPC instance and spawn the NPC
-			instance = plugin.database.npcQueries.createInstance(
-					npc.id_NPC, location.getID(), this.generateTTL(), 0, NPCType.SPEECH);
-			instance.setData(npc, location);
-			instance.spawn();
-			
-			// Get two new phrases for the speech NPC to say
-			ArrayList<String> phrases = plugin.database.npcQueries.getPhrases(2);
-			for( String phrase : phrases )
-				instance.getEntity().addSpeechMessage(phrase);
-					
-			return instance;
+			return spawn(location, npc);
 		}
 		catch( Exception ex )
 		{
-			System.out.println("Error in NPCManager.spawnRandomNonTown(): " + ex.getMessage());
+			System.out.println("Error in NPCManager.spawnRandomFloating(): " + ex.getMessage());
 		}
 		
 		return null;
@@ -528,6 +486,85 @@ public class NPCManager
 	public int generateTTL()
 	{
 		return random.nextInt(plugin.config.NPC_TTL_MAX - plugin.config.NPC_TTL_MIN) + plugin.config.NPC_TTL_MIN;
+	}
+	
+	// Returns a list of all NPCLocations for a given town
+	public ArrayList<NPCLocation> getActiveTownLocations(int id)
+	{
+		return npcLocationPool.getActiveTownLocations(id);
+	}
+
+	// Spawns a random NPC inside of a town
+	public NPCInstance spawnRandomInTown(int id) 
+	{
+		NPCLocation location;
+		NPCData npc;
+		NPCTown town = plugin.towns.getNPCTown(id); 
+		
+		try
+		{
+			// Get a random NPCLocation from the reserve pool
+			location = this.npcLocationPool.activateRandomInTown(id);
+			if( location == null )
+				throw new Exception("Could not activate an NPCLocation.");
+			
+			// Activate a random NPC from the pool
+			// Determine whether it will be a resident or guest based on odds set in config
+			if( random.nextInt(100) < plugin.config.NPCTOWN_GUEST_CHANCE )
+				npc = npcPool.activateRandomFloating(town.id_NPCRace);
+			else
+				npc = npcPool.activateRandomInTown(id);
+			
+			if( npc == null )
+			{
+				this.deactivateLocation(location);
+				throw new Exception("There are no more NPCs in the pool to activate.");
+			}
+			
+			return spawn(location, npc);
+		}
+		catch( Exception ex )
+		{
+			System.out.println("Error in NPCManager.spawnRandomInTown(): " + ex.getMessage());
+		}
+		
+		return null;
+	}
+	
+	// Spawns a new NPC Instance
+	public NPCInstance spawn(NPCLocation location, NPCData npc) throws Exception
+	{
+		NPCInstance instance;
+		
+		// Register the NPC instance and spawn the NPC
+		instance = plugin.database.npcQueries.createInstance(
+				npc.id_NPC, location.getID(), this.generateTTL(), 0, NPCType.SPEECH);
+		instance.setData(npc, location);
+		instance.spawn();
+		
+		// Get two new phrases for the speech NPC to say
+		ArrayList<String> phrases = plugin.database.npcQueries.getPhrases(2);
+		for( String phrase : phrases )
+			instance.getEntity().addSpeechMessage(phrase);
+				
+		return instance;
+	}
+
+	// Despawns all NPCs whose time has expired
+	public void despawnExpired() 
+	{
+		ArrayList<NPCInstance> instances = new ArrayList<NPCInstance>(activeNPCs.values());
+		
+		for( NPCInstance instance : instances )
+		{
+			if( instance.isExpired() )
+			{
+				despawn(instance);
+				activeNPCs.remove(instance.getID());
+				System.out.println("Automatically despawned NPC " + instance.getName());
+			}
+		}
+		
 	}
 	
 	

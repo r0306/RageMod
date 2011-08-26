@@ -105,7 +105,8 @@ public class RageConfig {
     // NPC settings
     public int NPC_TOTAL_NONTOWN = 5;			// Number of NPCs to spawn outside of NPCTowns
     public int NPC_TTL_MIN = 360;				// Minimum length of minutes to keep NPC instances
-    public int NPC_TTL_MAX = 4320;			// Maximum length of minutes to keep NPC instances
+    public int NPC_TTL_MAX = 4320;				// Maximum length of minutes to keep NPC instances
+    public int NPCTOWN_GUEST_CHANCE = 33;		// Percent chance that NPC spawned in NPCTown will be floating guest
     
     
     public RageConfig (RageMod plugin)

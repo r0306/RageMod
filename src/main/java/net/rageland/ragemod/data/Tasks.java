@@ -271,15 +271,30 @@ public class Tasks
 	public void spawnNPCs() 
 	{
 		// Spawn non-town NPCs
-		ArrayList<NPCInstance> nonTownInstances = plugin.npcManager.getNonTownInstances();
+		ArrayList<NPCInstance> floatingInstances = plugin.npcManager.getFloatingInstances();
 		
-		for( int i = nonTownInstances.size(); i < plugin.config.NPC_TOTAL_NONTOWN; i++ )
+		for( int i = floatingInstances.size(); i < plugin.config.NPC_TOTAL_NONTOWN; i++ )
 		{
-			NPCInstance instance = plugin.npcManager.spawnRandomNonTown();
+			NPCInstance instance = plugin.npcManager.spawnRandomFloating();
 			if( instance != null )
 				System.out.println("Spawned NPC " + instance.getName() + " at location #" + instance.getLocation().getID() + ".");
 		}
 		
+		// Spawn town NPCs
+		for( NPCTown town : plugin.towns.getAllNPCTowns() )
+		{
+			ArrayList<NPCLocation> townLocations = plugin.npcManager.getActiveTownLocations(town.getID());
+			for( int i = townLocations.size(); i < town.townLevel.maxNPCs; i++ )
+			{
+				NPCInstance instance = plugin.npcManager.spawnRandomInTown(town.getID());
+				if( instance != null )
+					System.out.println("Spawned NPC " + instance.getName() + " in town " + town.getName() + 
+							" at location #" + instance.getLocation().getID() + ".");
+			}
+		}
+		
+		// Despawn NPCs
+		plugin.npcManager.despawnExpired();
 	}
 	
 	

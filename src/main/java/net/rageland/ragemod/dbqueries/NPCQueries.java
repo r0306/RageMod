@@ -186,7 +186,7 @@ public class NPCQueries
         	{	        		
         		npc = new NPCData();
         		npc.id_NPC = rs.getInt("ID_NPC");
-        		npc.id_NPCRace = rs.getInt("ID_NPC");
+        		npc.id_NPCRace = rs.getInt("ID_NPCRace");
         		npc.name = rs.getString("Name");
         		npc.isBilingual = rs.getBoolean("IsBilingual");
         		npc.id_NPCTown = rs.getInt("ID_NPCTown");
