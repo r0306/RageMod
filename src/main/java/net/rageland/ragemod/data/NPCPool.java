@@ -125,7 +125,7 @@ public class NPCPool
 	// Activates a random NPC in a town
     public NPCData activateRandomInTown(int id) 
 	{
-    	if( reserveNPCs.size() == 0 || residentNPCs.get(id).size() == 0 )
+    	if( reserveNPCs.size() == 0 || residentNPCs.get(id) == null || residentNPCs.get(id).size() == 0 )
     		return null;
     	
     	ArrayList<Integer> removeList = new ArrayList<Integer>();

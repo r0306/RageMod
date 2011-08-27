@@ -164,10 +164,10 @@ public class NPCInstance
 		switch(type)
 		{
 			case SPEECH:
-				entity = new SpeechNPC(this); break;
+				entity = new SpeechNPC(this); 
+				break;
 			default:
 				entity = new NPCEntity(this);
-			
 		}
 
 		// Set the position and put the entity in the world
@@ -175,6 +175,9 @@ public class NPCInstance
 		world.getWorldServer().addEntity(entity);
 		plugin.npcManager.addInstance(this.id_NPCInstance, this);
 		location.setInstance(this);
+		
+		// Add the speech messages
+		entity.addSpeechMessages();
 	}
 
 	// Returns whether the despawnTime is in the past
@@ -183,14 +186,19 @@ public class NPCInstance
 		return Util.now().getTime() > despawnTime.getTime();
 	}
 	
-	// Returns the NPC and Location back to the pool
-//	public void deactivate()
-//	{
-//		this.data.deactivate();
-//		this.location.deactivate();
-//	}
+	// Returns the race of this NPC
+	public int getRaceID()
+	{
+		return data.id_NPCRace;
+	}
 	
-	// 
+	// Returns the NPC Town ID, if any
+	public int getTownID()
+	{
+		return location.getTownID();
+	}
+	
+	
 
 
 	

@@ -89,7 +89,7 @@ public class NPCLocationPool
     	ArrayList<Integer> removeList = new ArrayList<Integer>(floatingLocations);
     	int id_NPCLocation = removeList.get(random.nextInt(removeList.size()));
 
-    	return this.activate(id_NPCLocation);
+    	return activate(id_NPCLocation);
     }
     
     // Returns an NPCLocation to the pool

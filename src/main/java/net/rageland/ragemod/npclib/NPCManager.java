@@ -87,19 +87,12 @@ public class NPCManager
 	{
 		ArrayList<NPCInstance> npcInstances = plugin.database.npcQueries.loadInstances();
 		
-		// Retrieve a number of phrases based on the number of NPC instances
-		ArrayList<String> phrases = plugin.database.npcQueries.getPhrases(npcInstances.size() * 2);
-		
 		// Spawn all NPCs with active Instances
 		for( NPCInstance instance : npcInstances )
 		{
 			try
 			{
 				instance.spawn();
-				
-				// Add two phrases to the NPC
-				instance.getEntity().addSpeechMessage(phrases.remove(random.nextInt(phrases.size())));
-				instance.getEntity().addSpeechMessage(phrases.remove(random.nextInt(phrases.size())));
 			}
 			catch( Exception ex )
 			{
@@ -541,11 +534,6 @@ public class NPCManager
 				npc.id_NPC, location.getID(), this.generateTTL(), 0, NPCType.SPEECH);
 		instance.setData(npc, location);
 		instance.spawn();
-		
-		// Get two new phrases for the speech NPC to say
-		ArrayList<String> phrases = plugin.database.npcQueries.getPhrases(2);
-		for( String phrase : phrases )
-			instance.getEntity().addSpeechMessage(phrase);
 				
 		return instance;
 	}

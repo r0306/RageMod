@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -21,6 +22,7 @@ import net.rageland.ragemod.data.Location2D;
 import net.rageland.ragemod.data.NPCLocation;
 import net.rageland.ragemod.data.NPCLocationPool;
 import net.rageland.ragemod.data.NPCPool;
+import net.rageland.ragemod.data.NPCPhrase;
 import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
@@ -31,11 +33,13 @@ public class NPCQueries
 {
 	private RageDB rageDB;
 	private RageMod plugin;
+	private Random random;
 
 	public NPCQueries(RageDB rageDB, RageMod plugin) 
 	{
 		this.rageDB = rageDB;
 		this.plugin = plugin;
+		this.random = new Random();
 	}
 	
 	// Load all words for languages
@@ -321,41 +325,57 @@ public class NPCQueries
 	}
 	
 	// Gets a specified number of phrases for speech NPCs 
-	public ArrayList<String> getPhrases(int number) 
+	public ArrayList<NPCPhrase> getPhrases(int id_NPCRace, int id_NPCTown, int id_NPC) 
 	{
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
 	    ResultSet rs = null;
-	    ArrayList<String> phrases = new ArrayList<String>();
+	    ArrayList<NPCPhrase> phrases = new ArrayList<NPCPhrase>();
+	    ArrayList<NPCPhrase> phrasePool = new ArrayList<NPCPhrase>();
 	    String updateQuery = "";
 		
     	try
     	{
     		conn = rageDB.getConnection();
         	preparedStatement = conn.prepareStatement(
-				"SELECT ID_NPCSpeech, Text " +
-				"FROM NPCSpeech ORDER BY Uses " +
-				"LIMIT " + number);
+				"SELECT ID_NPCPhrase, Text " +
+				"FROM NPCPhrases " +
+				"WHERE (ID_NPCRace = 0 OR ID_NPCRace = " + id_NPCRace + ") AND " +
+						"(ID_NPCTown = 0 OR ID_NPCTown = " + id_NPCTown + ") AND " +
+						"(ID_NPC = 0 OR ID_NPC = " + id_NPC + ") " +
+				"ORDER BY Uses " +
+				"LIMIT " + plugin.config.NPC_PHRASE_POOL);
         	
         	rs = preparedStatement.executeQuery();
         	
-        	if( rs.next() )
+        	// Load all possible phrases into the pool for random selection
+        	while( rs.next() )
         	{
-        		phrases.add(rs.getString("Text"));
-        		updateQuery = "ID_NPCSpeech = " + String.valueOf(rs.getInt("ID_NPCSpeech"));
-        		
-            	while ( rs.next() ) 
-            	{	        		
-            		phrases.add(rs.getString("Text"));
-            		updateQuery += " OR ID_NPCSpeech = " + String.valueOf(rs.getInt("ID_NPCSpeech"));
-            	}	
-            	
-            	// Update the database to show that the phrases have been used
+        		phrasePool.add(new NPCPhrase(rs.getString("Text"), rs.getInt("ID_NPCPhrase")));
+        	}
+        	
+        	// Choose a specified number of phrases from the pool to use in game
+        	for( int i = 0; i < plugin.config.NPC_PHRASES; i++ )
+        	{
+        		if( phrasePool.size() > 0 )
+        		{
+        			NPCPhrase phrase = phrasePool.remove(random.nextInt(phrasePool.size()));
+        			phrases.add(phrase);
+        			if( i == 0 )
+        				updateQuery = "ID_NPCPhrase = " + String.valueOf(phrase.getID());
+        			else
+        				updateQuery += " OR ID_NPCPhrase = " + String.valueOf(phrase.getID());
+        		}
+        	}
+        	
+        	if( !updateQuery.equals("") )
+        	{
+        		// Update the database to show that the phrases have been used
             	preparedStatement = conn.prepareStatement(
-        				"UPDATE NPCSpeech SET Uses = Uses + 1 WHERE " + updateQuery);
+        				"UPDATE NPCPhrases SET Uses = Uses + 1 WHERE " + updateQuery);
         		preparedStatement.executeUpdate();
-            	
-            	return phrases;
+        		
+        		return phrases;
         	}
         		        	
     	} catch (Exception e) {

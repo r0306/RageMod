@@ -17,6 +17,7 @@ import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.NPCData;
 import net.rageland.ragemod.data.NPCInstance;
 import net.rageland.ragemod.data.NPCLocation;
+import net.rageland.ragemod.data.NPCPhrase;
 import net.rageland.ragemod.npclib.BWorld;
 import net.rageland.ragemod.npclib.NPCNetHandler;
 import net.rageland.ragemod.npclib.NPCNetworkManager;
@@ -68,7 +69,7 @@ public class NPCEntity extends EntityPlayer
 		int radius = 20; 
 		int interval = 30;
 		
-		this.speechData = new SpeechData(new ArrayList<String>(), radius, interval);
+		this.speechData = new SpeechData(new ArrayList<NPCPhrase>(), radius, interval);
 	}
 
 	public void rightClickAction(Player player)
@@ -81,7 +82,7 @@ public class NPCEntity extends EntityPlayer
 
 	}
 	
-	public void addSpeechMessage(String message)
+	public void addSpeechMessage(NPCPhrase message)
 	{
 		speechData.addMessage(message);
 	}
@@ -165,10 +166,6 @@ public class NPCEntity extends EntityPlayer
 		float pitch = (float) ((Math.atan(instance.getLocation().getY() - player.getLocation().getY()) * 180) / Math.PI);
 		
 		this.setPositionRotation(instance.getLocation().getX(), instance.getLocation().getY(), instance.getLocation().getZ(), yaw, pitch);
-//		this.location.setX(this.location.getX() + .1);
-//		this.yaw = this.yaw + 180;
-//		if( this.yaw > 360 )
-//			this.yaw -= 360;
 	}
 
 	public class SpeechTask extends TimerTask
@@ -203,6 +200,15 @@ public class NPCEntity extends EntityPlayer
 				if (RageMod.getInstance().npcManager.contains(this.npcEntity))
 					this.timer.schedule(new SpeechTask(NPCEntity.this, this.timer, speechData), speechData.getInterval());
 			}				
+		}
+	}
+
+	// Pulls speech messages from the database
+	public void addSpeechMessages() 
+	{
+		for( NPCPhrase message : plugin.database.npcQueries.getPhrases(instance.getRaceID(), instance.getTownID(), instance.getNPCid()) )
+		{
+			this.addSpeechMessage(message);
 		}
 	}
 

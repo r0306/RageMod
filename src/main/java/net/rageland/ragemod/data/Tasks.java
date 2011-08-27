@@ -264,7 +264,6 @@ public class Tasks
 				}
 			}
 		}
-		
 	}
 
 	// Spawn and despawn NPCs in the world

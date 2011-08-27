@@ -322,11 +322,6 @@ public class NPCCommands {
 					npc.id_NPC, location.getID(), 30, playerData.id_Player, NPCType.SPEECH);
 			instance.setData(npc, location);
 			instance.spawn();
-			
-			// Get two new phrases for the speech NPC to say
-			ArrayList<String> phrases = plugin.database.npcQueries.getPhrases(2);
-			for( String phrase : phrases )
-				instance.getEntity().addSpeechMessage(phrase);
 					
 			plugin.message.parse(player, "Successfully spawned " + instance.getCodedName() + " at location #" + location.getID() + ".");
 		}
