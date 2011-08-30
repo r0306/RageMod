@@ -39,7 +39,7 @@ public class NPCCommands {
 		{
 			plugin.message.parse(player, "NPC commands: <required> [optional]");
 			if( true )
-				plugin.message.parse(player, "   /npc create <name>   (enters a new NPC into the database)");
+				plugin.message.parse(player, "   /npc create <name> [questnpctype] [questid]   (enters a new NPC into the database)");
 			if( true )
 				plugin.message.parse(player, "   /npc despawnall   (clears all NPCs on server)");
 			if( true )
@@ -59,8 +59,16 @@ public class NPCCommands {
 		}
 		else if( split[1].equalsIgnoreCase("create") )
 		{
-			if( split.length == 3 )
-				this.create(player, split[2]); 
+			if( split.length == 3 ) {
+				String name = split[2];
+				this.create(player, name); 
+			}				
+			else if(split.length == 5) {
+				String name = split[2];
+				String questNpcType = split[3];
+				String questId = split[4];
+				createQuestNPC(player, name, questNpcType, questId);
+			}
 			else
     			plugin.message.parse(player, "Usage: /npc create <name>");  
 		}
@@ -109,102 +117,53 @@ public class NPCCommands {
 		else
 			plugin.message.parse(player, "Type /npc to see a list of available commands.");
 		
-		
-		
-//		
-//		
-//		
-//		if( isSpawnCommand(split) ) 
-//		{
-//			String npcType = split[2];
-//			String npcName = split[3];
-//			String npcId = split[4];
-//			String questId;
-//			
-//			if( split.length > 5 )
-//				questId = split[5];
-//			else
-//				questId = "0";
-//			
-//			
-//			if(npcType.equalsIgnoreCase("queststartnpc"))
-//			{
-//				spawnQuestStartNPC(player, plugin.questManager.quests.get(questId), npcName, npcId);
-//			} 
-//			else if(npcType.equalsIgnoreCase("questrewardnpc"))
-//			{
-//				spawnRewardNPC(player, plugin.questManager.quests.get(questId), npcName, npcId);
-//			}
-//			else if(npcType.equalsIgnoreCase("speechnpc"))
-//			{
-//				spawnSpeechNPC(player, npcName, npcId);
-//			}
-//			else if(npcType.equalsIgnoreCase("questendnpc"))
-//			{
-//				spawnQuestEndNPC(player, plugin.questManager.quests.get(questId), npcName, npcId);
-//			}
-//			else if(npcType.equalsIgnoreCase("queststartendnpc"))
-//			{
-//				spawnQuestStartEndNPC(player, plugin.questManager.quests.get(questId), npcName, npcId);
-//			}				
-//		} 
-//		else if( isDespawnCommand(split) )
-//		{
-//			String npcName = split[2];
-//			plugin.npcManager.despawn(npcName);
-//			// Will despawn all NPC's with npcName as name. Might need to add despawn by ID, which is unique.
-//		}
-//		else
-//		{
-//			player.sendMessage("Usage: /npc spawn <npctype> <npcname> <npcid> [questid]");
-//		}
 	}
 
 
 
 
-//
-//	private void spawnQuestStartNPC(Player player, QuestImplementation quest, String npcName, int npcId) 
-//	{
-//		Location l = player.getLocation();		
-//		plugin.npcManager.getSpawner().questStartNPC(npcName, npcId, l, quest);
-//		// Store data to database
-//	}
-//	
-//	private void spawnRewardNPC(Player player, QuestImplementation quest, String npcName, int npcId)
-//	{
-//		Location l = player.getLocation();
-//		plugin.npcManager.getSpawner().rewardNPC(npcName, npcId, l, quest);
-//		// Store data to database
-//	}
-//	
-//	private void spawnSpeechNPC(Player player, String npcName, int npcId)
-//	{
-//		Location l = player.getLocation();
-//		plugin.npcManager.getSpawner().speechNPC(npcName, npcId, l);
-//		// Store data to database
-//	}
-//	
-//	private void spawnQuestEndNPC(Player player, QuestImplementation quest, String npcName, int npcId)
-//	{
-//		Location l = player.getLocation();
-//		plugin.npcManager.getSpawner().questEndNPC(npcName, npcId, l, quest);
-//		// Store data to database
-//	}
-//	
-//	private void spawnQuestStartEndNPC(Player player, QuestImplementation quest, String npcName, int npcId)
-//	{
-//		Location l = player.getLocation();
-//		plugin.npcManager.getSpawner().questStartEndNPC(npcName, npcId, l, quest);
-//		// Store data to database
-//	}
-	
-
-
-
-
-
-
+	private void createQuestNPC(Player player, String name, String questNpcType, String questId)
+	{
+		PlayerData playerData = plugin.players.get(player.getName());
+		
+		try
+		{
+			if (name.length() > 14) 
+			{
+				String tmp = name.substring(0, 14);
+				plugin.getServer().getLogger().log(Level.WARNING, "NPCs can't have names longer than 14 characters,");
+				plugin.getServer().getLogger().log(Level.WARNING, name + " has been shortened to " + tmp);
+				name = tmp;
+			}
+			
+			// Add the NPC to memory
+			NPCData npc = new NPCData();
+			npc.id_NPCRace = 5;		// temp: 5 for humans
+			npc.id_NPCTown = 0;		// 0 = no town
+			npc.name = name;
+			npc.isBilingual = false;
+			npc.isQuestNPC = true;
+			npc.quest = plugin.questManager.quests.get(questId);
+			
+			if(questNpcType.equals("0"))
+				npc.questNPCType = 0;
+			else if(questNpcType.equals("1"))
+				npc.questNPCType = 1;
+			else
+				npc.questNPCType = 2;
+			
+			plugin.npcManager.addNPC(npc);
+			
+			// Add the NPC to the database
+			int id_NPC = plugin.database.npcQueries.createNPC(npc, playerData.id_Player);
+			
+			plugin.message.send(player, "Successfully added NPC #" + id_NPC + ".");
+		}
+		catch( Exception ex )
+		{
+			plugin.message.sendNo(player, "Error: " + ex.getMessage());
+		}
+	}
 	/**
 	 * To be a valid spawn command, format is:
 	 * 

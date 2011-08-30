@@ -1,14 +1,10 @@
 package net.rageland.ragemod.npclib;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
-import java.util.logging.Level;
 
-import net.minecraft.server.ItemInWorldManager;
-import net.minecraft.server.WorldServer;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.NPCData;
 import net.rageland.ragemod.data.NPCInstance;
@@ -16,17 +12,10 @@ import net.rageland.ragemod.data.NPCLocation;
 import net.rageland.ragemod.data.NPCLocationPool;
 import net.rageland.ragemod.data.NPCPool;
 import net.rageland.ragemod.data.NPCTown;
-import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.data.NPCInstance.NPCType;
 import net.rageland.ragemod.npcentities.NPCEntity;
-import net.rageland.ragemod.npcentities.SpeechData;
-import net.rageland.ragemod.npcentities.SpeechNPC;
-import net.rageland.ragemod.quest.Quest;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftEntity;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
@@ -34,11 +23,9 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.ServerListener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.WorldListener;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class NPCManager 
 {
-	private BServer server;
 	private int taskid;
 	private RageMod plugin;
 	//private NPCSpawner npcSpawner;
@@ -51,7 +38,6 @@ public class NPCManager
 
 	public NPCManager(RageMod plugin) 
 	{
-		this.server = BServer.getInstance(plugin);
 		this.plugin = plugin;
 		random = new Random();
 		
@@ -157,50 +143,6 @@ public class NPCManager
     {
     	npcPool.deactivate(id);
     }
-	
-//	public NPCSpawner getSpawner()
-//	{
-//		return npcSpawner;
-//	}
-
-//	public NPCEntity spawnNPC(String name, Location l, int id) 
-//	{
-//		if (activeNPCs.containsKey(id)) 
-//		{
-//			this.server.getLogger().log(Level.WARNING, "NPC with that id already exists, existing NPC returned");
-//			return (NPCEntity) activeNPCs.get(id).getEntity();
-//		}
-//		if (name.length() > 14) 
-//		{
-//			String tmp = name.substring(0, 14);
-//			this.server.getLogger().log(Level.WARNING, "NPCs can't have names longer than 14 characters,");
-//			this.server.getLogger().log(Level.WARNING, name + " has been shortened to " + tmp);
-//			name = tmp;
-//		}
-//		BWorld world = new BWorld(l.getWorld());
-//		NPCEntity npcEntity = new NPCEntity(this.server.getMCServer(), world.getWorldServer(), name, new ItemInWorldManager( world.getWorldServer()), plugin, l);
-//		npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
-//		world.getWorldServer().addEntity(npcEntity);
-//		activeNPCs.put(id, npcEntity);
-//		return npcEntity;
-//	}
-	
-//	public HashMap<Integer, NPCEntity> getNpcs()
-//	{
-//		return activeNPCs;
-//	}
-	
-//	public void addSpeechMessage(String npcname, String message)
-//	{
-//		if(activeNPCs.containsKey(npcname))
-//		{
-//			activeNPCs.get(npcname).addSpeechMessage(message);
-//		}
-//		else
-//		{
-//			this.server.getLogger().log(Level.WARNING, "Invalid npc name, could not add speech message.");
-//		}
-//	}
 
 	// Despawn one NPC by ID
     public void despawnById(int id) 
@@ -324,36 +266,6 @@ public class NPCManager
 		}
 		return null;
 	}
-
-//	public void rename(int id, String name) 
-//	{
-//		if (name.length() > 16) 
-//		{ // Check and nag if name is too long, spawn
-//		  // NPC anyway with shortened name.
-//			String tmp = name.substring(0, 16);
-//			server.getLogger().log(Level.WARNING, "NPCs can't have names longer than 16 characters,");
-//			server.getLogger().log(Level.WARNING, name + " has been shortened to " + tmp);
-//			name = tmp;
-//		}
-//		NPCEntity npc = getNPCEntity(id);
-//		npc.setName(name);
-//		BWorld b = new BWorld(npc.getBukkitEntity().getLocation().getWorld());
-//		WorldServer s = b.getWorldServer();
-//		try 
-//		{
-//			Method m = s.getClass().getDeclaredMethod("d", new Class[] { Entity.class });
-//			m.setAccessible(true);
-//			m.invoke(s, (Entity) npc);
-//			m = s.getClass().getDeclaredMethod("c", new Class[] { Entity.class });
-//			m.setAccessible(true);
-//			m.invoke(s, (Entity) npc);
-//		} 
-//		catch (Exception ex) 
-//		{
-//			ex.printStackTrace();
-//		}
-//		s.everyoneSleeping();
-//	}
 
 	private class SL extends ServerListener 
 	{

@@ -10,6 +10,7 @@ import net.minecraft.server.ItemInWorldManager;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.npcentities.NPCEntity;
+import net.rageland.ragemod.npcentities.QuestNPC;
 import net.rageland.ragemod.npcentities.SpeechNPC;
 import net.rageland.ragemod.npclib.BServer;
 import net.rageland.ragemod.npclib.BWorld;
@@ -109,6 +110,11 @@ public class NPCInstance
 		this.world = new BWorld(location.getWorld());
 	}
 	
+	public NPCData getData()
+	{
+		return data;
+	}
+	
 	// Returns the INSTANCE id
 	public int getID()
 	{
@@ -166,6 +172,8 @@ public class NPCInstance
 			case SPEECH:
 				entity = new SpeechNPC(this); 
 				break;
+			case QUEST:
+				entity = new QuestNPC(this);
 			default:
 				entity = new NPCEntity(this);
 		}
