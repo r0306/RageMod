@@ -19,7 +19,6 @@ import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.data.NPCInstance.NPCType;
 import net.rageland.ragemod.npcentities.NPCEntity;
-import net.rageland.ragemod.npcentities.QuestStartNPCEntity;
 import net.rageland.ragemod.npcentities.SpeechData;
 import net.rageland.ragemod.npcentities.SpeechNPC;
 import net.rageland.ragemod.quest.Quest;
