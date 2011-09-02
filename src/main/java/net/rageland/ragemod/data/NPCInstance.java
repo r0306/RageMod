@@ -5,12 +5,14 @@ import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.HumanEntity;
+import org.getspout.spoutapi.SpoutManager;
 
 import net.minecraft.server.ItemInWorldManager;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.npcentities.NPCEntity;
-import net.rageland.ragemod.npcentities.QuestNPC;
+//import net.rageland.ragemod.npcentities.QuestNPC;
 import net.rageland.ragemod.npcentities.SpeechNPC;
 import net.rageland.ragemod.npclib.BServer;
 import net.rageland.ragemod.npclib.BWorld;
@@ -172,8 +174,8 @@ public class NPCInstance
 			case SPEECH:
 				entity = new SpeechNPC(this); 
 				break;
-			case QUEST:
-				entity = new QuestNPC(this);
+//			case QUEST:
+//				entity = new QuestNPC(this);
 			default:
 				entity = new NPCEntity(this);
 		}
@@ -186,6 +188,9 @@ public class NPCInstance
 		
 		// Add the speech messages
 		entity.addSpeechMessages();
+		
+		// TEMP
+		this.setSkin();
 	}
 
 	// Returns whether the despawnTime is in the past
@@ -204,6 +209,13 @@ public class NPCInstance
 	public int getTownID()
 	{
 		return location.getTownID();
+	}
+	
+	// Test
+	public void setSkin()
+	{
+		SpoutManager.getAppearanceManager().setGlobalSkin((HumanEntity)entity.getBukkitEntity(), "http://www.rageland.net/skins/ftgreg.png");
+		System.out.println("Set skin");
 	}
 	
 	
