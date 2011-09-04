@@ -103,7 +103,7 @@ public class RageMod extends JavaPlugin {
         startScheduledTasks();        
         runDebugTests();      
         
-        System.out.println( "RageMod is enabled!" );
+        System.out.println( "RageMod is enabled!!!" );
     }
     
     public void creatingNPCTemp() { /*    

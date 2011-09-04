@@ -1,5 +1,7 @@
 package net.rageland.ragemod.data;
 
+import net.rageland.ragemod.quest.QuestImplementation;
+
 public class NPCData 
 {
 	public int id_NPC;
@@ -7,6 +9,14 @@ public class NPCData
 	public String name;
 	public boolean isBilingual;
 	public int id_NPCTown;
+	public boolean isMale = true;
+	public String skinPath;
+	
+	// Quest data
+	// DC: This should be moved to NPCInstance - NPCs should be able to spawn with or without quests
+	public boolean isQuestNPC;
+    public QuestImplementation quest;
+    public int questNPCType; // 0 = START, 1 = END, 2 = STARTEND
 	
 	private boolean inUse = false;
 	

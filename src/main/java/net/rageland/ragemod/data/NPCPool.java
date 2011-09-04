@@ -87,6 +87,8 @@ public class NPCPool
     	if( reserveNPCs.size() == 0 )
     		return null;
     	
+    	System.out.println("ReserveNPCs size: " + reserveNPCs.size());
+    	
     	ArrayList<Integer> removeList = new ArrayList<Integer>();
     	
     	if( id_NPCRace == 0 )

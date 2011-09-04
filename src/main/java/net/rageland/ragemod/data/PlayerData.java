@@ -3,6 +3,8 @@ package net.rageland.ragemod.data;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -57,6 +59,10 @@ public class PlayerData
 	// Permits
 	public Permits permits = new Permits();
 	
+	// NPC-related info
+	private HashMap<Integer, Integer> languageSkill;		// Skill in each language (id 1-4), up to 100
+	private HashSet<Integer> npcInteractions;					// List of which NPCInstances the player has interacted with
+	private HashSet<Integer> newNPCInteractions;				// List of interactions from this session
 	
 	// ***** STATE (Non-DB) VALUES *****
 	
@@ -78,6 +84,9 @@ public class PlayerData
 	public PlayerData( RageMod plugin )
 	{
 		this.plugin = plugin;
+		this.languageSkill = new HashMap<Integer, Integer>();
+		this.npcInteractions = new HashSet<Integer>();
+		this.newNPCInteractions = new HashSet<Integer>();
 	}
 	
 	// Sets the spawn location when bed clicked
@@ -171,6 +180,51 @@ public class PlayerData
 	public void update()
 	{
 		plugin.database.playerQueries.updatePlayer(this);
+	}
+	
+	// Gets the skill level for the specified language
+	public int getLanguageSkill(int id)
+	{
+		return this.languageSkill.get(id);
+	}
+	
+	// Sets the skill level for the specified language
+	public void setLanguageSkill(int id, int value)
+	{
+		this.languageSkill.put(id, value);
+	}
+	
+	// Records a player's interaction with an NPC instance
+	// Returns true if language skill was increased
+	public boolean recordNPCInteraction(NPCInstance instance)
+	{
+		if( !this.npcInteractions.contains(instance.getID()) )
+		{
+			// Record the interaction
+			this.npcInteractions.add(instance.getID());
+			this.newNPCInteractions.add(instance.getID());
+			
+			// Increase the language skill, if applicable
+			if( instance.getRaceID() != plugin.config.NPC_HUMAN_ID && this.languageSkill.get(instance.getRaceID()) < 100 )
+			{
+				this.languageSkill.put(instance.getRaceID(), this.languageSkill.get(instance.getRaceID()) + 1);
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	// Gets all NPC interactions
+	public HashSet<Integer> getNewInteractions()
+	{
+		return this.newNPCInteractions;
+	}
+	
+	// Sets the instance list
+	public void setInteractions(HashSet<Integer> interactions)
+	{
+		this.npcInteractions = interactions;
 	}
 	
 	

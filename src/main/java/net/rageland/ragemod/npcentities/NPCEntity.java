@@ -69,7 +69,7 @@ public class NPCEntity extends EntityPlayer
 		int radius = 20; 
 		int interval = 30;
 		
-		this.speechData = new SpeechData(new ArrayList<NPCPhrase>(), radius, interval);
+		this.speechData = new SpeechData(new ArrayList<NPCPhrase>(), radius, interval, instance.getRaceID(), plugin);
 	}
 
 	public void rightClickAction(Player player)
@@ -186,7 +186,7 @@ public class NPCEntity extends EntityPlayer
 			if(RageMod.getInstance().npcManager.contains(npcEntity) && speechData.getInterval() > 0)
 			{
 				Player[] players = NPCEntity.this.plugin.getServer().getOnlinePlayers();
-				String message = speechData.getNextMessage();
+				String message = speechData.getNextMessage(100);	// TODO: Integrate languages
 				
 				for (Player player : players)
 				{

@@ -181,8 +181,9 @@ public class NPCQueries
     	{
     		conn = rageDB.getConnection();
         	preparedStatement = conn.prepareStatement(
-				"SELECT ID_NPC, ID_NPCRace, Name, IsBilingual, ID_NPCTown " +
-				"FROM NPCs");
+				"SELECT n.ID_NPC, n.ID_NPCRace, n.Name, n.IsBilingual, n.ID_NPCTown, n.Gender, s.Filename " +
+				"FROM NPCs n " +
+				"LEFT JOIN Skins s ON n.ID_Skin = s.ID_Skin");
         	
         	rs = preparedStatement.executeQuery();
         	
@@ -194,7 +195,9 @@ public class NPCQueries
         		npc.name = rs.getString("Name");
         		npc.isBilingual = rs.getBoolean("IsBilingual");
         		npc.id_NPCTown = rs.getInt("ID_NPCTown");
-
+        		npc.isMale = rs.getString("Gender").equalsIgnoreCase("M");
+        		npc.skinPath = rs.getString("Filename");
+        		
         		npcs.add(npc);
         	}			
         	
@@ -215,15 +218,17 @@ public class NPCQueries
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
 	    ResultSet rs = null;
+	    int skinID;
 		
     	try
     	{    		
     		conn = rageDB.getConnection();
     		// Insert the new town into the PlayerTowns table
     		preparedStatement = conn.prepareStatement(
-    				"INSERT INTO NPCs (ID_NPCRace, Name, IsBilingual, ID_NPCTown, CreateDate, ID_Player_Creator) " +
+    				"INSERT INTO NPCs (ID_NPCRace, Name, IsBilingual, ID_NPCTown, CreateDate, ID_Player_Creator, Gender) " +
     				"VALUES (" + npc.id_NPCRace + ", '" + npc.name + "', " + npc.isBilingual + ", " +
-    						npc.id_NPCTown + ", NOW(), " + id_Player_Creator + ")",
+    					npc.id_NPCTown + ", NOW(), " + id_Player_Creator + ", " +
+    					(npc.isMale ? "'M'" : "'F'") + ")",
     				Statement.RETURN_GENERATED_KEYS);   
     		preparedStatement.executeUpdate();
     		
@@ -232,9 +237,31 @@ public class NPCQueries
     		rs.next();
     		int npcID = rs.getInt(1);
     		
+    		// Find a new skin for the NPC
+    		preparedStatement = conn.prepareStatement(
+    				"SELECT s.ID_Skin, s.Filename FROM Skins s " +
+    				"LEFT JOIN NPCs n ON n.ID_Skin = s.ID_Skin " +
+    				"WHERE s.ID_NPCRace = " + npc.id_NPCRace + " AND s.Gender = " + (npc.isMale ? "'M'" : "'F'") + "" +
+    				"GROUP BY s.ID_Skin " +
+    				"ORDER BY COUNT(n.ID_NPC) LIMIT 1");
+        	rs = preparedStatement.executeQuery();
+        	
+        	if( rs.next() ) 
+        	{	        		
+        		npc.skinPath = rs.getString("Filename");
+        		skinID = rs.getInt("ID_Skin");
+        		
+        		// Update the skin in the DB
+        		preparedStatement = conn.prepareStatement(
+        				"UPDATE NPCs SET ID_Skin = " + skinID + " WHERE ID_NPC = " + npcID);   
+        		preparedStatement.executeUpdate();
+        	}		
+        	else
+        		throw new Exception("Could not locate a suitable skin for " + npc.name);
+    		
     		return npcID;
         		        		        	
-    	} catch (SQLException e) {
+    	} catch (Exception e) {
     		System.out.println("Error in NPCQueries.createNPC(): " + e.getMessage());
 		} finally {
 			rageDB.close(rs, preparedStatement, conn);
@@ -351,7 +378,7 @@ public class NPCQueries
         	// Load all possible phrases into the pool for random selection
         	while( rs.next() )
         	{
-        		phrasePool.add(new NPCPhrase(rs.getString("Text"), rs.getInt("ID_NPCPhrase")));
+        		phrasePool.add(new NPCPhrase(rs.getString("Text"), rs.getInt("ID_NPCPhrase"), id_NPCRace, plugin));
         	}
         	
         	// Choose a specified number of phrases from the pool to use in game

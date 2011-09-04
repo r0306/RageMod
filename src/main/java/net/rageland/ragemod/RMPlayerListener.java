@@ -129,8 +129,11 @@ public class RMPlayerListener extends PlayerListener
     	Player player = event.getPlayer();    	
     	PlayerData playerData = plugin.players.get(player.getName());    	  
     	
+    	// Make one final update to get values not important enough for instant update
+    	playerData.update();
+    	
     	plugin.database.playerQueries.playerLogoff(playerData.id_Player);
-		
+    	plugin.database.playerQueries.recordInstances(playerData);
     }
     
     
@@ -150,6 +153,11 @@ public class RMPlayerListener extends PlayerListener
     	if(split[0].equalsIgnoreCase("/zone"))
     	{
     		commands.zone(player);
+    		event.setCancelled(true);
+    	}
+    	else if( split[0].equalsIgnoreCase("/language") || split[0].equalsIgnoreCase("/lang") )
+    	{
+    		commands.language(player);
     		event.setCancelled(true);
     	}
     	// ********* COMPASS COMMANDS *********
@@ -174,11 +182,12 @@ public class RMPlayerListener extends PlayerListener
     		event.setCancelled(true);
     	}
     	// ********* PERMIT COMMANDS *********
-    	if( split[0].equalsIgnoreCase("/permit") )
+    	else if( split[0].equalsIgnoreCase("/permit") )
     	{
     		permitCommands.onCommand(player, playerData, split);
     		event.setCancelled(true);
     	}
+    	
     	
     	if( !plugin.config.PRE_RELEASE_MODE )
     	{

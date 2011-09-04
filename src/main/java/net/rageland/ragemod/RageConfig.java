@@ -109,6 +109,9 @@ public class RageConfig {
     public int NPC_PHRASES = 2;					// Number of phrases each NPC will say at a time
     public int NPC_PHRASE_POOL = 8;				// Number of phrases pulled from DB to be selected from randomly
     public int NPCTOWN_GUEST_CHANCE = 33;		// Percent chance that NPC spawned in NPCTown will be floating guest
+    public String CUSTOM_SKIN_PATH = "http://www.rageland.net/skins/";
+    public int NPC_HUMAN_ID = 5;				// The Human race has special functionality
+    public HashMap<Integer, String> NPC_LANGUAGE_NAMES;
     
     
     public RageConfig (RageMod plugin)
@@ -117,6 +120,13 @@ public class RageConfig {
     	
     	loadConfigValues();	
     	loadDefaultTownLevels();
+    	
+    	NPC_LANGUAGE_NAMES = new HashMap<Integer, String>();
+    	NPC_LANGUAGE_NAMES.put(1, "Creeptongue");
+    	NPC_LANGUAGE_NAMES.put(2, "Gronuk");
+    	NPC_LANGUAGE_NAMES.put(3, "Benali");
+    	NPC_LANGUAGE_NAMES.put(4, "Avialese");
+    	
     }
     
     private void loadConfigValues() 

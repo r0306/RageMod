@@ -39,7 +39,7 @@ public class NPCCommands {
 		{
 			plugin.message.parse(player, "NPC commands: <required> [optional]");
 			if( true )
-				plugin.message.parse(player, "   /npc create <name> [questnpctype] [questid]   (enters a new NPC into the database)");
+				plugin.message.parse(player, "   /npc create <name> [raceID] [sex]  (creates a new NPC)");
 			if( true )
 				plugin.message.parse(player, "   /npc despawnall   (clears all NPCs on server)");
 			if( true )
@@ -51,7 +51,9 @@ public class NPCCommands {
 			if( true )
 				plugin.message.parse(player, "   /npc newtown <name> <lvl> <x,z,x,z>   (new NPCTown)");
 			if( true )
-				plugin.message.parse(player, "   /npc spawn <locID>   (spawns a random NPC at location)");
+				plugin.message.parse(player, "   /npc spawn <locID> [npcID]  (spawns an NPC at location)");
+			if( true )
+				plugin.message.parse(player, "   /npc spawnq <locID> <q.type> [q.id]  (spawns quest NPC)");
 			if( true )
 				plugin.message.parse(player, "   /npc spawnall   (forces server-wide NPC spawning)");
 			if( true )
@@ -59,18 +61,17 @@ public class NPCCommands {
 		}
 		else if( split[1].equalsIgnoreCase("create") )
 		{
-			if( split.length == 3 ) {
-				String name = split[2];
-				this.create(player, name); 
-			}				
-			else if(split.length == 5) {
-				String name = split[2];
-				String questNpcType = split[3];
-				String questId = split[4];
-				createQuestNPC(player, name, questNpcType, questId);
-			}
+			if( split.length == 3 ) 
+				this.create(player, split[2], "5", "M"); 
+			else if( split.length == 4 )
+				this.create(player, split[2], split[3], "M"); 
+			else if(split.length == 5) 
+				this.create(player, split[2], split[3], split[4]); 
 			else
-    			plugin.message.parse(player, "Usage: /npc create <name>");  
+			{
+				plugin.message.parse(player, "Usage: /npc create <name> [raceID] [gender]");
+				plugin.message.send(player, "   Races: 1-Creep, 2-Pigman, 3-Benali, 4-Avian, 5-Human");
+			}
 		}
 		else if( split[1].equalsIgnoreCase("despawnall") )
 		{
@@ -98,7 +99,21 @@ public class NPCCommands {
 		else if( split[1].equalsIgnoreCase("spawn") )
 		{
 			if( split.length == 3 )
-				this.spawn(player, split[2]); 
+				this.spawn(player, split[2], "random"); 
+			else if(split.length == 4) 
+				this.spawn(player, split[2], split[3]); 
+			else
+    			plugin.message.parse(player, "Usage: /npc spawn <locID> [npcID]");  
+		}
+		else if( split[1].equalsIgnoreCase("spawnq") )
+		{
+			if(split.length == 5) 
+			{
+				String name = split[2];
+				String questNpcType = split[3];
+				String questId = split[4];
+				createQuestNPC(player, name, questNpcType, questId);
+			}
 			else
     			plugin.message.parse(player, "Usage: /npc spawn <locID>");  
 		}
@@ -254,7 +269,7 @@ public class NPCCommands {
 	 * @param player
 	 * @param id_NPCLocation
 	 */
-	private void spawn(Player player, String id_NPCLocation) 
+	private void spawn(Player player, String id_NPCLocation, String npcString) 
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
 		NPCLocation location;
@@ -268,13 +283,21 @@ public class NPCCommands {
 			if( location == null )
 				throw new Exception(id_NPCLocation + " is already in use or is an invalid location ID.");
 			
+			System.out.println("Activated NPCLocation #" + location.getID());
+			
 			// Activate a random NPC from the pool
-			npc = plugin.npcManager.activateRandomFloatingNPC();
+			if( npcString.equalsIgnoreCase("random") )
+				npc = plugin.npcManager.activateRandomFloatingNPC();
+			else
+				npc = plugin.npcManager.activateNPC(Integer.parseInt(npcString));
+			
 			if( npc == null )
 			{
 				plugin.npcManager.deactivateLocation(location);
 				throw new Exception("There are no more NPCs in the pool to activate.");
 			}
+			
+			System.out.println("Activated NPC #" + npc.id_NPC);
 			
 			// Register the NPC instance and spawn the NPC
 			instance = plugin.database.npcQueries.createInstance(
@@ -296,12 +319,20 @@ public class NPCCommands {
 	 * @param player
 	 * @param name
 	 */
-	private void create(Player player, String name) 
+	private void create(Player player, String name, String race, String gender) 
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
+		int raceID;
+		boolean isMale;
 		
 		try
 		{
+			raceID = Integer.parseInt(race);
+			if( raceID < 1 || raceID > 5 )
+				throw new Exception("Invalid race ID (1-5)");
+			
+			isMale = gender.equalsIgnoreCase("M");
+			
 			if (name.length() > 14) 
 			{
 				String tmp = name.substring(0, 14);
@@ -312,16 +343,18 @@ public class NPCCommands {
 			
 			// Add the NPC to memory
 			NPCData npc = new NPCData();
-			npc.id_NPCRace = 5;		// temp: 5 for humans
+			npc.id_NPCRace = raceID;
 			npc.id_NPCTown = 0;		// 0 = no town
 			npc.name = name;
 			npc.isBilingual = false;
-			plugin.npcManager.addNPC(npc);
+			npc.isMale = isMale;
 			
 			// Add the NPC to the database
-			int id_NPC = plugin.database.npcQueries.createNPC(npc, playerData.id_Player);
+			npc.id_NPC = plugin.database.npcQueries.createNPC(npc, playerData.id_Player);
 			
-			plugin.message.send(player, "Successfully added NPC #" + id_NPC + ".");
+			plugin.npcManager.addNPC(npc);
+			
+			plugin.message.send(player, "Successfully added NPC #" + npc.id_NPC + ".");
 		}
 		catch( Exception ex )
 		{

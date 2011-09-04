@@ -2,29 +2,39 @@ package net.rageland.ragemod.npcentities;
 
 import java.util.ArrayList;
 
+import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.NPCPhrase;
 
 public class SpeechData
 {
-	
 	private ArrayList<NPCPhrase> messages;
 	private int messagePointer;
 	private int radius;
 	private int interval;
+	private int id_Race;
+	private RageMod plugin;
 	
-	public SpeechData(ArrayList<NPCPhrase> messages, int radius, int interval)
+	public SpeechData(ArrayList<NPCPhrase> messages, int radius, int interval, int id_Race, RageMod plugin)
 	{
 		this.messages = messages;
 		messagePointer = 0;
 		this.radius = radius;
 		this.interval = interval;
+		this.id_Race = id_Race;
+		this.plugin = plugin;
 	}
 	
-	public String getNextMessage() 
+	public String getNextMessage(int languageSkill) 
 	{
 		if(messages.size() > 0)
 		{
-			String message = messages.get(messagePointer).getMessage();
+			String message;
+			
+			if( languageSkill == 100 || id_Race == plugin.config.NPC_HUMAN_ID )
+				message = messages.get(messagePointer).getMessage();
+			else
+				message = messages.get(messagePointer).getTranslation(languageSkill);
+			
 			messagePointer++;
 			if(messagePointer == messages.size())
 				messagePointer = 0;

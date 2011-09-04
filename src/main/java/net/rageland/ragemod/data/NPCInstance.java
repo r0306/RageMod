@@ -211,11 +211,10 @@ public class NPCInstance
 		return location.getTownID();
 	}
 	
-	// Test
+	// Sets up the skin of the entity
 	public void setSkin()
 	{
-		SpoutManager.getAppearanceManager().setGlobalSkin((HumanEntity)entity.getBukkitEntity(), "http://www.rageland.net/skins/ftgreg.png");
-		System.out.println("Set skin");
+		SpoutManager.getAppearanceManager().setGlobalSkin((HumanEntity)entity.getBukkitEntity(), plugin.config.CUSTOM_SKIN_PATH + data.skinPath);
 	}
 	
 	

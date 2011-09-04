@@ -53,6 +53,9 @@ public class Language
 		int total = split.length;
 		int wordIndex;
 		
+		// Add color prefixes to the English words
+		for( int i = 0; i < split.length; i++ )
+			split[i] = Message.NPC_TEXT_COLOR + split[i];
 		
 		// Create an array of numbers that represents the words not translated yet
 		ArrayList<Integer> toTranslate = new ArrayList<Integer>();
@@ -65,7 +68,7 @@ public class Language
 			while( toTranslate.size() > (total * (1 - ((double)i / 4))) )
 			{
 				wordIndex = toTranslate.remove(random.nextInt(toTranslate.size()));
-				split[wordIndex] = translateWord(split[wordIndex], random);
+				split[wordIndex] = Message.NPC_FOREIGN_COLOR + translateWord(split[wordIndex], random);
 			}
 			result.add(join(split, " "));
 		}
@@ -76,6 +79,9 @@ public class Language
 	
 	private String translateWord(String word, Random random) 
 	{
+		// Remove the color prefix
+		word = word.substring(2);
+		
 		Matcher matcher = puncPattern.matcher(word);
 
 	    if( matcher.find() )

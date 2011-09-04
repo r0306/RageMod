@@ -11,7 +11,9 @@ import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.data.Players;
+import net.rageland.ragemod.text.Message;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -162,6 +164,26 @@ public class Commands
 		player.teleport(destination);
 		playerData.spawn_LastUsed = now;
 		plugin.database.playerQueries.updatePlayer(playerData);
+	}
+	
+	// /language or /lang
+	public void language(Player player)
+	{
+		PlayerData playerData = plugin.players.get(player.getName());
+		String skillText;
+		
+		plugin.message.send(player, ChatColor.GOLD + "Language skill:");
+		
+		for(int i = 1; i <= 4; i++ )
+		{
+			if( playerData.getLanguageSkill(i) == 100 )
+				skillText = ChatColor.WHITE + "100/100";
+			else
+				skillText = ChatColor.GRAY + Integer.toString(playerData.getLanguageSkill(i)) + "/100";
+			plugin.message.send(player, Message.LANGUAGE_NAME_COLOR + "   " + plugin.config.NPC_LANGUAGE_NAMES.get(i) + ": " + skillText);
+		}
+		
+		
 	}
 	
 	

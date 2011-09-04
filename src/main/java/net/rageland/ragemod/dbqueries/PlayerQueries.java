@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import org.bukkit.Location;
 
@@ -26,7 +27,8 @@ public class PlayerQueries {
 			"SELECT p.ID_Player, p.Name, IFNULL(p.ID_Faction, 0) as ID_Faction, p.IsMember, p.MemberExpiration, p.Bounty, p.ExtraBounty, " +
     		"   (p.Home_XCoord IS NOT NULL) AS Home_IsSet, p.Home_XCoord, p.Home_YCoord, p.Home_ZCoord, p.Home_LastUsed, " +
     		"	(p.Spawn_XCoord IS NOT NULL) AS Spawn_IsSet, p.Spawn_XCoord, p.Spawn_YCoord, p.Spawn_ZCoord, p.Spawn_LastUsed, " +
-    		"	IFNULL(pt.TownName, '') as TownName, p.IsMayor, IFNULL(p.LogonMessageQueue, '') as LogonMessageQueue, p.TreasuryBlocks " +
+    		"	IFNULL(pt.TownName, '') as TownName, p.IsMayor, IFNULL(p.LogonMessageQueue, '') as LogonMessageQueue, p.TreasuryBlocks," +
+    		"	p.LanguageSkill1, p.LanguageSkill2, p.LanguageSkill3, p.LanguageSkill4 " +
     		"FROM Players p " +
     		"LEFT JOIN PlayerTowns pt ON p.ID_PlayerTown = pt.ID_PlayerTown ";
 	
@@ -132,6 +134,15 @@ public class PlayerQueries {
 		playerData.lots = rageDB.lotQueries.getLots(playerData.id_Player);
         playerData.lotPermissions = rageDB.lotQueries.getLotPermissions(playerData.id_Player);
         playerData.permits = getPermits(playerData.id_Player);
+        playerData.setInteractions(getInteractions(playerData.id_Player));
+        
+        // Load language skill
+        playerData.setLanguageSkill(1, rs.getInt("LanguageSkill1"));
+        playerData.setLanguageSkill(2, rs.getInt("LanguageSkill2"));
+        playerData.setLanguageSkill(3, rs.getInt("LanguageSkill3"));
+        playerData.setLanguageSkill(4, rs.getInt("LanguageSkill4"));
+        playerData.setLanguageSkill(5, 100);		// Because everyone can speak English! :D
+        
 		
 		if( playerData.townName.equals("") )
 			playerData.treasuryBalance = 0;
@@ -213,6 +224,37 @@ public class PlayerQueries {
     	return permits;
 	} 
 	
+	// Return all permits acquired by the player
+	public HashSet<Integer> getInteractions(int id_Player)
+	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null; 
+	    HashSet<Integer> instances = new HashSet<Integer>();
+	
+    	try
+    	{
+    		conn = rageDB.getConnection();
+        	String selectQuery = 
+        		"SELECT ID_NPCInstance FROM Player_NPCInstance WHERE ID_Player = " + id_Player;
+    		
+    		preparedStatement = conn.prepareStatement(selectQuery);	        		        	
+        	rs = preparedStatement.executeQuery();
+        	
+        	while( rs.next() )
+        		instances.add(rs.getInt("ID_NPCInstance"));
+        		        	
+    	} catch (SQLException e) {
+    		System.out.println("Error in PlayerQueries.getInteractions(): " + e.getMessage());
+		    System.out.println("SQLState: " + e.getSQLState());
+		    System.out.println("VendorError: " + e.getErrorCode());
+		} finally {
+			rageDB.close(rs, preparedStatement, conn);
+		}
+    	
+    	return instances;
+	} 
+	
 	// Load data from Players table for specified player; returns NULL if not found 
 	public PlayerData playerFetch(String playerName)
     {
@@ -269,6 +311,10 @@ public class PlayerQueries {
 				"ExtraBounty = " + playerData.extraBounty + ", " +
 				"LogonMessageQueue = '" + playerData.logonMessageQueue + "', " +
 				"TreasuryBlocks = " + playerData.treasuryBlocks + ", " +
+				"LanguageSkill1 = " + playerData.getLanguageSkill(1) + ", " +
+				"LanguageSkill2 = " + playerData.getLanguageSkill(2) + ", " +
+				"LanguageSkill3 = " + playerData.getLanguageSkill(3) + ", " +
+				"LanguageSkill4 = " + playerData.getLanguageSkill(4) + ", " +
 				
     			"Home_LastUsed = " + (playerData.home_LastUsed == null ? "null" : "'" + playerData.home_LastUsed + "'") + ", " +
     			"Spawn_LastUsed = " + (playerData.spawn_LastUsed == null ? "null" : "'" + playerData.spawn_LastUsed + "'") + ", ";
@@ -431,6 +477,46 @@ public class PlayerQueries {
 			rageDB.close(rs, preparedStatement, conn);
 		}
 		
+	}
+
+	// Records all NPC interactions the player had during their session
+	public void recordInstances(PlayerData playerData) 
+	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
+	    boolean firstEntry = true;
+	    String query = "";
+	    
+		try
+    	{
+			// If there are no new interactions, no need for update
+			if( playerData.getNewInteractions().size() == 0 )
+				return;
+			
+			conn = rageDB.getConnection();
+			query = "INSERT INTO Player_NPCInstance (ID_Player, ID_NPCInstance, Timestamp) VALUES ";
+			
+			// Build a list of all new interactions
+			for( int instanceID : playerData.getNewInteractions() )
+			{
+				if( !firstEntry )
+					query += ", ";
+				else
+					firstEntry = false;
+				query += "(" + playerData.id_Player + ", " + instanceID + ", NOW())";
+			}
+			
+    		preparedStatement = conn.prepareStatement(query);
+    		preparedStatement.executeUpdate();	
+    	} 
+    	catch (SQLException e) {
+    		System.out.println("Error in PlayerQueries.recordInstances(): " + e.getMessage() + " Query: " + query);
+		    System.out.println("SQLState: " + e.getSQLState());
+		    System.out.println("VendorError: " + e.getErrorCode());
+		} finally {
+			rageDB.close(rs, preparedStatement, conn);
+		}	
 	}
 	
 }

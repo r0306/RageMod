@@ -22,11 +22,13 @@ public class Message
 	private Pattern townPattern;
 	private Pattern numberPattern;
 	
-	private ChatColor DEFAULT_COLOR = ChatColor.GREEN;
-	private ChatColor COLOR_NO = ChatColor.DARK_RED;
-	private ChatColor BROADCAST_COLOR = ChatColor.DARK_GREEN;
-	private ChatColor NPC_NAME_COLOR = ChatColor.AQUA;
-	private ChatColor NPC_TEXT_COLOR = ChatColor.DARK_AQUA;
+	public static ChatColor DEFAULT_COLOR = ChatColor.GREEN;
+	public static ChatColor COLOR_NO = ChatColor.DARK_RED;
+	public static ChatColor BROADCAST_COLOR = ChatColor.DARK_GREEN;
+	public static ChatColor NPC_NAME_COLOR = ChatColor.AQUA;
+	public static ChatColor NPC_TEXT_COLOR = ChatColor.DARK_AQUA;
+	public static ChatColor NPC_FOREIGN_COLOR = ChatColor.GRAY;
+	public static ChatColor LANGUAGE_NAME_COLOR = ChatColor.DARK_GREEN;
 	
 	public Message( RageMod plugin )
 	{
@@ -200,6 +202,17 @@ public class Message
 	{
 	    Matcher matcher = urlPattern.matcher(message);
 	    return matcher.replaceAll(ChatColor.AQUA + "$1" + color);
+	}
+
+	// Sends a message informing the player of a language skill increase
+	public void languageUp(Player player, int raceID, int increase, int languageSkill) 
+	{
+		player.sendMessage(ChatColor.GOLD + "Language: " + LANGUAGE_NAME_COLOR + plugin.config.NPC_LANGUAGE_NAMES.get(raceID) + 
+							ChatColor.GREEN + " skill " + ChatColor.WHITE + "+" + increase + ChatColor.GRAY + " (" + languageSkill + "/100)");
+		if( languageSkill == 100 )
+			player.sendMessage(ChatColor.YELLOW + "Congratulations!  " + DEFAULT_COLOR + "You are now fluent in " + LANGUAGE_NAME_COLOR + 
+					plugin.config.NPC_LANGUAGE_NAMES.get(raceID) + "!");
+		
 	}
 
 

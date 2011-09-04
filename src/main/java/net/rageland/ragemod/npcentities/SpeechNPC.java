@@ -8,6 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.World;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.NPCInstance;
+import net.rageland.ragemod.data.PlayerData;
 
 public class SpeechNPC extends NPCEntity
 {	
@@ -27,9 +28,13 @@ public class SpeechNPC extends NPCEntity
 	 */
 	public void rightClickAction(Player player)
 	{
-		plugin.message.talk(player, this.name, this.speechData.getNextMessage());
-		//plugin.message.talk(player, this.name, "My yaw: " + this.yaw + "; Your yaw: " + player.getLocation().getYaw());
+		PlayerData playerData = plugin.players.get(player.getName());
+		
+		plugin.message.talk(player, this.name, this.speechData.getNextMessage(playerData.getLanguageSkill(this.instance.getRaceID())));
 		this.facePlayer(player);
+		
+		if( playerData.recordNPCInteraction(instance) )
+			plugin.message.languageUp(player, instance.getRaceID(), 1, playerData.getLanguageSkill(instance.getRaceID()));
 	}
 
 	/**
