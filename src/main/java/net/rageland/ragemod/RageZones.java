@@ -187,6 +187,15 @@ public class RageZones {
 				worldSpawn.distance(location) <= ZoneA_Border );
     }
     
+ // Returns whether or not the location is in Zone A
+    public boolean isOutsideZoneA(Region2D region)
+    {
+    	return (worldSpawn.distance(region.nwCorner) > 1000 || 
+    			worldSpawn.distance(region.seCorner) > 1000 ||
+    			worldSpawn.distance(new Location2D(region.nwCorner.getX(), region.seCorner.getZ())) > 1000 ||
+    			worldSpawn.distance(new Location2D(region.nwCorner.getZ(), region.seCorner.getX())) > 1000 );
+    }
+    
     // Returns whether or not the location is in Zone A
     public boolean isInZoneB(Location location)
     {

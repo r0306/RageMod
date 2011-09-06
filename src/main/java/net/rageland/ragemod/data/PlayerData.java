@@ -49,6 +49,10 @@ public class PlayerData
 	public double treasuryBalance = 0;
 	public int treasuryBlocks;				// Number of gold blocks stored in town's treasury
 	
+	// NPCTown info
+	public String npcTownName = "";
+	public boolean isSteward = false;
+	
 	// Lot info
 	public ArrayList<Lot> lots = new ArrayList<Lot>();
 	public ArrayList<String> lotPermissions = new ArrayList<String>();	// array of player names allowed to build
@@ -61,8 +65,8 @@ public class PlayerData
 	
 	// NPC-related info
 	private HashMap<Integer, Integer> languageSkill;		// Skill in each language (id 1-4), up to 100
-	private HashSet<Integer> npcInteractions;					// List of which NPCInstances the player has interacted with
-	private HashSet<Integer> newNPCInteractions;				// List of interactions from this session
+	private HashSet<Integer> npcInteractions;				// List of which NPCInstances the player has interacted with
+	private HashSet<Integer> newNPCInteractions;			// List of interactions from this session
 	
 	// ***** STATE (Non-DB) VALUES *****
 	

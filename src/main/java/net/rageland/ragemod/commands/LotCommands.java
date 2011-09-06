@@ -124,12 +124,16 @@ public class LotCommands
 		}
 		
 		// All checks have succeeded - update the DB
-		plugin.database.lotQueries.lotAllow(playerData.id_Player, targetPlayerData.id_Player);
+		plugin.database.lotQueries.allow(playerData.id_Player, targetPlayerData.id_Player);
 		
 		// Update the playerData
 		playerData.lotPermissions.add(targetPlayerData.name);
 		
+		// Notify both players
 		plugin.message.parse(player, targetPlayerData.getCodedName() + " is now allowed to build in your lots.");
+		Player targetPlayer = plugin.getServer().getPlayer(targetPlayerData.name);
+		if( targetPlayer != null && targetPlayer.isOnline() )
+			plugin.message.parse(targetPlayer, playerData.getCodedName() + " has given you permission to build in his/her lots.");
 	}
 	
 	
@@ -298,7 +302,7 @@ public class LotCommands
 			}
 			
 			// All checks have succeeded - update the database
-			plugin.database.lotQueries.lotDisallow(playerData.id_Player, 0);
+			plugin.database.lotQueries.disallow(playerData.id_Player, 0);
 			
 			// Update the playerData
 			playerData.lotPermissions.clear();
@@ -323,7 +327,7 @@ public class LotCommands
 			}
 			
 			// All checks have succeeded - update the database
-			plugin.database.lotQueries.lotDisallow(playerData.id_Player, targetPlayerData.id_Player);
+			plugin.database.lotQueries.disallow(playerData.id_Player, targetPlayerData.id_Player);
 			
 			// Update the playerData
 			playerData.lotPermissions.remove(targetPlayerData.name);

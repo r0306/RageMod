@@ -103,7 +103,7 @@ public class RageConfig {
     public int Task_FILL_SANDLOT = 86400;			// Replenish sand in public sand mine
     
     // NPC settings
-    public int NPC_TOTAL_NONTOWN = 1;			// Number of NPCs to spawn outside of NPCTowns
+    public int NPC_TOTAL_FLOATING = 1;			// Number of NPCs to spawn outside of NPCTowns
     public int NPC_TTL_MIN = 360;				// Minimum length of minutes to keep NPC instances
     public int NPC_TTL_MAX = 4320;				// Maximum length of minutes to keep NPC instances
     public int NPC_PHRASES = 2;					// Number of phrases each NPC will say at a time

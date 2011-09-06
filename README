@@ -8,6 +8,7 @@ ragemod:
 	build: 				(permanent building rights)
 		anylot: 		can build in any capitol lot
 		anytown:		can build in any player town
+		npctown:		can build in any NPC town
 		capitol:		can edit city infrastructure
 		travelzone:		can build in travel zone
 		
@@ -22,7 +23,9 @@ ragemod:
     permit: 			(gives temporary passes)
     	capitol:		allow players to edit city infrastructure
     	
-    npc:				create and manage NPCs
+    npc:				create and manage global NPCs
+    
+    npctown:			create and manage NPCTowns, assign NPCTown rights to other players
     	
     referee:			(referees do not participate in war and ensure rules are being followed)
     	blockpvp:		prevents all incoming and outgoing pvp damage

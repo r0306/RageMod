@@ -45,7 +45,7 @@ public class FactionQueries {
         	return populations;
     	} 
 		catch (Exception e) {
-    		System.out.println("Error in RageDB.getRecentDonations(): " + e.getMessage());
+    		System.out.println("Error in FactionQueries.getFactionPopulations(): " + e.getMessage());
 		} finally {
 			rageDB.close(rs, preparedStatement, conn);
 		}

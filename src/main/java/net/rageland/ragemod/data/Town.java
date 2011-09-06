@@ -35,6 +35,7 @@ public abstract class Town
 	}
 	
 	public abstract String getCodedName();
+	public abstract void update();				// Updates the town in the database
 	
 	// Returns a Location at the center of the town
 	public Location getCenter()
@@ -80,5 +81,6 @@ public abstract class Town
 	{
 		return npcLocations;
 	}
+	
 	
 }

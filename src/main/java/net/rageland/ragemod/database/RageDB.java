@@ -24,6 +24,7 @@ import net.rageland.ragemod.data.Region2D;
 import net.rageland.ragemod.dbqueries.FactionQueries;
 import net.rageland.ragemod.dbqueries.LotQueries;
 import net.rageland.ragemod.dbqueries.NPCQueries;
+import net.rageland.ragemod.dbqueries.NPCTownQueries;
 import net.rageland.ragemod.dbqueries.PlayerQueries;
 import net.rageland.ragemod.dbqueries.TaskQueries;
 import net.rageland.ragemod.dbqueries.TownQueries;
@@ -48,6 +49,7 @@ public class RageDB {
     public FactionQueries factionQueries;
     public TaskQueries taskQueries;
     public NPCQueries npcQueries;
+    public NPCTownQueries npcTownQueries;
 
     public RageDB(RageMod instance, RageConfig config)
     {
@@ -58,6 +60,7 @@ public class RageDB {
     	factionQueries = new FactionQueries(this, this.plugin);
     	taskQueries = new TaskQueries(this, this.plugin);
     	npcQueries = new NPCQueries(this, this.plugin);
+    	npcTownQueries = new NPCTownQueries(this, this.plugin);
     	
     	url = config.DB_URL;
     	databaseName = config.DB_NAME;

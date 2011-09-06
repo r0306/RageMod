@@ -28,9 +28,10 @@ public class PlayerQueries {
     		"   (p.Home_XCoord IS NOT NULL) AS Home_IsSet, p.Home_XCoord, p.Home_YCoord, p.Home_ZCoord, p.Home_LastUsed, " +
     		"	(p.Spawn_XCoord IS NOT NULL) AS Spawn_IsSet, p.Spawn_XCoord, p.Spawn_YCoord, p.Spawn_ZCoord, p.Spawn_LastUsed, " +
     		"	IFNULL(pt.TownName, '') as TownName, p.IsMayor, IFNULL(p.LogonMessageQueue, '') as LogonMessageQueue, p.TreasuryBlocks," +
-    		"	p.LanguageSkill1, p.LanguageSkill2, p.LanguageSkill3, p.LanguageSkill4 " +
+    		"	p.LanguageSkill1, p.LanguageSkill2, p.LanguageSkill3, p.LanguageSkill4, IFNULL(nt.Name, '') as NPCTown " +
     		"FROM Players p " +
-    		"LEFT JOIN PlayerTowns pt ON p.ID_PlayerTown = pt.ID_PlayerTown ";
+    		"LEFT JOIN PlayerTowns pt ON p.ID_PlayerTown = pt.ID_PlayerTown " +
+    		"LEFT JOIN NPCTowns nt ON p.ID_Player = nt.ID_Player_Steward ";
 	
 	public PlayerQueries(RageDB rageDB, RageMod plugin)
 	{
@@ -128,6 +129,13 @@ public class PlayerQueries {
 		if( rs.getBoolean("Spawn_IsSet") )
 		{
 			playerData.setSpawn(new Location(plugin.getServer().getWorld("world"), rs.getInt("Spawn_XCoord") + .5, rs.getInt("Spawn_YCoord"), rs.getInt("Spawn_ZCoord") + .5));
+		}
+		
+		// Load NPCTown, if any
+		if( !rs.getString("NPCTown").equals("") )
+		{
+			playerData.isSteward = true;
+			playerData.npcTownName = rs.getString("NPCTown");
 		}
 		
 		// Load arrays of data

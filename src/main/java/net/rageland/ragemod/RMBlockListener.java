@@ -4,8 +4,10 @@ import java.util.HashMap;
 
 import net.rageland.ragemod.data.Lot;
 import net.rageland.ragemod.data.Lots;
+import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
+import net.rageland.ragemod.data.Town;
 import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.data.Players;
 
@@ -58,10 +60,6 @@ public class RMBlockListener extends BlockListener
     	// *** DISABLE ALL FURTHER CODE FOR LOT RELEASE ***
     	if( plugin.config.PRE_RELEASE_MODE )
     		return;
-    	
-    	
-    	
-    	
     	
     	
     	// Bed breaking - clear spawn and home
@@ -206,54 +204,70 @@ public class RMBlockListener extends BlockListener
     	Block block = event.getBlock();
     	Location location = block.getLocation();
     	
-    	// *** ZONE A (Neutral Zone) ***
-    	// See if player is in capitol
-    	if( plugin.zones.isInZoneA(location) && plugin.zones.isInCapitol(location) )
+    	// Check for NPCTowns (zone code handled inside)
+    	Town town = plugin.towns.getCurrentTown(location);
+    	if( town instanceof NPCTown )
     	{
-    		// If the player is below y=22, make sure they have permission to mine below city (don't check lots)
-    		if( location.getY() < 22 && !RageMod.permissionHandler.has(player, "ragemod.mine.capitol"))
+    		NPCTown npcTown = (NPCTown)town;
+    		if( !RageMod.permissionHandler.has(player, "ragemod.build.npctown") && !playerData.npcTownName.equalsIgnoreCase(town.getName()) 
+    				&& !npcTown.hasPermission(playerData.name) )
     		{
-    			plugin.message.sendNo(player, "You don't have permission to mine under the city.");
+    			plugin.message.sendNo(player, "You don't have permission to build here.");
     			return false;
     		}
-    		// See if the player is inside a lot, and if they own it
-    		else if( !playerData.isInsideOwnLot(location) && !RageMod.permissionHandler.has(player, "ragemod.build.anylot") )
+    	}
+    	
+    	// *** ZONE A (Neutral Zone) ***
+    	else if( plugin.zones.isInZoneA(location) )
+    	{
+    		// See if player is in capitol
+    		if( plugin.zones.isInCapitol(location) )
     		{
-    			Lot lot = plugin.lots.findCurrentLot(location);
-    			
-    			if( lot == null )
-    			{
-    				if( RageMod.permissionHandler.has(player, "ragemod.build.capitol") || playerData.permits.capitol == true )
-    					return true;
-    				
-    				plugin.message.sendNo(player, "You don't have permission to edit city infrastructure.");
-    			}
-    			else
-    			{
-    				if( lot.owner.equals("") )
-    					plugin.message.sendNo(player, "You cannot edit unclaimed lots.");
-    				else
-    				{
-    					// Check to see if the player has permission to build in this lot
-    					PlayerData ownerData = plugin.players.get(lot.owner);
-    					if( !ownerData.lotPermissions.contains(playerData.name) )
-    						plugin.message.parseNo(player, "This lot is owned by " + plugin.players.get(lot.owner).getCodedName() + ".");
-    					else
-    						return true;
-    				}
-    			}
-    			
-    			return false;
-    		}
+    			// If the player is below y=22, make sure they have permission to mine below city (don't check lots)
+        		if( location.getY() < 22 && !RageMod.permissionHandler.has(player, "ragemod.mine.capitol"))
+        		{
+        			plugin.message.sendNo(player, "You don't have permission to mine under the city.");
+        			return false;
+        		}
+        		// See if the player is inside a lot, and if they own it
+        		else if( !playerData.isInsideOwnLot(location) && !RageMod.permissionHandler.has(player, "ragemod.build.anylot") )
+        		{
+        			Lot lot = plugin.lots.findCurrentLot(location);
+        			
+        			if( lot == null )
+        			{
+        				if( RageMod.permissionHandler.has(player, "ragemod.build.capitol") || playerData.permits.capitol == true )
+        					return true;
+        				
+        				plugin.message.sendNo(player, "You don't have permission to edit city infrastructure.");
+        			}
+        			else
+        			{
+        				if( lot.owner.equals("") )
+        					plugin.message.sendNo(player, "You cannot edit unclaimed lots.");
+        				else
+        				{
+        					// Check to see if the player has permission to build in this lot
+        					PlayerData ownerData = plugin.players.get(lot.owner);
+        					if( !ownerData.lotPermissions.contains(playerData.name) )
+        						plugin.message.parseNo(player, "This lot is owned by " + plugin.players.get(lot.owner).getCodedName() + ".");
+        					else
+        						return true;
+        				}
+        			}
+        			
+        			return false;
+        		}
+        	}
     	}
     	// *** ZONE B (War Zone) ***
     	else if( plugin.zones.isInZoneB(location) )
     	{
-    		PlayerTown playerTown = (PlayerTown)plugin.towns.getCurrentTown(location);
-    		
-    		if( playerTown != null )
+    		if( town != null && town instanceof PlayerTown )
     		{
-        		// Players can only build inside their own towns
+    			PlayerTown playerTown = (PlayerTown)town;
+    					
+    			// Players can only build inside their own towns
     			if( !playerTown.getName().equals(playerData.townName) && !RageMod.permissionHandler.has(player, "ragemod.build.anytown") ) 
     			{		
     				plugin.message.sendNo(player, "You can only build inside of your own town.");

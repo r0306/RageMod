@@ -425,17 +425,7 @@ public class TownCommands
 		}
 		else if( town instanceof NPCTown )
 		{
-			NPCTown npcTown = (NPCTown)town;
-			
-			plugin.message.parse(player, "Info for " + npcTown.getCodedName() + ":");
-			plugin.message.parse(player, "   Level: " + npcTown.townLevel.name + " (" + npcTown.townLevel.level + ")");
-			
-			for( NPCLocation location : npcTown.getNPCLocations() )
-			{
-				plugin.message.parse(player, "   Loc. #" + location.getID() + 
-						" (" + (int)location.getX() + "," + (int)location.getY() + "," + (int)location.getZ() + ")" +
-						" " + (location.isActivated() ? location.getInstance().getCodedName() : ""));
-			}
+			plugin.message.parseNo(player, town.getCodedName() + " is an NPCTown (use /npctown info).");
 		}
 	}
 	
@@ -474,24 +464,11 @@ public class TownCommands
 	public void list(Player player, String factionName) 
 	{
 		ArrayList<PlayerTown> playerTowns = plugin.towns.getAllPlayerTowns();
-		ArrayList<NPCTown> npcTowns = plugin.towns.getAllNPCTowns();
 		
 		// TODO: Implement page # functionality 
 		
 		// Sorts the towns by level
 		Collections.sort(playerTowns);
-		
-		if( factionName.equalsIgnoreCase("npc") )
-		{
-			plugin.message.send(player, "NPC Towns:");
-			for( NPCTown town : npcTowns )
-			{
-				plugin.message.parse(player, "   " + town.getCodedName() + ChatColor.YELLOW + town.getQuadrant().toString() + 
-						 " (" + town.townLevel.name + ") " +
-						 town.getNPCLocations().size() + ChatColor.WHITE + " locations");
-			}
-			return;
-		}
 		
 		if( factionName.equals("") )
 			plugin.message.parse(player, "List of all player towns: (" + playerTowns.size() + ")");

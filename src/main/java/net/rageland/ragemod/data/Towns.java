@@ -2,6 +2,7 @@ package net.rageland.ragemod.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
@@ -15,6 +16,7 @@ public class Towns {
 		
 	private HashMap<String, PlayerTown> playerTowns;
 	private HashMap<String, NPCTown> npcTowns;
+	private HashSet<NPCTown> outsideNPCTowns;				// A collection of NPCTowns outside Zone A (subset of npcTowns)
 	private HashMap<Integer, String> playerTownIDs;
 	private HashMap<Integer, String> npcTownIDs;
 	private RageMod plugin;
@@ -24,6 +26,7 @@ public class Towns {
 		this.plugin = plugin;
 		playerTowns = new HashMap<String, PlayerTown>();
 		npcTowns = new HashMap<String, NPCTown>();
+		outsideNPCTowns = new HashSet<NPCTown>();
 		playerTownIDs = new HashMap<Integer, String>();
 		npcTownIDs = new HashMap<Integer, String>();
 	}
@@ -32,13 +35,17 @@ public class Towns {
 	public void loadTowns()
 	{
 		playerTowns = plugin.database.townQueries.loadPlayerTowns();	
-		npcTowns = plugin.database.npcQueries.loadNPCTowns();
+		npcTowns = plugin.database.npcTownQueries.loadAll();
 		
 		// Populate the ID-name hashes (reverse these?)
 		for( PlayerTown town : playerTowns.values() )
 			playerTownIDs.put(town.getID(), town.getName().toLowerCase());
 		for( NPCTown town : npcTowns.values() )
+		{
 			npcTownIDs.put(town.getID(), town.getName().toLowerCase());
+			if( town.isOutsideZoneA() )
+				outsideNPCTowns.add(town);
+		}
 	}
 	
 	// Insert/update town info
@@ -143,9 +150,7 @@ public class Towns {
         	for( NPCTown town : npcTowns.values() )
         	{
         		if( town.isInside(location) )
-        		{
         			return town;
-        		}
         	}
     	}
     	// Zone B - Player towns
@@ -154,9 +159,12 @@ public class Towns {
         	for( PlayerTown town : playerTowns.values() )
         	{
         		if( town.isInside(location) )
-        		{
         			return town;
-        		}
+        	}
+        	for( NPCTown town : outsideNPCTowns )
+        	{
+        		if( town.isInside(location) )
+        			return town;
         	}
     	}
 	

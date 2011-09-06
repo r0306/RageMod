@@ -49,8 +49,6 @@ public class NPCCommands {
 			if( true )
 				plugin.message.parse(player, "   /npc newloc   (creates a new NPCLocation at your point)");
 			if( true )
-				plugin.message.parse(player, "   /npc newtown <name> <lvl> <x,z,x,z>   (new NPCTown)");
-			if( true )
 				plugin.message.parse(player, "   /npc spawn <locID> [npcID]  (spawns an NPC at location)");
 			if( true )
 				plugin.message.parse(player, "   /npc spawnq <locID> <q.type> [q.id]  (spawns quest NPC)");
@@ -88,13 +86,6 @@ public class NPCCommands {
 		else if( split[1].equalsIgnoreCase("newloc") )
 		{
 			this.newloc(player); 
-		}
-		else if( split[1].equalsIgnoreCase("newtown") )
-		{
-			if( split.length == 5 )
-				this.newtown(player, split[2], split[3], split[4]); 
-			else
-    			plugin.message.parse(player, "Usage: /npc newtown <name> <lvl> <x,z,x,z>");  
 		}
 		else if( split[1].equalsIgnoreCase("spawn") )
 		{
@@ -320,17 +311,25 @@ public class NPCCommands {
 	 * @param name
 	 */
 	private void create(Player player, String name, String race, String gender) 
+	{	
+		int raceID = Integer.parseInt(race);
+		if( raceID < 1 || raceID > 5 )
+		{
+			plugin.message.sendNo(player, "Invalid race ID (1-5)");
+			return;
+		}
+
+		NPCCommands.newNPC(plugin, player, name, raceID, gender, 0);
+	}
+	
+	// Creates a new NPC - used by multiple commands
+	public static void newNPC(RageMod plugin, Player player, String name, int raceID, String gender, int id_NPCTown)
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
-		int raceID;
 		boolean isMale;
 		
 		try
 		{
-			raceID = Integer.parseInt(race);
-			if( raceID < 1 || raceID > 5 )
-				throw new Exception("Invalid race ID (1-5)");
-			
 			isMale = gender.equalsIgnoreCase("M");
 			
 			if (name.length() > 14) 
@@ -344,7 +343,7 @@ public class NPCCommands {
 			// Add the NPC to memory
 			NPCData npc = new NPCData();
 			npc.id_NPCRace = raceID;
-			npc.id_NPCTown = 0;		// 0 = no town
+			npc.id_NPCTown = id_NPCTown;		// 0 = no town
 			npc.name = name;
 			npc.isBilingual = false;
 			npc.isMale = isMale;
@@ -412,39 +411,19 @@ public class NPCCommands {
 			
 			for( NPCInstance instance : plugin.npcManager.getAllInstances() )
 			{
-				plugin.message.parse(player, " " + instance.getCodedName() + ": Loc. " + instance.getLocation().getID() + ", " + 
-						plugin.zones.getName(instance.getLocation().getZone()) + " (" + 
-						instance.getLocation().getQuadrant().toString() + ")");
+				String locationStr;
+				Town town = plugin.towns.getCurrentTown(instance.getLocation());
+				if( town != null )
+					locationStr = town.getCodedName();
+				else
+					locationStr = plugin.zones.getName(instance.getLocation().getZone()) + " (" + 
+							instance.getLocation().getQuadrant().toString() + ")";
+				plugin.message.parse(player, " " + instance.getCodedName() + ": Loc. " + instance.getLocation().getID() + ", " + locationStr);
 			}
 		}
 	}
 	
-	// Creates a new town
-	private void newtown(Player player, String name, String levelString, String coords) 
-	{
-		String[] split = coords.split(",");
-		try
-		{
-			int level = Integer.parseInt(levelString);
-			int id_NPCTown = plugin.database.npcQueries.createNPCTown(player, name, 
-					Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]),
-					level);
-			
-			NPCTown town = new NPCTown(plugin, id_NPCTown, name, player.getLocation().getWorld());
-			town.id_NPCRace = 5;	// temp
-    		town.townLevel = plugin.config.townLevels.get(level);
-    		
-			town.createRegion(coords);
-			plugin.towns.add(town);
-			
-			plugin.message.send(player, "Successfully created NPCTown " + name + ".");
-		}
-		catch( Exception ex )
-		{
-			plugin.message.sendNo(player, "Error: " + ex.getMessage());
-			return;
-		}	
-	}
+	
 	
 	// Kicks off the server-wide NPC random generation and cleanup task
 	private void spawnall(Player player) 

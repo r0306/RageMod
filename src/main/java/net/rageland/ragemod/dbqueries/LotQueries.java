@@ -95,7 +95,7 @@ public class LotQueries {
             return lotPermissions;
         		        	
     	} catch (SQLException e) {
-    		System.out.println("Error in RageDB.getPlayerTreasuryBalance(): " + e.getMessage());
+    		System.out.println("Error in LotQueries.getLotPermissions(): " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
@@ -203,7 +203,7 @@ public class LotQueries {
 	}
 	
 	// Sets permission for collaborative lot building
-	public void lotAllow(int id_Player_Owner, int id_Player_Builder) 
+	public void allow(int id_Player_Owner, int id_Player_Builder) 
 	{
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
@@ -217,7 +217,7 @@ public class LotQueries {
     		preparedStatement.executeUpdate();	
     	} 
     	catch (SQLException e) {
-    		System.out.println("Error in RageDB.lotAllow(): " + e.getMessage());
+    		System.out.println("Error in LotQueries.allow(): " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
@@ -226,7 +226,7 @@ public class LotQueries {
 	}
 
 	// Clears permissions for collaborative lot building
-	public void lotDisallow(int id_Player_Owner, int id_Player_Builder) 
+	public void disallow(int id_Player_Owner, int id_Player_Builder) 
 	{
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
@@ -250,7 +250,7 @@ public class LotQueries {
     		preparedStatement.executeUpdate();	
     	} 
     	catch (SQLException e) {
-    		System.out.println("Error in RageDB.lotAllow(): " + e.getMessage());
+    		System.out.println("Error in LotQueries.disallow(): " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {

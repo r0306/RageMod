@@ -272,7 +272,7 @@ public class Tasks
 		// Spawn non-town NPCs
 		ArrayList<NPCInstance> floatingInstances = plugin.npcManager.getFloatingInstances();
 		
-		for( int i = floatingInstances.size(); i < plugin.config.NPC_TOTAL_NONTOWN; i++ )
+		for( int i = floatingInstances.size(); i < plugin.config.NPC_TOTAL_FLOATING; i++ )
 		{
 			NPCInstance instance = plugin.npcManager.spawnRandomFloating();
 			if( instance != null )

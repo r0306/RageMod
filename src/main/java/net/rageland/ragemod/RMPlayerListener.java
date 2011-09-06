@@ -8,6 +8,7 @@ import net.rageland.ragemod.commands.FactionCommands;
 import net.rageland.ragemod.commands.LotCommands;
 import net.rageland.ragemod.commands.Commands;
 import net.rageland.ragemod.commands.NPCCommands;
+import net.rageland.ragemod.commands.NPCTownCommands;
 import net.rageland.ragemod.commands.PermitCommands;
 import net.rageland.ragemod.commands.QuestCommands;
 import net.rageland.ragemod.commands.TownCommands;
@@ -52,6 +53,7 @@ public class RMPlayerListener extends PlayerListener
     private DebugCommands debugCommands;
     private Commands commands;
     private NPCCommands npcCommands;
+    private NPCTownCommands npcTownCommands;
     private PermitCommands permitCommands;
 
     public RMPlayerListener(RageMod instance) 
@@ -65,6 +67,7 @@ public class RMPlayerListener extends PlayerListener
         debugCommands = new DebugCommands(plugin);
         commands = new Commands(plugin);
         npcCommands = new NPCCommands(plugin);
+        npcTownCommands = new NPCTownCommands(plugin);
         permitCommands = new PermitCommands(plugin);
     }
 
@@ -187,6 +190,21 @@ public class RMPlayerListener extends PlayerListener
     		permitCommands.onCommand(player, playerData, split);
     		event.setCancelled(true);
     	}
+    	// ********* NPC COMMANDS ************
+    	else if(split[0].equalsIgnoreCase("/npc"))
+    	{
+    		if(RageMod.permissionHandler.has(player, "ragemod.npc"))
+			{
+    			npcCommands.onNPCCommand(player, playerData, split);
+			}
+    		event.setCancelled(true);
+    	}
+    	// ********* NPCTOWN COMMANDS *********
+    	else if( split[0].equalsIgnoreCase("/npctown") )
+    	{
+    		npcTownCommands.onNPCTownCommand(player, playerData, split);
+    		event.setCancelled(true);
+    	}
     	
     	
     	if( !plugin.config.PRE_RELEASE_MODE )
@@ -228,15 +246,6 @@ public class RMPlayerListener extends PlayerListener
         	else if(split[0].equalsIgnoreCase("/quest")) 
         	{
         		questCommands.onQuestCommand(player, playerData, split);
-        		event.setCancelled(true);
-        	}
-        	// ********* NPC COMMANDS ************
-        	else if(split[0].equalsIgnoreCase("/npc"))
-        	{
-        		if(RageMod.permissionHandler.has(player, "ragemod.npc"))
-    			{
-        			npcCommands.onNPCCommand(player, playerData, split);
-    			}
         		event.setCancelled(true);
         	}
     	}

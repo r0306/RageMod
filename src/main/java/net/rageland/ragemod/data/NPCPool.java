@@ -84,10 +84,8 @@ public class NPCPool
     // Finds a random NPC from the pool and sets it as active
     public NPCData activateRandomFloating(int id_NPCRace)	// 0 = any race
     {
-    	if( reserveNPCs.size() == 0 )
+    	if( reserveNPCs.size() == 0 || floatingNPCs.size() == 0 )
     		return null;
-    	
-    	System.out.println("ReserveNPCs size: " + reserveNPCs.size());
     	
     	ArrayList<Integer> removeList = new ArrayList<Integer>();
     	
