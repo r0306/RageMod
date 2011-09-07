@@ -217,6 +217,12 @@ public class NPCInstance
 		SpoutManager.getAppearanceManager().setGlobalSkin((HumanEntity)entity.getBukkitEntity(), plugin.config.CUSTOM_SKIN_PATH + data.skinPath);
 	}
 	
+	// Gets the default affinity
+	public float getDefaultAffinity()
+	{
+		return data.defaultAffinity;
+	}
+	
 	
 
 

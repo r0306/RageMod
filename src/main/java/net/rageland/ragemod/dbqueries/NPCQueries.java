@@ -52,8 +52,6 @@ public class NPCQueries
 	    Language currentLanguage = null;
 	    int id_Language = 0;
 	    
-		PlayerTown currentTown = null;
-		
     	try
     	{
     		conn = rageDB.getConnection();
@@ -181,7 +179,7 @@ public class NPCQueries
     	{
     		conn = rageDB.getConnection();
         	preparedStatement = conn.prepareStatement(
-				"SELECT n.ID_NPC, n.ID_NPCRace, n.Name, n.IsBilingual, n.ID_NPCTown, n.Gender, s.Filename " +
+				"SELECT n.ID_NPC, n.ID_NPCRace, n.Name, n.IsBilingual, n.ID_NPCTown, n.Gender, s.Filename, n.DefaultAffinity " +
 				"FROM NPCs n " +
 				"LEFT JOIN Skins s ON n.ID_Skin = s.ID_Skin");
         	
@@ -197,6 +195,7 @@ public class NPCQueries
         		npc.id_NPCTown = rs.getInt("ID_NPCTown");
         		npc.isMale = rs.getString("Gender").equalsIgnoreCase("M");
         		npc.skinPath = rs.getString("Filename");
+        		npc.defaultAffinity = rs.getFloat("DefaultAffinity");
         		
         		npcs.add(npc);
         	}			

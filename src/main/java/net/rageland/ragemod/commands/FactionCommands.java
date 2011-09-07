@@ -111,7 +111,7 @@ public class FactionCommands
 			return;
 		}
 		// Check to see if the player has enough money to join the specified faction
-		if( !balance.hasEnough(populations.get(id_Faction)) )
+		if( populations.get(id_Faction) != null && !balance.hasEnough(populations.get(id_Faction)) )
 		{
 			plugin.message.parseNo(player, "You need at least " + iConomy.format(populations.get(id_Faction)) + " to join the " + plugin.factions.getCodedName(id_Faction) + " faction.");
 			return;

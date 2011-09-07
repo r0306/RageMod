@@ -42,6 +42,13 @@ public class FactionQueries {
         		populations.put(rs.getInt("ID_Faction"), rs.getInt("Population"));       		
         	}
         	
+        	// Account for 0 populations
+        	if( !populations.containsKey(1) )
+        		populations.put(1, 0);
+        	if( !populations.containsKey(2) )
+        		populations.put(2, 0);
+        	
+        	
         	return populations;
     	} 
 		catch (Exception e) {

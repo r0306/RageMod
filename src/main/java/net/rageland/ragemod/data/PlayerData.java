@@ -16,8 +16,6 @@ import net.rageland.ragemod.RageZones.Zone;
 import net.rageland.ragemod.quest.PlayerQuestData;
 import net.rageland.ragemod.quest.KillCreatureQuest;
 
-// TODO: Create a colored player name that takes their data into account to be easily pulled by Commands, etc
-
 // TODO: Should I be storing IDs for towns and such for all player data?  Then I would call the PlayerTowns hash
 //		 every time I need to retrieve the name.
 
@@ -67,6 +65,7 @@ public class PlayerData
 	private HashMap<Integer, Integer> languageSkill;		// Skill in each language (id 1-4), up to 100
 	private HashSet<Integer> npcInteractions;				// List of which NPCInstances the player has interacted with
 	private HashSet<Integer> newNPCInteractions;			// List of interactions from this session
+	private HashMap<Integer, Float> npcAffinity;			// NPCs' friendliness towards player
 	
 	// ***** STATE (Non-DB) VALUES *****
 	
@@ -214,6 +213,17 @@ public class PlayerData
 				this.languageSkill.put(instance.getRaceID(), this.languageSkill.get(instance.getRaceID()) + 1);
 				return true;
 			}
+			
+			// Increase the affinity
+			int npcID = instance.getNPCid();
+			if( npcAffinity.containsKey(npcID) )
+			{
+				npcAffinity.put(npcID, npcAffinity.get(npcID) + plugin.config.NPC_AFFINITY_GAIN_TALK);
+				if( npcAffinity.get(npcID) > plugin.config.NPC_AFFINITY_MAX )
+					npcAffinity.put(npcID, plugin.config.NPC_AFFINITY_MAX);
+			}
+			else
+				npcAffinity.put(npcID, instance.getDefaultAffinity() + plugin.config.NPC_AFFINITY_GAIN_TALK);
 		}
 		
 		return false;
@@ -229,6 +239,17 @@ public class PlayerData
 	public void setInteractions(HashSet<Integer> interactions)
 	{
 		this.npcInteractions = interactions;
+	}
+	
+	// Sets the instance list
+	public void setAffinities(HashMap<Integer, Float> affinities)
+	{
+		this.npcAffinity = affinities;
+	}
+	
+	public HashMap<Integer, Float> getAffinity()
+	{
+		return this.npcAffinity;
 	}
 	
 	

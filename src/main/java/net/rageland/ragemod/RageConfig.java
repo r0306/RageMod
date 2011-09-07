@@ -42,6 +42,7 @@ public class RageConfig {
     public int Town_DISTANCE_BETWEEN_BEDS = 6;
     public double Town_UPKEEP_PER_PLAYER = 1.00;
     public int Town_MAX_BANKRUPT_DAYS = 7;
+    public int Town_COLORED_SHEEP_CHANCE = 20;
     
     // Money settings
     public String CURRENCY_NAME = "Silver";			// iConomy's currency name
@@ -112,6 +113,9 @@ public class RageConfig {
     public String CUSTOM_SKIN_PATH = "http://www.rageland.net/skins/";
     public int NPC_HUMAN_ID = 5;				// The Human race has special functionality
     public HashMap<Integer, String> NPC_LANGUAGE_NAMES;
+    public float NPC_AFFINITY_MAX = 10;			// Maximum affinity for each NPC
+    public float NPC_MIN_AFFINITY = -10;			// Minimum affinity for each NPC
+    public float NPC_AFFINITY_GAIN_TALK = 1;		// Amount of affinity gained for talking to an NPC
     
     
     public RageConfig (RageMod plugin)

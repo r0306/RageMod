@@ -3,10 +3,12 @@ package net.rageland.ragemod;
 // TODO: Bounty
 
 import java.rmi.server.Skeleton;
+import java.util.Random;
 
 import net.rageland.ragemod.data.Factions;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
+import net.rageland.ragemod.data.Town;
 import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.npcentities.NPCEntity;
@@ -15,6 +17,7 @@ import net.rageland.ragemod.npclib.NpcEntityTargetEvent;
 import net.rageland.ragemod.quest.KillCreatureQuest;
 
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Creeper;
@@ -23,6 +26,7 @@ import org.bukkit.entity.Giant;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Spider;
 import org.bukkit.entity.Squid;
 import org.bukkit.entity.Wolf;
@@ -41,10 +45,12 @@ import org.bukkit.event.entity.EntityTargetEvent;
 public class RMEntityListener extends EntityListener
 {
 	private final RageMod plugin;
+	private Random random;
 
     public RMEntityListener(final RageMod plugin) 
     {
         this.plugin = plugin;
+        this.random = new Random();
     }
     
     // Called when an entity damages another entity
@@ -202,7 +208,6 @@ public class RMEntityListener extends EntityListener
             				playerData.activeQuestData.incrementObjectiveCounter();
             				playerData.activeQuestData.getQuest().statusUpdate(attackerPlayer, playerData);
             			}
-            			
             		}
             	}
             }
@@ -214,21 +219,31 @@ public class RMEntityListener extends EntityListener
     {
         // Don't process code if event was cancelled by another plugin
     	if (event.isCancelled()) 
-        {
             return;
-        }
     	
     	// Don't let monsters spawn inside player towns or the capitol
     	if( (event.getCreatureType() == CreatureType.CREEPER || event.getCreatureType() == CreatureType.SKELETON ||
     			event.getCreatureType() == CreatureType.ZOMBIE || event.getCreatureType() == CreatureType.SPIDER) && 
     			(plugin.zones.isInCapitol(event.getLocation()) || plugin.towns.getCurrentTown(event.getLocation()) != null) )
-    	{
     		event.setCancelled(true);
-    	}   
+    	
     	// Don't let monsters spawn inside the travel zone
     	else if( plugin.zones.isInTravelZone(event.getLocation()) )
-    	{
     		event.setCancelled(true);
+    	
+    	// Change colors of sheep spawned inside faction towns
+    	else if( event.getCreatureType() == CreatureType.SHEEP )
+    	{
+    		Town town = plugin.towns.getCurrentTown(event.getLocation());
+    		if( town != null && town instanceof PlayerTown )
+    		{
+    			PlayerTown playerTown = (PlayerTown)town;
+    			if( playerTown.id_Faction != 0 && random.nextInt(100) < plugin.config.Town_COLORED_SHEEP_CHANCE )
+    			{
+    				Sheep s = (Sheep) event.getEntity();
+    				s.setColor(plugin.factions.getDyeColor(playerTown.id_Faction, random.nextBoolean()));
+    			}
+    		}
     	}
     }
     

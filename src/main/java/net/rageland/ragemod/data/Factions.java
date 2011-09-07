@@ -2,6 +2,7 @@ package net.rageland.ragemod.data;
 
 import java.util.HashMap;
 
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 
 public class Factions 
@@ -101,6 +102,32 @@ public class Factions
 				return 'n';
 		}
 	}
+	
+	// Returns the corresponding dye colors
+	public DyeColor getDyeColor(int id, boolean isPrimary)
+	{
+		if( isPrimary )			// Primary colors
+			switch(id)
+			{
+				case 1:		// red
+					return DyeColor.RED;
+				case 2:		// blue
+					return DyeColor.BLUE;
+				default:
+					return DyeColor.WHITE;
+			}
+		else					// Secondary colors
+			switch(id)
+			{
+				case 1:		// red
+					return DyeColor.PINK;
+				case 2:		// blue
+					return DyeColor.LIGHT_BLUE;
+				default:
+					return DyeColor.GRAY;
+			}
+	}
+	
 	
 
 }

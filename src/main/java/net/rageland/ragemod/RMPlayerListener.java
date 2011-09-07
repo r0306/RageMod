@@ -137,6 +137,7 @@ public class RMPlayerListener extends PlayerListener
     	
     	plugin.database.playerQueries.playerLogoff(playerData.id_Player);
     	plugin.database.playerQueries.recordInstances(playerData);
+    	plugin.database.playerQueries.recordAffinity(playerData);
     }
     
     

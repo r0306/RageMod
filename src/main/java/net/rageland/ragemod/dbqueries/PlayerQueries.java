@@ -143,6 +143,7 @@ public class PlayerQueries {
         playerData.lotPermissions = rageDB.lotQueries.getLotPermissions(playerData.id_Player);
         playerData.permits = getPermits(playerData.id_Player);
         playerData.setInteractions(getInteractions(playerData.id_Player));
+        playerData.setAffinities(getAffinities(playerData.id_Player));
         
         // Load language skill
         playerData.setLanguageSkill(1, rs.getInt("LanguageSkill1"));
@@ -238,19 +239,22 @@ public class PlayerQueries {
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
 	    ResultSet rs = null; 
-	    HashSet<Integer> instances = new HashSet<Integer>();
+	    HashSet<Integer> interactions = new HashSet<Integer>();
 	
     	try
     	{
     		conn = rageDB.getConnection();
         	String selectQuery = 
-        		"SELECT ID_NPCInstance FROM Player_NPCInstance WHERE ID_Player = " + id_Player;
+        		"SELECT pni.ID_NPCInstance FROM Player_NPCInstance pni " +
+        		"INNER JOIN NPCInstances ni " +
+        		"WHERE pni.ID_Player = " + id_Player + 
+        		" AND (ni.DespawnTime IS NULL OR ni.DespawnTime > NOW()) AND ni.IsDisabled = 0";
     		
     		preparedStatement = conn.prepareStatement(selectQuery);	        		        	
         	rs = preparedStatement.executeQuery();
         	
         	while( rs.next() )
-        		instances.add(rs.getInt("ID_NPCInstance"));
+        		interactions.add(rs.getInt("ID_NPCInstance"));
         		        	
     	} catch (SQLException e) {
     		System.out.println("Error in PlayerQueries.getInteractions(): " + e.getMessage());
@@ -260,7 +264,39 @@ public class PlayerQueries {
 			rageDB.close(rs, preparedStatement, conn);
 		}
     	
-    	return instances;
+    	return interactions;
+	} 
+	
+	// Return all permits acquired by the player
+	public HashMap<Integer, Float> getAffinities(int id_Player)
+	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null; 
+	    HashMap<Integer, Float> affinities = new HashMap<Integer, Float>();
+	
+    	try
+    	{
+    		conn = rageDB.getConnection();
+        	String selectQuery = 
+        		"SELECT ID_NPC, Affinity FROM Player_NPC " +
+        		"WHERE ID_Player = " + id_Player;
+    		
+    		preparedStatement = conn.prepareStatement(selectQuery);	        		        	
+        	rs = preparedStatement.executeQuery();
+        	
+        	while( rs.next() )
+        		affinities.put(rs.getInt("ID_NPC"), rs.getFloat("Affinity"));
+        		        	
+    	} catch (SQLException e) {
+    		System.out.println("Error in PlayerQueries.getAffinities(): " + e.getMessage());
+		    System.out.println("SQLState: " + e.getSQLState());
+		    System.out.println("VendorError: " + e.getErrorCode());
+		} finally {
+			rageDB.close(rs, preparedStatement, conn);
+		}
+    	
+    	return affinities;
 	} 
 	
 	// Load data from Players table for specified player; returns NULL if not found 
@@ -520,6 +556,51 @@ public class PlayerQueries {
     	} 
     	catch (SQLException e) {
     		System.out.println("Error in PlayerQueries.recordInstances(): " + e.getMessage() + " Query: " + query);
+		    System.out.println("SQLState: " + e.getSQLState());
+		    System.out.println("VendorError: " + e.getErrorCode());
+		} finally {
+			rageDB.close(rs, preparedStatement, conn);
+		}	
+	}
+	
+	// Records all NPC interactions the player had during their session
+	public void recordAffinity(PlayerData playerData) 
+	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
+	    boolean firstEntry = true;
+	    String query = "";
+	    
+		try
+    	{
+			// If there is no affinity, no need for update
+			if( playerData.getAffinity().size() == 0 )
+				return;
+			
+			conn = rageDB.getConnection();
+			
+			// Clear the existing affinity data
+			preparedStatement = conn.prepareStatement("DELETE FROM Player_NPC WHERE ID_Player = " + playerData.id_Player);
+    		preparedStatement.executeUpdate();	
+			
+			query = "INSERT INTO Player_NPC (ID_Player, ID_NPC, Affinity) VALUES ";
+			
+			// Build a list of all new interactions
+			for( int npcID : playerData.getAffinity().keySet() )
+			{
+				if( !firstEntry )
+					query += ", ";
+				else
+					firstEntry = false;
+				query += "(" + playerData.id_Player + ", " + npcID + ", " + playerData.getAffinity().get(npcID) + ")";
+			}
+			
+    		preparedStatement = conn.prepareStatement(query);
+    		preparedStatement.executeUpdate();	
+    	} 
+    	catch (SQLException e) {
+    		System.out.println("Error in PlayerQueries.recordAffinity(): " + e.getMessage() + " Query: " + query);
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
 		} finally {
