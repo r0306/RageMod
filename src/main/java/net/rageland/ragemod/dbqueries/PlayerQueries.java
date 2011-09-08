@@ -575,7 +575,7 @@ public class PlayerQueries {
 		try
     	{
 			// If there is no affinity, no need for update
-			if( playerData.getAffinity().size() == 0 )
+			if( playerData.getAffinities().size() == 0 )
 				return;
 			
 			conn = rageDB.getConnection();
@@ -587,13 +587,13 @@ public class PlayerQueries {
 			query = "INSERT INTO Player_NPC (ID_Player, ID_NPC, Affinity) VALUES ";
 			
 			// Build a list of all new interactions
-			for( int npcID : playerData.getAffinity().keySet() )
+			for( int npcID : playerData.getAffinities().keySet() )
 			{
 				if( !firstEntry )
 					query += ", ";
 				else
 					firstEntry = false;
-				query += "(" + playerData.id_Player + ", " + npcID + ", " + playerData.getAffinity().get(npcID) + ")";
+				query += "(" + playerData.id_Player + ", " + npcID + ", " + playerData.getAffinities().get(npcID) + ")";
 			}
 			
     		preparedStatement = conn.prepareStatement(query);

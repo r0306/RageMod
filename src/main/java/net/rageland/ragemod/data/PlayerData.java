@@ -8,6 +8,7 @@ import java.util.HashSet;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
@@ -65,7 +66,7 @@ public class PlayerData
 	private HashMap<Integer, Integer> languageSkill;		// Skill in each language (id 1-4), up to 100
 	private HashSet<Integer> npcInteractions;				// List of which NPCInstances the player has interacted with
 	private HashSet<Integer> newNPCInteractions;			// List of interactions from this session
-	private HashMap<Integer, Float> npcAffinity;			// NPCs' friendliness towards player
+	private HashMap<Integer, Float> npcAffinities;			// NPCs' friendliness towards player
 	
 	// ***** STATE (Non-DB) VALUES *****
 	
@@ -80,7 +81,7 @@ public class PlayerData
 	
 	// Misc.
 	private RageMod plugin;
-	
+	private Player player;
 	
 	
 	// Constructor
@@ -90,6 +91,12 @@ public class PlayerData
 		this.languageSkill = new HashMap<Integer, Integer>();
 		this.npcInteractions = new HashSet<Integer>();
 		this.newNPCInteractions = new HashSet<Integer>();
+	}
+	
+	// Attaches the Player object for sending messages, etc
+	public void attachPlayer(Player player)
+	{
+		this.player = player;
 	}
 	
 	// Sets the spawn location when bed clicked
@@ -198,35 +205,33 @@ public class PlayerData
 	}
 	
 	// Records a player's interaction with an NPC instance
-	// Returns true if language skill was increased
-	public boolean recordNPCInteraction(NPCInstance instance)
+	// Returns true if new encounter with instance
+	public void recordNPCInteraction(NPCInstance instance)
 	{
-		if( !this.npcInteractions.contains(instance.getID()) )
+		// Record the interaction
+		this.npcInteractions.add(instance.getID());
+		this.newNPCInteractions.add(instance.getID());
+		
+		// Increase the language skill, if applicable
+		if( instance.getRaceID() != plugin.config.NPC_HUMAN_ID && this.languageSkill.get(instance.getRaceID()) < 100 )
 		{
-			// Record the interaction
-			this.npcInteractions.add(instance.getID());
-			this.newNPCInteractions.add(instance.getID());
+			this.languageSkill.put(instance.getRaceID(), this.languageSkill.get(instance.getRaceID()) + 1);
 			
-			// Increase the language skill, if applicable
-			if( instance.getRaceID() != plugin.config.NPC_HUMAN_ID && this.languageSkill.get(instance.getRaceID()) < 100 )
-			{
-				this.languageSkill.put(instance.getRaceID(), this.languageSkill.get(instance.getRaceID()) + 1);
-				return true;
-			}
-			
-			// Increase the affinity
-			int npcID = instance.getNPCid();
-			if( npcAffinity.containsKey(npcID) )
-			{
-				npcAffinity.put(npcID, npcAffinity.get(npcID) + plugin.config.NPC_AFFINITY_GAIN_TALK);
-				if( npcAffinity.get(npcID) > plugin.config.NPC_AFFINITY_MAX )
-					npcAffinity.put(npcID, plugin.config.NPC_AFFINITY_MAX);
-			}
-			else
-				npcAffinity.put(npcID, instance.getDefaultAffinity() + plugin.config.NPC_AFFINITY_GAIN_TALK);
+			// Notify the player of increased language skill
+			if( player != null )
+				plugin.message.languageUp(player, instance.getRaceID(), 1, this.getLanguageSkill(instance.getRaceID()));
 		}
 		
-		return false;
+		// Increase the affinity
+		int npcID = instance.getNPCid();
+		if( npcAffinities.containsKey(npcID) )
+		{
+			npcAffinities.put(npcID, npcAffinities.get(npcID) + plugin.config.NPC_AFFINITY_GAIN_TALK);
+			if( npcAffinities.get(npcID) > plugin.config.NPC_AFFINITY_MAX )
+				npcAffinities.put(npcID, plugin.config.NPC_AFFINITY_MAX);
+		}
+		else
+			npcAffinities.put(npcID, instance.getDefaultAffinity() + plugin.config.NPC_AFFINITY_GAIN_TALK);
 	}
 	
 	// Gets all NPC interactions
@@ -241,15 +246,34 @@ public class PlayerData
 		this.npcInteractions = interactions;
 	}
 	
+	// Returns whether or not the player has interacted with this instance yet
+	public boolean isNewInteraction(int instanceID)
+	{
+		return !npcInteractions.contains(instanceID);
+	}
+	
 	// Sets the instance list
 	public void setAffinities(HashMap<Integer, Float> affinities)
 	{
-		this.npcAffinity = affinities;
+		this.npcAffinities = affinities;
 	}
 	
-	public HashMap<Integer, Float> getAffinity()
+	// Returns all affinity values
+	public HashMap<Integer, Float> getAffinities()
 	{
-		return this.npcAffinity;
+		return this.npcAffinities;
+	}
+	
+	// Returns whether or not the player has talked to an NPC before
+	public boolean isFirstMeeting(int npcID)
+	{
+		return !npcAffinities.containsKey(npcID);
+	}
+	
+	// Returns affinity for a particular NPC
+	public float getAffinity(int npcID)
+	{
+		return npcAffinities.get(npcID);
 	}
 	
 	

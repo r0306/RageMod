@@ -27,6 +27,7 @@ import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.database.RageDB;
+import net.rageland.ragemod.npcentities.SpeechData;
 import net.rageland.ragemod.text.Language;
 
 public class NPCQueries 
@@ -351,27 +352,32 @@ public class NPCQueries
 	}
 	
 	// Gets a specified number of phrases for speech NPCs 
-	public ArrayList<NPCPhrase> getPhrases(int id_NPCRace, int id_NPCTown, int id_NPC) 
+	public SpeechData getPhrases(int id_NPCRace, int id_NPCTown, int id_NPC) 
 	{
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
 	    ResultSet rs = null;
 	    ArrayList<NPCPhrase> phrases = new ArrayList<NPCPhrase>();
 	    ArrayList<NPCPhrase> phrasePool = new ArrayList<NPCPhrase>();
+	    NPCPhrase greeting;
+	    HashMap<Integer, NPCPhrase> followups = new HashMap<Integer, NPCPhrase>();
 	    String updateQuery = "";
+	    SpeechData speechData;
 		
     	try
     	{
     		conn = rageDB.getConnection();
+    		String whereClause = "(np.ID_NPCRace = 0 OR np.ID_NPCRace = " + id_NPCRace + ") AND " +
+						"(np.ID_NPCTown = 0 OR np.ID_NPCTown = " + id_NPCTown + ") AND " +
+						"(np.ID_NPC = 0 OR np.ID_NPC = " + id_NPC + ") ";
+    		
         	preparedStatement = conn.prepareStatement(
-				"SELECT ID_NPCPhrase, Text " +
-				"FROM NPCPhrases " +
-				"WHERE (ID_NPCRace = 0 OR ID_NPCRace = " + id_NPCRace + ") AND " +
-						"(ID_NPCTown = 0 OR ID_NPCTown = " + id_NPCTown + ") AND " +
-						"(ID_NPC = 0 OR ID_NPC = " + id_NPC + ") " +
-				"ORDER BY Uses " +
+				"SELECT np.ID_NPCPhrase, np.Text " +
+				"FROM NPCPhrases np " +
+				"WHERE " + whereClause + " AND " +
+						"np.GreetingType = 0 AND np.Affinity = 0 " +	// TODO: Figure out how affinity will work with normal messages, if at all
+				"ORDER BY np.Uses " +
 				"LIMIT " + plugin.config.NPC_PHRASE_POOL);
-        	
         	rs = preparedStatement.executeQuery();
         	
         	// Load all possible phrases into the pool for random selection
@@ -394,15 +400,48 @@ public class NPCQueries
         		}
         	}
         	
-        	if( !updateQuery.equals("") )
+        	// Get the initial greeting
+        	preparedStatement = conn.prepareStatement(
+    				"SELECT np.ID_NPCPhrase, np.Text " +
+    				"FROM NPCPhrases np " +
+    				"WHERE " + whereClause + " AND " +
+    						"np.GreetingType = 1 AND np.Affinity = (SELECT DefaultAffinity FROM NPCs WHERE ID_NPC = " + id_NPC + ") " +
+    				"ORDER BY Uses " +
+    				"LIMIT 1");
+        	rs = preparedStatement.executeQuery();
+        	
+        	rs.next();
+        	greeting = new NPCPhrase(rs.getString("Text"), rs.getInt("ID_NPCPhrase"), id_NPCRace, plugin);
+        	updateQuery += " OR ID_NPCPhrase = " + rs.getInt("ID_NPCPhrase");
+        	
+        	// Get the followup greetings
+        	preparedStatement = conn.prepareStatement(
+    				"SELECT np.ID_NPCPhrase, np.Text, np.Affinity " +
+    				"FROM ( " +
+    				"	SELECT Affinity, MIN(Uses) as MinUses " +
+				    "	FROM NPCPhrases np WHERE " + whereClause + " AND GreetingType = 2 GROUP BY Affinity " +
+        			"	) AS x INNER JOIN NPCPhrases np ON np.Affinity = x.Affinity AND np.Uses = x.MinUses " +
+    				"WHERE " + whereClause + " AND " +
+    						"np.GreetingType = 2 " +
+    				"GROUP BY np.Affinity ");
+        	rs = preparedStatement.executeQuery();
+        	
+        	while( rs.next() )
         	{
-        		// Update the database to show that the phrases have been used
-            	preparedStatement = conn.prepareStatement(
-        				"UPDATE NPCPhrases SET Uses = Uses + 1 WHERE " + updateQuery);
-        		preparedStatement.executeUpdate();
-        		
-        		return phrases;
+        		followups.put(rs.getInt("Affinity"), new NPCPhrase(rs.getString("Text"), rs.getInt("ID_NPCPhrase"), id_NPCRace, plugin));
+        		updateQuery += " OR ID_NPCPhrase = " + rs.getInt("ID_NPCPhrase");
+        		//System.out.println("Loaded followup greeting (Aff. " + rs.getInt("Affinity") + "): " + rs.getString("Text"));
         	}
+
+    		// Update the database to show that the phrases have been used
+        	preparedStatement = conn.prepareStatement(
+    				"UPDATE NPCPhrases SET Uses = Uses + 1 WHERE " + updateQuery);
+    		preparedStatement.executeUpdate();
+    		
+    		// Build the SpeechData object
+    		speechData = new SpeechData(phrases, greeting, followups, id_NPCRace, plugin);
+    		
+    		return speechData;
         		        	
     	} catch (Exception e) {
     		System.out.println("Error in NPCQueries.getPhrases(): " + e.getMessage());

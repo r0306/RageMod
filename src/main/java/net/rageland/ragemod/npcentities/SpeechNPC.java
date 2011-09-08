@@ -30,11 +30,26 @@ public class SpeechNPC extends NPCEntity
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
 		
-		plugin.message.talk(player, this.name, this.speechData.getNextMessage(playerData.getLanguageSkill(this.instance.getRaceID())));
 		this.facePlayer(player);
 		
-		if( playerData.recordNPCInteraction(instance) )
-			plugin.message.languageUp(player, instance.getRaceID(), 1, playerData.getLanguageSkill(instance.getRaceID()));
+		if( playerData.isNewInteraction(instance.getID()) )
+		{
+			// If  returned true, this is the first encounter with this instance
+			if( playerData.isFirstMeeting(instance.getNPCid()) )
+				plugin.message.talk(player, this.name, this.speechData.getInitialGreeting(playerData.getLanguageSkill(this.instance.getRaceID())));
+			else
+				plugin.message.talk(player, this.name, speechData.getFollowupGreeting(
+								playerData.getLanguageSkill(instance.getRaceID()), playerData.getAffinity(instance.getNPCid())));
+			
+			playerData.recordNPCInteraction(instance);
+			
+		}
+		else
+		{
+			plugin.message.talk(player, this.name, this.speechData.getNextMessage(playerData.getLanguageSkill(this.instance.getRaceID())));
+			
+		}
+			
 	}
 
 	/**

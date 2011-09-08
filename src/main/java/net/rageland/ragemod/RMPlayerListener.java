@@ -75,7 +75,8 @@ public class RMPlayerListener extends PlayerListener
     public void onPlayerJoin(PlayerJoinEvent event)
     {
     	Player player = event.getPlayer();    	
-    	PlayerData playerData = plugin.players.playerLogin(player.getName());    	  
+    	PlayerData playerData = plugin.players.playerLogin(player.getName());    
+    	playerData.attachPlayer(player);
     	
 		// Set the state info
     	playerData.currentZone = plugin.zones.getZone(player.getLocation());

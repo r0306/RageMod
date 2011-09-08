@@ -186,10 +186,6 @@ public class NPCInstance
 		plugin.npcManager.addInstance(this.id_NPCInstance, this);
 		location.setInstance(this);
 		
-		// Add the speech messages
-		entity.addSpeechMessages();
-		
-		// TEMP
 		this.setSkin();
 	}
 

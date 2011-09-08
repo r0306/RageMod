@@ -69,7 +69,7 @@ public class NPCEntity extends EntityPlayer
 		int radius = 20; 
 		int interval = 30;
 		
-		this.speechData = new SpeechData(new ArrayList<NPCPhrase>(), radius, interval, instance.getRaceID(), plugin);
+		this.speechData = plugin.database.npcQueries.getPhrases(instance.getRaceID(), instance.getTownID(), instance.getNPCid());
 	}
 
 	public void rightClickAction(Player player)
@@ -203,13 +203,14 @@ public class NPCEntity extends EntityPlayer
 		}
 	}
 
+	// 9-7-11 DC: SpeechData rewritten, will probably not need this anymore
 	// Pulls speech messages from the database
-	public void addSpeechMessages() 
-	{
-		for( NPCPhrase message : plugin.database.npcQueries.getPhrases(instance.getRaceID(), instance.getTownID(), instance.getNPCid()) )
-		{
-			this.addSpeechMessage(message);
-		}
-	}
+//	public void addSpeechMessages() 
+//	{
+//		for( NPCPhrase message : plugin.database.npcQueries.getPhrases(instance.getRaceID(), instance.getTownID(), instance.getNPCid()) )
+//		{
+//			this.addSpeechMessage(message);
+//		}
+//	}
 
 }

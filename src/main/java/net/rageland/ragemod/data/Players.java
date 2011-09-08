@@ -24,7 +24,6 @@ public class Players {
     {
     	PlayerData playerData = plugin.database.playerQueries.playerLogin(playerName);
     	
-    	
     	if(playerData == null) 
     	{
     		// No contact with DB
