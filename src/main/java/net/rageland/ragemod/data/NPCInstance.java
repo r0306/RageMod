@@ -219,6 +219,12 @@ public class NPCInstance
 		return data.defaultAffinity;
 	}
 	
+	// Gets the NPCData object
+	public NPCData getNPCData()
+	{
+		return this.data;
+	}
+	
 	
 
 

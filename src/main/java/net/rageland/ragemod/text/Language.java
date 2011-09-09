@@ -68,7 +68,10 @@ public class Language
 			while( toTranslate.size() > (total * (1 - ((double)i / 4))) )
 			{
 				wordIndex = toTranslate.remove(random.nextInt(toTranslate.size()));
-				split[wordIndex] = Message.NPC_FOREIGN_COLOR + translateWord(split[wordIndex], random);
+				// Don't translate any of the codes
+				if( 	!split[wordIndex].equals("<playerName/>") && 
+						!split[wordIndex].equals("<selfName/>")	)
+					split[wordIndex] = Message.NPC_FOREIGN_COLOR + translateWord(split[wordIndex], random);
 			}
 			result.add(join(split, " "));
 		}

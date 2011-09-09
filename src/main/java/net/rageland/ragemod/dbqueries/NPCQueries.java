@@ -196,7 +196,7 @@ public class NPCQueries
         		npc.id_NPCTown = rs.getInt("ID_NPCTown");
         		npc.isMale = rs.getString("Gender").equalsIgnoreCase("M");
         		npc.skinPath = rs.getString("Filename");
-        		npc.defaultAffinity = rs.getFloat("DefaultAffinity");
+        		npc.defaultAffinity = rs.getFloat("DefaultAffinity") * 4;
         		
         		npcs.add(npc);
         	}			
@@ -352,7 +352,7 @@ public class NPCQueries
 	}
 	
 	// Gets a specified number of phrases for speech NPCs 
-	public SpeechData getPhrases(int id_NPCRace, int id_NPCTown, int id_NPC) 
+	public SpeechData getPhrases(NPCData npcData, int id_NPCTown) 
 	{
 		Connection conn = null;
 	    PreparedStatement preparedStatement = null;
@@ -367,12 +367,12 @@ public class NPCQueries
     	try
     	{
     		conn = rageDB.getConnection();
-    		String whereClause = "(np.ID_NPCRace = 0 OR np.ID_NPCRace = " + id_NPCRace + ") AND " +
+    		String whereClause = "(np.ID_NPCRace = 0 OR np.ID_NPCRace = " + npcData.id_NPCRace + ") AND " +
 						"(np.ID_NPCTown = 0 OR np.ID_NPCTown = " + id_NPCTown + ") AND " +
-						"(np.ID_NPC = 0 OR np.ID_NPC = " + id_NPC + ") ";
+						"(np.ID_NPC = 0 OR np.ID_NPC = " + npcData.id_NPC + ") ";
     		
         	preparedStatement = conn.prepareStatement(
-				"SELECT np.ID_NPCPhrase, np.Text " +
+				"SELECT np.ID_NPCPhrase, np.Text, np.IsDynamic " +
 				"FROM NPCPhrases np " +
 				"WHERE " + whereClause + " AND " +
 						"np.GreetingType = 0 AND np.Affinity = 0 " +	// TODO: Figure out how affinity will work with normal messages, if at all
@@ -383,7 +383,8 @@ public class NPCQueries
         	// Load all possible phrases into the pool for random selection
         	while( rs.next() )
         	{
-        		phrasePool.add(new NPCPhrase(rs.getString("Text"), rs.getInt("ID_NPCPhrase"), id_NPCRace, plugin));
+        		phrasePool.add(new NPCPhrase(rs.getString("Text"), rs.getInt("ID_NPCPhrase"), 
+        				plugin, rs.getBoolean("IsDynamic"), npcData));
         	}
         	
         	// Choose a specified number of phrases from the pool to use in game
@@ -402,21 +403,22 @@ public class NPCQueries
         	
         	// Get the initial greeting
         	preparedStatement = conn.prepareStatement(
-    				"SELECT np.ID_NPCPhrase, np.Text " +
+    				"SELECT np.ID_NPCPhrase, np.Text, np.IsDynamic " +
     				"FROM NPCPhrases np " +
     				"WHERE " + whereClause + " AND " +
-    						"np.GreetingType = 1 AND np.Affinity = (SELECT DefaultAffinity FROM NPCs WHERE ID_NPC = " + id_NPC + ") " +
+    						"np.GreetingType = 1 AND np.Affinity = (SELECT DefaultAffinity FROM NPCs WHERE ID_NPC = " + npcData.id_NPC + ") " +
     				"ORDER BY Uses " +
     				"LIMIT 1");
         	rs = preparedStatement.executeQuery();
         	
         	rs.next();
-        	greeting = new NPCPhrase(rs.getString("Text"), rs.getInt("ID_NPCPhrase"), id_NPCRace, plugin);
+        	greeting = new NPCPhrase(rs.getString("Text"), rs.getInt("ID_NPCPhrase"), 
+        			plugin, rs.getBoolean("IsDynamic"), npcData);
         	updateQuery += " OR ID_NPCPhrase = " + rs.getInt("ID_NPCPhrase");
         	
         	// Get the followup greetings
         	preparedStatement = conn.prepareStatement(
-    				"SELECT np.ID_NPCPhrase, np.Text, np.Affinity " +
+    				"SELECT np.ID_NPCPhrase, np.Text, np.Affinity, np.IsDynamic " +
     				"FROM ( " +
     				"	SELECT Affinity, MIN(Uses) as MinUses " +
 				    "	FROM NPCPhrases np WHERE " + whereClause + " AND GreetingType = 2 GROUP BY Affinity " +
@@ -428,7 +430,8 @@ public class NPCQueries
         	
         	while( rs.next() )
         	{
-        		followups.put(rs.getInt("Affinity"), new NPCPhrase(rs.getString("Text"), rs.getInt("ID_NPCPhrase"), id_NPCRace, plugin));
+        		followups.put(rs.getInt("Affinity"), new NPCPhrase(rs.getString("Text"), rs.getInt("ID_NPCPhrase"), 
+        				plugin, rs.getBoolean("IsDynamic"), npcData));
         		updateQuery += " OR ID_NPCPhrase = " + rs.getInt("ID_NPCPhrase");
         		//System.out.println("Loaded followup greeting (Aff. " + rs.getInt("Affinity") + "): " + rs.getString("Text"));
         	}
@@ -439,7 +442,7 @@ public class NPCQueries
     		preparedStatement.executeUpdate();
     		
     		// Build the SpeechData object
-    		speechData = new SpeechData(phrases, greeting, followups, id_NPCRace, plugin);
+    		speechData = new SpeechData(phrases, greeting, followups, npcData, plugin);
     		
     		return speechData;
         		        	

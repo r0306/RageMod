@@ -18,6 +18,7 @@ import net.rageland.ragemod.data.NPCData;
 import net.rageland.ragemod.data.NPCInstance;
 import net.rageland.ragemod.data.NPCLocation;
 import net.rageland.ragemod.data.NPCPhrase;
+import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.npclib.BWorld;
 import net.rageland.ragemod.npclib.NPCNetHandler;
 import net.rageland.ragemod.npclib.NPCNetworkManager;
@@ -69,7 +70,7 @@ public class NPCEntity extends EntityPlayer
 		int radius = 20; 
 		int interval = 30;
 		
-		this.speechData = plugin.database.npcQueries.getPhrases(instance.getRaceID(), instance.getTownID(), instance.getNPCid());
+		this.speechData = plugin.database.npcQueries.getPhrases(instance.getNPCData(), instance.getTownID());
 	}
 
 	public void rightClickAction(Player player)
@@ -186,7 +187,6 @@ public class NPCEntity extends EntityPlayer
 			if(RageMod.getInstance().npcManager.contains(npcEntity) && speechData.getInterval() > 0)
 			{
 				Player[] players = NPCEntity.this.plugin.getServer().getOnlinePlayers();
-				String message = speechData.getNextMessage(100);	// TODO: Integrate languages
 				
 				for (Player player : players)
 				{
@@ -194,7 +194,8 @@ public class NPCEntity extends EntityPlayer
 					{
 						continue;
 					}					
-					player.sendMessage(message);
+					PlayerData playerData = plugin.players.get(player.getName());
+					player.sendMessage(speechData.getNextMessage(playerData));
 				}
 
 				if (RageMod.getInstance().npcManager.contains(this.npcEntity))

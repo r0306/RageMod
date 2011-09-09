@@ -4,36 +4,38 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.data.NPCData;
 import net.rageland.ragemod.data.NPCPhrase;
+import net.rageland.ragemod.data.PlayerData;
 
 public class SpeechData
 {
 	private ArrayList<NPCPhrase> messages;
 	private NPCPhrase initialGreeting;
 	private HashMap<Integer, NPCPhrase> followups;
+	private NPCData npcData;
 	
 	private int messagePointer;
 	private int radius = 20;
 	private int interval = 30;
-	private int id_Race;
 	
 	private RageMod plugin;
 	
-	public SpeechData(ArrayList<NPCPhrase> messages, NPCPhrase initialGreeting, HashMap<Integer, NPCPhrase> followups, int id_Race, RageMod plugin)
+	public SpeechData(ArrayList<NPCPhrase> messages, NPCPhrase initialGreeting, HashMap<Integer, NPCPhrase> followups, NPCData npcData, RageMod plugin)
 	{
 		this.messages = messages;
 		messagePointer = 0;
 		this.initialGreeting = initialGreeting;
 		this.followups = followups;
-		this.id_Race = id_Race;
+		this.npcData = npcData;
 		this.plugin = plugin;
 	}
 	
-	public String getNextMessage(int languageSkill) 
+	public String getNextMessage(PlayerData playerData) 
 	{
 		if(messages.size() > 0)
 		{
-			String message = processPhrase(messages.get(messagePointer), languageSkill);
+			String message = messages.get(messagePointer).getMessage(playerData);
 			
 			messagePointer++;
 			if(messagePointer == messages.size())
@@ -48,32 +50,32 @@ public class SpeechData
 	}
 	
 	// Gets the message for a first-time meeting
-	public String getInitialGreeting(int languageSkill)
+	public String getInitialGreeting(PlayerData playerData)
 	{
-		return processPhrase(initialGreeting, languageSkill);
+		return initialGreeting.getMessage(playerData);
 	}
 	
 	// Gets the message for a followup encounter
-	public String getFollowupGreeting(int languageSkill, float affinity)
+	public String getFollowupGreeting(PlayerData playerData)
 	{
 		// Convert the -10 to 10 affinity float value to the -2 to 2 affinity integer code
-		int affinityCode = Math.round(affinity / 4);
+		int affinityCode = Math.round(playerData.getAffinity(npcData.id_NPC) / 4);
 		if( affinityCode > 2 )
 			affinityCode = 2;
 		else if( affinityCode < -2 )
 			affinityCode = -2;
 		
-		return processPhrase(followups.get(affinityCode), languageSkill);
+		return followups.get(affinityCode).getMessage(playerData);
 	}
 	
 	// Processes the language for a phrase
-	private String processPhrase(NPCPhrase phrase, int languageSkill)
-	{
-		if( languageSkill == 100 || id_Race == plugin.config.NPC_HUMAN_ID )
-			return phrase.getMessage();
-		else
-			return phrase.getTranslation(languageSkill);
-	}
+//	private String processPhrase(NPCPhrase phrase, PlayerData playerData)
+//	{
+//		if( languageSkill == 100 || npcData.id_NPCRace == plugin.config.NPC_HUMAN_ID )
+//			return phrase.getMessage(playerData);
+//		else
+//			return phrase.getTranslation(languageSkill, playerName);
+//	}
 	
 	public int getRadius()
 	{

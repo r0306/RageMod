@@ -33,4 +33,10 @@ public class NPCData
 		this.inUse = false;
 	}
 	
+	// Returns the NPC's name with the appropriate code
+	public String getCodedName()
+	{
+		return "<pn>" + name + "</pn>";
+	}
+	
 }

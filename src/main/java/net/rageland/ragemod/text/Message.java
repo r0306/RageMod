@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.data.NPCPhrase;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -12,19 +13,31 @@ import org.bukkit.entity.Player;
 public class Message 
 {
 	private RageMod plugin;
+	private NPCParsing npcParsing;
 	
 	private Pattern playerPattern;
 	private Pattern commandPattern;
 	private Pattern requiredPattern;
 	private Pattern optionalPattern;
 	private Pattern parenthesesPattern;
-	private Pattern urlPattern;
 	private Pattern townPattern;
 	private Pattern numberPattern;
 	
+	// Basic colors
 	public static ChatColor DEFAULT_COLOR = ChatColor.GREEN;
 	public static ChatColor COLOR_NO = ChatColor.DARK_RED;
 	public static ChatColor BROADCAST_COLOR = ChatColor.DARK_GREEN;
+	
+	// Player colors
+	public static ChatColor PLAYER_OWNER_COLOR = ChatColor.GOLD;
+	public static ChatColor PLAYER_ADMIN_COLOR = ChatColor.YELLOW;
+	public static ChatColor PLAYER_MOD_COLOR = ChatColor.DARK_GREEN;
+	public static ChatColor PLAYER_MERCHANT_COLOR = ChatColor.WHITE;
+	public static ChatColor PLAYER_RED_COLOR = ChatColor.RED;
+	public static ChatColor PLAYER_BLUE_COLOR = ChatColor.BLUE;
+	public static ChatColor PLAYER_CITIZEN_COLOR = ChatColor.GRAY;
+	
+	// NPC colors
 	public static ChatColor NPC_NAME_COLOR = ChatColor.AQUA;
 	public static ChatColor NPC_TEXT_COLOR = ChatColor.DARK_AQUA;
 	public static ChatColor NPC_FOREIGN_COLOR = ChatColor.GRAY;
@@ -33,6 +46,7 @@ public class Message
 	public Message( RageMod plugin )
 	{
 		this.plugin = plugin;
+		this.npcParsing = new NPCParsing(plugin);
 		
 		playerPattern = Pattern.compile("<p(.)>(\\w+)</p.>");
 		townPattern = Pattern.compile("<t(.)>(.+)</t.>");
@@ -41,7 +55,6 @@ public class Message
 		requiredPattern = Pattern.compile("(<.+>)");
 		optionalPattern = Pattern.compile("(\\[.+\\])");
 		parenthesesPattern = Pattern.compile("([(].+[)])");
-		urlPattern = Pattern.compile("(http://\\S+)");
 		numberPattern = Pattern.compile("(\\s)([\\d+,-\\.#]+( " + plugin.config.CURRENCY_NAME + ")?( " + plugin.config.CURRENCY_MINOR + ")?)");
 		 
 	}
@@ -115,10 +128,14 @@ public class Message
 		// Trim off the color code from the NPC name
 		name = name.substring(2);
 		
-		player.sendMessage(NPC_NAME_COLOR + name + ChatColor.WHITE + ": " + NPC_TEXT_COLOR + message);
+		parse(player, NPC_NAME_COLOR + name + ChatColor.WHITE + ": " + NPC_TEXT_COLOR + message, NPC_TEXT_COLOR);
 	}
 	
 	
+	
+	
+	
+	// *** HIGHLIGHT REGION ***
 	private String highlightPlayers(String message, ChatColor color)
 	{
 		Matcher matcher = playerPattern.matcher(message);
@@ -198,11 +215,7 @@ public class Message
 	    Matcher matcher = parenthesesPattern.matcher(message);
 	    return matcher.replaceAll(ChatColor.GRAY + "$1" + color);
 	}
-	private String highlightURL(String message, ChatColor color)
-	{
-	    Matcher matcher = urlPattern.matcher(message);
-	    return matcher.replaceAll(ChatColor.AQUA + "$1" + color);
-	}
+
 
 	// Sends a message informing the player of a language skill increase
 	public void languageUp(Player player, int raceID, int increase, int languageSkill) 
@@ -211,9 +224,16 @@ public class Message
 							ChatColor.GREEN + " skill " + ChatColor.WHITE + "+" + increase + ChatColor.GRAY + " (" + languageSkill + "/100)");
 		if( languageSkill == 100 )
 			player.sendMessage(ChatColor.YELLOW + "Congratulations!  " + DEFAULT_COLOR + "You are now fluent in " + LANGUAGE_NAME_COLOR + 
-					plugin.config.NPC_LANGUAGE_NAMES.get(raceID) + "!");
-		
+					plugin.config.NPC_LANGUAGE_NAMES.get(raceID) + "!");	
 	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 
 }
