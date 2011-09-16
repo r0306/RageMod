@@ -87,6 +87,9 @@ public class KillCreatureQuest extends Quest
 			plugin.message
 					.parse(player,
 							"You are already on a quest. To abandon the quest write /quest abandon");
+		} 
+		else if(!questData.isRequirementsMet(playerData)) {
+			plugin.message.parse(player, "You don't meet the requirements for this quest.");
 		}
 		else
 		{
@@ -126,7 +129,7 @@ public class KillCreatureQuest extends Quest
 	{
 		plugin.message.parse(player, "You have killed "
 				+ playerData.activeQuestData.getObjectiveCounter() + " of "
-				+ killNeededCounter + " " + this.creatureToBeKilled.getName() + "s.");
+				+ questData.getObjectiveCounter() + " " + this.creatureToBeKilled.getName() + "s.");
 	}
 
 }

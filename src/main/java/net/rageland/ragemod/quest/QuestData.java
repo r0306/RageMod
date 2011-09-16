@@ -1,5 +1,7 @@
 package net.rageland.ragemod.quest;
 
+import net.rageland.ragemod.data.PlayerData;
+
 /**
  * Contains quest data, each quest contains an instance of this class.
  * @author Jorgen
@@ -12,7 +14,7 @@ public class QuestData
 	private String startText;
 	private String endText;
 	private int objectiveCounter;
-	private String preRequiredQuest;
+	private QuestRequirements questReqs;
 	
 	/**
 	 * 
@@ -26,15 +28,16 @@ public class QuestData
 				String id,
 				String startText,
 				String endText,
-				int objectiveCounter,
-				String preRequiredQuest)
+				QuestRequirements questReqs,
+				int objectiveCounter
+				)
 	{
 		this.name = name;
 		this.id = id;
 		this.startText = startText;
 		this.endText = endText;
+		this.questReqs = questReqs;
 		this.objectiveCounter = objectiveCounter;
-		this.preRequiredQuest = preRequiredQuest;
 	}
 	
 	/**
@@ -78,8 +81,8 @@ public class QuestData
 		return objectiveCounter;
 	}
 	
-	public String getPreRequiredQuest()
+	public boolean isRequirementsMet(PlayerData playerData)
 	{
-		return preRequiredQuest;
+		return questReqs.requirementsMet(playerData);
 	}
 }
