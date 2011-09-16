@@ -11,6 +11,7 @@ import net.rageland.ragemod.commands.NPCCommands;
 import net.rageland.ragemod.commands.NPCTownCommands;
 import net.rageland.ragemod.commands.PermitCommands;
 import net.rageland.ragemod.commands.QuestCommands;
+import net.rageland.ragemod.commands.RageCommands;
 import net.rageland.ragemod.commands.TownCommands;
 import net.rageland.ragemod.data.Factions;
 import net.rageland.ragemod.data.Lot;
@@ -55,6 +56,7 @@ public class RMPlayerListener extends PlayerListener
     private NPCCommands npcCommands;
     private NPCTownCommands npcTownCommands;
     private PermitCommands permitCommands;
+    private RageCommands rageCommands;
 
     public RMPlayerListener(RageMod instance) 
     {
@@ -69,6 +71,7 @@ public class RMPlayerListener extends PlayerListener
         npcCommands = new NPCCommands(plugin);
         npcTownCommands = new NPCTownCommands(plugin);
         permitCommands = new PermitCommands(plugin);
+        rageCommands = new RageCommands(plugin);
     }
 
     // Pull the player data from the DB and register in memory
@@ -163,6 +166,11 @@ public class RMPlayerListener extends PlayerListener
     	else if( split[0].equalsIgnoreCase("/language") || split[0].equalsIgnoreCase("/lang") )
     	{
     		commands.language(player);
+    		event.setCancelled(true);
+    	}
+    	else if( split[0].equalsIgnoreCase("/rage") )
+    	{
+    		rageCommands.onCommand(player, playerData, split);
     		event.setCancelled(true);
     	}
     	// ********* COMPASS COMMANDS *********

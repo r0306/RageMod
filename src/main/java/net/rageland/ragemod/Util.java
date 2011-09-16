@@ -4,7 +4,9 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Cow;
 import org.bukkit.entity.Creature;
@@ -156,6 +158,23 @@ public class Util
 	public static boolean isBetween(double test, double a1, double a2)
 	{
 		return (test >= a1 && test <= a2) || (test <= a1 && test >= a2);
+	}
+	
+	// Finds the nearest spot to teleport to by looking upwards
+	public static Location findTeleportLocation(Location location)
+	{
+		Block blockA, blockB;
+		
+		for( int i = (int)location.getY(); i < 127; i++ )
+		{
+			blockA = location.getWorld().getBlockAt(new Location(location.getWorld(), location.getX(), i, location.getZ()));
+			blockB = location.getWorld().getBlockAt(new Location(location.getWorld(), location.getX(), i-1, location.getZ()));
+			
+			if( blockA.getType() == Material.AIR && blockB.getType() == Material.AIR )
+				return new Location(location.getWorld(), location.getX(), i-1, location.getZ());
+		}
+		
+		return null;
 	}
 	
 	

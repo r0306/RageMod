@@ -3,6 +3,7 @@ package net.rageland.ragemod.commands;
 // TODO: Add removal commands
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
@@ -27,10 +28,12 @@ import net.rageland.ragemod.quest.QuestImplementation;
 public class NPCCommands {
 	
 	private RageMod plugin;
+	private Random random;
 	
 	public NPCCommands(RageMod plugin)
 	{
 		this.plugin = plugin;
+		this.random = new Random();
 	}
 	
 	public void onNPCCommand(Player player, PlayerData playerData, String[] split) 
@@ -328,6 +331,8 @@ public class NPCCommands {
 		PlayerData playerData = plugin.players.get(player.getName());
 		boolean isMale;
 		
+		Random random = new Random();
+		
 		try
 		{
 			isMale = gender.equalsIgnoreCase("M");
@@ -347,6 +352,17 @@ public class NPCCommands {
 			npc.name = name;
 			npc.isBilingual = false;
 			npc.isMale = isMale;
+			
+			// Determine the default affinity randomly
+			int affinityRoll = random.nextInt(100);
+			if( affinityRoll < 10 )
+				npc.defaultAffinityCode = -2;
+			else if( affinityRoll < 30 )
+				npc.defaultAffinityCode = -1;
+			else if( affinityRoll < 50 )
+				npc.defaultAffinityCode = 1;
+			else
+				npc.defaultAffinityCode = 0;
 			
 			// Add the NPC to the database
 			npc.id_NPC = plugin.database.npcQueries.createNPC(npc, playerData.id_Player);

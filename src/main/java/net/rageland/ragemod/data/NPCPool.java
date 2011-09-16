@@ -134,6 +134,19 @@ public class NPCPool
     	int id_NPC = removeList.get(random.nextInt(removeList.size()));
     	return activate(id_NPC);  
 	}
+    
+    // Returns all NPCs that are a resident of a given town
+    public HashSet<NPCData> getAllResidents(int id_NPCTown)
+    {
+    	HashSet<NPCData> residents = new HashSet<NPCData>();
+    	for( NPCData npc : npcs.values() )
+    	{
+    		if( npc.id_NPCTown == id_NPCTown )
+    			residents.add(npc);
+    	}
+    	
+    	return residents;
+    }
 
 	
 	

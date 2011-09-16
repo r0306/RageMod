@@ -54,7 +54,7 @@ public class Message
 		commandPattern = Pattern.compile("([\\s'])(/[a-zA-Z]+)");
 		requiredPattern = Pattern.compile("(<.+>)");
 		optionalPattern = Pattern.compile("(\\[.+\\])");
-		parenthesesPattern = Pattern.compile("([(].+[)])");
+		parenthesesPattern = Pattern.compile("([(]\\D+[)])");
 		numberPattern = Pattern.compile("(\\s)([\\d+,-\\.#]+( " + plugin.config.CURRENCY_NAME + ")?( " + plugin.config.CURRENCY_MINOR + ")?)");
 		 
 	}

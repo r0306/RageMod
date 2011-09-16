@@ -9,6 +9,7 @@ import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.Factions;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.Players;
+import net.rageland.ragemod.data.Town;
 import net.rageland.ragemod.text.Language;
 
 import org.bukkit.ChatColor;
@@ -38,12 +39,14 @@ public class DebugCommands
 				plugin.message.parse(player, "   /debug colors   (displays all chat colors)");
 			if( true )
 				plugin.message.parse(player, "   /debug donation  (displays amount of donations)");
-			if( true )
+			if( false )
 				plugin.message.parse(player, "   /debug sanctum <level> (attempts to build sanctum floor)");
+			if( true )
+				plugin.message.parse(player, "   /debug tptown <town_name> (teleports to town)");
 			if( true )
 				plugin.message.parse(player, "   /debug translate [text] (translates the entered text)");
 			if( true )
-				plugin.message.parse(player, "   /debug transcast <#> <text> (translates/broadcasts the text)");
+				plugin.message.parse(player, "   /debug transcast <#> <text> (translates/broadcasts text)");
 		}
 		else if( split[1].equalsIgnoreCase("colors") )
 		{
@@ -59,6 +62,13 @@ public class DebugCommands
 				this.sanctum(player, split[2]); 
 			else
     			plugin.message.parse(player, "Usage: /debug sanctum <level>"); 
+		}
+		else if( split[1].equalsIgnoreCase("tptown") )
+		{
+			if( split.length == 3 )
+				this.towntp(player, split[2]); 
+			else
+    			plugin.message.parse(player, "Usage: /debug tptown <town_name>"); 
 		}
 		else if( split[1].equalsIgnoreCase("translate") )
 		{
@@ -138,6 +148,25 @@ public class DebugCommands
 //		
 //		Build.sanctumFloor(plugin, world, cornerX, cornerY, cornerZ, level, playerData.id_Faction);
 		
+	}
+	
+	// Teleports to selected town
+	private void towntp(Player player, String townName)
+	{
+		PlayerData playerData = plugin.players.get(player.getName());
+		
+		Town town = plugin.towns.get(townName);
+		
+		// Check to see if specified town exists
+		if( town == null )
+		{
+			plugin.message.sendNo(player, "The town '" + townName + "' does not exist.");
+			return;
+		}
+		
+		// Teleport to the town
+		plugin.message.send(player, "Teleporting...");
+		player.teleport(Util.findTeleportLocation(town.centerPoint));
 	}
 	
 	// Translates the text typed by the player

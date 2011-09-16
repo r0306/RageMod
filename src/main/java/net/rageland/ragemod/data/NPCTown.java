@@ -17,6 +17,7 @@ public class NPCTown extends Town
 	public int id_NPCRace;
 	public String steward = "";
 	public ArrayList<String> buildPermissions;
+	private HashSet<NPCData> residents;
 	
 	public NPCTown(RageMod plugin, int id, String name, World world, String steward)
 	{

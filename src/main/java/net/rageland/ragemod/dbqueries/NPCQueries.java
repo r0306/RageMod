@@ -196,7 +196,7 @@ public class NPCQueries
         		npc.id_NPCTown = rs.getInt("ID_NPCTown");
         		npc.isMale = rs.getString("Gender").equalsIgnoreCase("M");
         		npc.skinPath = rs.getString("Filename");
-        		npc.defaultAffinity = rs.getFloat("DefaultAffinity") * 4;
+        		npc.defaultAffinityCode = rs.getInt("DefaultAffinity");
         		
         		npcs.add(npc);
         	}			
@@ -225,10 +225,10 @@ public class NPCQueries
     		conn = rageDB.getConnection();
     		// Insert the new town into the PlayerTowns table
     		preparedStatement = conn.prepareStatement(
-    				"INSERT INTO NPCs (ID_NPCRace, Name, IsBilingual, ID_NPCTown, CreateDate, ID_Player_Creator, Gender) " +
+    				"INSERT INTO NPCs (ID_NPCRace, Name, IsBilingual, ID_NPCTown, CreateDate, ID_Player_Creator, Gender, DefaultAffinity) " +
     				"VALUES (" + npc.id_NPCRace + ", '" + npc.name + "', " + npc.isBilingual + ", " +
     					npc.id_NPCTown + ", NOW(), " + id_Player_Creator + ", " +
-    					(npc.isMale ? "'M'" : "'F'") + ")",
+    					(npc.isMale ? "'M'" : "'F'") + ", " + npc.defaultAffinityCode + ")",
     				Statement.RETURN_GENERATED_KEYS);   
     		preparedStatement.executeUpdate();
     		
@@ -285,7 +285,6 @@ public class NPCQueries
     			throw new Exception("Attempted to create instance with NPC ID 0");
     		
     		conn = rageDB.getConnection();
-    		// Insert the new town into the PlayerTowns table
     		preparedStatement = conn.prepareStatement(
     				"INSERT INTO NPCInstances (ID_NPC, ID_NPCLocation, SpawnTime, DespawnTime, ID_Player_Creator, Type) " +
     				"VALUES (" + id_NPC + ", '" + id_NPCLocation + "', NOW(), NOW() + INTERVAL " + ttlMinutes + " MINUTE, " +
@@ -369,7 +368,8 @@ public class NPCQueries
     		conn = rageDB.getConnection();
     		String whereClause = "(np.ID_NPCRace = 0 OR np.ID_NPCRace = " + npcData.id_NPCRace + ") AND " +
 						"(np.ID_NPCTown = 0 OR np.ID_NPCTown = " + id_NPCTown + ") AND " +
-						"(np.ID_NPC = 0 OR np.ID_NPC = " + npcData.id_NPC + ") ";
+						"(np.ID_NPC = 0 OR np.ID_NPC = " + npcData.id_NPC + ") AND " +
+						"(np.IsApproved = 1) ";
     		
         	preparedStatement = conn.prepareStatement(
 				"SELECT np.ID_NPCPhrase, np.Text, np.IsDynamic " +
@@ -466,7 +466,6 @@ public class NPCQueries
     	try
     	{    		
     		conn = rageDB.getConnection();
-    		// Insert the new town into the PlayerTowns table
     		preparedStatement = conn.prepareStatement(
     				"UPDATE NPCInstances SET IsDisabled = 1 WHERE ID_NPCInstance = " + id);;   
     		preparedStatement.executeUpdate();
@@ -476,6 +475,47 @@ public class NPCQueries
 		} finally {
 			rageDB.close(rs, preparedStatement, conn);
 		}
+	}
+
+	// Submits a player-written NPCPhrase
+	public boolean submitPhrase(NPCTown town, PlayerData playerData, String message) 
+	{
+		Connection conn = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
+	    int id_NPCTown;
+		
+    	try
+    	{    		
+    		// Make sure there is proper capitalization and punctuation
+			message = message.trim();
+			message = message.substring(0, 1).toUpperCase() + message.substring(1);
+			if( !message.substring(message.length()-1).equals(".") && 
+				!message.substring(message.length()-1).equals("?") &&
+				!message.substring(message.length()-1).equals("!"))
+				message += ".";
+    					
+    		if( town == null )
+    			id_NPCTown = 0;
+    		else
+    			id_NPCTown = town.getID();
+    		
+    		conn = rageDB.getConnection();
+    		preparedStatement = conn.prepareStatement(
+    				"INSERT INTO NPCPhrases (Text, ID_NPCTown, IsApproved, ID_Player_Writer, Timestamp) " +
+    				"VALUES ('" + message.replace("'", "''") + "', " + id_NPCTown + ", 0, " + playerData.id_Player + ", NOW())");   
+    		preparedStatement.executeUpdate();
+    		
+    		return true;
+        		        		        	
+    	} catch (Exception e) {
+    		System.out.println("Error in NPCQueries.submitPhrase(): " + e.getMessage());
+		} finally {
+			rageDB.close(rs, preparedStatement, conn);
+		}
+    	
+    	return false;
+    	
 	}
 	
 

@@ -463,7 +463,12 @@ public class NPCManager
 				System.out.println("Automatically despawned NPC " + instance.getName());
 			}
 		}
-		
+	}
+	
+	// Returns all residents of a particular town (if any)
+	public HashSet<NPCData> getAllResidents(int id_NPCTown)
+	{
+		return npcPool.getAllResidents(id_NPCTown);
 	}
 	
 	

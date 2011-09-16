@@ -112,10 +112,14 @@ public class RageConfig {
     public int NPCTOWN_GUEST_CHANCE = 33;		// Percent chance that NPC spawned in NPCTown will be floating guest
     public String CUSTOM_SKIN_PATH = "http://www.rageland.net/skins/";
     public int NPC_HUMAN_ID = 5;				// The Human race has special functionality
-    public HashMap<Integer, String> NPC_LANGUAGE_NAMES;
     public float NPC_AFFINITY_MAX = 10;			// Maximum affinity for each NPC
     public float NPC_MIN_AFFINITY = -10;			// Minimum affinity for each NPC
     public float NPC_AFFINITY_GAIN_TALK = 1;		// Amount of affinity gained for talking to an NPC
+    
+    // Lists
+    public HashMap<Integer, String> NPC_LANGUAGE_NAMES;
+    public HashMap<Integer, String> NPC_RACE_NAMES;
+    public HashMap<Integer, String> NPC_AFFINITY_NAMES;
     
     
     public RageConfig (RageMod plugin)
@@ -131,6 +135,20 @@ public class RageConfig {
     	NPC_LANGUAGE_NAMES.put(3, "Benali");
     	NPC_LANGUAGE_NAMES.put(4, "Avialese");
     	
+    	NPC_RACE_NAMES = new HashMap<Integer, String>();
+    	NPC_RACE_NAMES.put(0, "None");
+    	NPC_RACE_NAMES.put(1, "Creep");
+    	NPC_RACE_NAMES.put(2, "Pigman");
+    	NPC_RACE_NAMES.put(3, "Benali");
+    	NPC_RACE_NAMES.put(4, "Avian");
+    	NPC_RACE_NAMES.put(5, "Human");
+    	
+    	NPC_AFFINITY_NAMES = new HashMap<Integer, String>();
+    	NPC_AFFINITY_NAMES.put(-2, "Dislike");
+    	NPC_AFFINITY_NAMES.put(-1, "Aversion");
+    	NPC_AFFINITY_NAMES.put(0, "Neutral");
+    	NPC_AFFINITY_NAMES.put(1, "Friendship");
+    	NPC_AFFINITY_NAMES.put(2, "Trust");
     }
     
     private void loadConfigValues() 

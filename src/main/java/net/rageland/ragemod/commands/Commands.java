@@ -8,6 +8,7 @@ import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.RageZones;
 import net.rageland.ragemod.Util;
+import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.data.Players;
@@ -182,9 +183,8 @@ public class Commands
 				skillText = ChatColor.GRAY + Integer.toString(playerData.getLanguageSkill(i)) + "/100";
 			plugin.message.send(player, Message.LANGUAGE_NAME_COLOR + "   " + plugin.config.NPC_LANGUAGE_NAMES.get(i) + ": " + skillText);
 		}
-		
-		
 	}
+	
 	
 	
 }

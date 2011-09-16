@@ -216,7 +216,7 @@ public class NPCInstance
 	// Gets the default affinity
 	public float getDefaultAffinity()
 	{
-		return data.defaultAffinity;
+		return data.defaultAffinityCode * 4;
 	}
 	
 	// Gets the NPCData object

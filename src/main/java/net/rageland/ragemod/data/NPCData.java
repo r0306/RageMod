@@ -11,7 +11,7 @@ public class NPCData
 	public int id_NPCTown;
 	public boolean isMale = true;
 	public String skinPath;
-	public float defaultAffinity;
+	public int defaultAffinityCode;
 	
 	// Quest data
 	// DC: This should be moved to NPCInstance - NPCs should be able to spawn with or without quests
