@@ -120,6 +120,7 @@ public class RageConfig {
     public HashMap<Integer, String> NPC_LANGUAGE_NAMES;
     public HashMap<Integer, String> NPC_RACE_NAMES;
     public HashMap<Integer, String> NPC_AFFINITY_NAMES;
+    public HashMap<Integer, String> NPC_AFFINITY_CODED_NAMES;
     
     
     public RageConfig (RageMod plugin)
@@ -149,6 +150,13 @@ public class RageConfig {
     	NPC_AFFINITY_NAMES.put(0, "Neutral");
     	NPC_AFFINITY_NAMES.put(1, "Friendship");
     	NPC_AFFINITY_NAMES.put(2, "Trust");
+    	
+    	NPC_AFFINITY_CODED_NAMES = new HashMap<Integer, String>();
+    	NPC_AFFINITY_CODED_NAMES.put(-2, ChatColor.DARK_RED + "Dislike");
+    	NPC_AFFINITY_CODED_NAMES.put(-1, ChatColor.RED + "Aversion");
+    	NPC_AFFINITY_CODED_NAMES.put(0, ChatColor.GRAY + "Neutral");
+    	NPC_AFFINITY_CODED_NAMES.put(1, ChatColor.GREEN + "Friendship");
+    	NPC_AFFINITY_CODED_NAMES.put(2, ChatColor.DARK_GREEN + "Trust");
     }
     
     private void loadConfigValues() 

@@ -168,6 +168,11 @@ public class RMPlayerListener extends PlayerListener
     		commands.language(player);
     		event.setCancelled(true);
     	}
+    	else if( split[0].equalsIgnoreCase("/affinity") || split[0].equalsIgnoreCase("/aff") )
+    	{
+    		commands.affinity(player);
+    		event.setCancelled(true);
+    	}
     	else if( split[0].equalsIgnoreCase("/rage") )
     	{
     		rageCommands.onCommand(player, playerData, split);

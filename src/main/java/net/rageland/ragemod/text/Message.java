@@ -128,7 +128,7 @@ public class Message
 		// Trim off the color code from the NPC name
 		name = name.substring(2);
 		
-		parse(player, NPC_NAME_COLOR + name + ChatColor.WHITE + ": " + NPC_TEXT_COLOR + message, NPC_TEXT_COLOR);
+		wrap(player, process(NPC_NAME_COLOR + name + ChatColor.WHITE + ": " + NPC_TEXT_COLOR + message, NPC_TEXT_COLOR), NPC_TEXT_COLOR);
 	}
 	
 	
@@ -225,6 +225,32 @@ public class Message
 		if( languageSkill == 100 )
 			player.sendMessage(ChatColor.YELLOW + "Congratulations!  " + DEFAULT_COLOR + "You are now fluent in " + LANGUAGE_NAME_COLOR + 
 					plugin.config.NPC_LANGUAGE_NAMES.get(raceID) + "!");	
+	}
+	
+	// Wraps the text into multiple lines
+	public void wrap(Player player, String message, ChatColor color)
+	{
+		String[] split = message.split(" ");
+		int count = 0;
+		String currentLine = "";
+		
+		for( int i = 0; i < split.length; i++ )
+		{
+			currentLine += split[i] + " ";
+			count += ChatColor.stripColor(split[i]).length() + 1;
+			
+			// Wrap to new line if past length
+			if( count > 54 )
+			{
+				player.sendMessage(currentLine);
+				currentLine = "   " + color;
+				count = 3;
+			}
+		}
+		
+		if( ChatColor.stripColor(currentLine).trim().length() > 0 )
+			player.sendMessage(currentLine);
+
 	}
 	
 	

@@ -2,6 +2,7 @@ package net.rageland.ragemod.commands;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
 
 import net.rageland.ragemod.Build;
 import net.rageland.ragemod.RageConfig;
@@ -183,6 +184,31 @@ public class Commands
 				skillText = ChatColor.GRAY + Integer.toString(playerData.getLanguageSkill(i)) + "/100";
 			plugin.message.send(player, Message.LANGUAGE_NAME_COLOR + "   " + plugin.config.NPC_LANGUAGE_NAMES.get(i) + ": " + skillText);
 		}
+	}
+	
+	// /affinity or /aff
+	public void affinity(Player player)
+	{
+		PlayerData playerData = plugin.players.get(player.getName());
+		HashMap<Integer, Integer> affinities = new HashMap<Integer, Integer>();
+		affinities.put(-2, 0);
+		affinities.put(-1, 0);
+		affinities.put(0, 0);
+		affinities.put(1, 0);
+		affinities.put(2, 0);
+		
+		for( float affinity : playerData.getAffinities().values() )
+		{
+			int affinityCode = Util.getAffinityCode(affinity);
+			affinities.put(affinityCode, affinities.get(affinityCode) + 1);
+		}
+		
+		plugin.message.send(player, ChatColor.GOLD + "NPC affinity totals:");
+		for( int i = 2; i >= -2; i-- )
+		{
+			plugin.message.send(player, "   " + plugin.config.NPC_AFFINITY_CODED_NAMES.get(i) + ": " + ChatColor.WHITE + affinities.get(i));
+		}
+		plugin.message.send(player, "   " + ChatColor.WHITE + "Total: " + playerData.getAffinities().size());
 	}
 	
 	

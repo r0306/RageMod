@@ -279,8 +279,9 @@ public class PlayerQueries {
     	{
     		conn = rageDB.getConnection();
         	String selectQuery = 
-        		"SELECT ID_NPC, Affinity FROM Player_NPC " +
-        		"WHERE ID_Player = " + id_Player;
+        		"SELECT pn.ID_NPC, pn.Affinity FROM Player_NPC pn " +
+        		"INNER JOIN NPCs n ON n.ID_NPC = pn.ID_NPC " +			// the inner join prevents deleted NPCs from being loaded
+        		"WHERE pn.ID_Player = " + id_Player;
     		
     		preparedStatement = conn.prepareStatement(selectQuery);	        		        	
         	rs = preparedStatement.executeQuery();

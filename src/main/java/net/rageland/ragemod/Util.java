@@ -177,6 +177,18 @@ public class Util
 		return null;
 	}
 	
+	// Returns the appropriate affinity code (-2 -> 2) for the affinity value (-10 -> 10)
+	public static int getAffinityCode(float affinity)
+	{
+		int affinityCode = Math.round(affinity / 4);
+		if( affinityCode > 2 )
+			affinityCode = 2;
+		else if( affinityCode < -2 )
+			affinityCode = -2;
+		
+		return affinityCode;
+	}
+	
 	
 	
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.NPCData;
 import net.rageland.ragemod.data.NPCPhrase;
 import net.rageland.ragemod.data.PlayerData;
@@ -59,11 +60,7 @@ public class SpeechData
 	public String getFollowupGreeting(PlayerData playerData)
 	{
 		// Convert the -10 to 10 affinity float value to the -2 to 2 affinity integer code
-		int affinityCode = Math.round(playerData.getAffinity(npcData.id_NPC) / 4);
-		if( affinityCode > 2 )
-			affinityCode = 2;
-		else if( affinityCode < -2 )
-			affinityCode = -2;
+		int affinityCode = Util.getAffinityCode(playerData.getAffinity(npcData.id_NPC));
 		
 		return followups.get(affinityCode).getMessage(playerData);
 	}

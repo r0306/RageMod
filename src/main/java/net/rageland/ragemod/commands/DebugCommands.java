@@ -39,8 +39,10 @@ public class DebugCommands
 				plugin.message.parse(player, "   /debug colors   (displays all chat colors)");
 			if( true )
 				plugin.message.parse(player, "   /debug donation  (displays amount of donations)");
-			if( false )
-				plugin.message.parse(player, "   /debug sanctum <level> (attempts to build sanctum floor)");
+//			if( false )
+//				plugin.message.parse(player, "   /debug sanctum <level> (attempts to build sanctum floor)");
+			if( true )
+				plugin.message.parse(player, "   /debug setlang <1-4> <level> (sets your language skill)");
 			if( true )
 				plugin.message.parse(player, "   /debug tptown <town_name> (teleports to town)");
 			if( true )
@@ -56,12 +58,22 @@ public class DebugCommands
 		{
 			this.donation(player);
 		}
-		else if( split[1].equalsIgnoreCase("sanctum") )
+//		else if( split[1].equalsIgnoreCase("sanctum") )
+//		{
+//			if( split.length == 3 )
+//				this.sanctum(player, split[2]); 
+//			else
+//    			plugin.message.parse(player, "Usage: /debug sanctum <level>"); 
+//		}
+		else if( split[1].equalsIgnoreCase("setlang") )
 		{
-			if( split.length == 3 )
-				this.sanctum(player, split[2]); 
+			if( split.length == 4 )
+				this.setlang(player, split[2], split[3]); 
 			else
-    			plugin.message.parse(player, "Usage: /debug sanctum <level>"); 
+			{
+    			plugin.message.parse(player, "Usage: /debug setlang <1-4> <level>"); 
+				plugin.message.send(player, "   Languages: 1-Creeptongue, 2-Gronuk, 3-Benali, 4-Avialese");
+			}
 		}
 		else if( split[1].equalsIgnoreCase("tptown") )
 		{
@@ -76,7 +88,7 @@ public class DebugCommands
 		}
 		else if( split[1].equalsIgnoreCase("transcast") )
 		{
-			if( split.length > 2 )
+			if( split.length > 3 )
 				this.transcast(player, split); 
 			else
     			plugin.message.parse(player, "Usage: /debug transcast 1-4 <text>"); 
@@ -146,15 +158,53 @@ public class DebugCommands
 //		int cornerY = (int)player.getLocation().getY() - 1;
 //		int cornerZ = (int)player.getLocation().getZ() - 10; 
 //		
-//		Build.sanctumFloor(plugin, world, cornerX, cornerY, cornerZ, level, playerData.id_Faction);
+//		Build.sanctumFloor(plugin, world, cornerX, cornerY, cornerZ, level, playerData.id_Faction);	
+	}
+	
+	// Sets the language skill
+	private void setlang(Player player, String langString, String levelString) 
+	{
+		PlayerData playerData = plugin.players.get(player.getName());
+		int id_Language;
+		int level;
+		
+		// Parse the language string
+		try
+		{
+			id_Language = Integer.parseInt(langString);
+			if( id_Language < 1 || id_Language > 4 )
+				throw new Exception();
+		}
+		catch( Exception ex )
+		{
+			plugin.message.sendNo(player, "Invalid language (1-4).");
+			return;
+		}
+		// Parse the level string
+		try
+		{
+			level = Integer.parseInt(levelString);
+			if( level < 0 || level > 100 )
+				throw new Exception();
+		}
+		catch( Exception ex )
+		{
+			plugin.message.sendNo(player, "Invalid skill level (0-100).");
+			return;
+		}
+		
+		// Set the language skill
+		playerData.setLanguageSkill(id_Language, level);
+		playerData.update();
+		
+		plugin.message.send(player, "Your " + plugin.message.LANGUAGE_NAME_COLOR + plugin.config.NPC_LANGUAGE_NAMES.get(id_Language) + 
+				plugin.message.DEFAULT_COLOR + " skill is now " + ChatColor.WHITE + level + ".");
 		
 	}
 	
 	// Teleports to selected town
 	private void towntp(Player player, String townName)
 	{
-		PlayerData playerData = plugin.players.get(player.getName());
-		
 		Town town = plugin.towns.get(townName);
 		
 		// Check to see if specified town exists
