@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.iConomy.iConomy;
 
-public class RewardQuest extends QuestImplementation
+public class RewardQuest extends Quest
 {
 	public RewardQuest(	QuestData questData, RewardData rewardData, Flags flags)
 	{

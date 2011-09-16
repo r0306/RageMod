@@ -7,7 +7,7 @@ import net.rageland.ragemod.data.PlayerData;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class TravelQuest extends QuestImplementation
+public class TravelQuest extends Quest
 {
 	
 	public TravelQuest(QuestData questData, RewardData rewardData, Flags flags)

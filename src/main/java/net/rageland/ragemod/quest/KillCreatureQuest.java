@@ -11,28 +11,26 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.entity.CreatureType;
 
-public class KillCreatureQuest implements Quest
+public class KillCreatureQuest extends Quest
 {
 
 	private QuestData questData;
 	private RewardData rewardData;
 	private Flags flags;
 	private CreatureType creatureToBeKilled;
-	private int killNeededCounter;
 	private RageMod plugin;
 
 	public KillCreatureQuest(
 			QuestData questData, 
 			RewardData rewardData, 
 			Flags flags,
-			CreatureType creatureToBeKilled,
-			int killNeededCounter)
+			CreatureType creatureToBeKilled)
 	{
+		super(questData, rewardData, flags);
 		this.questData = questData;
 		this.rewardData = rewardData;
 		this.flags = flags;
 		this.creatureToBeKilled = creatureToBeKilled;
-		this.killNeededCounter = killNeededCounter;
 		this.plugin = RageMod.getInstance();
 	}
 	
@@ -94,14 +92,14 @@ public class KillCreatureQuest implements Quest
 		{
 			plugin.message.parse(player, "Accepted quest: " + questData.getName());
 			plugin.message.parse(player, questData.getStartText());
-			playerData.activeQuestData.startNewQuest(this, killNeededCounter);
+			playerData.activeQuestData.startNewQuest(this, questData.getObjectiveCounter());
 		}
 	}
 
 	@Override
 	public boolean isFinished(PlayerData playerData)
 	{
-		if (playerData.activeQuestData.getObjectiveCounter() >= killNeededCounter)
+		if (playerData.activeQuestData.getObjectiveCounter() >= questData.getObjectiveCounter())
 		{
 			return true;
 		}

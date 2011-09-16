@@ -4,8 +4,14 @@ import net.rageland.ragemod.data.PlayerData;
 
 import org.bukkit.entity.Player;
 
-public class GatheringQuest implements Quest
+public class GatheringQuest extends Quest
 {
+	
+	public GatheringQuest(QuestData questData, 
+			RewardData rewardData, 
+			Flags flags) {
+		super(questData, rewardData, flags);
+	}
 
 	@Override
 	public void end(Player player, PlayerData playerData)

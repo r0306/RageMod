@@ -2,13 +2,13 @@ package net.rageland.ragemod.npcentities;
 
 import net.rageland.ragemod.data.NPCInstance;
 import net.rageland.ragemod.data.PlayerData;
-import net.rageland.ragemod.quest.QuestImplementation;
+import net.rageland.ragemod.quest.Quest;
 
 import org.bukkit.entity.Player;
 
 public class QuestNPC extends NPCEntity
 {
-	private QuestImplementation quest;
+	private Quest quest;
 	private int type;
 	
 	public static final int START = 0;

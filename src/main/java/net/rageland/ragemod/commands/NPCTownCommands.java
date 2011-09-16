@@ -27,7 +27,7 @@ import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.data.NPCInstance.NPCType;
 import net.rageland.ragemod.data.Town;
 import net.rageland.ragemod.quest.Quest;
-import net.rageland.ragemod.quest.QuestImplementation;
+import net.rageland.ragemod.quest.Quest;
 
 public class NPCTownCommands {
 	

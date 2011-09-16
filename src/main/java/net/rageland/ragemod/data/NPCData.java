@@ -1,6 +1,6 @@
 package net.rageland.ragemod.data;
 
-import net.rageland.ragemod.quest.QuestImplementation;
+import net.rageland.ragemod.quest.Quest;
 
 public class NPCData 
 {
@@ -16,7 +16,7 @@ public class NPCData
 	// Quest data
 	// DC: This should be moved to NPCInstance - NPCs should be able to spawn with or without quests
 	public boolean isQuestNPC;
-    public QuestImplementation quest;
+    public Quest quest;
     public int questNPCType; // 0 = START, 1 = END, 2 = STARTEND
 	
 	private boolean inUse = false;
