@@ -1,6 +1,5 @@
 package net.rageland.ragemod;
 
-import net.rageland.ragemod.data.Tasks;
 
 public class RageTimer implements Runnable
 {

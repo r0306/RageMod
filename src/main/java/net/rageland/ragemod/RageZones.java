@@ -1,6 +1,5 @@
 package net.rageland.ragemod;
 
-import net.rageland.ragemod.RageZones.Quadrant;
 import net.rageland.ragemod.data.Location2D;
 import net.rageland.ragemod.data.Region2D;
 import net.rageland.ragemod.data.Region3D;

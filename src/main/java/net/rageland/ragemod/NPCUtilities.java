@@ -1,6 +1,5 @@
 package net.rageland.ragemod;
 
-import java.io.PrintStream;
 import java.util.Random;
 
 import org.bukkit.Location;
