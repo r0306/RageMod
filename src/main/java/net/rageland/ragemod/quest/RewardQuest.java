@@ -15,8 +15,7 @@ public class RewardQuest extends Quest
 	 * For a RewardQuest type, the quest is finished when it starts. 
 	 */
 	public void start(Player player, PlayerData playerData)
-	{
-		
+	{		
 		end(player, playerData);
 	}
 

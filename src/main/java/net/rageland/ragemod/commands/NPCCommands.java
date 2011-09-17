@@ -151,6 +151,7 @@ public class NPCCommands {
 			npc.id_NPCTown = 0;		// 0 = no town
 			npc.name = name;
 			npc.isBilingual = false;
+			/*
 			npc.isQuestNPC = true;
 			npc.quest = plugin.questManager.quests.get(questId);
 			
@@ -160,6 +161,7 @@ public class NPCCommands {
 				npc.questNPCType = 1;
 			else
 				npc.questNPCType = 2;
+				*/
 			
 			plugin.npcManager.addNPC(npc);
 			

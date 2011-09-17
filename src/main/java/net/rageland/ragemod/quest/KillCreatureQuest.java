@@ -1,6 +1,6 @@
 package net.rageland.ragemod.quest;
 
-import net.rageland.ragemod.NPCUtilities;
+import net.rageland.ragemod.InventoryUtilities;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.PlayerData;
 
@@ -41,7 +41,7 @@ public class KillCreatureQuest extends Quest
 	 */
 	public void end(Player player, PlayerData playerData)
 	{
-		if (NPCUtilities.checkFreeSpace(player.getInventory(), rewardData.getItem(),
+		if (InventoryUtilities.checkFreeSpace(player.getInventory(), rewardData.getItem(),
 				rewardData.getAmountOfItems()))
 		{
 			plugin.message.parse(player, questData.getEndText());
@@ -52,7 +52,7 @@ public class KillCreatureQuest extends Quest
 				plugin.message.parse(player,
 						Integer.toString(rewardData.getAmountOfItems())
 								+ rewardData.getItem().getType().toString());
-				NPCUtilities.addItemToInventory(player.getInventory(),
+				InventoryUtilities.addItemToInventory(player.getInventory(),
 						rewardData.getItem(), rewardData.getAmountOfItems());
 			}
 
@@ -67,7 +67,7 @@ public class KillCreatureQuest extends Quest
 		}
 		else
 		{
-			player.sendMessage(NPCUtilities.notEnoughSpaceMessage);
+			player.sendMessage(InventoryUtilities.notEnoughSpaceMessage);
 		}
 	}
 

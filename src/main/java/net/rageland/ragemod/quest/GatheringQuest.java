@@ -1,36 +1,69 @@
 package net.rageland.ragemod.quest;
 
+import net.rageland.ragemod.InventoryUtilities;
+import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.PlayerData;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class GatheringQuest extends Quest
 {
+	private ItemStack itemToGather;
 	
 	public GatheringQuest(QuestData questData, 
 			RewardData rewardData, 
-			Flags flags) {
+			Flags flags,
+			ItemStack itemToGather) {
 		super(questData, rewardData, flags);
+		this.itemToGather = itemToGather;
 	}
-
+	
 	@Override
-	public void end(Player player, PlayerData playerData)
-	{
-		// TODO Auto-generated method stub
+	public void end(Player player, PlayerData playerData) {
+		int additionalFreespace = questData.getObjectiveCounter() - (questData.getObjectiveCounter() % itemToGather.getMaxStackSize());
+				
+		if (InventoryUtilities.checkHasEnoughOfItem(player.getInventory().getContents(), itemToGather, questData.getObjectiveCounter())
+				&& InventoryUtilities.checkFreeSpace(player.getInventory(),rewardData.getItem(), rewardData.getAmountOfItems() - additionalFreespace))
+		{
+			InventoryUtilities.removeItemFromInventory(player.getInventory(), itemToGather, questData.getObjectiveCounter());
+			
+			player.sendMessage(ChatColor.LIGHT_PURPLE + questData.getEndText());
+			player.sendMessage("Received: ");
 
-	}
+			if (rewardData.getAmountOfItems() > 0)
+			{
+				player.sendMessage(ChatColor.DARK_GREEN
+						+ Integer.toString(rewardData.getAmountOfItems())
+						+ ChatColor.GOLD
+						+ rewardData.getItem().getType().toString());
+				InventoryUtilities.addItemToInventory(player.getInventory(),
+						rewardData.getItem(), rewardData.getAmountOfItems());
+			}
 
-	@Override
-	public void start(Player player, PlayerData playerData)
-	{
-		// TODO Auto-generated method stub
+			if (rewardData.getCoins() > 0.0D)
+			{
+				player.sendMessage(ChatColor.GOLD + " " + RageMod.getInstance().iConomy.format(rewardData.getCoins()));
+				RageMod.getInstance().iConomy.getAccount(player.getName()).getHoldings().add(rewardData.getCoins());
+			}
 
+			player.sendMessage(" ");
+			player.sendMessage("for finishing &a" + questData.getName());
+
+			
+			playerData.activeQuestData.questCompleted(questData.getId());
+		}
+		else
+		{
+			player.sendMessage(InventoryUtilities.notEnoughSpaceMessage);
+		}	
 	}
 
 	@Override
 	public boolean isFinished(PlayerData playerData)
 	{
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 

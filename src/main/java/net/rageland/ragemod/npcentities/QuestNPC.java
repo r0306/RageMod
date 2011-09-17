@@ -1,5 +1,6 @@
 package net.rageland.ragemod.npcentities;
 
+import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.NPCInstance;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.quest.Quest;
@@ -18,8 +19,8 @@ public class QuestNPC extends NPCEntity
 	public QuestNPC(NPCInstance npcInstance)
 	{
 		super(npcInstance);
-		this.quest = npcInstance.getData().quest;
-		this.type = npcInstance.getData().questNPCType;
+		this.quest = RageMod.getInstance().questManager.quests.get(npcInstance.questId);
+		this.type = npcInstance.questNPCType;
 	}
 
 	/**
