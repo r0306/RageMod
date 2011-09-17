@@ -208,7 +208,7 @@ public class RageMod extends JavaPlugin {
     	zones = new RageZones(this, config);
         pluginManager = server.getPluginManager();
         npcManager = new NPCManager(this);
-        questManager = new QuestManager(this);
+        questManager = new QuestManager();
         message = new Message(this);
     }
     

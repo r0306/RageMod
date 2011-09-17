@@ -49,12 +49,6 @@ public abstract class Quest
 
 			
 			playerData.activeQuestData.questCompleted(questData.getId());
-			
-			if (flags.isRandom())
-			{
-				flags.setActive(false);
-			}
-
 		}
 		else
 		{
@@ -69,21 +63,6 @@ public abstract class Quest
 	}
 
 	public abstract boolean isFinished(PlayerData playerData);
-
-	public void present(Player player, PlayerData playerData)
-	{
-		if (flags.isActive())
-		{
-			player.sendMessage(ChatColor.DARK_GREEN + "Quest: "
-					+ ChatColor.YELLOW + "[" + questData.getName() + "]");
-			player.sendMessage(ChatColor.GREEN + questData.getStartText());
-		}
-		else
-		{
-			player.sendMessage(ChatColor.GOLD
-					+ "Someone has already finished this quest.");
-		}		
-	}
 
 	public QuestData getQuestData()
 	{

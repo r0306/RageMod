@@ -2,14 +2,10 @@ package net.rageland.ragemod.quest;
 
 import net.rageland.ragemod.NPCUtilities;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.PlayerData;
 
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.Player;
 
 public class KillCreatureQuest extends Quest
 {
@@ -64,14 +60,10 @@ public class KillCreatureQuest extends Quest
 			{
 				plugin.message.parse(player,
 						Double.toString(rewardData.getCoins()) + " Coins");
+				plugin.iConomy.getAccount(player.getName()).getHoldings().add(rewardData.getCoins());
 			}
 
 			plugin.message.parse(player, "for finishing " + questData.getName());
-
-			if (flags.isRandom())
-			{
-				flags.setActive(false);
-			}
 		}
 		else
 		{
@@ -110,18 +102,6 @@ public class KillCreatureQuest extends Quest
 		{
 			return false;
 		}
-	}
-
-	@Override
-	public void present(Player player, PlayerData playerData)
-	{
-
-	}
-	
-	@Override
-	public QuestData getQuestData()
-	{
-		return questData;
 	}
 
 	@Override

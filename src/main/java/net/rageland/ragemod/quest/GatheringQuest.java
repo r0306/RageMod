@@ -34,25 +34,12 @@ public class GatheringQuest extends Quest
 		return false;
 	}
 
-	@Override
-	public void present(Player player, PlayerData playerData)
-	{
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void statusUpdate(Player player, PlayerData playerData)
 	{
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public QuestData getQuestData()
-	{
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
