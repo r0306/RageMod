@@ -1,6 +1,6 @@
 package net.rageland.ragemod.quest;
 
-import net.rageland.ragemod.NPCUtilities;
+import net.rageland.ragemod.InventoryUtilities;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.PlayerData;
 
@@ -23,7 +23,7 @@ public abstract class Quest
 
 	public void end(Player player, PlayerData playerData)
 	{
-		if (NPCUtilities.checkFreeSpace(player.getInventory(),rewardData.getItem(), rewardData.getAmountOfItems()))
+		if (InventoryUtilities.checkFreeSpace(player.getInventory(),rewardData.getItem(), rewardData.getAmountOfItems()))
 		{
 			player.sendMessage(ChatColor.LIGHT_PURPLE + questData.getEndText());
 			player.sendMessage("Received: ");
@@ -34,7 +34,7 @@ public abstract class Quest
 						+ Integer.toString(rewardData.getAmountOfItems())
 						+ ChatColor.GOLD
 						+ rewardData.getItem().getType().toString());
-				NPCUtilities.addItemToInventory(player.getInventory(),
+				InventoryUtilities.addItemToInventory(player.getInventory(),
 						rewardData.getItem(), rewardData.getAmountOfItems());
 			}
 
@@ -49,16 +49,10 @@ public abstract class Quest
 
 			
 			playerData.activeQuestData.questCompleted(questData.getId());
-			
-			if (flags.isRandom())
-			{
-				flags.setActive(false);
-			}
-
 		}
 		else
 		{
-			player.sendMessage(NPCUtilities.notEnoughSpaceMessage);
+			player.sendMessage(InventoryUtilities.notEnoughSpaceMessage);
 		}		
 	}
 
@@ -69,21 +63,6 @@ public abstract class Quest
 	}
 
 	public abstract boolean isFinished(PlayerData playerData);
-
-	public void present(Player player, PlayerData playerData)
-	{
-		if (flags.isActive())
-		{
-			player.sendMessage(ChatColor.DARK_GREEN + "Quest: "
-					+ ChatColor.YELLOW + "[" + questData.getName() + "]");
-			player.sendMessage(ChatColor.GREEN + questData.getStartText());
-		}
-		else
-		{
-			player.sendMessage(ChatColor.GOLD
-					+ "Someone has already finished this quest.");
-		}		
-	}
 
 	public QuestData getQuestData()
 	{

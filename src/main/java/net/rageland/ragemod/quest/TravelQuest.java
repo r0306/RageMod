@@ -1,10 +1,7 @@
 package net.rageland.ragemod.quest;
 
-import net.rageland.ragemod.NPCUtilities;
-import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.PlayerData;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class TravelQuest extends Quest

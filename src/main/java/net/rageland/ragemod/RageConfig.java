@@ -1,13 +1,12 @@
 package net.rageland.ragemod;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.rageland.ragemod.data.TownLevel;
+
 import org.bukkit.ChatColor;
 import org.bukkit.util.config.Configuration;
-
-import net.rageland.ragemod.data.TownLevel;
 
 // Stores and loads configuration values
 public class RageConfig {

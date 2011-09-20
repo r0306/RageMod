@@ -13,12 +13,6 @@ public class NPCData
 	public String skinPath;
 	public int defaultAffinityCode;
 	
-	// Quest data
-	// DC: This should be moved to NPCInstance - NPCs should be able to spawn with or without quests
-	public boolean isQuestNPC;
-    public Quest quest;
-    public int questNPCType; // 0 = START, 1 = END, 2 = STARTEND
-	
 	private boolean inUse = false;
 	
 	// Sets the current NPC to "in use"

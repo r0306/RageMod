@@ -34,6 +34,11 @@ public class NPCInstance
 	public BServer server;
 	public BWorld world;
 	
+	// Quest, if questNPC
+	public String questId;
+	public int questNPCType; // START, END or STARTEND
+	
+	
 	// NPC Types
 	public enum NPCType
 	{

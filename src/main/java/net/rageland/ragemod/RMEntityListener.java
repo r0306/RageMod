@@ -2,39 +2,25 @@ package net.rageland.ragemod;
 
 // TODO: Bounty
 
-import java.rmi.server.Skeleton;
 import java.util.Random;
 
-import net.rageland.ragemod.data.Factions;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.data.Town;
-import net.rageland.ragemod.data.Towns;
-import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.npcentities.NPCEntity;
 import net.rageland.ragemod.npclib.NPCManager;
 import net.rageland.ragemod.npclib.NpcEntityTargetEvent;
 import net.rageland.ragemod.quest.KillCreatureQuest;
 
-import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.CreatureType;
-import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Giant;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
-import org.bukkit.entity.Spider;
-import org.bukkit.entity.Squid;
-import org.bukkit.entity.Wolf;
-import org.bukkit.entity.Zombie;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityTargetEvent;
 

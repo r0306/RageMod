@@ -1,15 +1,11 @@
 package net.rageland.ragemod.quest;
 
-import net.rageland.ragemod.NPCUtilities;
+import net.rageland.ragemod.InventoryUtilities;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.PlayerData;
 
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.Player;
 
 public class KillCreatureQuest extends Quest
 {
@@ -45,7 +41,7 @@ public class KillCreatureQuest extends Quest
 	 */
 	public void end(Player player, PlayerData playerData)
 	{
-		if (NPCUtilities.checkFreeSpace(player.getInventory(), rewardData.getItem(),
+		if (InventoryUtilities.checkFreeSpace(player.getInventory(), rewardData.getItem(),
 				rewardData.getAmountOfItems()))
 		{
 			plugin.message.parse(player, questData.getEndText());
@@ -56,7 +52,7 @@ public class KillCreatureQuest extends Quest
 				plugin.message.parse(player,
 						Integer.toString(rewardData.getAmountOfItems())
 								+ rewardData.getItem().getType().toString());
-				NPCUtilities.addItemToInventory(player.getInventory(),
+				InventoryUtilities.addItemToInventory(player.getInventory(),
 						rewardData.getItem(), rewardData.getAmountOfItems());
 			}
 
@@ -64,18 +60,14 @@ public class KillCreatureQuest extends Quest
 			{
 				plugin.message.parse(player,
 						Double.toString(rewardData.getCoins()) + " Coins");
+				plugin.iConomy.getAccount(player.getName()).getHoldings().add(rewardData.getCoins());
 			}
 
 			plugin.message.parse(player, "for finishing " + questData.getName());
-
-			if (flags.isRandom())
-			{
-				flags.setActive(false);
-			}
 		}
 		else
 		{
-			player.sendMessage(NPCUtilities.notEnoughSpaceMessage);
+			player.sendMessage(InventoryUtilities.notEnoughSpaceMessage);
 		}
 	}
 
@@ -110,18 +102,6 @@ public class KillCreatureQuest extends Quest
 		{
 			return false;
 		}
-	}
-
-	@Override
-	public void present(Player player, PlayerData playerData)
-	{
-
-	}
-	
-	@Override
-	public QuestData getQuestData()
-	{
-		return questData;
 	}
 
 	@Override

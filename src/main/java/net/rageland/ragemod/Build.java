@@ -3,7 +3,6 @@ package net.rageland.ragemod;
 import java.util.ArrayList;
 
 import net.rageland.ragemod.data.Factions;
-import net.rageland.ragemod.data.PlayerTown;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

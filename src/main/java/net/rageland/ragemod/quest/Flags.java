@@ -3,7 +3,6 @@ package net.rageland.ragemod.quest;
 public class Flags
 {
 	private boolean repeatable;
-	private boolean active;
 	private boolean random;
 	
 	/**
@@ -15,7 +14,6 @@ public class Flags
 	{
 		this.repeatable = repeatable;
 		this.random = random;
-		this.active = true;
 	}
 	
 	public boolean isRepeatable()
@@ -23,19 +21,8 @@ public class Flags
 		return repeatable;
 	}
 	
-	public boolean isActive()
-	{
-		return active;
-	}
-	
 	public boolean isRandom()
 	{
 		return random;
 	}
-
-	public void setActive(boolean active)
-	{
-		this.active = active;
-	}
-	
 }

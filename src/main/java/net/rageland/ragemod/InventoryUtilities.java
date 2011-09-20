@@ -1,14 +1,10 @@
 package net.rageland.ragemod;
 
-import java.util.Random;
-
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class NPCUtilities {
+public class InventoryUtilities {
 	public static String notEnoughSpaceMessage = "$dERROR: $6Not enough free space in your inventory. Clear out some space and try again.";
 
 	public static boolean checkFreeSpace(ItemStack[] contents, ItemStack item,
@@ -17,15 +13,11 @@ public class NPCUtilities {
 		short durability = item.getDurability();
 		int maxStack = item.getType().getMaxStackSize();
 		int spaceAvailable = 0;
-		System.out.println("ItemType: " + itemType.getId() + " Dur: "
-				+ durability + " spaceNeeded: " + spaceNeeded + " MaxStack: "
-				+ maxStack);
 
 		ItemStack[] arrayOfItemStack = contents;
 		int j = contents.length;
 		for (int i = 0; i < j; i++) {
 			ItemStack curItem = arrayOfItemStack[i];
-			System.out.println("Space Avail: " + spaceAvailable);
 			if (spaceAvailable >= spaceNeeded) {
 				return true;
 			}
@@ -68,45 +60,44 @@ public class NPCUtilities {
 		}
 	}
 	
-	public static Location findValidRandomNPCSpawnInLocation(Location min, Location max, int standardHeight)
-	{
-		int maxRetries = 20;
-		Random rand = new Random();
-		if(min.getWorld() == max.getWorld()) 
-		{
-			World world = min.getWorld();
-			int randomX = rand.nextInt(max.getBlockX() - min.getBlockX()) + min.getBlockX();
-			int randomZ = rand.nextInt(max.getBlockZ() - min.getBlockZ()) + min.getBlockZ();
-			
-			Location possibleLocation;
-			
-			for(int i = 0; i < maxRetries; i++) {
-				possibleLocation = new Location(world, randomX, standardHeight, randomZ);
-				
-				
-				for(int x = -1; x < 2; i++)
-				{					
-					for(int y = -1; y < 2; y++) 
-					{
-						for(int z = -1; z < 2; z++)
-						{
-//							if(possibleLocation.getBlock().getRelative(x, y, z).isEmpty())  // TODO: Commented out by Icarus, preventing compilation
-							{
-								
-							}
-						}
-					}					
-				}
-				
-				
-			}	
-			
-			return new Location(min.getWorld(), 2, 2, 2);
+	public static boolean checkHasEnoughOfItem(ItemStack[] contents, ItemStack item, int amountNeeded){
+		Material itemType = item.getType();
+		int countedAmount = 0;
+		double durability = item.getDurability();
+		
+		int j = contents.length;
+		ItemStack[] arrayOfItemStack = contents;
+		
+		for(int i = 0; i < j; i++) {
+			ItemStack curItem = arrayOfItemStack[i];
+			if(countedAmount >= amountNeeded) {
+				return true;
+			}
+			if(curItem == null) {
+				continue;
+			} else {
+				if((curItem.getType() != itemType)
+						|| ((curItem.getDurability() != durability) && (curItem
+								.getDurability() != -1))) {
+					continue;
+				} else {
+					countedAmount += curItem.getAmount();
+				}	
+			}
 		}
-		else
-		{
-			// Cannot find position between different worlds
-			return null;
-		}
+		
+		return false;
+	}
+	
+	public static void removeItemFromInventory(Inventory inv, ItemStack item, int amount ) {
+		int removedAmount = 0;
+		Material itemType = item.getType();
+		
+		while(removedAmount < amount) {
+			int indexToRemove = inv.first(itemType);
+			removedAmount += inv.getItem(indexToRemove).getAmount();
+			inv.clear(indexToRemove);
+		}		
+		addItemToInventory(inv, item, removedAmount - amount);		
 	}
 }

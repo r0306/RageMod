@@ -2,42 +2,30 @@ package net.rageland.ragemod;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Timer;
-
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.Server;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event;
-import org.bukkit.Location;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.util.config.Configuration;
 
 import net.rageland.ragemod.data.Factions;
 import net.rageland.ragemod.data.Lots;
-import net.rageland.ragemod.data.PlayerData;
-import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.data.Tasks;
+import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.database.RageDB;
 import net.rageland.ragemod.npclib.NPCManager;
-import net.rageland.ragemod.quest.Quest;
 import net.rageland.ragemod.quest.QuestManager;
 import net.rageland.ragemod.text.Languages;
 import net.rageland.ragemod.text.Message;
 
-import com.iConomy.*;
+import org.bukkit.Server;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.Event.Priority;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.config.Configuration;
+
+import com.iConomy.iConomy;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
-//import com.nijiko.permissions.PermissionHandler;
-//import com.nijikokun.bukkit.Permissions.Permissions;
-//import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-
-// TODO: Update all method names to lowercase to match Java convention - research first :(
-
-import org.bukkit.plugin.Plugin;
 
 /**
  * RageMod for Bukkit
@@ -208,7 +196,7 @@ public class RageMod extends JavaPlugin {
     	zones = new RageZones(this, config);
         pluginManager = server.getPluginManager();
         npcManager = new NPCManager(this);
-        questManager = new QuestManager(this);
+        questManager = new QuestManager();
         message = new Message(this);
     }
     
