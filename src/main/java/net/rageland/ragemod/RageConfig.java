@@ -104,7 +104,7 @@ public class RageConfig {
     public int Task_FILL_SANDLOT = 86400;			// Replenish sand in public sand mine
     
     // NPC settings
-    public int NPC_TOTAL_FLOATING = 1;			// Number of NPCs to spawn outside of NPCTowns
+    public int NPC_TOTAL_FLOATING;				// Number of NPCs to spawn outside of NPCTowns
     public int NPC_TTL_MIN = 360;				// Minimum length of minutes to keep NPC instances
     public int NPC_TTL_MAX = 4320;				// Maximum length of minutes to keep NPC instances
     public int NPC_PHRASES = 2;					// Number of phrases each NPC will say at a time
@@ -187,6 +187,8 @@ public class RageConfig {
 	    Capitol_X2b = pluginConfig.getInt("capitol.x2b", 513);			// The SE corner of region B for capitol
 	    Capitol_Z2b = pluginConfig.getInt("capitol.z2b", -261);
 	    Capitol_SANDLOT = pluginConfig.getString("capitol.sandlot", "114,60,-19,141,68,-46");
+	    
+	    NPC_TOTAL_FLOATING = pluginConfig.getInt("npc.total_floating", 5);
 		
 		System.out.println("Connecting to " + DB_URL + "...");		// Debug
 		

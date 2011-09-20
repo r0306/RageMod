@@ -76,8 +76,6 @@ public class TownQueries {
         		else
         			System.out.println("Town name was null for " + rs.getInt("ID_PlayerTown") + " in loadPlayerTowns()");
         	}			
-        	
-        	return towns;
         		        	
     	} catch (Exception e) {
     		System.out.println("Error in TownQueries.LoadPlayerTowns: " + e.getMessage());
@@ -85,7 +83,7 @@ public class TownQueries {
 			rageDB.close(rs, preparedStatement, conn);
 		}
     	
-    	return null;
+    	return towns;
     }
 	
 	// Adds a new resident to the town
