@@ -10,7 +10,7 @@ import net.rageland.ragemod.data.PlayerData;
 public class QuestData
 {
 	private String name;
-	private String id;
+	private int id;
 	private String startText;
 	private String endText;
 	private int objectiveCounter;
@@ -25,7 +25,7 @@ public class QuestData
 	 */
 	public QuestData(
 				String name,
-				String id,
+				int id,
 				String startText,
 				String endText,
 				QuestRequirements questReqs,
@@ -53,7 +53,7 @@ public class QuestData
 	 * Returns the quest id
 	 * @return Quest id
 	 */
-	public String getId()
+	public int getId()
 	{
 		return id;
 	}

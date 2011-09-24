@@ -6,9 +6,9 @@ import org.bukkit.entity.Player;
 
 public class RewardQuest extends Quest
 {
-	public RewardQuest(	QuestData questData, RewardData rewardData, Flags flags)
+	public RewardQuest(	QuestData questData, RewardData rewardData, Flags flags, int id_NPCInstance_Source)
 	{
-		super(questData, rewardData, flags);
+		super(questData, rewardData, flags, id_NPCInstance_Source);
 	}
 
 	/**

@@ -2,27 +2,27 @@ package net.rageland.ragemod.quest;
 
 public class Flags
 {
-	private boolean repeatable;
-	private boolean random;
+	private boolean isNonExclusive;
+	private boolean isReserved;
 	
 	/**
 	 * When a quest is created it is always active.
 	 * @param repeatable
 	 * @param random
 	 */
-	public Flags(boolean repeatable, boolean random)
+	public Flags(boolean isNonExclusive, boolean isReserved)
 	{
-		this.repeatable = repeatable;
-		this.random = random;
+		this.isNonExclusive = isNonExclusive;
+		this.isReserved = isReserved;
 	}
 	
-	public boolean isRepeatable()
+	public boolean isNonExclusive()
 	{
-		return repeatable;
+		return isNonExclusive;
 	}
 	
-	public boolean isRandom()
+	public boolean isReserved()
 	{
-		return random;
+		return isReserved;
 	}
 }

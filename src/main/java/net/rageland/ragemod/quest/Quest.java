@@ -9,16 +9,19 @@ import org.bukkit.entity.Player;
 
 public abstract class Quest
 {
-	
 	protected QuestData questData;
 	protected RewardData rewardData;
 	protected Flags flags;
+	protected int id_NPCInstance_Source;
 	
-	public Quest(QuestData questData, RewardData rewardData, Flags flags)
+	public static final int TYPE_REWARD = 1;
+	
+	public Quest(QuestData questData, RewardData rewardData, Flags flags, int id_NPCInstance_Source)
 	{
 		this.questData = questData;
 		this.rewardData = rewardData;
 		this.flags = flags;
+		this.id_NPCInstance_Source = id_NPCInstance_Source;
 	}
 
 	public void end(Player player, PlayerData playerData)

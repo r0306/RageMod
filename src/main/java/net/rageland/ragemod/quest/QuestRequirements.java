@@ -4,24 +4,24 @@ import net.rageland.ragemod.data.PlayerData;
 
 public class QuestRequirements
 {
-	private String preQuest;
-	private int level;
+	private int preQuest;
+	private int rank;
 	private int affinity;
-	private int race;
+	private int reputation;
 	
-	public QuestRequirements(String preQuest) {
+	public QuestRequirements(int preQuest) {
 		this.preQuest = preQuest;
 	}
 	
-	public QuestRequirements(String preQuest, int level, int affinity, int race) {
+	public QuestRequirements(int preQuest, int rank, int affinity, int reputation) {
 		this.preQuest = preQuest;
-		this.level = level;
+		this.rank = rank;
 		this.affinity = affinity;
-		this.race = race;
+		this.reputation = reputation;
 	}
 	
 	public boolean requirementsMet(PlayerData playerData) {
-		// Perform check for wether a quest can be started.
+		// Perform check for whether a quest can be started.
 		return true;
 	}
 	

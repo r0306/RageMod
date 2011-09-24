@@ -7,11 +7,13 @@ import net.rageland.ragemod.RageMod;
 public class QuestManager
 {
 	private RageMod plugin;
-	public HashMap<String, Quest> quests = new HashMap<String, Quest>();
+	public HashMap<Integer, Quest> quests = new HashMap<Integer, Quest>();
 
 	public QuestManager()
 	{
 		this.plugin = RageMod.getInstance();
+		
+		quests = 
 		
 //		QuestData testRewardQuestData = new QuestData("TestReward", "reward1", "start text reward1", "end text reward1", 0, "");
 //		RewardData testRewardData = new RewardData(new ItemStack(Material.getMaterial("stone")), 10, 50);

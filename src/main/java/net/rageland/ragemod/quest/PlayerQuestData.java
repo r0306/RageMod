@@ -7,7 +7,7 @@ public class PlayerQuestData
 	private Quest quest;
 	private int objectiveCounter;
 	private boolean playerOnQuest;
-	private ArrayList<String> completedQuests;
+	private ArrayList<Integer> completedQuests;
 
 	public PlayerQuestData()
 	{
@@ -19,7 +19,7 @@ public class PlayerQuestData
 		return quest;
 	}
 	
-	public void questCompleted(String questId)
+	public void questCompleted(int questId)
 	{
 		if(!completedQuests.contains(questId))
 		{
@@ -27,7 +27,7 @@ public class PlayerQuestData
 		}
 	}
 	
-	public boolean isQuestCompleted(String questId)
+	public boolean isQuestCompleted(int questId)
 	{
 		if(completedQuests.contains(questId))
 			return true;
