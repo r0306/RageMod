@@ -1,30 +1,25 @@
 package net.rageland.ragemod.npcentities;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import net.minecraft.server.EntityHuman;
 import net.minecraft.server.EntityPlayer;
 import net.minecraft.server.ItemInWorldManager;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.NetHandler;
 import net.minecraft.server.NetworkManager;
 import net.minecraft.server.Packet18ArmAnimation;
-import net.minecraft.server.World;
 import net.minecraft.server.WorldServer;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.NPCData;
 import net.rageland.ragemod.data.NPCInstance;
-import net.rageland.ragemod.data.NPCLocation;
 import net.rageland.ragemod.data.NPCPhrase;
 import net.rageland.ragemod.data.PlayerData;
-import net.rageland.ragemod.npclib.BWorld;
-import net.rageland.ragemod.npclib.NPCNetHandler;
-import net.rageland.ragemod.npclib.NPCNetworkManager;
-import net.rageland.ragemod.npclib.NpcEntityTargetEvent;
-import net.rageland.ragemod.npclib.NullSocket;
-import net.rageland.ragemod.npclib.NpcEntityTargetEvent.NpcTargetReason;
+import org.martin.bukkit.npclib.NPCNetHandler;
+import org.martin.bukkit.npclib.NPCNetworkManager;
+import org.martin.bukkit.npclib.NpcEntityTargetEvent;
+import org.martin.bukkit.npclib.NullSocket;
+import org.martin.bukkit.npclib.BServer;
+import org.martin.bukkit.npclib.BWorld;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,9 +29,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class NPCEntity extends EntityPlayer
+import org.martin.bukkit.npclib.NPCEntity;
+
+/**
+ * 
+ * @author TheIcarusKid
+ * Provides a layer between NPCEntity and the custom entity classes for Ragemod-specific code
+ *
+ */
+public class RageEntity extends NPCEntity
 {
 	private int lastTargetId;
 	private long lastBounceTick;
@@ -46,7 +48,7 @@ public class NPCEntity extends EntityPlayer
 	protected NPCInstance instance;
 	protected Location location;
 
-	public NPCEntity( NPCInstance instance )
+	public RageEntity( NPCInstance instance )
 	{		
 		super(instance.server.getMCServer(), instance.world.getWorldServer(), 
 				instance.getColorName(), new ItemInWorldManager( instance.world.getWorldServer()));
@@ -72,7 +74,7 @@ public class NPCEntity extends EntityPlayer
 		
 		this.speechData = plugin.database.npcQueries.getPhrases(instance.getNPCData(), instance.getTownID());
 	}
-
+	
 	public void rightClickAction(Player player)
 	{
 
@@ -94,71 +96,6 @@ public class NPCEntity extends EntityPlayer
 				this, 2));
 	}
 
-	public boolean a(EntityHuman entity)
-	{
-		EntityTargetEvent event = new NpcEntityTargetEvent(getBukkitEntity(),
-				entity.getBukkitEntity(),
-				NpcEntityTargetEvent.NpcTargetReason.NPC_RIGHTCLICKED);
-		CraftServer server = ((WorldServer) this.world).getServer();
-		server.getPluginManager().callEvent(event);
-
-		return super.a(entity);
-	}
-
-	public void b(EntityHuman entity)
-	{
-		if ((this.lastTargetId == -1) || (this.lastTargetId != entity.id))
-		{
-			EntityTargetEvent event = new NpcEntityTargetEvent(
-					getBukkitEntity(), entity.getBukkitEntity(),
-					NpcEntityTargetEvent.NpcTargetReason.CLOSEST_PLAYER);
-			CraftServer server = ((WorldServer) this.world).getServer();
-			server.getPluginManager().callEvent(event);
-		}
-		this.lastTargetId = entity.id;
-
-		super.b(entity);
-	}
-
-	public void c(net.minecraft.server.Entity entity)
-	{
-		if (this.lastBounceId != entity.id
-				|| (System.currentTimeMillis() - this.lastBounceTick > 1000L))
-		{
-			EntityTargetEvent event = new NpcEntityTargetEvent(
-					getBukkitEntity(), entity.getBukkitEntity(),
-					NpcEntityTargetEvent.NpcTargetReason.NPC_BOUNCED);
-			CraftServer server = ((WorldServer) this.world).getServer();
-			server.getPluginManager().callEvent(event);
-
-			this.lastBounceTick = System.currentTimeMillis();
-		}
-
-		this.lastBounceId = entity.id;
-
-		super.c(entity);
-	}
-
-	public PlayerInventory getInventory()
-	{
-		return ((HumanEntity) getBukkitEntity()).getInventory();
-	}
-
-	public void setItemInHand(Material m)
-	{
-		((HumanEntity) getBukkitEntity()).setItemInHand(new ItemStack(m, 1));
-	}
-
-	public void setName(String name)
-	{
-		this.name = name;
-	}
-
-	public String getName()
-	{
-		return this.name;
-	}
-	
 	// Sets the yaw & pitch to face the player interacting with NPC
 	public void facePlayer(Player player)
 	{
@@ -171,11 +108,11 @@ public class NPCEntity extends EntityPlayer
 
 	public class SpeechTask extends TimerTask
 	{
-		private NPCEntity npcEntity;
+		private RageEntity npcEntity;
 		private Timer timer;
 		private SpeechData speechData;
 
-		public SpeechTask(NPCEntity npcEntity, Timer timer, SpeechData speechData)
+		public SpeechTask(RageEntity npcEntity, Timer timer, SpeechData speechData)
 		{
 			this.npcEntity = npcEntity;
 			this.timer = timer;
@@ -186,7 +123,7 @@ public class NPCEntity extends EntityPlayer
 		{			
 			if(RageMod.getInstance().npcManager.contains(npcEntity) && speechData.getInterval() > 0)
 			{
-				Player[] players = NPCEntity.this.plugin.getServer().getOnlinePlayers();
+				Player[] players = RageEntity.this.plugin.getServer().getOnlinePlayers();
 				
 				for (Player player : players)
 				{
@@ -199,7 +136,7 @@ public class NPCEntity extends EntityPlayer
 				}
 
 				if (RageMod.getInstance().npcManager.contains(this.npcEntity))
-					this.timer.schedule(new SpeechTask(NPCEntity.this, this.timer, speechData), speechData.getInterval());
+					this.timer.schedule(new SpeechTask(RageEntity.this, this.timer, speechData), speechData.getInterval());
 			}				
 		}
 	}
@@ -213,5 +150,7 @@ public class NPCEntity extends EntityPlayer
 //			this.addSpeechMessage(message);
 //		}
 //	}
+
+
 
 }

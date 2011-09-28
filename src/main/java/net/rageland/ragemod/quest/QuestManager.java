@@ -13,7 +13,6 @@ public class QuestManager
 	{
 		this.plugin = RageMod.getInstance();
 		
-		quests = 
 		
 //		QuestData testRewardQuestData = new QuestData("TestReward", "reward1", "start text reward1", "end text reward1", 0, "");
 //		RewardData testRewardData = new RewardData(new ItemStack(Material.getMaterial("stone")), 10, 50);

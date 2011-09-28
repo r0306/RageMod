@@ -1,10 +1,11 @@
-package net.rageland.ragemod.npclib;
+package net.rageland.ragemod.npcentities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
+import net.minecraft.server.Entity;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.NPCData;
 import net.rageland.ragemod.data.NPCInstance;
@@ -13,8 +14,7 @@ import net.rageland.ragemod.data.NPCLocationPool;
 import net.rageland.ragemod.data.NPCPool;
 import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.NPCInstance.NPCType;
-import net.rageland.ragemod.npcentities.NPCEntity;
-
+import net.rageland.ragemod.npcentities.RageEntity;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.Event;
@@ -23,8 +23,9 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.ServerListener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.WorldListener;
+import org.martin.bukkit.npclib.BWorld;
 
-public class NPCManager 
+public class RageNPCManager 
 {
 	private int taskid;
 	private RageMod plugin;
@@ -36,7 +37,7 @@ public class NPCManager
 	private NPCLocationPool npcLocationPool;
 	private NPCPool npcPool;	
 
-	public NPCManager(RageMod plugin) 
+	public RageNPCManager(RageMod plugin) 
 	{
 		this.plugin = plugin;
 		random = new Random();
@@ -53,16 +54,17 @@ public class NPCManager
 				for (int i : RageMod.getInstance().npcManager.activeNPCs.keySet()) 
 				{
 					net.minecraft.server.Entity j = (net.minecraft.server.Entity)RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity();
-					j.R();
+					j.aa();
 					if (j.dead) 
 					{
 						toRemove.add(i);
 					}
 				}
 				for (int n : toRemove)
-					NPCManager.this.despawnById(n);
+					RageNPCManager.this.despawnById(n);
 			}
 		}, 100L, 100L);
+						
 		plugin.getServer().getPluginManager().registerEvent(Event.Type.PLUGIN_DISABLE, new SL(), Priority.Normal, plugin);
 		plugin.getServer().getPluginManager().registerEvent(Event.Type.CHUNK_LOAD, new WL(), Priority.Normal, plugin);
 	}
@@ -162,7 +164,7 @@ public class NPCManager
 		npcPool.deactivate(instance.getNPCid());
 		npcLocationPool.deactivate(instance.getLocation().getID());
 		
-		NPCEntity npc = instance.getEntity();
+		RageEntity npc = instance.getEntity();
 		if (npc == null)
 			return;
 		
@@ -191,21 +193,21 @@ public class NPCManager
 //
 //	public void moveNPC(int id, Location l) 
 //	{
-//		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
+//		RageEntity npc = (RageEntity) activeNPCs.get(id);
 //		if (npc != null)
 //			npc.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 //	}
 //
 //	public void moveNPCStatic(int id, Location l) 
 //	{
-//		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
+//		RageEntity npc = (RageEntity) activeNPCs.get(id);
 //		if (npc != null)
 //			npc.setPosition(l.getX(), l.getY(), l.getZ());
 //	}
 //
 //	public void putNPCinbed(int id, Location bed) 
 //	{
-//		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
+//		RageEntity npc = (RageEntity) activeNPCs.get(id);
 //		if (npc != null) 
 //		{
 //			npc.setPosition(bed.getX(), bed.getY(), bed.getZ());
@@ -215,26 +217,26 @@ public class NPCManager
 //
 //	public void getNPCoutofbed(int id) 
 //	{
-//		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
+//		RageEntity npc = (RageEntity) activeNPCs.get(id);
 //		if (npc != null)
 //			npc.a(true, true, true);
 //	}
 //
 //	public void setSneaking(int id, boolean flag) 
 //	{
-//		NPCEntity npc = (NPCEntity) activeNPCs.get(id);
+//		RageEntity npc = (RageEntity) activeNPCs.get(id);
 //		if (npc != null)
 //			npc.setSneak(flag);
 //	}
 
-	public NPCEntity getNPCEntity(int id) 
+	public RageEntity getRageEntity(int id) 
 	{
-		return (NPCEntity) activeNPCs.get(id).getEntity();
+		return (RageEntity) activeNPCs.get(id).getEntity();
 	}
 
 	public static boolean isNPC(org.bukkit.entity.Entity e) 
 	{
-		return ((CraftEntity) e).getHandle() instanceof NPCEntity;
+		return ((CraftEntity) e).getHandle() instanceof RageEntity;
 	}
 
 	public int getNPCIdFromEntity(org.bukkit.entity.Entity e) 
@@ -243,7 +245,7 @@ public class NPCManager
 		{
 			for (int i : activeNPCs.keySet()) 
 			{
-				if (((NPCEntity) activeNPCs.get(i).getEntity()).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
+				if (((RageEntity) activeNPCs.get(i).getEntity()).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
 				{
 					return i;
 				}
@@ -252,15 +254,15 @@ public class NPCManager
 		return -1;
 	}
 
-	public static NPCEntity getNPCFromEntity(org.bukkit.entity.Entity e) 
+	public static RageEntity getNPCFromEntity(org.bukkit.entity.Entity e) 
 	{
 		if ((e instanceof HumanEntity)) 
 		{
 			for (int i : RageMod.getInstance().npcManager.activeNPCs.keySet()) 
 			{
-				if (((NPCEntity) RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity()).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
+				if (((RageEntity) RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity()).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
 				{
-					return (NPCEntity) RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity();
+					return (RageEntity) RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity();
 				}
 			}
 		}
@@ -276,10 +278,10 @@ public class NPCManager
 
 		public void onPluginDisable(PluginDisableEvent event) 
 		{
-			if (event.getPlugin() == NPCManager.this.plugin) 
+			if (event.getPlugin() == RageNPCManager.this.plugin) 
 			{
-				NPCManager.this.despawnAll(false);
-				NPCManager.this.plugin.getServer().getScheduler().cancelTask(NPCManager.this.taskid);
+				RageNPCManager.this.despawnAll(false);
+				RageNPCManager.this.plugin.getServer().getScheduler().cancelTask(RageNPCManager.this.taskid);
 			}
 		}
 	}
@@ -295,7 +297,7 @@ public class NPCManager
 		{
 			for (NPCInstance npcInstance : RageMod.getInstance().npcManager.activeNPCs.values())
 			{
-				NPCEntity npc = null;
+				RageEntity npc = null;
 				if( npcInstance != null )
 					npc = npcInstance.getEntity();
 				
@@ -315,11 +317,11 @@ public class NPCManager
 	}
 
 	// Checks to see if the entity is contained by activeNPCs
-	public boolean contains(NPCEntity npcEntity) 
+	public boolean contains(RageEntity RageEntity) 
 	{
 		for( NPCInstance instance : activeNPCs.values() )
 		{
-			if( instance.getEntity() == npcEntity )
+			if( instance.getEntity() == RageEntity )
 				return true;
 		}
 		return false;

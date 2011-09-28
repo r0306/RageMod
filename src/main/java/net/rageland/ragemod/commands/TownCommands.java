@@ -25,8 +25,9 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import com.iConomy.iConomy;
-import com.iConomy.system.Holdings;
+import com.iCo6.iConomy;
+import com.iCo6.system.Accounts;
+import com.iCo6.system.Holdings;
 
 // TODO: Keep towns from being created on zone borders
 
@@ -219,7 +220,7 @@ public class TownCommands
 	{		
 		PlayerData playerData = plugin.players.get(player.getName());
 		HashMap<String, Integer> nearbyTowns = plugin.towns.checkForNearbyTowns(player.getLocation());
-		Holdings holdings = iConomy.getAccount(player.getName()).getHoldings();
+		Holdings holdings = Accounts.getAccount(player.getName()).getHoldings();
 		int cost = plugin.config.townLevels.get(1).initialCost;
 
 		// Ensure that the player is not currently a resident of a town

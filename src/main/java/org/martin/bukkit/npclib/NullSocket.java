@@ -1,4 +1,4 @@
-package net.rageland.ragemod.npclib;
+package org.martin.bukkit.npclib;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

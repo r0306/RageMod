@@ -4,8 +4,8 @@
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
-	<classpathentry kind="lib" path="/Users/dcrowdus/git/Citizens/libs/craftbukkit-0.0.1-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="/Users/dcrowdus/git copy/Citizens/libs/iConomy.jar"/>
+	<classpathentry kind="lib" path="/Minecraft/Server/craftbukkit.jar"/>
+	<classpathentry kind="lib" path="/Minecraft/Server/plugins/iConomy.jar"/>
 	<classpathentry kind="lib" path="/Users/dcrowdus/git copy/Citizens/libs/Permissions.jar"/>
 	<classpathentry kind="lib" path="/Minecraft/SpoutAPI.jar"/>
 	<classpathentry kind="output" path="target/classes"/>

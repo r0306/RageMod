@@ -10,7 +10,7 @@ import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.NPCInstance;
 import net.rageland.ragemod.data.PlayerData;
 
-public class SpeechNPC extends NPCEntity
+public class SpeechNPC extends RageEntity
 {	
 	
 	

@@ -7,7 +7,7 @@ import net.rageland.ragemod.quest.Quest;
 
 import org.bukkit.entity.Player;
 
-public class QuestNPC extends NPCEntity
+public class QuestNPC extends RageEntity
 {
 	private Quest quest;
 	private int type;

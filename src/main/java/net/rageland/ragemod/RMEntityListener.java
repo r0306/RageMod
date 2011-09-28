@@ -7,9 +7,8 @@ import java.util.Random;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.data.Town;
-import net.rageland.ragemod.npcentities.NPCEntity;
-import net.rageland.ragemod.npclib.NPCManager;
-import net.rageland.ragemod.npclib.NpcEntityTargetEvent;
+import net.rageland.ragemod.npcentities.RageEntity;
+import net.rageland.ragemod.npcentities.RageNPCManager;
 import net.rageland.ragemod.quest.KillCreatureQuest;
 
 import org.bukkit.entity.Creature;
@@ -23,6 +22,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.martin.bukkit.npclib.NpcEntityTargetEvent;
 
 /**
  * RageMod entity listener
@@ -48,7 +48,7 @@ public class RMEntityListener extends EntityListener
     	// Makes NPC invulnerable
         if (defenderEntity instanceof HumanEntity) 
         {			
-			if (NPCManager.isNPC(defenderEntity)) 
+			if (RageNPCManager.isNPC(defenderEntity)) 
 			{				
 				rawEvent.setCancelled(true);
 			}
@@ -62,11 +62,11 @@ public class RMEntityListener extends EntityListener
         	Entity attackerEntity = edbeEvent.getDamager();  
         	
         	// If defender is NPC, the event is already cancelled, must check if it is a leftClickAction from player.
-        	if (NPCManager.isNPC(defenderEntity)) 
+        	if (RageNPCManager.isNPC(defenderEntity)) 
 			{				
         		if (attackerEntity instanceof Player) 
     			{						
-    				NPCEntity npcEntity = NPCManager.getNPCFromEntity(defenderEntity);
+    				RageEntity npcEntity = RageNPCManager.getNPCFromEntity(defenderEntity);
     				npcEntity.leftClickAction((Player) attackerEntity);
     			}
 				return;
@@ -210,7 +210,7 @@ public class RMEntityListener extends EntityListener
     	// Don't let monsters spawn inside player towns or the capitol
     	if( (event.getCreatureType() == CreatureType.CREEPER || event.getCreatureType() == CreatureType.SKELETON ||
     			event.getCreatureType() == CreatureType.ZOMBIE || event.getCreatureType() == CreatureType.SPIDER ||
-    			event.getCreatureType() == CreatureType.SQUID) && 
+    			event.getCreatureType() == CreatureType.SQUID || event.getCreatureType() == CreatureType.ENDERMAN) && 
     			(plugin.zones.isInCapitol(event.getLocation()) || plugin.towns.getCurrentTown(event.getLocation()) != null) )
     		event.setCancelled(true);
     	
@@ -245,7 +245,7 @@ public class RMEntityListener extends EntityListener
 			if (((netEvent.getTarget() instanceof Player))
 					&& (netEvent.getNpcReason() == NpcEntityTargetEvent.NpcTargetReason.NPC_RIGHTCLICKED)) 
 			{				
-				NPCEntity npcEntity = NPCManager.getNPCFromEntity(netEvent.getEntity());
+				RageEntity npcEntity = RageNPCManager.getNPCFromEntity(netEvent.getEntity());
 				npcEntity.rightClickAction((Player) event.getTarget());
 			}
 		}		

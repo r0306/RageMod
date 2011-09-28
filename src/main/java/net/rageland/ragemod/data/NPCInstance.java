@@ -7,15 +7,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
 import org.getspout.spoutapi.SpoutManager;
+import org.martin.bukkit.npclib.BServer;
+import org.martin.bukkit.npclib.BWorld;
 
 import net.minecraft.server.ItemInWorldManager;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
-import net.rageland.ragemod.npcentities.NPCEntity;
+import net.rageland.ragemod.npcentities.RageEntity;
 //import net.rageland.ragemod.npcentities.QuestNPC;
 import net.rageland.ragemod.npcentities.SpeechNPC;
-import net.rageland.ragemod.npclib.BServer;
-import net.rageland.ragemod.npclib.BWorld;
 
 public class NPCInstance 
 {
@@ -26,7 +26,7 @@ public class NPCInstance
 	// Data collections
 	private NPCData data;	
 	private NPCLocation location;
-	private NPCEntity entity;
+	private RageEntity entity;
 	// QUEST DATA GOES HERE :)
 	
 	// Server infrastructure
@@ -160,7 +160,7 @@ public class NPCInstance
 	}
 	
 	// Gets the NPC entity
-	public NPCEntity getEntity()
+	public RageEntity getEntity()
 	{
 		return entity;
 	}
@@ -182,7 +182,7 @@ public class NPCInstance
 //			case QUEST:
 //				entity = new QuestNPC(this);
 			default:
-				entity = new NPCEntity(this);
+				entity = new RageEntity(this);
 		}
 
 		// Set the position and put the entity in the world

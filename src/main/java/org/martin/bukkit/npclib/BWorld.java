@@ -1,4 +1,4 @@
-package net.rageland.ragemod.npclib;
+package org.martin.bukkit.npclib;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,10 +82,6 @@ public class BWorld {
 
     public boolean createExplosion(Location l, float power) {
         return wServer.a(null, l.getX(), l.getY(), l.getZ(), power).wasCanceled ? false : true;
-    }
-
-    public void setLightLevel(Block block, final int level) {
-        wServer.b(EnumSkyBlock.BLOCK, block.getX(), block.getY(), block.getZ(), level);
     }
 
     @SuppressWarnings("unchecked")

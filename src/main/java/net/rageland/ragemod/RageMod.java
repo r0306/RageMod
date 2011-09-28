@@ -9,7 +9,7 @@ import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.data.Tasks;
 import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.database.RageDB;
-import net.rageland.ragemod.npclib.NPCManager;
+import net.rageland.ragemod.npcentities.RageNPCManager;
 import net.rageland.ragemod.quest.QuestManager;
 import net.rageland.ragemod.text.Languages;
 import net.rageland.ragemod.text.Message;
@@ -62,7 +62,7 @@ public class RageMod extends JavaPlugin {
     public RageDB database;
     public RageZones zones;
     public Message message;
-    public NPCManager npcManager;
+    public RageNPCManager npcManager;
     public QuestManager questManager;
     
     
@@ -195,7 +195,7 @@ public class RageMod extends JavaPlugin {
     	server = this.getServer();
     	zones = new RageZones(this, config);
         pluginManager = server.getPluginManager();
-        npcManager = new NPCManager(this);
+        npcManager = new RageNPCManager(this);
         questManager = new QuestManager();
         message = new Message(this);
     }
