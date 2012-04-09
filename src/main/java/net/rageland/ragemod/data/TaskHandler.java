@@ -1,4 +1,4 @@
-package src.main.Java.net.rageland.ragemod.data;
+package net.rageland.ragemod.data;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Random;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.NPCData;
+import net.rageland.ragemod.npc.NPCData;
 import net.rageland.ragemod.npc.NPCInstance;
 import net.rageland.ragemod.npc.NPCLocation;
 import net.rageland.ragemod.npc.NPCLocationPool;
@@ -16,7 +16,6 @@ import net.rageland.ragemod.npc.NPCInstance.NPCType;
 import net.rageland.ragemod.npcentities.RageEntity;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;

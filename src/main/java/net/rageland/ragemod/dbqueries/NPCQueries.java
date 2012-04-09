@@ -11,7 +11,7 @@ import java.util.Random;
 
 import org.bukkit.Location;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.NPCData;
+import net.rageland.ragemod.npc.NPCData;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.database.RageDB;
 import net.rageland.ragemod.npc.NPCInstance;
@@ -30,6 +30,8 @@ public class NPCQueries
 	private RageDB rageDB;
 	private RageMod plugin;
 	private Random random;
+	@SuppressWarnings("unused")
+	private NPCData npcData;
 
 	public NPCQueries(RageDB rageDB, RageMod plugin) 
 	{

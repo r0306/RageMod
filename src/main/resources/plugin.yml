@@ -1,0 +1,40 @@
+name: RageMod
+main: net.rageland.ragemod.RageMod
+version: 0.1
+
+commands:
+  lot:
+    description: N/A
+    usage: /lot
+  npc:
+    description: N/A
+    usage: /npc
+  npctown:
+    description: N/A
+    usage: /npctown
+  rmdebug:
+    description: N/A
+    usage: /rmdebug
+  bounty:
+    description: N/A
+    usage: /bounty
+  compass:
+    description: N/A
+    usage: /compass
+  faction:
+    description: N/A
+    usage: /faction
+  permit:
+    description: N/A
+    usage: /permit
+  quest:
+    description: N/A
+    usage: /quest
+  rage:
+    description: N/A
+    usage: /rage
+  town:
+    description: N/A
+    usage: /town
+    
+permissions:

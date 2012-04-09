@@ -6,6 +6,7 @@ import java.util.HashSet;
 
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.npc.NPCTown;
+import net.rageland.ragemod.world.Location2D;
 import net.rageland.ragemod.world.PlayerTown;
 import net.rageland.ragemod.world.Town;
 
