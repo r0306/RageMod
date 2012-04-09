@@ -1,7 +1,11 @@
 package net.rageland.ragemod;
 
 import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -22,9 +26,14 @@ import net.rageland.ragemod.world.Lots;
 
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import net.rageland.ragemod.data.TaskHandler;
 
@@ -41,6 +50,9 @@ public class RageMod extends JavaPlugin {
     private RMEntityListener entityListener;
     private static RageMod plugin;
     
+    private PluginDescriptionFile pdf = plugin.getDescription();
+    private Logger log = Logger.getLogger("Minecraft");
+    
     private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
     private Server server; 
     private PluginManager pluginManager;
@@ -51,6 +63,10 @@ public class RageMod extends JavaPlugin {
     
     public static String mainDirectory = "plugins/RageMod";
     public File file = new File(mainDirectory + File.separator + "config.yml");
+    
+    // Update stuff
+    private double currentVersion;
+    private double newVersion;
     
     // Global data
     public Lots lots;
@@ -87,6 +103,7 @@ public class RageMod extends JavaPlugin {
     public void onEnable() 
     {           
     	plugin = this;
+    	load();
         initializeVariables();
         registerEvents();        
         setupPermissions();   
@@ -94,7 +111,7 @@ public class RageMod extends JavaPlugin {
         startScheduledTasks();        
         runDebugTests();      
         
-        System.out.println( "RageMod is enabled!!!" );
+        System.out.println("[RageMod] RageMod v" + pdf.getVersion() + " has been enabled!" );
     }
     
     public void creatingNPCTemp() { /*
@@ -107,9 +124,42 @@ public class RageMod extends JavaPlugin {
 		*/
     }
     
+    public void runUpdateCheck() {
+		try {
+            newVersion = updateCheck(currentVersion);
+            if (newVersion > currentVersion) {
+                log.warning("[RageMod] RageMod " + newVersion + " is released! You are running RageMod " + currentVersion);
+                log.warning("[RageMod] Update RageMod at: http://dev.bukkit.org/server-mods/ragemod/files");
+            }
+        } catch (Exception e) {
+            // Ignore exceptions like a bawws!
+        }
+	}
+	
+	private double updateCheck(double currentVersion) throws Exception {
+		String pluginUrlString = "http://dev.bukkit.org/server-mods/ragemod/files.rss";
+	        try {
+	            URL url = new URL(pluginUrlString);
+	            Document docu = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(url.openConnection().getInputStream());
+	            docu.getDocumentElement().normalize();
+	            NodeList nodes = docu.getElementsByTagName("item");
+	            Node node = nodes.item(0);
+	            if (node.getNodeType() == 1) {
+	                Element firstEle = (Element)node;
+	                NodeList firstElementTagName = firstEle.getElementsByTagName("title");
+	                Element ele = (Element) firstElementTagName.item(0);
+	                NodeList firstNodes = ele.getChildNodes();
+	                return Double.valueOf(firstNodes.item(0).getNodeValue().replace("RageMod", "").replaceFirst(".", "").trim());
+	            }
+	        }
+	        catch (Exception localException) {
+	        }
+	        return currentVersion;
+	}
+    
     public void onDisable() {    
     	// this.npcManager.despawnAll();
-        System.out.println("Goodbye world!");
+        log.info("[RageMod] RageMod v" + pdf.getVersion() + " disabled without errors!");
     }
         
     public Configuration load(){
@@ -119,6 +169,7 @@ public class RageMod extends JavaPlugin {
             return config;
 
         } catch (Exception e) {
+        	log.severe("[RageMod] Exception occurred in configuration!");
             e.printStackTrace();
         }
         return null;
@@ -151,12 +202,9 @@ public class RageMod extends JavaPlugin {
     
     private void registerEvents()
     {
-        pluginManager.registerEvents(serverListener, this);
-        
-        pluginManager.registerEvents(playerListener, this);
-        
+        pluginManager.registerEvents(serverListener, this);        
+        pluginManager.registerEvents(playerListener, this);       
         pluginManager.registerEvents(blockListener, this);
-        
         pluginManager.registerEvents(entityListener, this);
     }
     

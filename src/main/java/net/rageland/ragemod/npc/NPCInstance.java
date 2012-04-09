@@ -9,7 +9,6 @@ import org.bukkit.entity.HumanEntity;
 import org.getspout.spoutapi.SpoutManager;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.npcentities.RageEntity;
-import net.rageland.ragemod.npcentities.QuestNPC;
 import net.rageland.ragemod.npcentities.SpeechNPC;
 import net.rageland.ragemod.quest.QuestData;
 import net.rageland.ragemod.utilities.Util;
