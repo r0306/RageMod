@@ -3,3 +3,6 @@
 *.iml
 .project
 \target
+\.git
+.gitignore
+\.settings
