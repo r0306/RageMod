@@ -3,8 +3,9 @@ package org.martin.bukkit.npclib;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 //import net.minecraft.server.EntityHuman;
+import net.minecraft.server.EntityHuman;
 import net.minecraft.server.EntityPlayer;
-import net.minecraft.server.InventoryLargeChest;
+import net.minecraft.server.IInventory;
 //import net.minecraft.server.PlayerManager;
 import net.minecraft.server.TileEntityChest;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -34,10 +35,10 @@ public class BPlayer {
     }
 
     public void openVirtualChest(TileEntityChest chest) {
-        ePlayer.a(chest);
+        ePlayer.openContainer(chest);
     }
 
-    public void openVirtualChest(InventoryLargeChest lChest) {
-        ePlayer.a(lChest);
+    public void openVirtualChest(EntityHuman lChest) {
+        ePlayer.openContainer((IInventory) lChest);
     }
 }

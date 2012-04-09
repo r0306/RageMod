@@ -1,10 +1,8 @@
 package net.rageland.ragemod.data;
 
-import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
 
 import org.bukkit.Location;
-import org.bukkit.World;
 
 // May want to consider having this extend the Region2D class
 

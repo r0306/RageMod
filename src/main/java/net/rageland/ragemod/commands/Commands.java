@@ -19,6 +19,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+@SuppressWarnings("unused")
 public class Commands 
 {
 	private RageMod plugin;
@@ -69,7 +70,7 @@ public class Commands
 		}
 		
 		// Check permissions so only mods and admins can go to another player's home
-		if( targetPlayerData.id_Player != playerData.id_Player && !RageMod.permissionHandler.has(player, "ragemod.referee.inspectspawn") )
+		if( targetPlayerData.id_Player != playerData.id_Player && !RageMod.perms.has(player, "ragemod.referee.inspectspawn") )
 		{
 			plugin.message.sendNo(player, "Only mods and admins can teleport to other players' home points.");
 			return;
@@ -140,7 +141,7 @@ public class Commands
 		}
 		
 		// Check permissions so only mods and admins can go to another player's spawn
-		if( targetPlayerData.id_Player != playerData.id_Player && !RageMod.permissionHandler.has(player, "ragemod.referee.inspectspawn") )
+		if( targetPlayerData.id_Player != playerData.id_Player && !RageMod.perms.has(player, "ragemod.referee.inspectspawn") )
 		{
 			plugin.message.sendNo(player, "Only mods and admins can teleport to other players' spawn points.");
 			return;

@@ -16,7 +16,7 @@ public class GatheringQuest extends Quest
 			RewardData rewardData, 
 			Flags flags,
 			ItemStack itemToGather) {
-		super(questData, rewardData, flags);
+		super(questData, rewardData, flags, id_NPCInstance_Source);
 		this.itemToGather = itemToGather;
 	}
 	
@@ -44,8 +44,8 @@ public class GatheringQuest extends Quest
 
 			if (rewardData.getCoins() > 0.0D)
 			{
-				player.sendMessage(ChatColor.GOLD + " " + RageMod.getInstance().iConomy.format(rewardData.getCoins()));
-				RageMod.getInstance().iConomy.getAccount(player.getName()).getHoldings().add(rewardData.getCoins());
+				player.sendMessage(ChatColor.GOLD + " " + RageMod.getInstance().economy.format(rewardData.getCoins()));
+				RageMod.getInstance().economy.bankDeposit(player.getName(), rewardData.getCoins());
 			}
 
 			player.sendMessage(" ");

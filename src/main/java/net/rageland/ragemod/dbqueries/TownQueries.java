@@ -10,16 +10,9 @@ import java.util.HashMap;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.Location2D;
-import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
-import net.rageland.ragemod.data.Towns;
-import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.database.RageDB;
 
 public class TownQueries {

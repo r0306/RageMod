@@ -15,7 +15,6 @@ import net.rageland.ragemod.data.NPCInstance;
 import net.rageland.ragemod.data.NPCPhrase;
 import net.rageland.ragemod.data.PlayerData;
 import org.martin.bukkit.npclib.NPCNetHandler;
-import org.martin.bukkit.npclib.NPCNetworkManager;
 import org.martin.bukkit.npclib.NpcEntityTargetEvent;
 import org.martin.bukkit.npclib.NullSocket;
 import org.martin.bukkit.npclib.BServer;
@@ -23,6 +22,7 @@ import org.martin.bukkit.npclib.BWorld;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -38,6 +38,8 @@ import org.martin.bukkit.npclib.NPCEntity;
  * Provides a layer between NPCEntity and the custom entity classes for Ragemod-specific code
  *
  */
+
+@SuppressWarnings("unused")
 public class RageEntity extends NPCEntity
 {
 	private int lastTargetId;
@@ -47,13 +49,14 @@ public class RageEntity extends NPCEntity
 	protected SpeechData speechData;
 	protected NPCInstance instance;
 	protected Location location;
+	WorldServer world;
 
 	public RageEntity( NPCInstance instance )
 	{		
 		super(instance.server.getMCServer(), instance.world.getWorldServer(), 
 				instance.getColorName(), new ItemInWorldManager( instance.world.getWorldServer()));
 		
-		NetworkManager netMgr = new NPCNetworkManager(new NullSocket(),
+		NetworkManager netMgr = new NetworkManager(new NullSocket(),
 				"NPC Manager", new NetHandler()
 				{
 					public boolean c()
@@ -92,7 +95,7 @@ public class RageEntity extends NPCEntity
 
 	public void actAsHurt()
 	{
-		((WorldServer) this.world).tracker.a(this, new Packet18ArmAnimation(
+		this.world.tracker.a(this, new Packet18ArmAnimation(
 				this, 2));
 	}
 
@@ -139,6 +142,12 @@ public class RageEntity extends NPCEntity
 					this.timer.schedule(new SpeechTask(RageEntity.this, this.timer, speechData), speechData.getInterval());
 			}				
 		}
+	}
+
+	public void setPositionRotation(double x, double y, double z, float yaw,
+			float pitch) {
+		// TODO Unfinished
+		
 	}
 
 	// 9-7-11 DC: SpeechData rewritten, will probably not need this anymore

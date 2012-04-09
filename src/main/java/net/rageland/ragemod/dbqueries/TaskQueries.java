@@ -10,6 +10,7 @@ import java.util.HashMap;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.database.RageDB;
 
+@SuppressWarnings("unused")
 public class TaskQueries {
 	
 	private RageDB rageDB;

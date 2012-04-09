@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
-import net.minecraft.server.Entity;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.NPCData;
 import net.rageland.ragemod.data.NPCInstance;
@@ -17,15 +16,12 @@ import net.rageland.ragemod.data.NPCInstance.NPCType;
 import net.rageland.ragemod.npcentities.RageEntity;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.event.Event;
-import org.bukkit.event.Event.Priority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
-import org.bukkit.event.server.ServerListener;
 import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.event.world.WorldListener;
 import org.martin.bukkit.npclib.BWorld;
 
-public class RageNPCManager 
+public class RageNPCManager
 {
 	private int taskid;
 	private RageMod plugin;
@@ -54,7 +50,7 @@ public class RageNPCManager
 				for (int i : RageMod.getInstance().npcManager.activeNPCs.keySet()) 
 				{
 					net.minecraft.server.Entity j = (net.minecraft.server.Entity)RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity();
-					j.aa();
+					j.aA();
 					if (j.dead) 
 					{
 						toRemove.add(i);
@@ -64,9 +60,12 @@ public class RageNPCManager
 					RageNPCManager.this.despawnById(n);
 			}
 		}, 100L, 100L);
+						//Listener listener;
+						//PluginManager pm = plugin.getServer().getPluginManager();
+						//pm.registerEvent(Event.Type.PLUGIN_DISABLE, new SL(), Priority.Normal, plugin);
+						//pm.registerEvent(Event.Type.CHUNK_LOAD, new WL(), Priority.Normal, plugin);
 						
-		plugin.getServer().getPluginManager().registerEvent(Event.Type.PLUGIN_DISABLE, new SL(), Priority.Normal, plugin);
-		plugin.getServer().getPluginManager().registerEvent(Event.Type.CHUNK_LOAD, new WL(), Priority.Normal, plugin);
+
 	}
 	
 	// Used on startup to create NPC entities for all stored instances
@@ -269,7 +268,8 @@ public class RageNPCManager
 		return null;
 	}
 
-	private class SL extends ServerListener 
+	@SuppressWarnings("unused")
+	private class SL implements Listener 
 	{
 		private SL() 
 		{
@@ -286,7 +286,8 @@ public class RageNPCManager
 		}
 	}
 
-	private class WL extends WorldListener 
+	@SuppressWarnings("unused")
+	private class WL implements Listener 
 	{
 		private WL() 
 		{

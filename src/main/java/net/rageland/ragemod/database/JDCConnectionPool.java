@@ -64,7 +64,7 @@ class ConnectionKeepAlive extends Thread
 	}
 	
 }
-
+@SuppressWarnings("unused")
 public class JDCConnectionPool {
 
    public Vector<JDCConnection> connections;

@@ -1,7 +1,6 @@
 package net.rageland.ragemod.data;
 
-import net.rageland.ragemod.quest.Quest;
-
+@SuppressWarnings("unused")
 public class NPCData 
 {
 	public int id_NPC;

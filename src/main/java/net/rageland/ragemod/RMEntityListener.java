@@ -17,10 +17,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.martin.bukkit.npclib.NpcEntityTargetEvent;
 
@@ -28,7 +28,8 @@ import org.martin.bukkit.npclib.NpcEntityTargetEvent;
  * RageMod entity listener
  * @author TheIcarusKid
  */
-public class RMEntityListener extends EntityListener
+@SuppressWarnings("deprecation")
+public class RMEntityListener implements Listener
 {
 	private final RageMod plugin;
 	private Random random;
@@ -40,7 +41,6 @@ public class RMEntityListener extends EntityListener
     }
     
     // Called when an entity damages another entity
-    @Override
     public void onEntityDamage(EntityDamageEvent rawEvent) 
     {
     	Entity defenderEntity = rawEvent.getEntity();
@@ -122,14 +122,14 @@ public class RMEntityListener extends EntityListener
             		PlayerTown playerTown = (PlayerTown)plugin.towns.getCurrentTown(defender.getLocation());
             		
             		// Keep referees from participating in combat
-            		if( RageMod.permissionHandler.has(attacker, "ragemod.referee.blockpvp") )
+            		if(RageMod.perms.has(attacker, "ragemod.referee.blockpvp") )
             		{
             			edbeEvent.setCancelled(true);
             			plugin.message.sendNo(attacker, "Referees may not participate in combat.");
             			return;
             		}
             		// Protect referees 
-            		else if( RageMod.permissionHandler.has(defender, "ragemod.referee.blockpvp") )
+            		else if( RageMod.perms.has(defender, "ragemod.referee.blockpvp") )
             		{
             			edbeEvent.setCancelled(true);
             			plugin.message.sendNo(attacker, "You cannot harm a referee.");
@@ -165,7 +165,7 @@ public class RMEntityListener extends EntityListener
             else if( defenderEntity instanceof Player && attackerEntity instanceof Creature)
             {
             	Player defenderPlayer = (Player) defenderEntity;
-            	if( RageMod.permissionHandler.has(defenderPlayer, "ragemod.admin.smitemobs") )
+            	if( RageMod.perms.has(defenderPlayer, "ragemod.admin.smitemobs") )
             	{
             		// Automatically kill monsters who attack admins
                 	Creature creature = (Creature)attackerEntity;

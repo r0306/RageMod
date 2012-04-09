@@ -12,10 +12,11 @@ public abstract class Quest
 	protected QuestData questData;
 	protected RewardData rewardData;
 	protected Flags flags;
-	protected int id_NPCInstance_Source;
+	protected static int id_NPCInstance_Source;
 	
 	public static final int TYPE_REWARD = 1;
 	
+	@SuppressWarnings("static-access")
 	public Quest(QuestData questData, RewardData rewardData, Flags flags, int id_NPCInstance_Source)
 	{
 		this.questData = questData;
@@ -43,8 +44,8 @@ public abstract class Quest
 
 			if (rewardData.getCoins() > 0.0D)
 			{
-				player.sendMessage(ChatColor.GOLD + " " + RageMod.getInstance().iConomy.format(rewardData.getCoins()));
-				RageMod.getInstance().iConomy.getAccount(player.getName()).getHoldings().add(rewardData.getCoins());
+				player.sendMessage(ChatColor.GOLD + " " + RageMod.getInstance().economy.format(rewardData.getCoins()));
+				RageMod.econ.bankDeposit(player.getName(), rewardData.getCoins());
 			}
 
 			player.sendMessage(" ");

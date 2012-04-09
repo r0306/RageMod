@@ -12,16 +12,16 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 /**
  * RageMod block listener
  * @author TheIcarusKid
  */
-public class RMBlockListener extends BlockListener 
+public class RMBlockListener implements Listener 
 {
     private final RageMod plugin;
 
@@ -201,7 +201,7 @@ public class RMBlockListener extends BlockListener
     	if( town instanceof NPCTown )
     	{
     		NPCTown npcTown = (NPCTown)town;
-    		if( !RageMod.permissionHandler.has(player, "ragemod.build.npctown") && !playerData.npcTownName.equalsIgnoreCase(town.getName()) 
+    		if(!RageMod.perms.has(player, "ragemod.build.npctown") && !playerData.npcTownName.equalsIgnoreCase(town.getName()) 
     				&& !npcTown.hasPermission(playerData.name) )
     		{
     			plugin.message.sendNo(player, "You don't have permission to build here.");
@@ -216,19 +216,19 @@ public class RMBlockListener extends BlockListener
     		if( plugin.zones.isInCapitol(location) )
     		{
     			// If the player is below y=22, make sure they have permission to mine below city (don't check lots)
-        		if( location.getY() < 22 && !RageMod.permissionHandler.has(player, "ragemod.mine.capitol"))
+        		if( location.getY() < 22 && !RageMod.perms.has(player, "ragemod.mine.capitol"))
         		{
         			plugin.message.sendNo(player, "You don't have permission to mine under the city.");
         			return false;
         		}
         		// See if the player is inside a lot, and if they own it
-        		else if( !playerData.isInsideOwnLot(location) && !RageMod.permissionHandler.has(player, "ragemod.build.anylot") )
+        		else if( !playerData.isInsideOwnLot(location) && !RageMod.perms.has(player, "ragemod.build.anylot") )
         		{
         			Lot lot = plugin.lots.findCurrentLot(location);
         			
         			if( lot == null )
         			{
-        				if( RageMod.permissionHandler.has(player, "ragemod.build.capitol") || playerData.permits.capitol == true )
+        				if( RageMod.perms.has(player, "ragemod.build.capitol") || playerData.permits.capitol == true )
         					return true;
         				
         				plugin.message.sendNo(player, "You don't have permission to edit city infrastructure.");
@@ -260,7 +260,7 @@ public class RMBlockListener extends BlockListener
     			PlayerTown playerTown = (PlayerTown)town;
     					
     			// Players can only build inside their own towns
-    			if( !playerTown.getName().equals(playerData.townName) && !RageMod.permissionHandler.has(player, "ragemod.build.anytown") ) 
+    			if( !playerTown.getName().equals(playerData.townName) && !RageMod.perms.has(player, "ragemod.build.anytown") ) 
     			{		
     				plugin.message.sendNo(player, "You can only build inside of your own town.");
     				return false;
@@ -285,7 +285,7 @@ public class RMBlockListener extends BlockListener
     		}
     	}
     	// *** TRAVEL ZONE ***
-    	else if( plugin.zones.isInTravelZone(location) && !RageMod.permissionHandler.has(player, "ragemod.build.travelzone") )
+    	else if( plugin.zones.isInTravelZone(location) && !RageMod.perms.has(player, "ragemod.build.travelzone") )
     	{
     		plugin.message.sendNo(player, "You cannot build inside the Travel Zone.");
     		return false;

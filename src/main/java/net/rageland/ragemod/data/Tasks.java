@@ -2,7 +2,6 @@ package net.rageland.ragemod.data;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -12,10 +11,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import com.iConomy.iConomy;
-import com.iConomy.system.Holdings;
-
-import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.RageZones;
 import net.rageland.ragemod.Util;
@@ -70,7 +65,6 @@ public class Tasks
 		int totalBlocks = 0;
 		int actualBlocks;
 		int income;
-		Holdings holdings;
 		PlayerData playerData;
 		ArrayList<String> evictList;
 		
@@ -98,7 +92,7 @@ public class Tasks
 			}
 			
 			if( totalBlocks > 0 )
-				System.out.println("Awarded " + town.name + " " + iConomy.format(totalBlocks * plugin.config.INCOME_PER_BLOCK) + " for treasury blocks.");
+				System.out.println("Awarded " + town.name + " " + RageMod.econ.format(totalBlocks * plugin.config.INCOME_PER_BLOCK) + " for treasury blocks.");
 			
 			// *****  SANCTUM CLEANUP  *****
 			// Make sure the number of physical blocks in the treasury matches the database values
@@ -125,7 +119,7 @@ public class Tasks
 					if( playerData.treasuryBlocks > 0 )
 					{
 						playerData.treasuryBlocks--;
-						iConomy.getAccount(playerData.name).getHoldings().add(plugin.config.PRICE_GOLD * 9);
+						RageMod.econ.bankDeposit(playerData.name, plugin.config.PRICE_GOLD);
 						playerData.update();
 						difference--;
 						if( difference == 0 )
@@ -144,13 +138,11 @@ public class Tasks
 			// Move through each town resident to collect money
 			for( String playerName : town.residents )
 			{
-				holdings = iConomy.getAccount(playerName).getHoldings();
 				playerData = plugin.players.get(playerName);
 				
 				// Attempt to collect from player's iConomy balance first
-				if( holdings.hasEnough(cost) )
+				if( RageMod.econ.has(playerName, cost) )
 				{
-					holdings.subtract(cost);
 					remaining -= cost;
 				}
 				// If they don't have enough on hand, see if they have deposits in the treasury

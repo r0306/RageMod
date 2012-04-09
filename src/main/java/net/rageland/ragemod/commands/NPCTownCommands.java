@@ -3,31 +3,15 @@ package net.rageland.ragemod.commands;
 // TODO: Add removal commands
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.logging.Level;
-
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.entity.Creature;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Spider;
-
-import com.iConomy.iConomy;
-
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.Util;
-import net.rageland.ragemod.data.Location2D;
-import net.rageland.ragemod.data.Lot;
 import net.rageland.ragemod.data.NPCData;
-import net.rageland.ragemod.data.NPCInstance;
 import net.rageland.ragemod.data.NPCLocation;
 import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
-import net.rageland.ragemod.data.NPCInstance.NPCType;
 import net.rageland.ragemod.data.Town;
-import net.rageland.ragemod.quest.Quest;
-import net.rageland.ragemod.quest.Quest;
 
 public class NPCTownCommands {
 	
@@ -45,7 +29,7 @@ public class NPCTownCommands {
 			plugin.message.parse(player, "NPCTown commands: <required> [optional]");
 			if( playerData.isSteward )
 				plugin.message.parse(player, "   /npctown allow <player> (allow player to build in your town)");
-			if( RageMod.permissionHandler.has(player, "ragemod.npctown") )
+			if( RageMod.perms.has(player, "ragemod.npctown") )
 				plugin.message.parse(player, "   /npctown create <name> <raceID> <x,z,x,z>   (new NPCTown)");
 			if( playerData.isSteward )
 				plugin.message.parse(player, "   /npctown disallow <player/all> (removes permissions)");
@@ -59,7 +43,7 @@ public class NPCTownCommands {
 				plugin.message.parse(player, "   /npctown newphrase <phrase>  (adds a new phrase)");
 			if( playerData.isSteward )
 				plugin.message.parse(player, "   /npctown resident <name> [sex]  (creates a new NPC)");
-			if( RageMod.permissionHandler.has(player, "ragemod.npctown") )
+			if( RageMod.perms.has(player, "ragemod.npctown") )
 				plugin.message.parse(player, "   /npctown setsteward <town> <player>   (sets steward)");
 			
 		}
@@ -310,7 +294,7 @@ public class NPCTownCommands {
 			if( !residents.equals("") )
 				plugin.message.parse(player, "   Residents: " + residents.substring(2));
 				
-			if( RageMod.permissionHandler.has(player, "ragemod.npctown") || playerData.npcTownName.equalsIgnoreCase(town.getName()) )
+			if( RageMod.perms.has(player, "ragemod.npctown") || playerData.npcTownName.equalsIgnoreCase(town.getName()) )
 			{
 				for( NPCLocation location : npcTown.getNPCLocations() )
 				{
@@ -423,7 +407,7 @@ public class NPCTownCommands {
 		Town town = plugin.towns.get(townName);
 		
 		// Make sure the player has permission to perform this command
-		if( !RageMod.permissionHandler.has(player, "ragemod.npctown") )
+		if( !RageMod.perms.has(player, "ragemod.npctown") )
 		{
 			plugin.message.sendNo(player, "You do not have permission to perform that command.");
 			return;

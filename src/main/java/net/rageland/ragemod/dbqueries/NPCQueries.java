@@ -5,27 +5,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
-
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.NPCData;
 import net.rageland.ragemod.data.NPCInstance;
 import net.rageland.ragemod.data.NPCInstance.NPCType;
-import net.rageland.ragemod.data.Location2D;
 import net.rageland.ragemod.data.NPCLocation;
 import net.rageland.ragemod.data.NPCLocationPool;
 import net.rageland.ragemod.data.NPCPool;
 import net.rageland.ragemod.data.NPCPhrase;
 import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerData;
-import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.database.RageDB;
 import net.rageland.ragemod.npcentities.SpeechData;
 import net.rageland.ragemod.text.Language;

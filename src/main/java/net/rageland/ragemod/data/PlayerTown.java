@@ -2,20 +2,16 @@ package net.rageland.ragemod.data;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import net.rageland.ragemod.Build;
-import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
 
 // TODO: Make this inherit from Region2D, along with NPCTown (make another class in between)

@@ -12,6 +12,8 @@ import org.bukkit.entity.Cow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Giant;
 import org.bukkit.entity.Pig;
@@ -25,6 +27,8 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
 
 // Misc. methods
+
+@SuppressWarnings("deprecation")
 public class Util 
 {	
 	// Formats the cooldown time into a lovely string
@@ -127,10 +131,14 @@ public class Util
 		{
 			return CreatureType.GIANT;
 		}
-		else 
+		else if (creature instanceof EnderDragon)
 		{
-			return CreatureType.MONSTER;
-		}		
+			return CreatureType.ENDER_DRAGON;
+		} else if (creature instanceof Enderman) {
+			return CreatureType.ENDERMAN;
+		} else {
+			return CreatureType.valueOf("Unknown");
+		}
 	}
 	
 	// Parses a set of coordinates from the config file

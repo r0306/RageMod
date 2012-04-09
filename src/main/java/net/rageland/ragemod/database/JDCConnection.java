@@ -2,7 +2,6 @@ package net.rageland.ragemod.database;
 
 import java.sql.*;
 import java.util.*;
-import java.io.*;
 
 public class JDCConnection implements Connection {
 

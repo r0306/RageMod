@@ -1,7 +1,6 @@
 package net.rageland.ragemod.commands;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.Lot;
 import net.rageland.ragemod.data.PlayerData;
 
 import org.bukkit.entity.Player;
@@ -45,7 +44,7 @@ public class PermitCommands
 		PlayerData targetPlayerData = plugin.players.get(targetPlayerName);
 		
 		// Make sure the player has permission to perform this command
-		if( !RageMod.permissionHandler.has(player, "ragemod.permit.capitol") )
+		if( !RageMod.perms.has(player, "ragemod.permit.capitol") )
 		{
 			plugin.message.sendNo(player, "You do not have permission to perform that command.");
 			return;

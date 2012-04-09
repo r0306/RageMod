@@ -78,6 +78,7 @@ public class NPCUtilities {
 			int randomX = rand.nextInt(max.getBlockX() - min.getBlockX()) + min.getBlockX();
 			int randomZ = rand.nextInt(max.getBlockZ() - min.getBlockZ()) + min.getBlockZ();
 			
+			@SuppressWarnings("unused")
 			Location possibleLocation;
 			
 			for(int i = 0; i < maxRetries; i++) {

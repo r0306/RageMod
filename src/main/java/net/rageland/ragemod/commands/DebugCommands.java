@@ -2,22 +2,11 @@ package net.rageland.ragemod.commands;
 
 import java.util.ArrayList;
 
-import net.rageland.ragemod.Build;
-import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
-import net.rageland.ragemod.data.Factions;
 import net.rageland.ragemod.data.PlayerData;
-import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.data.Town;
-import net.rageland.ragemod.text.Language;
-
 import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public class DebugCommands 
@@ -128,6 +117,7 @@ public class DebugCommands
 	}
 
 	// /debug sanctum <level>
+	@SuppressWarnings("unused")
 	private void sanctum(Player player, String levelString) 
 	{
 		plugin.message.sendNo(player, "This command has been disabled.");
@@ -162,6 +152,7 @@ public class DebugCommands
 	}
 	
 	// Sets the language skill
+	@SuppressWarnings("static-access")
 	private void setlang(Player player, String langString, String levelString) 
 	{
 		PlayerData playerData = plugin.players.get(player.getName());

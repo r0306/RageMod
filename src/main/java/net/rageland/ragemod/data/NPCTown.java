@@ -11,6 +11,7 @@ import org.bukkit.World;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
 
+@SuppressWarnings("unused")
 public class NPCTown extends Town
 {
 	public boolean isProtected;

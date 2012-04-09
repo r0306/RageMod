@@ -7,6 +7,7 @@ import net.rageland.ragemod.RageZones.Zone;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+@SuppressWarnings("unused")
 public class NPCLocation extends Location
 {
 	private int id_NPCLocation;

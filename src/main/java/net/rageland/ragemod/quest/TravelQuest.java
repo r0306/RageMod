@@ -9,7 +9,7 @@ public class TravelQuest extends Quest
 	
 	public TravelQuest(QuestData questData, RewardData rewardData, Flags flags)
 	{
-		super(questData, rewardData, flags);
+		super(questData, rewardData, flags, id_NPCInstance_Source);
 	}
 
 	/**

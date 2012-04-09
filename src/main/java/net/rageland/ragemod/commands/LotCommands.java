@@ -1,15 +1,9 @@
 package net.rageland.ragemod.commands;
 
-import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.RageZones;
-import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.Lot;
 import net.rageland.ragemod.data.Lot.LotCategory;
-import net.rageland.ragemod.data.Lots;
 import net.rageland.ragemod.data.PlayerData;
-import net.rageland.ragemod.data.Players;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -31,7 +25,7 @@ public class LotCommands
 			plugin.message.parse(player, "Lot commands: <required> [optional]");
 			if( playerData.lots.size() > 0 )
 				plugin.message.parse(player, "   /lot allow <player_name> (allow player to build in your lots)");
-			if( RageMod.permissionHandler.has(player, "ragemod.lot.assign") )
+			if( RageMod.perms.has(player, "ragemod.lot.assign") )
 				plugin.message.parse(player, "   /lot assign <lot_code> <player_name>  (gives lot to player)");
 			if( true )
 				plugin.message.parse(player, "   /lot check   (returns info on the current lot)");
@@ -39,7 +33,7 @@ public class LotCommands
 				plugin.message.parse(player, "   /lot claim [lot_code]   (claims the specified or current lot)");
 			if( playerData.lots.size() > 0 )
 				plugin.message.parse(player, "   /lot disallow <player_name/all> (removes permissions)");
-			if( RageMod.permissionHandler.has(player, "ragemod.lot.evict") )
+			if( RageMod.perms.has(player, "ragemod.lot.evict") )
 				plugin.message.parse(player, "   /lot evict <lot_code>   (sets specified lot to 'unclaimed')");
 			if( playerData.lots.size() > 0 )
 				plugin.message.parse(player, "   /lot list   (lists all lots you own)");
@@ -144,7 +138,7 @@ public class LotCommands
 		Lot lot = plugin.lots.get(lotCode);
 		
 		// Make sure the player has permission to perform this command
-		if( !RageMod.permissionHandler.has(player, "ragemod.lot.assign") )
+		if( !RageMod.perms.has(player, "ragemod.lot.assign") )
 		{
 			plugin.message.sendNo(player, "You do not have permission to perform that command.");
 			return;
@@ -343,7 +337,7 @@ public class LotCommands
 		Lot lot = plugin.lots.get(lotCode);
 		
 		// Make sure the player has permission to perform this command
-		if( !RageMod.permissionHandler.has(player, "ragemod.lot.evict") )
+		if( !RageMod.perms.has(player, "ragemod.lot.evict") )
 		{
 			plugin.message.sendNo(player, "You do not have permission to perform that command.");
 			return;

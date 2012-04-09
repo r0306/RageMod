@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jline.ConsoleReader;
-import net.minecraft.server.EntityTracker;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.NetworkListenThread;
 import net.minecraft.server.PropertyManager;
@@ -73,7 +72,7 @@ public class BServer {
     }
 
     public void stop() {
-        mcServer.a();
+        mcServer.a("Stopping server!", server);
     }
 
     public void sendConsoleCommand(String cmd) {

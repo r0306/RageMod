@@ -4,19 +4,9 @@ package net.rageland.ragemod.commands;
 
 import java.util.HashMap;
 
-import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.Util;
-import net.rageland.ragemod.data.Factions;
 import net.rageland.ragemod.data.PlayerData;
-import net.rageland.ragemod.data.Players;
-
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
-
-import com.iConomy.iConomy;
-import com.iConomy.system.Account;
-import com.iConomy.system.Holdings;
 
 public class FactionCommands 
 {
@@ -71,7 +61,6 @@ public class FactionCommands
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
 		int id_Faction;
-		Holdings balance = iConomy.getAccount(player.getName()).getHoldings();
 		
 		// Ensure the player is not already a member of a faction
 		if( playerData.id_Faction != 0 )
@@ -99,7 +88,7 @@ public class FactionCommands
 			plugin.message.parse(player, "Current costs to join each faction (based on population):");
 			for( int faction : populations.keySet() )
 			{
-				plugin.message.parse(player, "   " + plugin.factions.getCodedName(faction) + ": " + iConomy.format(populations.get(faction)));
+				plugin.message.parse(player, "   " + plugin.factions.getCodedName(faction) + ": " + RageMod.econ.format(populations.get(faction)));
 			}
 			return;
 		}
@@ -111,14 +100,14 @@ public class FactionCommands
 			return;
 		}
 		// Check to see if the player has enough money to join the specified faction
-		if( populations.get(id_Faction) != null && !balance.hasEnough(populations.get(id_Faction)) )
+		if( populations.get(id_Faction) != null && !RageMod.econ.has(factionName, populations.get(id_Faction)))
 		{
-			plugin.message.parseNo(player, "You need at least " + iConomy.format(populations.get(id_Faction)) + " to join the " + plugin.factions.getCodedName(id_Faction) + " faction.");
+			plugin.message.parseNo(player, "You need at least " + RageMod.econ.format(populations.get(id_Faction)) + " to join the " + plugin.factions.getCodedName(id_Faction) + " faction.");
 			return;
 		}
 		
 		// Subtract from player balance
-		balance.subtract(populations.get(id_Faction));
+		RageMod.econ.bankWithdraw(factionName, populations.get(id_Faction));
 		
 		// Set the player's faction
 		playerData.id_Faction = id_Faction;

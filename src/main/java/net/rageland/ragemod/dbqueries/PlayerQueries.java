@@ -15,7 +15,6 @@ import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.Permits;
 import net.rageland.ragemod.data.PlayerData;
-import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.database.RageDB;
 
 public class PlayerQueries {

@@ -7,24 +7,16 @@ import java.util.Random;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.entity.Creature;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Spider;
-
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.Util;
-import net.rageland.ragemod.data.Location2D;
 import net.rageland.ragemod.data.NPCData;
 import net.rageland.ragemod.data.NPCInstance;
 import net.rageland.ragemod.data.NPCLocation;
-import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.NPCInstance.NPCType;
 import net.rageland.ragemod.data.Town;
-import net.rageland.ragemod.quest.Quest;
-import net.rageland.ragemod.quest.Quest;
 
+@SuppressWarnings("unused")
 public class NPCCommands {
 	
 	private RageMod plugin;

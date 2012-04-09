@@ -4,30 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.RageZones;
 import net.rageland.ragemod.RageZones.Action;
-import net.rageland.ragemod.Util;
-import net.rageland.ragemod.data.Factions;
-import net.rageland.ragemod.data.Location2D;
-import net.rageland.ragemod.data.NPCLocation;
 import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.data.Town;
-import net.rageland.ragemod.data.Towns;
-import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.data.TownLevel;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
-
-import com.iCo6.iConomy;
-import com.iCo6.system.Accounts;
-import com.iCo6.system.Holdings;
 
 // TODO: Keep towns from being created on zone borders
 
@@ -220,7 +205,6 @@ public class TownCommands
 	{		
 		PlayerData playerData = plugin.players.get(player.getName());
 		HashMap<String, Integer> nearbyTowns = plugin.towns.checkForNearbyTowns(player.getLocation());
-		Holdings holdings = Accounts.getAccount(player.getName()).getHoldings();
 		int cost = plugin.config.townLevels.get(1).initialCost;
 
 		// Ensure that the player is not currently a resident of a town
@@ -254,9 +238,9 @@ public class TownCommands
 			return;
 		}
 		// Check to see if the player has enough money to join the specified faction
-		if( !holdings.hasEnough(cost) )
+		if( !RageMod.econ.has(townName, cost) )
 		{
-			plugin.message.parseNo(player, "You need at least " + iConomy.format(cost) + " to create a " + plugin.config.townLevels.get(1).name + ".");
+			plugin.message.parseNo(player, "You need at least " + RageMod.econ.format(cost) + " to create a " + plugin.config.townLevels.get(1).name + ".");
 			return;
 		}
 		
@@ -292,13 +276,13 @@ public class TownCommands
 			playerData.treasuryBalance = cost;
 			
 			// Subtract from player balance
-			holdings.subtract(cost);
+			RageMod.econ.bankWithdraw(townName, cost);
 			
 			plugin.message.parse(player, "Congratulations, you are the new mayor of " + playerTown.getCodedName() + "!");		
 		}
 		else
 		{
-			plugin.message.parse(player, "This location is valid for a new town - to create one for " + iConomy.format(cost) + ", type '/town create <town_name>'");
+			plugin.message.parse(player, "This location is valid for a new town - to create one for " + RageMod.econ.format(cost) + ", type '/town create <town_name>'");
 		}
 	}
 	
@@ -307,7 +291,6 @@ public class TownCommands
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
 		double amount;
-		Holdings holdings = iConomy.getAccount(player.getName()).getHoldings();
 		PlayerTown playerTown = (PlayerTown)plugin.towns.get(playerData.townName);
 		
 		// Make sure the player is a resident of a town
@@ -333,14 +316,14 @@ public class TownCommands
 			return;	
 		}
 		// Make sure the player has enough money to make the deposit
-		if( !holdings.hasEnough(amount) )
+		if( !RageMod.econ.has(amountString, amount) )
 		{
-			plugin.message.parseNo(player, "You only have " + iConomy.format(holdings.balance()) + ".");
+			plugin.message.parseNo(player, "You don't have enough money!");
 			return;
 		}
 		
 		// Subtract the amount from the player's balance
-		holdings.subtract(amount);
+		RageMod.econ.bankWithdraw(amountString, amount);
 		
 		// Update the database
 		plugin.database.townQueries.townDeposit(playerTown.getID(), playerData.id_Player, amount);
@@ -352,7 +335,7 @@ public class TownCommands
 		// Update the player data
 		playerData.treasuryBalance += amount;
 		
-		plugin.message.parse(player, "Deposited " + iConomy.format(amount) + " into town treasury.");
+		plugin.message.parse(player, "Deposited " + RageMod.econ.format(amount) + " into town treasury.");
 	}
 	
 	// /town evict <player_name>
@@ -419,9 +402,9 @@ public class TownCommands
 			plugin.message.parse(player, "   Mayor: " + plugin.players.get(playerTown.mayor).getCodedName());
 			if( playerData.townName.equalsIgnoreCase(townName) )
 			{
-				plugin.message.parse(player, "   Total Balance: " + iConomy.format(playerTown.treasuryBalance));
-				plugin.message.parse(player, "   Minimum Balance:  " + iConomy.format(playerTown.minimumBalance));
-				plugin.message.parse(player, "   Your Balance:  " + iConomy.format(playerData.treasuryBalance));
+				plugin.message.parse(player, "   Total Balance: " + RageMod.econ.format(playerTown.treasuryBalance));
+				plugin.message.parse(player, "   Minimum Balance:  " + RageMod.econ.format(playerTown.minimumBalance));
+				plugin.message.parse(player, "   Your Balance:  " + RageMod.econ.format(playerData.treasuryBalance));
 			}
 		}
 		else if( town instanceof NPCTown )
@@ -516,7 +499,7 @@ public class TownCommands
 		if( amount < playerTown.townLevel.minimumBalance )
 		{
 			plugin.message.parseNo(player, "The lowest minimum balance allowed for a " + playerTown.townLevel.name + " is " + 
-								iConomy.format(playerTown.townLevel.minimumBalance) + ".");
+								RageMod.econ.format(playerTown.townLevel.minimumBalance) + ".");
 			return;
 		}
 		
@@ -527,7 +510,7 @@ public class TownCommands
 		playerTown.minimumBalance = amount; 
 		plugin.towns.add(playerTown);
 		
-		plugin.message.parse(player, "Your town's treasury minimum balance is now " + iConomy.format(amount) + ".");
+		plugin.message.parse(player, "Your town's treasury minimum balance is now " + RageMod.econ.format(amount) + ".");
 	}
 	
 	// /town residents [town_name]
@@ -600,7 +583,7 @@ public class TownCommands
 		// Check treasury balance
 		if( playerTown.treasuryBalance < targetLevel.initialCost )
 		{
-			plugin.message.parseNo(player, "You need at least " + iConomy.format(targetLevel.initialCost) + " in your treasury to upgrade your town to a " + targetLevel.name + ".");
+			plugin.message.parseNo(player, "You need at least " + RageMod.econ.format(targetLevel.initialCost) + " in your treasury to upgrade your town to a " + targetLevel.name + ".");
 			return;
 		}
 		
@@ -618,11 +601,11 @@ public class TownCommands
 			plugin.database.townQueries.townUpgrade(playerTown.getName(), (targetLevel.initialCost - targetLevel.minimumBalance));
 			
 			plugin.message.parse(player, "Congratulations, " + playerTown.getCodedName() + " has been upgraded to a " + targetLevel.name + "!");
-			plugin.message.parse(player, " " + iConomy.format(targetLevel.initialCost) + " has been deducted from the town treasury.");
+			plugin.message.parse(player, " " + RageMod.econ.format(targetLevel.initialCost) + " has been deducted from the town treasury.");
 		}
 		else
 		{
-			plugin.message.parse(player, "Your town is ready to be upgraded to a " + targetLevel.name + " for " + iConomy.format(targetLevel.initialCost) + 
+			plugin.message.parse(player, "Your town is ready to be upgraded to a " + targetLevel.name + " for " + RageMod.econ.format(targetLevel.initialCost) + 
 					"; type '/town upgrade confirm' to complete the upgrade.");
 		}
 		
@@ -633,7 +616,6 @@ public class TownCommands
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
 		double amount;
-		Holdings holdings = iConomy.getAccount(player.getName()).getHoldings();
 		PlayerTown playerTown = (PlayerTown)plugin.towns.get(playerData.townName);
 		
 		// Make sure the player is a resident of a town
@@ -661,7 +643,7 @@ public class TownCommands
 		// Make sure the player has a high enough balance to make the withdrawl
 		if( playerData.treasuryBalance < amount )
 		{
-			plugin.message.parseNo(player, "You only have " + iConomy.format(playerData.treasuryBalance) + " in the treasury.");
+			plugin.message.parseNo(player, "You only have " + RageMod.econ.format(playerData.treasuryBalance) + " in the treasury.");
 			return;
 		}
 		// Make sure the withdrawl wouldn't put the town below its minimum balance
@@ -672,7 +654,7 @@ public class TownCommands
 		}
 		
 		// Add the amount to the player's balance
-		holdings.add(amount);
+		RageMod.econ.bankDeposit(amountString, amount);
 		
 		// Update the database
 		plugin.database.townQueries.townDeposit(playerTown.getID(), playerData.id_Player, (amount * -1));
@@ -684,7 +666,7 @@ public class TownCommands
 		// Update the player data
 		playerData.treasuryBalance -= amount;
 		
-		plugin.message.parse(player, "Withdrew " + iConomy.format(amount) + " from town treasury.");
+		plugin.message.parse(player, "Withdrew " + RageMod.econ.format(amount) + " from town treasury.");
 	}
 	
 	

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
-	<classpathentry kind="lib" path="/Minecraft/Server/craftbukkit.jar"/>
-	<classpathentry kind="lib" path="/Minecraft/Server/plugins/iConomy.jar"/>
-	<classpathentry kind="lib" path="/Users/dcrowdus/git copy/Citizens/libs/Permissions.jar"/>
-	<classpathentry kind="lib" path="/Minecraft/SpoutAPI.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/oliver/Coding/Java Coding/Minecraft/Plugins/Files For Plugins/APIs To Compile Against/bukkit-1.2.4-R1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oliver/Coding/Java Coding/Minecraft/Plugins/Files For Plugins/APIs To Compile Against/Vault-1.1.9.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oliver/Coding/Java Coding/GitHub/Repos/RageMod-Code-Raped/libs/Citizens.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oliver/Coding/Java Coding/Minecraft/Plugins/Files For Plugins/APIs To Compile Against/craftbukkit-1.2.4-R1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oliver/Coding/Java Coding/Minecraft/Plugins/Files For Plugins/APIs To Compile Against/spoutpluginapi-dev-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

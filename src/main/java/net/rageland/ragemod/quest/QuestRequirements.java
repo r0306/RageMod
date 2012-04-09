@@ -2,6 +2,7 @@ package net.rageland.ragemod.quest;
 
 import net.rageland.ragemod.data.PlayerData;
 
+@SuppressWarnings("unused")
 public class QuestRequirements
 {
 	private int preQuest;

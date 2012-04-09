@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.HashMap;
 
 import org.bukkit.inventory.ItemStack;
@@ -18,6 +17,7 @@ import net.rageland.ragemod.quest.QuestRequirements;
 import net.rageland.ragemod.quest.RewardData;
 import net.rageland.ragemod.quest.RewardQuest;
 
+@SuppressWarnings("unused")
 public class QuestQueries {
 	
 	private RageDB rageDB;

@@ -19,11 +19,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -33,7 +33,9 @@ import org.bukkit.event.player.PlayerRespawnEvent;
  * Handle events for all Player related events
  * @author TheIcarusKid
  */
-public class RMPlayerListener extends PlayerListener 
+
+@SuppressWarnings("unused")
+public class RMPlayerListener implements Listener 
 {
     private final RageMod plugin;
     private QuestCommands questCommands;
@@ -95,24 +97,24 @@ public class RMPlayerListener extends PlayerListener
     	}
     	
     	// Check for expired or new memberships
-    	if( RageMod.permissionHandler.inGroup("world", playerData.name, "Member") && !playerData.isMember && !RageMod.permissionHandler.has(player, "ragemod.ismoderator") ) 
+    	if( RageMod.perms.playerInGroup("world", playerData.name, "Member") && !playerData.isMember && !RageMod.perms.has(player, "ragemod.ismoderator") ) 
     	{
     		// TODO: Find out a way to do this programatically
     		// Message all mods/admins to demote the member
     		for( Player onlinePlayer : plugin.getServer().getOnlinePlayers() )
     		{
-    			if( RageMod.permissionHandler.has(onlinePlayer, "ragemod.ismoderator") )
+    			if( RageMod.perms.has(onlinePlayer, "ragemod.ismoderator") )
     			{
     				plugin.message.parse(onlinePlayer, playerData.getCodedName() + "'s membership has expired - please /demote him/her.");
     			}
     		}
     	}
-    	else if( !RageMod.permissionHandler.inGroup("world", playerData.name, "Member") && playerData.isMember && !RageMod.permissionHandler.has(player, "ragemod.ismoderator") ) 
+    	else if( !RageMod.perms.playerInGroup("world", playerData.name, "Member") && playerData.isMember && !RageMod.perms.has(player, "ragemod.ismoderator") ) 
     	{
     		// Message all mods/admins to promote the member
     		for( Player onlinePlayer : plugin.getServer().getOnlinePlayers() )
     		{
-    			if( RageMod.permissionHandler.has(onlinePlayer, "ragemod.ismoderator") )
+    			if( RageMod.perms.has(onlinePlayer, "ragemod.ismoderator") )
     			{
     				plugin.message.parse(onlinePlayer, playerData.getCodedName() + " has donated $" + plugin.database.playerQueries.getRecentDonations(playerData.id_Player) + " to the server!  Please /promote him/her.");
     			}
@@ -183,7 +185,7 @@ public class RMPlayerListener extends PlayerListener
     	// ********* DEBUG COMMANDS **********
     	else if( split[0].equalsIgnoreCase("/debug") ) 
     	{
-    		if( RageMod.permissionHandler.has(player, "ragemod.debug") )
+    		if( RageMod.perms.has(player, "ragemod.debug") )
     			debugCommands.onDebugCommand(player, playerData, split);  
     		else
     			plugin.message.sendNo(player, "You do not have permission to perform that command.");
@@ -198,7 +200,7 @@ public class RMPlayerListener extends PlayerListener
     	// ********* NPC COMMANDS ************
     	else if(split[0].equalsIgnoreCase("/npc"))
     	{
-    		if(RageMod.permissionHandler.has(player, "ragemod.npc"))
+    		if(RageMod.perms.has(player, "ragemod.npc"))
 			{
     			npcCommands.onNPCCommand(player, playerData, split);
 			}

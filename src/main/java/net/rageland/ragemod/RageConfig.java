@@ -6,7 +6,7 @@ import java.util.HashMap;
 import net.rageland.ragemod.data.TownLevel;
 
 import org.bukkit.ChatColor;
-import org.bukkit.util.config.Configuration;
+import org.bukkit.configuration.Configuration;
 
 // Stores and loads configuration values
 public class RageConfig {
@@ -160,7 +160,7 @@ public class RageConfig {
     
     private void loadConfigValues() 
     {
-    	pluginConfig = plugin.getConfiguration();
+    	pluginConfig = plugin.getConfig();
     	
     	PRE_RELEASE_MODE = pluginConfig.getBoolean("general.pre_release_mode", true);
 		if( PRE_RELEASE_MODE )

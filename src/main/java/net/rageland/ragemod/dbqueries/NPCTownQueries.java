@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.NPCTown;
-import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.database.RageDB;
 
 public class NPCTownQueries 

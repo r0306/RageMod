@@ -77,7 +77,7 @@ public class BWorld {
     }
 
     public boolean createExplosion(double x, double y, double z, float power) {
-        return wServer.a(null, x, y, z, power).wasCanceled ? false : true;
+        return wServer.a(null, x, y, z, power, z, z);
     }
 
     public boolean createExplosion(Location l, float power) {
@@ -88,7 +88,8 @@ public class BWorld {
     public void removeEntity(String name, final Player player, JavaPlugin plugin) {
         server.getServer().getScheduler().callSyncMethod(plugin, new Callable<Object>() {
 
-            public Object call() throws Exception {
+            @SuppressWarnings("unused")
+			public Object call() throws Exception {
 
                 Location loc = player.getLocation();
                 CraftWorld craftWorld = (CraftWorld) player.getWorld();
@@ -101,7 +102,7 @@ public class BWorld {
 
                 List<Entity> entities = new ArrayList<Entity>();
                 AxisAlignedBB bb = AxisAlignedBB.a(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius);
-                entities = craftWorld.getHandle().b(craftPlayer.getHandle(), bb);
+                entities = craftWorld.getHandle().entityList;
                 for (Entity o : entities) {
                     if (!(o instanceof EntityPlayer)) {
                         o.getBukkitEntity().remove();

@@ -7,20 +7,8 @@ package net.rageland.ragemod.database;
 //		 Every minute or so, process all the updates.  This would keep multiple updates from going to the database multiple times.
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.sql.Date;
-import java.util.HashMap;
-
 import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.Location2D;
-import net.rageland.ragemod.data.Lot;
-import net.rageland.ragemod.data.Lots;
-import net.rageland.ragemod.data.PlayerData;
-import net.rageland.ragemod.data.PlayerTown;
-import net.rageland.ragemod.data.Towns;
-import net.rageland.ragemod.data.Players;
-import net.rageland.ragemod.data.Region2D;
 import net.rageland.ragemod.dbqueries.FactionQueries;
 import net.rageland.ragemod.dbqueries.LotQueries;
 import net.rageland.ragemod.dbqueries.NPCQueries;
@@ -28,9 +16,6 @@ import net.rageland.ragemod.dbqueries.NPCTownQueries;
 import net.rageland.ragemod.dbqueries.PlayerQueries;
 import net.rageland.ragemod.dbqueries.TaskQueries;
 import net.rageland.ragemod.dbqueries.TownQueries;
-
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 public class RageDB {
 

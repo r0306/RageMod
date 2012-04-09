@@ -4,6 +4,7 @@ public class Flags
 {
 	private boolean isNonExclusive;
 	private boolean isReserved;
+	private boolean isRepeatable;
 	
 	/**
 	 * When a quest is created it is always active.
@@ -24,5 +25,10 @@ public class Flags
 	public boolean isReserved()
 	{
 		return isReserved;
+	}
+
+	public boolean isRepeatable() {
+		// TODO Auto-generated method stub
+		return isRepeatable;
 	}
 }

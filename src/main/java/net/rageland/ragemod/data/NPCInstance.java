@@ -1,16 +1,12 @@
 package net.rageland.ragemod.data;
 
 import java.sql.Timestamp;
-import java.util.logging.Level;
-
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
 import org.getspout.spoutapi.SpoutManager;
 import org.martin.bukkit.npclib.BServer;
 import org.martin.bukkit.npclib.BWorld;
 
-import net.minecraft.server.ItemInWorldManager;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.npcentities.RageEntity;
@@ -213,6 +209,7 @@ public class NPCInstance
 	}
 	
 	// Sets up the skin of the entity
+	@SuppressWarnings("deprecation")
 	public void setSkin()
 	{
 		SpoutManager.getAppearanceManager().setGlobalSkin((HumanEntity)entity.getBukkitEntity(), plugin.config.CUSTOM_SKIN_PATH + data.skinPath);

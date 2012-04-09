@@ -7,6 +7,7 @@ import net.rageland.ragemod.data.PlayerData;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
 
+@SuppressWarnings({"unused", "deprecation"})
 public class KillCreatureQuest extends Quest
 {
 
@@ -22,7 +23,7 @@ public class KillCreatureQuest extends Quest
 			Flags flags,
 			CreatureType creatureToBeKilled)
 	{
-		super(questData, rewardData, flags);
+		super(questData, rewardData, flags, id_NPCInstance_Source);
 		this.questData = questData;
 		this.rewardData = rewardData;
 		this.flags = flags;
@@ -60,7 +61,7 @@ public class KillCreatureQuest extends Quest
 			{
 				plugin.message.parse(player,
 						Double.toString(rewardData.getCoins()) + " Coins");
-				plugin.iConomy.getAccount(player.getName()).getHoldings().add(rewardData.getCoins());
+				plugin.economy.bankDeposit(player.getName(), rewardData.getCoins());
 			}
 
 			plugin.message.parse(player, "for finishing " + questData.getName());

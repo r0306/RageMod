@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
 
 import org.bukkit.Location;
