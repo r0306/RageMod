@@ -7,11 +7,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.NPCData;
-import net.rageland.ragemod.data.NPCLocation;
-import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerData;
-import net.rageland.ragemod.data.PlayerTown;
-import net.rageland.ragemod.data.Town;
+import net.rageland.ragemod.npc.NPCLocation;
+import net.rageland.ragemod.npc.NPCTown;
+import net.rageland.ragemod.world.PlayerTown;
+import net.rageland.ragemod.world.Town;
 
 public class NPCTownCommands {
 	

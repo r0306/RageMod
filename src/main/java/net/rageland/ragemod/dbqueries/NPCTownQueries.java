@@ -11,8 +11,8 @@ import java.util.HashMap;
 import org.bukkit.entity.Player;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.database.RageDB;
+import net.rageland.ragemod.npc.NPCTown;
 
 public class NPCTownQueries 
 {

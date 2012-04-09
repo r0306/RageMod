@@ -8,12 +8,12 @@ import net.rageland.ragemod.Build;
 import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.RageZones;
-import net.rageland.ragemod.Util;
-import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.Towns;
 import net.rageland.ragemod.data.Players;
+import net.rageland.ragemod.npc.NPCTown;
 import net.rageland.ragemod.text.Message;
+import net.rageland.ragemod.utilities.Util;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.NPCData;
-import net.rageland.ragemod.data.NPCPhrase;
 import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.npc.NPCPhrase;
+import net.rageland.ragemod.utilities.Util;
 
 @SuppressWarnings("unused")
 public class SpeechData

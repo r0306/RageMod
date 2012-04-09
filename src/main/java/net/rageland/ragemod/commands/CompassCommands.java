@@ -1,9 +1,10 @@
 package net.rageland.ragemod.commands;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.Lot;
 import net.rageland.ragemod.data.PlayerData;
-import net.rageland.ragemod.data.Town;
+import net.rageland.ragemod.world.Lot;
+import net.rageland.ragemod.world.Town;
+
 import org.bukkit.entity.Player;
 
 public class CompassCommands 

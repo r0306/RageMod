@@ -1,8 +1,8 @@
 package net.rageland.ragemod.quest;
 
-import net.rageland.ragemod.InventoryUtilities;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.utilities.InventoryUtilities;
 
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;

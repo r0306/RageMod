@@ -11,8 +11,11 @@ import org.bukkit.entity.Player;
 
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.RageZones.Zone;
+import net.rageland.ragemod.npc.NPCInstance;
 import net.rageland.ragemod.quest.PlayerQuestData;
 import net.rageland.ragemod.quest.KillCreatureQuest;
+import net.rageland.ragemod.world.Lot;
+import net.rageland.ragemod.world.Town;
 
 // TODO: Should I be storing IDs for towns and such for all player data?  Then I would call the PlayerTowns hash
 //		 every time I need to retrieve the name.

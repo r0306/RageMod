@@ -7,12 +7,12 @@ import java.util.Random;
 
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.NPCData;
-import net.rageland.ragemod.data.NPCInstance;
-import net.rageland.ragemod.data.NPCLocation;
-import net.rageland.ragemod.data.NPCLocationPool;
-import net.rageland.ragemod.data.NPCPool;
-import net.rageland.ragemod.data.NPCTown;
-import net.rageland.ragemod.data.NPCInstance.NPCType;
+import net.rageland.ragemod.npc.NPCInstance;
+import net.rageland.ragemod.npc.NPCLocation;
+import net.rageland.ragemod.npc.NPCLocationPool;
+import net.rageland.ragemod.npc.NPCPool;
+import net.rageland.ragemod.npc.NPCTown;
+import net.rageland.ragemod.npc.NPCInstance.NPCType;
 import net.rageland.ragemod.npcentities.RageEntity;
 
 import org.bukkit.Location;

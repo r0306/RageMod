@@ -1,9 +1,10 @@
 package net.rageland.ragemod.commands;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.Lot;
-import net.rageland.ragemod.data.Lot.LotCategory;
 import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.world.Lot;
+import net.rageland.ragemod.world.Lot.LotCategory;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

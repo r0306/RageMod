@@ -10,11 +10,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.NPCData;
-import net.rageland.ragemod.data.NPCInstance;
-import net.rageland.ragemod.data.NPCLocation;
 import net.rageland.ragemod.data.PlayerData;
-import net.rageland.ragemod.data.NPCInstance.NPCType;
-import net.rageland.ragemod.data.Town;
+import net.rageland.ragemod.npc.NPCInstance;
+import net.rageland.ragemod.npc.NPCLocation;
+import net.rageland.ragemod.npc.NPCInstance.NPCType;
+import net.rageland.ragemod.world.Town;
 
 @SuppressWarnings("unused")
 public class NPCCommands {

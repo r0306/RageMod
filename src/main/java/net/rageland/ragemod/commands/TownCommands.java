@@ -6,11 +6,11 @@ import java.util.HashMap;
 
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.RageZones.Action;
-import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.PlayerData;
-import net.rageland.ragemod.data.PlayerTown;
-import net.rageland.ragemod.data.Town;
-import net.rageland.ragemod.data.TownLevel;
+import net.rageland.ragemod.npc.NPCTown;
+import net.rageland.ragemod.world.PlayerTown;
+import net.rageland.ragemod.world.Town;
+import net.rageland.ragemod.world.TownLevel;
 
 import org.bukkit.entity.Player;
 

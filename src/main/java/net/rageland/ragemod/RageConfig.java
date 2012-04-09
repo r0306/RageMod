@@ -3,7 +3,7 @@ package net.rageland.ragemod;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.rageland.ragemod.data.TownLevel;
+import net.rageland.ragemod.world.TownLevel;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;

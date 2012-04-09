@@ -5,26 +5,19 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.citizensnpcs.lib.NPC;
+import net.citizensnpcs.lib.NPCManager;
 import net.citizensnpcs.lib.NPCNetHandler;
+import net.citizensnpcs.lib.NPCNetworkManager;
 import net.citizensnpcs.lib.creatures.CreatureNPC;
-import net.minecraft.server.EntityHuman;
-import net.minecraft.server.EntityPlayer;
-import net.minecraft.server.ItemInWorldManager;
-import net.minecraft.server.NetHandler;
-import net.minecraft.server.NetServerHandler;
-import net.minecraft.server.NetworkManager;
-import net.minecraft.server.Packet18ArmAnimation;
-import net.minecraft.server.WorldServer;
+import net.citizensnpcs.lib.creatures.CreatureNPCType;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.NPCInstance;
-import net.rageland.ragemod.data.NPCPhrase;
 import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.npc.NPCInstance;
+import net.rageland.ragemod.npc.NPCPhrase;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.CraftServer;
-import net.minecraft.server.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityTargetEvent;
@@ -49,7 +42,7 @@ public class RageEntity extends CreatureNPC
 	protected SpeechData speechData;
 	protected NPCInstance instance;
 	protected Location location;
-	WorldServer world;
+	protected World world;
 	private NPCNetHandler netServerHandler;
 	
 	// TODO Fix this!
@@ -57,7 +50,7 @@ public class RageEntity extends CreatureNPC
 	{		
 		super(handle); // TODO Fix this!
 		
-		NetworkManager netMgr = new NetworkManager(new Socket(),
+		NPCManager netMgr = new NPCNetworkManager(new Socket(),
 				"NPC Manager", new NetHandler()
 				{
 					public boolean c()
@@ -170,6 +163,24 @@ public class RageEntity extends CreatureNPC
 
 	public boolean setSneak(boolean flag) {
 		return flag;
+	}
+
+	@Override
+	public CreatureNPCType getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void onDeath() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onRightClick(Player arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	// 9-7-11 DC: SpeechData rewritten, will probably not need this anymore

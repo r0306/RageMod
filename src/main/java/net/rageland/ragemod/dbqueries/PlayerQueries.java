@@ -12,10 +12,10 @@ import java.util.HashSet;
 import org.bukkit.Location;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.Permits;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.database.RageDB;
+import net.rageland.ragemod.utilities.Util;
 
 public class PlayerQueries {
 
