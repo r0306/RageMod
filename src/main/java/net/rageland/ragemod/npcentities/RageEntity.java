@@ -48,16 +48,16 @@ public class RageEntity extends CreatureNPC
 	// TODO Fix this!
 	public RageEntity(NPCInstance instance)
 	{		
-		super(handle); // TODO Fix this!
+		super(null); // TODO Fix this!
 		
-		NPCManager netMgr = new NPCNetworkManager(new Socket(),
-				"NPC Manager", new NetHandler()
-				{
-					public boolean c()
-					{
-						return true;
-					}
-				});
+		//NPCManager netMgr = new NPCNetworkManager(new Socket(),
+				//"NPC Manager", new NetHandler()
+				//{
+				//	public boolean c()
+				//	{
+				//		return true;
+				//	}
+				//});
 		// TODO Fix this!
 		//this.netServerHandler = new NPCNetHandler(instance.server.getMCServer(), netMgr, this);
 		this.lastTargetId = -1;
@@ -77,14 +77,8 @@ public class RageEntity extends CreatureNPC
 
 	}
 
-	public void leftClickAction(Player player)
-	{
+	public void leftClickAction(Player player) {
 
-	}
-	
-	@Override
-	public void onLeftClick(Player player) {	
-		
 	}
 	
 	public void addSpeechMessage(NPCPhrase message)
@@ -92,11 +86,8 @@ public class RageEntity extends CreatureNPC
 		speechData.addMessage(message);
 	}
 
-	public void actAsHurt()
-	{
+	public void actAsHurt() {
 		
-		Entity entity = handle;
-		this.world.tracker.a(entity, new Packet18ArmAnimation());
 	}
 
 	// Sets the yaw & pitch to face the player interacting with NPC
@@ -179,6 +170,12 @@ public class RageEntity extends CreatureNPC
 
 	@Override
 	public void onRightClick(Player arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onLeftClick(Player arg0) {
 		// TODO Auto-generated method stub
 		
 	}

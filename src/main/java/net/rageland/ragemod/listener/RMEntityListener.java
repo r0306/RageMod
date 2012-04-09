@@ -5,13 +5,14 @@ package net.rageland.ragemod.listener;
 import java.util.Random;
 
 import net.citizensnpcs.api.event.NPCTargetEvent;
+import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.npcentities.RageEntity;
 import net.rageland.ragemod.npcentities.RageNPCManager;
 import net.rageland.ragemod.quest.KillCreatureQuest;
 import net.rageland.ragemod.world.PlayerTown;
 import net.rageland.ragemod.world.Town;
-
+import net.rageland.ragemod.utilities.Util;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
