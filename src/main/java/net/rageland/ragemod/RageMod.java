@@ -27,6 +27,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.rageland.ragemod.data.TaskHandler;
+
 /**
  * RageMod for Bukkit
  *
@@ -169,11 +171,15 @@ public class RageMod extends JavaPlugin {
         database = new RageDB(this, config);
         
         lots = new Lots(this);
-        players = new PlayerHandler(this);
+<<<<<<< .mine        players = new PlayerHandler(this);
         towns = new TownHandler(this);
         tasks = new TaskHandler(this);
         factions = new FactionHandler(this);
-        languages = new Languages(this);
+=======        players = new PlayerHandler(this);
+        towns = new TownHandler(this);
+        tasks = new TaskHandler(this);
+        factions = new FactionHandler();
+>>>>>>> .theirs        languages = new Languages(this);
         
     	server = this.getServer();
     	zones = new RageZones(this, config);

@@ -12,7 +12,7 @@ import net.rageland.ragemod.npcentities.RageNPCManager;
 import net.rageland.ragemod.quest.KillCreatureQuest;
 import net.rageland.ragemod.world.PlayerTown;
 import net.rageland.ragemod.world.Town;
-
+import net.rageland.ragemod.utilities.Util;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;

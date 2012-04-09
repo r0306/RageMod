@@ -2,7 +2,7 @@ package net.rageland.ragemod;
 
 import java.util.ArrayList;
 
-import net.rageland.ragemod.data.Factions;
+import net.rageland.ragemod.data.FactionHandler;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -86,7 +86,7 @@ public class Build
 						break;
 					case 'w':
 						currentBlock.setType(Material.WOOL); 
-						currentBlock.setData((byte) Byte.valueOf(String.valueOf(Factions.getWoolColor(id_Faction))));
+						currentBlock.setData((byte) Byte.valueOf(String.valueOf(FactionHandler.getWoolColor(id_Faction))));
 						break;
 					case '-':
 						currentBlock.setType(Material.OBSIDIAN); 
@@ -167,7 +167,7 @@ public class Build
 			{
 				currentBlock = location.getWorld().getBlockAt(x, locY, z);
 				currentBlock.setType(Material.WOOL); 
-				currentBlock.setData((byte) Byte.valueOf(String.valueOf(Factions.getWoolColor(id_Faction))));	
+				currentBlock.setData((byte) Byte.valueOf(String.valueOf(FactionHandler.getWoolColor(id_Faction))));	
 			}
 		}	
 	}

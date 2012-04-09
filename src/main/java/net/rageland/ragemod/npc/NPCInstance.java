@@ -9,9 +9,11 @@ import org.bukkit.entity.HumanEntity;
 import org.getspout.spoutapi.SpoutManager;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.npcentities.RageEntity;
-//import net.rageland.ragemod.npcentities.QuestNPC;
+import net.rageland.ragemod.npcentities.QuestNPC;
 import net.rageland.ragemod.npcentities.SpeechNPC;
+import net.rageland.ragemod.quest.QuestData;
 import net.rageland.ragemod.utilities.Util;
+import net.rageland.ragemod.npc.NPCData;
 
 public class NPCInstance 
 {
@@ -23,7 +25,7 @@ public class NPCInstance
 	private NPCData data;	
 	private NPCLocation location;
 	private RageEntity entity;
-	// QUEST DATA GOES HERE :)
+	private QuestData questData;
 	
 	// Server infrastructure
 	public RageMod plugin;
@@ -183,7 +185,7 @@ public class NPCInstance
 		// Set the position and put the entity in the world
 		// TODO FIX THIS
 		entity.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-		net.citizensnpcs.resources.npclib.NPCManager.register(1, entity, getName(), "Npc spawned with RageMod");
+		//net.citizensnpcs.resources.npclib.NPCManager.register(1, entity, getName(), "Npc spawned with RageMod");
 		plugin.npcManager.addInstance(this.id_NPCInstance, this);
 		location.setInstance(this);
 		
