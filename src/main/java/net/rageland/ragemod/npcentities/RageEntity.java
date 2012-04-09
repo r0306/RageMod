@@ -4,6 +4,7 @@ import java.net.Socket;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.citizensnpcs.lib.NPC;
 import net.citizensnpcs.lib.NPCNetHandler;
 import net.citizensnpcs.lib.creatures.CreatureNPC;
 import net.minecraft.server.EntityHuman;
@@ -38,6 +39,7 @@ import org.bukkit.inventory.PlayerInventory;
  */
 
 @SuppressWarnings("unused")
+// TODO Fix this!
 public class RageEntity extends CreatureNPC
 {
 	private int lastTargetId;
@@ -49,11 +51,11 @@ public class RageEntity extends CreatureNPC
 	protected Location location;
 	WorldServer world;
 	private NPCNetHandler netServerHandler;
-
-	public RageEntity( NPCInstance instance )
+	
+	// TODO Fix this!
+	public RageEntity(NPCInstance instance)
 	{		
-		super(instance.server.getServerName(), instance.world.getWorldType(), 
-				instance.getColorName(), new ItemInWorldManager( (net.minecraft.server.World) instance.world.getLivingEntities()));
+		super(handle); // TODO Fix this!
 		
 		NetworkManager netMgr = new NetworkManager(new Socket(),
 				"NPC Manager", new NetHandler()
@@ -63,8 +65,8 @@ public class RageEntity extends CreatureNPC
 						return true;
 					}
 				});
-		
-		this.netServerHandler = new NPCNetHandler(instance.server.getMCServer(), netMgr, this);
+		// TODO Fix this!
+		//this.netServerHandler = new NPCNetHandler(instance.server.getMCServer(), netMgr, this);
 		this.lastTargetId = -1;
 		this.lastBounceId = -1;
 		this.lastBounceTick = 0L;
@@ -87,6 +89,11 @@ public class RageEntity extends CreatureNPC
 
 	}
 	
+	@Override
+	public void onLeftClick(Player player) {	
+		
+	}
+	
 	public void addSpeechMessage(NPCPhrase message)
 	{
 		speechData.addMessage(message);
@@ -94,7 +101,8 @@ public class RageEntity extends CreatureNPC
 
 	public void actAsHurt()
 	{
-		Entity entity;
+		
+		Entity entity = handle;
 		this.world.tracker.a(entity, new Packet18ArmAnimation());
 	}
 
@@ -153,6 +161,15 @@ public class RageEntity extends CreatureNPC
 	public org.bukkit.entity.Entity getBukkitEntity() {
 		// TODO Unfinished
 		return bukkitEntity;
+	}
+
+	public void setPosition(double x, double y, double z) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean setSneak(boolean flag) {
+		return flag;
 	}
 
 	// 9-7-11 DC: SpeechData rewritten, will probably not need this anymore

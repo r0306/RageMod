@@ -14,12 +14,18 @@ import net.rageland.ragemod.data.NPCPool;
 import net.rageland.ragemod.data.NPCTown;
 import net.rageland.ragemod.data.NPCInstance.NPCType;
 import net.rageland.ragemod.npcentities.RageEntity;
+
+import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 
+@SuppressWarnings("unused")
 public class RageNPCManager
 {
 	private int taskid;
@@ -45,12 +51,13 @@ public class RageNPCManager
 		{
 			public void run() 
 			{
+				// TODO Fix this!
 				HashSet<Integer> toRemove = new HashSet<Integer>();
 				for (int i : RageMod.getInstance().npcManager.activeNPCs.keySet()) 
 				{
-					net.minecraft.server.Entity j = (net.minecraft.server.Entity)RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity();
-					j.aA();
-					if (j.dead) 
+					//net.minecraft.server.Entity j = (net.minecraft.server.Entity)RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity(); // TODO Fix this!
+					//j.aA();
+					//if (j.dead) 
 					{
 						toRemove.add(i);
 					}
@@ -168,7 +175,8 @@ public class RageNPCManager
 		
 		try 
 		{
-			npc.world.removeEntity(npc);
+			// TODO Fix this!
+			//npc.world.removeEntity(npc);
 		} catch (Exception e) 
 		{
 			e.printStackTrace();
@@ -188,44 +196,44 @@ public class RageNPCManager
 
 		activeNPCs.clear();
 	}
-//
-//	public void moveNPC(int id, Location l) 
-//	{
-//		RageEntity npc = (RageEntity) activeNPCs.get(id);
-//		if (npc != null)
-//			npc.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
-//	}
-//
-//	public void moveNPCStatic(int id, Location l) 
-//	{
-//		RageEntity npc = (RageEntity) activeNPCs.get(id);
-//		if (npc != null)
-//			npc.setPosition(l.getX(), l.getY(), l.getZ());
-//	}
-//
-//	public void putNPCinbed(int id, Location bed) 
-//	{
-//		RageEntity npc = (RageEntity) activeNPCs.get(id);
-//		if (npc != null) 
-//		{
-//			npc.setPosition(bed.getX(), bed.getY(), bed.getZ());
-//			npc.a((int) bed.getX(), (int) bed.getY(), (int) bed.getZ());
-//		}
-//	}
-//
-//	public void getNPCoutofbed(int id) 
-//	{
-//		RageEntity npc = (RageEntity) activeNPCs.get(id);
-//		if (npc != null)
-//			npc.a(true, true, true);
-//	}
-//
-//	public void setSneaking(int id, boolean flag) 
-//	{
-//		RageEntity npc = (RageEntity) activeNPCs.get(id);
-//		if (npc != null)
-//			npc.setSneak(flag);
-//	}
+/*  // TODO Fix this!
+	public void moveNPC(int id, Location l) 
+	{
+		RageEntity npc = (RageEntity) activeNPCs.get(id);
+		if (npc != null)
+			npc.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
+	}
+
+	public void moveNPCStatic(int id, Location l) 
+	{
+		RageEntity npc = (RageEntity) activeNPCs.get(id);
+		if (npc != null)
+			npc.setPosition(l.getX(), l.getY(), l.getZ());
+	}
+
+	public void putNPCinbed(int id, Location bed) 
+	{
+		RageEntity npc = (RageEntity) activeNPCs.get(id);
+		if (npc != null) 
+		{
+			npc.setPosition(bed.getX(), bed.getY(), bed.getZ());
+			npc.a((int) bed.getX(), (int) bed.getY(), (int) bed.getZ());
+		}
+	}
+
+	public void getNPCoutofbed(int id) 
+	{
+		RageEntity npc = (RageEntity) activeNPCs.get(id);
+		if (npc != null)
+	npc.a(true, true, true);
+	}
+
+	public void setSneaking(int id, boolean flag) 
+	{
+		RageEntity npc = (RageEntity) activeNPCs.get(id);
+		if (npc != null)
+			npc.setSneak(flag);
+	}
 
 	public RageEntity getRageEntity(int id) 
 	{
@@ -235,7 +243,7 @@ public class RageNPCManager
 	public static boolean isNPC(org.bukkit.entity.Entity e) 
 	{
 		return ((CraftEntity) e).getHandle() instanceof RageEntity;
-	}
+	}*/
 
 	public int getNPCIdFromEntity(org.bukkit.entity.Entity e) 
 	{
@@ -267,7 +275,6 @@ public class RageNPCManager
 		return null;
 	}
 
-	@SuppressWarnings("unused")
 	private class SL implements Listener 
 	{
 		private SL() 
@@ -285,7 +292,6 @@ public class RageNPCManager
 		}
 	}
 
-	@SuppressWarnings("unused")
 	private class WL implements Listener 
 	{
 		private WL() 
@@ -302,9 +308,9 @@ public class RageNPCManager
 					npc = npcInstance.getEntity();
 				
 				if ((npc != null) && (event.getChunk() == npc.getBukkitEntity().getLocation().getBlock().getChunk())) 
-				{
-					World world = new Location(event.getWorld());
-					world.getWorldServer().addEntity(npc);
+				{   // TODO FIX THIS!
+					//World world = new Location(event.getWorld(), taskid, taskid, taskid);
+					//world.getWorldServer().addEntity(npc);
 				}
 			}
 		}
@@ -471,6 +477,14 @@ public class RageNPCManager
 	public HashSet<NPCData> getAllResidents(int id_NPCTown)
 	{
 		return npcPool.getAllResidents(id_NPCTown);
+	}
+
+	public static boolean isNPC(Entity defenderEntity) {
+		// TODO Unfinished
+		if (!(defenderEntity instanceof Player) && !(defenderEntity instanceof Creature)) {
+			return true;
+		}
+		return false;
 	}
 	
 	

@@ -186,7 +186,7 @@ public class RMPlayerListener implements Listener
     	else if( split[0].equalsIgnoreCase("/debug") ) 
     	{
     		if( RageMod.perms.has(player, "ragemod.debug") )
-    			debugCommands.onDebugCommand(player, playerData, split);  
+    			debugCommands.onRmdebugCommand(player, playerData, split);  
     		else
     			plugin.message.sendNo(player, "You do not have permission to perform that command.");
     		event.setCancelled(true);

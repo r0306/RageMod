@@ -7,9 +7,6 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.HumanEntity;
 import org.getspout.spoutapi.SpoutManager;
-import org.martin.bukkit.npclib.BServer;
-import org.martin.bukkit.npclib.BWorld;
-
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.npcentities.RageEntity;
@@ -184,6 +181,7 @@ public class NPCInstance
 		}
 
 		// Set the position and put the entity in the world
+		// TODO FIX THIS
 		entity.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
 		net.citizensnpcs.resources.npclib.NPCManager.register(1, entity, getName(), "Npc spawned with RageMod");
 		plugin.npcManager.addInstance(this.id_NPCInstance, this);
