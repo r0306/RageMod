@@ -1,4 +1,4 @@
-package net.rageland.ragemod.data;
+package src.main.Java.net.rageland.ragemod.data;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class TaskHandler
 	private HashMap<String, Timestamp> tasks;
 	private RageMod plugin;
 	
-	public Tasks(RageMod plugin)
+	public TaskHandler(RageMod plugin)
 	{
 		this.plugin = plugin;
 	}
