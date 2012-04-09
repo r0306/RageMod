@@ -171,15 +171,11 @@ public class RageMod extends JavaPlugin {
         database = new RageDB(this, config);
         
         lots = new Lots(this);
-<<<<<<< .mine        players = new PlayerHandler(this);
+        players = new PlayerHandler(this);
         towns = new TownHandler(this);
         tasks = new TaskHandler(this);
         factions = new FactionHandler(this);
-=======        players = new PlayerHandler(this);
-        towns = new TownHandler(this);
-        tasks = new TaskHandler(this);
-        factions = new FactionHandler();
->>>>>>> .theirs        languages = new Languages(this);
+        languages = new Languages(this);
         
     	server = this.getServer();
     	zones = new RageZones(this, config);

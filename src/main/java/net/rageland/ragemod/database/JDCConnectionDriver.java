@@ -2,6 +2,7 @@ package net.rageland.ragemod.database;
 
 import java.sql.*;
 import java.util.*;
+import java.util.logging.Logger;
 
 
 public class JDCConnectionDriver implements Driver {
@@ -55,4 +56,10 @@ public class JDCConnectionDriver implements Driver {
     public boolean jdbcCompliant() {
         return false;
     }
+
+	@Override
+	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
