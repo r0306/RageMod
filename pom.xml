@@ -25,6 +25,11 @@
   		<artifactId>Citizens</artifactId>
   		<version>1.2</version>
   	</dependency>
+  	<dependency>
+  		<groupId>org.getspout.spoutapi</groupId>
+  		<artifactId>Spout</artifactId>
+  		<version>dev</version>
+  	</dependency>
   </dependencies>
   <build>
 	<defaultGoal>clean install</defaultGoal>
