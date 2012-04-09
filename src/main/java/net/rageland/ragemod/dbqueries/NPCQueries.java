@@ -30,6 +30,8 @@ public class NPCQueries
 	private RageDB rageDB;
 	private RageMod plugin;
 	private Random random;
+	@SuppressWarnings("unused")
+	private NPCData npcData;
 
 	public NPCQueries(RageDB rageDB, RageMod plugin) 
 	{

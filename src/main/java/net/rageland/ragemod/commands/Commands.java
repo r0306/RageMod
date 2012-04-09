@@ -9,6 +9,8 @@ import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.RageZones;
 import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.data.TownHandler;
+import net.rageland.ragemod.data.PlayerHandler;
 import net.rageland.ragemod.npc.NPCTown;
 import net.rageland.ragemod.text.Message;
 import net.rageland.ragemod.utilities.Util;

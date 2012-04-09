@@ -11,8 +11,8 @@ import org.bukkit.World;
 
 public abstract class Town 
 {
-	private int id;
-	protected String name;
+	public int id;
+	public String name;
 	
 	protected Region2D region;
 	protected World world;
