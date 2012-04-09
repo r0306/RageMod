@@ -5,6 +5,7 @@ package net.rageland.ragemod.listener;
 import java.util.Random;
 
 import net.citizensnpcs.api.event.NPCTargetEvent;
+import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.npcentities.RageEntity;
 import net.rageland.ragemod.npcentities.RageNPCManager;

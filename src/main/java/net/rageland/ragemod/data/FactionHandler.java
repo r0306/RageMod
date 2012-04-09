@@ -2,6 +2,8 @@ package net.rageland.ragemod.data;
 
 import java.util.HashMap;
 
+import net.rageland.ragemod.RageMod;
+
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 
@@ -9,7 +11,7 @@ public class FactionHandler
 {	
 	private HashMap<Integer, String> factions;
 	
-	public FactionHandler()
+	public FactionHandler(RageMod plugin)
 	{
 		factions = new HashMap<Integer, String>();
 		loadFactions();

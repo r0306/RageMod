@@ -5,13 +5,14 @@ import java.util.HashMap;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-import net.rageland.ragemod.data.Factions;
-import net.rageland.ragemod.data.OverAllBounty;
-import net.rageland.ragemod.data.Players;
-import net.rageland.ragemod.data.Tasks;
-import net.rageland.ragemod.data.Towns;
+import net.rageland.ragemod.data.AllBountyHandler;
+import net.rageland.ragemod.data.FactionHandler;
+import net.rageland.ragemod.data.PlayerHandler;
+import net.rageland.ragemod.data.TownHandler;
+import net.rageland.ragemod.data.TaskHandler;
 import net.rageland.ragemod.database.RageDB;
 import net.rageland.ragemod.listener.RMBlockListener;
+import net.rageland.ragemod.listener.RMEntityListener;
 import net.rageland.ragemod.listener.RMPlayerListener;
 import net.rageland.ragemod.listener.RMServerListener;
 import net.rageland.ragemod.npcentities.RageNPCManager;
@@ -52,12 +53,12 @@ public class RageMod extends JavaPlugin {
     
     // Global data
     public Lots lots;
-    public Players players;
-    public Towns towns;
-    public Tasks tasks;
-    public Factions factions;
+    public PlayerHandler players;
+    public TownHandler towns;
+    public TaskHandler tasks;
+    public FactionHandler factions;
     public Languages languages;
-    public OverAllBounty Bounties;
+    public AllBountyHandler Bounties;
     
     // Semi-static data and methods
     public RageConfig config;
@@ -168,10 +169,10 @@ public class RageMod extends JavaPlugin {
         database = new RageDB(this, config);
         
         lots = new Lots(this);
-        players = new Players(this);
-        towns = new Towns(this);
-        tasks = new Tasks(this);
-        factions = new Factions();
+        players = new PlayerHandler(this);
+        towns = new TownHandler(this);
+        tasks = new TaskHandler(this);
+        factions = new FactionHandler(this);
         languages = new Languages(this);
         
     	server = this.getServer();
