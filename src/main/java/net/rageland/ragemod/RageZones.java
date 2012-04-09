@@ -1,6 +1,6 @@
 package net.rageland.ragemod;
 
-import net.rageland.ragemod.data.Location2D;
+import net.rageland.ragemod.world.Location2D;
 import net.rageland.ragemod.utilities.Util;
 import net.rageland.ragemod.world.Region2D;
 import net.rageland.ragemod.world.Region3D;

@@ -9,13 +9,13 @@ import org.bukkit.entity.Player;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.OverAllBounty;
+import net.rageland.ragemod.data.AllBountyHandler;
 import net.rageland.ragemod.entity.Bounty;
 
 public class BountyCommands {
 	
 	private RageMod plugin;
-	private OverAllBounty oab;
+	private AllBountyHandler oab;
 	private Permission perms;
 	private HashMap<String,String[]> BlockCommands = new HashMap<String,String[]>();
 

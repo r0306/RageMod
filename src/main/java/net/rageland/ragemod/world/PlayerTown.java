@@ -53,7 +53,7 @@ public class PlayerTown extends Town implements Comparable<PlayerTown> {
 	// Comparison
 	public boolean equals(PlayerTown otherTown)
 	{
-		return otherTown.id == this.id;
+		return otherTown.getId() == this.getId();
 	}
 	
 	// Creates the regions

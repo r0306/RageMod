@@ -1,4 +1,4 @@
-package src.main.Java.net.rageland.ragemod.data;
+package net.rageland.ragemod.data;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -91,12 +91,12 @@ public class TaskHandler
 				playerData.treasuryBalance += income;
 				playerData.update();
 				town.treasuryBalance += income;
-				plugin.database.townQueries.townDeposit(town.id, playerData.id_Player, (income));
+				plugin.database.townQueries.townDeposit(town.getId(), playerData.id_Player, (income));
 				totalBlocks += playerData.treasuryBlocks;
 			}
 			
 			if( totalBlocks > 0 )
-				System.out.println("Awarded " + town.name + " " + RageMod.econ.format(totalBlocks * plugin.config.INCOME_PER_BLOCK) + " for treasury blocks.");
+				System.out.println("Awarded " + town.getName() + " " + RageMod.econ.format(totalBlocks * plugin.config.INCOME_PER_BLOCK) + " for treasury blocks.");
 			
 			// *****  SANCTUM CLEANUP  *****
 			// Make sure the number of physical blocks in the treasury matches the database values
@@ -104,14 +104,14 @@ public class TaskHandler
 			
 			if( actualBlocks > totalBlocks )
 			{
-				System.out.println("WARNING: " + town.name + " has " + actualBlocks + " gold blocks in its sanctum, yet only " + totalBlocks + 
+				System.out.println("WARNING: " + town.getName() + " has " + actualBlocks + " gold blocks in its sanctum, yet only " + totalBlocks + 
 						" are recorded in the database.  Deleting " + (actualBlocks - totalBlocks) + " blocks to correct this.");
 				town.removeTreasuryBlocks(actualBlocks - totalBlocks);
 			}
 			else if( actualBlocks < totalBlocks )
 			{
 				int difference = totalBlocks - actualBlocks;
-				System.out.println("WARNING: " + town.name + " has " + actualBlocks + " gold blocks in its sanctum, but " + totalBlocks + 
+				System.out.println("WARNING: " + town.getName() + " has " + actualBlocks + " gold blocks in its sanctum, but " + totalBlocks + 
 						" are recorded in the database.  Removing " + difference + " blocks from database to correct this.");
 				
 				// Go through the residents one by one, lowering their block values until the discrepancy is resolved.
@@ -156,12 +156,12 @@ public class TaskHandler
 					town.treasuryBalance -= cost;
 					remaining -= cost;
 					playerData.update();
-					plugin.database.townQueries.townDeposit(town.id, playerData.id_Player, (cost * -1));
+					plugin.database.townQueries.townDeposit(town.getId(), playerData.id_Player, (cost * -1));
 				}
 				// If the player doesn't have the funds in either area, evict their freeloading ass
 				else if( !playerData.isMayor )
 				{
-					System.out.println("Automatically evicting " + playerData.name + " from " + town.name + ".");
+					System.out.println("Automatically evicting " + playerData.name + " from " + town.getName() + ".");
 					playerData.clearSpawn();
 					playerData.treasuryBalance = 0;
 					playerData.logonMessageQueue += "You have been automatically evicted from " + 
@@ -191,7 +191,7 @@ public class TaskHandler
 			{
 				if( town.bankruptDate == null )
 				{
-					System.out.println("The town of " + town.name + " is now bankrupt.");
+					System.out.println("The town of " + town.getName() + " is now bankrupt.");
 					town.bankruptDate = Util.now();
 				}
 				else

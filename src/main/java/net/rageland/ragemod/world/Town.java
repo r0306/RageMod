@@ -11,7 +11,7 @@ import org.bukkit.World;
 
 public abstract class Town 
 {
-	protected int id;
+	private int id;
 	protected String name;
 	
 	protected Region2D region;
@@ -29,7 +29,7 @@ public abstract class Town
 	public Town(RageMod plugin, int id, String name, World world)
 	{
 		this.plugin = plugin;
-		this.id = id;
+		this.setId(id);
 		this.name = name;
 		this.world = world;
 		this.npcLocations = new ArrayList<NPCLocation>();
@@ -47,7 +47,7 @@ public abstract class Town
 	// Get the town ID
 	public int getID()
 	{
-		return id;
+		return getId();
 	}
 	
 	// Get the town name
@@ -81,6 +81,14 @@ public abstract class Town
 	public ArrayList<NPCLocation> getNPCLocations()
 	{
 		return npcLocations;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	

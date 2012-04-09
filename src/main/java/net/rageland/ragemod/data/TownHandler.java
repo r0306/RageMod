@@ -6,6 +6,7 @@ import java.util.HashSet;
 
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.npc.NPCTown;
+import net.rageland.ragemod.world.Location2D;
 import net.rageland.ragemod.world.PlayerTown;
 import net.rageland.ragemod.world.Town;
 
@@ -54,9 +55,9 @@ public class TownHandler {
 	public void add(Town town)
 	{
 		if( town instanceof PlayerTown )
-			playerTowns.put(town.name.toLowerCase(), (PlayerTown)town);
+			playerTowns.put(town.getName().toLowerCase(), (PlayerTown)town);
 		else if( town instanceof NPCTown )
-			npcTowns.put(town.name.toLowerCase(), (NPCTown)town);
+			npcTowns.put(town.getName().toLowerCase(), (NPCTown)town);
 		else
 			System.out.println("ERROR: Invalid town type in Towns.add()");
 	}
@@ -109,7 +110,7 @@ public class TownHandler {
  		{
  			distance = location2D.distance(town.centerPoint);
  			if( distance < plugin.config.Town_MIN_DISTANCE_BETWEEN )
- 				townList.put(town.name, (int)distance);
+ 				townList.put(town.getName(), (int)distance);
  		}
  		
  		return townList;
