@@ -1,0 +1,38 @@
+Permission nodes:
+
+ragemod.admin (inherits ragemod.admin.smitemobs + ragemod.admin.debug)
+ragemod.admin.smitemobs - Gives admins protective shields against mobs if enabled.
+ragemod.admin.debug - In-game debugging commands access.
+
+ragemod.build (inherits all the below in this chunk)
+ragemod.build.anylot - Allows building in any lot.
+ragemod.build.anytown - Allows building in any town.
+ragemod.build.npctown - Allows building in any NPC town.
+ragemod.build.capitol - Allows building in the capitol.
+ragemod.build.travelzone - Allows building in the TravelZone.
+
+ragemod.lot - Allows access to lot commands.
+
+ragemod.assign - Allows user to claim lots regardless of other factors.
+
+ragemod.evict - Allows user to evict people from lots.
+
+ragemod.ismoderator - Flag permission for sending certain messages.
+
+ragemod.permit (inherits ragemod.permit.capitol)
+ragemod.permit.capitol - Allows user to give permits to build in the capitol.
+
+ragemod.npc - Allows user to use NPC commands.
+
+ragemod.npctown - Allows user to use NPC town commands.
+
+ragemod.referee (inherits the below in this chunk)
+ragemod.referee.blockpvp - Player cannot PVP in war.
+ragemod.referee.inspectspawn - Player can TP around towns in war.
+
+ragemod.bounty (inherits all bounty permissions)
+ragemod.bounty.createsign - Allows user to create bounty signs.
+ragemod.bounty.signcreate - Different from createsign - Allows the same thing through a retarded method that Perdemot wants to keep for some reason.
+ragemod.bounty.add.normal - Allows user to create bounties in one area at a time.
+ragemod.bounty.add.global - Allows user to create bounties globally.
+ragemod.bounty.removeall - Allows user to remove all bounties. 
