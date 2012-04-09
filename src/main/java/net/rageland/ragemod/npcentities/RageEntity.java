@@ -4,6 +4,7 @@ import java.net.Socket;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.citizensnpcs.lib.CraftNPC;
 import net.citizensnpcs.lib.NPC;
 import net.citizensnpcs.lib.NPCManager;
 import net.citizensnpcs.lib.NPCNetHandler;
@@ -18,6 +19,7 @@ import net.rageland.ragemod.npc.NPCPhrase;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityTargetEvent;
@@ -47,8 +49,9 @@ public class RageEntity extends CreatureNPC
 	
 	// TODO Fix this!
 	public RageEntity(NPCInstance instance)
-	{		
-		super(handle); // TODO Fix this!
+	{	
+		super (null);
+		/*super(new CraftNPC()); // TODO Fix this!
 		
 		NPCManager netMgr = new NPCNetworkManager(new Socket(),
 				"NPC Manager", new NetHandler()
@@ -59,7 +62,7 @@ public class RageEntity extends CreatureNPC
 					}
 				});
 		// TODO Fix this!
-		//this.netServerHandler = new NPCNetHandler(instance.server.getMCServer(), netMgr, this);
+		//this.netServerHandler = new NPCNetHandler(instance.server.getMCServer(), netMgr, this);*/
 		this.lastTargetId = -1;
 		this.lastBounceId = -1;
 		this.lastBounceTick = 0L;
