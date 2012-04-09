@@ -1,8 +1,0 @@
-\bin
-.classpath
-*.iml
-.project
-\target
-\.git
-.gitignore
-\.settings
