@@ -38,7 +38,7 @@
 		<resource>
 			<targetPath>.</targetPath>
 			<filtering>true</filtering>
-			<directory>${basedir}/src</directory>
+			<directory>${basedir}/src/main/java</directory>
 			<includes>
 				<include>plugin.yml</include>
 			</includes>
@@ -53,34 +53,6 @@
 				<source>1.6</source>
 				<target>1.6</target>
 			</configuration>
-		</plugin>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-jar-plugin</artifactId>
-			<version>2.3.2</version>
-			<configuration>
-				<outputDirectory>f:/downloads/bukkit/plugins</outputDirectory>
-			</configuration>
-		</plugin>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-shade-plugin</artifactId>
-			<version>1.5</version>
-			<executions>
-				<execution>
-					<phase>package</phase>
-					<goals>
-						<goal>shade</goal>
-					</goals>
-					<configuration>
-						<artifactSet>
-							<includes>
-								<include>org.apache.commons:commons-lang3</include>
-							</includes>
-						</artifactSet>
-					</configuration>
-				</execution>
-			</executions>
 		</plugin>
 	</plugins>
 	</build>
