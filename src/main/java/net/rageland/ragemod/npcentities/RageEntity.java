@@ -1,12 +1,16 @@
 package net.rageland.ragemod.npcentities;
 
+import java.net.Socket;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.citizensnpcs.lib.NPCNetHandler;
+import net.citizensnpcs.lib.creatures.CreatureNPC;
 import net.minecraft.server.EntityHuman;
 import net.minecraft.server.EntityPlayer;
 import net.minecraft.server.ItemInWorldManager;
 import net.minecraft.server.NetHandler;
+import net.minecraft.server.NetServerHandler;
 import net.minecraft.server.NetworkManager;
 import net.minecraft.server.Packet18ArmAnimation;
 import net.minecraft.server.WorldServer;
@@ -14,23 +18,17 @@ import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.NPCInstance;
 import net.rageland.ragemod.data.NPCPhrase;
 import net.rageland.ragemod.data.PlayerData;
-import org.martin.bukkit.npclib.NPCNetHandler;
-import org.martin.bukkit.npclib.NpcEntityTargetEvent;
-import org.martin.bukkit.npclib.NullSocket;
-import org.martin.bukkit.npclib.BServer;
-import org.martin.bukkit.npclib.BWorld;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftServer;
+import net.minecraft.server.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-
-import org.martin.bukkit.npclib.NPCEntity;
 
 /**
  * 
@@ -40,7 +38,7 @@ import org.martin.bukkit.npclib.NPCEntity;
  */
 
 @SuppressWarnings("unused")
-public class RageEntity extends NPCEntity
+public class RageEntity extends CreatureNPC
 {
 	private int lastTargetId;
 	private long lastBounceTick;
@@ -50,13 +48,14 @@ public class RageEntity extends NPCEntity
 	protected NPCInstance instance;
 	protected Location location;
 	WorldServer world;
+	private NPCNetHandler netServerHandler;
 
 	public RageEntity( NPCInstance instance )
 	{		
-		super(instance.server.getMCServer(), instance.world.getWorldServer(), 
-				instance.getColorName(), new ItemInWorldManager( instance.world.getWorldServer()));
+		super(instance.server.getServerName(), instance.world.getWorldType(), 
+				instance.getColorName(), new ItemInWorldManager( (net.minecraft.server.World) instance.world.getLivingEntities()));
 		
-		NetworkManager netMgr = new NetworkManager(new NullSocket(),
+		NetworkManager netMgr = new NetworkManager(new Socket(),
 				"NPC Manager", new NetHandler()
 				{
 					public boolean c()
@@ -95,8 +94,8 @@ public class RageEntity extends NPCEntity
 
 	public void actAsHurt()
 	{
-		this.world.tracker.a(this, new Packet18ArmAnimation(
-				this, 2));
+		Entity entity;
+		this.world.tracker.a(entity, new Packet18ArmAnimation());
 	}
 
 	// Sets the yaw & pitch to face the player interacting with NPC
@@ -148,6 +147,12 @@ public class RageEntity extends NPCEntity
 			float pitch) {
 		// TODO Unfinished
 		
+	}
+
+	org.bukkit.entity.Entity bukkitEntity;
+	public org.bukkit.entity.Entity getBukkitEntity() {
+		// TODO Unfinished
+		return bukkitEntity;
 	}
 
 	// 9-7-11 DC: SpeechData rewritten, will probably not need this anymore

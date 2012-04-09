@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 import net.rageland.ragemod.RageMod;
 
+@SuppressWarnings("unused")
 public class NPCParsing 
 {
 	private RageMod plugin;

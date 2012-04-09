@@ -4,12 +4,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.NPCPhrase;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 // Contains methods for sending and formatting messages
+@SuppressWarnings("unused")
 public class Message 
 {
 	private RageMod plugin;
@@ -251,6 +251,10 @@ public class Message
 		if( ChatColor.stripColor(currentLine).trim().length() > 0 )
 			player.sendMessage(currentLine);
 
+	}
+
+	public void messageNo(Player player, String string) {
+		player.sendMessage(string);
 	}
 	
 	

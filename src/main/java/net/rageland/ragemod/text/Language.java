@@ -1,17 +1,14 @@
 package net.rageland.ragemod.text;
 
-import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bukkit.ChatColor;
-
+@SuppressWarnings("unused")
 public class Language 
 {
 	private String name;
@@ -126,14 +123,4 @@ public class Language
 	    }
 	    return builder.toString();
 	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

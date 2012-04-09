@@ -9,6 +9,7 @@ import net.rageland.ragemod.data.NPCData;
 import net.rageland.ragemod.data.NPCPhrase;
 import net.rageland.ragemod.data.PlayerData;
 
+@SuppressWarnings("unused")
 public class SpeechData
 {
 	private ArrayList<NPCPhrase> messages;

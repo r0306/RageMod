@@ -7,6 +7,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import net.rageland.ragemod.data.Factions;
 import net.rageland.ragemod.data.Lots;
+import net.rageland.ragemod.data.OverAllBounty;
 import net.rageland.ragemod.data.Players;
 import net.rageland.ragemod.data.Tasks;
 import net.rageland.ragemod.data.Towns;
@@ -41,7 +42,8 @@ public class RageMod extends JavaPlugin {
     public static Permission perms;
     public static Economy econ;
     public Economy economy;
-
+    public Message text;
+    
     public static String mainDirectory = "plugins/RageMod";
     public File file = new File(mainDirectory + File.separator + "config.yml");
     
@@ -52,6 +54,7 @@ public class RageMod extends JavaPlugin {
     public Tasks tasks;
     public Factions factions;
     public Languages languages;
+    public OverAllBounty Bounties;
     
     // Semi-static data and methods
     public RageConfig config;

@@ -34,6 +34,7 @@ public class PlayerData
 	// Home (used for capitol lots)
 	private Location home_Location;
 	public Timestamp home_LastUsed;
+	public boolean hasBounty;
 	
 	// Spawn (used for player town beds)
 	private Location spawn_Location;

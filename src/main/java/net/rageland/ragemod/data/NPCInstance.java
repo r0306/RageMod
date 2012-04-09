@@ -2,6 +2,9 @@ package net.rageland.ragemod.data;
 
 import java.sql.Timestamp;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.entity.HumanEntity;
 import org.getspout.spoutapi.SpoutManager;
 import org.martin.bukkit.npclib.BServer;
@@ -27,8 +30,8 @@ public class NPCInstance
 	
 	// Server infrastructure
 	public RageMod plugin;
-	public BServer server;
-	public BWorld world;
+	public Server server;
+	public World world;
 	
 	// Quest, if questNPC
 	public String questId;
@@ -72,7 +75,6 @@ public class NPCInstance
 	public NPCInstance(RageMod plugin, int id, NPCType type, Timestamp despawnTime)
 	{
 		this.plugin = plugin;
-		this.server = BServer.getInstance(plugin);
 		this.id_NPCInstance = id;
 		this.type = type;
 		this.despawnTime = despawnTime;
@@ -92,7 +94,7 @@ public class NPCInstance
 			return false;
 		}
 
-		this.world = new BWorld(location.getWorld());
+		this.world = (World) new Location(location.getWorld(), id_NPCLocation, id_NPCLocation, id_NPCLocation);
 		
 		return true;
 	}
@@ -102,7 +104,7 @@ public class NPCInstance
 	{
 		data = plugin.npcManager.getNPC(id_NPC);
 		location = plugin.npcManager.getLocation(id_NPCLocation);
-		this.world = new BWorld(location.getWorld());
+		this.world = (World) new Location(location.getWorld(), id_NPCLocation, id_NPCLocation, id_NPCLocation);
 	}
 	
 	// Sets the NPC and Location objects, in case they have already been activated
@@ -110,7 +112,7 @@ public class NPCInstance
 	{
 		this.data = data;
 		this.location = location;
-		this.world = new BWorld(location.getWorld());
+		this.world = (World) new Location(location.getWorld(), id_NPCInstance, id_NPCInstance, id_NPCInstance);
 	}
 	
 	public NPCData getData()
@@ -167,7 +169,7 @@ public class NPCInstance
 		if( data == null || location == null )
 			throw new Exception("NPCInstance.spawn() called on non-activated instance");
 		
-		BWorld world = new BWorld(location.getWorld());
+		World world = (World) new Location(location.getWorld(), id_NPCInstance, id_NPCInstance, id_NPCInstance);
 		
 		// Spawn the type of NPC 
 		switch(type)
@@ -183,7 +185,7 @@ public class NPCInstance
 
 		// Set the position and put the entity in the world
 		entity.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-		world.getWorldServer().addEntity(entity);
+		net.citizensnpcs.resources.npclib.NPCManager.register(1, entity, getName(), "Npc spawned with RageMod");
 		plugin.npcManager.addInstance(this.id_NPCInstance, this);
 		location.setInstance(this);
 		

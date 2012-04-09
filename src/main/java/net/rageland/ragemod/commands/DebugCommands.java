@@ -2,42 +2,46 @@ package net.rageland.ragemod.commands;
 
 import java.util.ArrayList;
 
+import net.rageland.ragemod.Build;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.Util;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.Town;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+@SuppressWarnings("unused")
 public class DebugCommands 
 {
 	
 	private RageMod plugin;
+	int level;
 	
 	public DebugCommands(RageMod plugin) 
 	{
 		this.plugin = plugin;
 	}
 	
-	public void onDebugCommand(Player player, PlayerData playerData, String[] split) 
+	public void onRmdebugCommand(Player player, PlayerData playerData, String[] split) 
 	{
 		if( split.length < 2 )
 		{
 			plugin.message.parse(player, "Debug commands: <required> [optional]");
 			if( true )
-				plugin.message.parse(player, "   /debug colors   (displays all chat colors)");
+				plugin.message.parse(player, "   /rmdebug colors   (displays all chat colors)");
 			if( true )
-				plugin.message.parse(player, "   /debug donation  (displays amount of donations)");
-//			if( false )
-//				plugin.message.parse(player, "   /debug sanctum <level> (attempts to build sanctum floor)");
+				plugin.message.parse(player, "   /rmdebug donation  (displays amount of donations)");
+			if( false )
+				plugin.message.parse(player, "   /rmdebug sanctum <level> (attempts to build sanctum floor)");
 			if( true )
-				plugin.message.parse(player, "   /debug setlang <1-4> <level> (sets your language skill)");
+				plugin.message.parse(player, "   /rmdebug setlang <1-4> <level> (sets your language skill)");
 			if( true )
-				plugin.message.parse(player, "   /debug tptown <town_name> (teleports to town)");
+				plugin.message.parse(player, "   /rmdebug tptown <town_name> (teleports to town)");
 			if( true )
-				plugin.message.parse(player, "   /debug translate [text] (translates the entered text)");
+				plugin.message.parse(player, "   /rmdebug translate [text] (translates the entered text)");
 			if( true )
-				plugin.message.parse(player, "   /debug transcast <#> <text> (translates/broadcasts text)");
+				plugin.message.parse(player, "   /rmdebug transcast <#> <text> (translates/broadcasts text)");
 		}
 		else if( split[1].equalsIgnoreCase("colors") )
 		{
@@ -47,20 +51,20 @@ public class DebugCommands
 		{
 			this.donation(player);
 		}
-//		else if( split[1].equalsIgnoreCase("sanctum") )
-//		{
-//			if( split.length == 3 )
-//				this.sanctum(player, split[2]); 
-//			else
-//    			plugin.message.parse(player, "Usage: /debug sanctum <level>"); 
-//		}
+		else if( split[1].equalsIgnoreCase("sanctum") )
+		{
+			if( split.length == 3 )
+				this.sanctum(player, split[2]); 
+			else
+    			plugin.message.parse(player, "Usage: /debug sanctum <level>"); 
+		}
 		else if( split[1].equalsIgnoreCase("setlang") )
 		{
 			if( split.length == 4 )
 				this.setlang(player, split[2], split[3]); 
 			else
 			{
-    			plugin.message.parse(player, "Usage: /debug setlang <1-4> <level>"); 
+    			plugin.message.parse(player, "Usage: /rmdebug setlang <1-4> <level>"); 
 				plugin.message.send(player, "   Languages: 1-Creeptongue, 2-Gronuk, 3-Benali, 4-Avialese");
 			}
 		}
@@ -69,7 +73,7 @@ public class DebugCommands
 			if( split.length == 3 )
 				this.towntp(player, split[2]); 
 			else
-    			plugin.message.parse(player, "Usage: /debug tptown <town_name>"); 
+    			plugin.message.parse(player, "Usage: /rmdebug tptown <town_name>"); 
 		}
 		else if( split[1].equalsIgnoreCase("translate") )
 		{
@@ -80,10 +84,10 @@ public class DebugCommands
 			if( split.length > 3 )
 				this.transcast(player, split); 
 			else
-    			plugin.message.parse(player, "Usage: /debug transcast 1-4 <text>"); 
+    			plugin.message.parse(player, "Usage: /rmdebug transcast 1-4 <text>"); 
 		}
 		else
-			plugin.message.parse(player, "Type /debug to see a list of available commands.");
+			plugin.message.parse(player, "Type /rmdebug to see a list of available commands.");
 	}
 
 	// /debug colors
@@ -117,38 +121,36 @@ public class DebugCommands
 	}
 
 	// /debug sanctum <level>
-	@SuppressWarnings("unused")
 	private void sanctum(Player player, String levelString) 
 	{
-		plugin.message.sendNo(player, "This command has been disabled.");
-		return;
+		//plugin.message.sendNo(player, "This command has been disabled.");
+		//return;
+
+		World world = player.getWorld();
+		PlayerData playerData = plugin.players.get(player.getName());
 		
-//		int level;
-//		World world = player.getWorld();
-//		PlayerData playerData = plugin.players.get(player.getName());
-//		
-//		try
-//		{
-//			level = Integer.parseInt(levelString);
-//		}
-//		catch( Exception ex )
-//		{
-//			plugin.text.messageNo(player, "Invalid level.");
-//			return;
-//		}
-//		
-//		if( level < 1 || level > 5 )
-//		{
-//			plugin.text.messageNo(player, "Invalid level.");
-//			return;
-//		}
-//		
-//		// Pinpoint the top-left corner
-//		int cornerX = (int)player.getLocation().getX() - 2; 
-//		int cornerY = (int)player.getLocation().getY() - 1;
-//		int cornerZ = (int)player.getLocation().getZ() - 10; 
-//		
-//		Build.sanctumFloor(plugin, world, cornerX, cornerY, cornerZ, level, playerData.id_Faction);	
+		try
+		{
+			level = Integer.parseInt(levelString);
+		}
+		catch( Exception ex )
+		{
+			plugin.text.messageNo(player, "Invalid level.");
+			return;
+		}
+		
+		if( level < 1 || level > 5 )
+		{
+			plugin.text.messageNo(player, "Invalid level.");
+			return;
+		}
+		
+		// Pinpoint the top-left corner
+		int cornerX = (int)player.getLocation().getX() - 2; 
+		int cornerY = (int)player.getLocation().getY() - 1;
+		int cornerZ = (int)player.getLocation().getZ() - 10; 
+		
+		Build.sanctumFloor(plugin, world, cornerX, cornerY, cornerZ, level, playerData.id_Faction);	
 	}
 	
 	// Sets the language skill

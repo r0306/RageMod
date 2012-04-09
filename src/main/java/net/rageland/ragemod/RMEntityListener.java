@@ -4,6 +4,7 @@ package net.rageland.ragemod;
 
 import java.util.Random;
 
+import net.citizensnpcs.api.event.NPCTargetEvent;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.PlayerTown;
 import net.rageland.ragemod.data.Town;
@@ -22,7 +23,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
-import org.martin.bukkit.npclib.NpcEntityTargetEvent;
 
 /**
  * RageMod entity listener
@@ -239,11 +239,10 @@ public class RMEntityListener implements Listener
      */
     public void onEntityTarget(EntityTargetEvent event) 
     {    	
-		if ((event instanceof NpcEntityTargetEvent)) 
+		if ((event instanceof NPCTargetEvent)) 
 		{			
-			NpcEntityTargetEvent netEvent = (NpcEntityTargetEvent) event;
-			if (((netEvent.getTarget() instanceof Player))
-					&& (netEvent.getNpcReason() == NpcEntityTargetEvent.NpcTargetReason.NPC_RIGHTCLICKED)) 
+			NPCTargetEvent netEvent = (NPCTargetEvent) event;
+			if (((netEvent.getTarget() instanceof Player))) 
 			{				
 				RageEntity npcEntity = RageNPCManager.getNPCFromEntity(netEvent.getEntity());
 				npcEntity.rightClickAction((Player) event.getTarget());

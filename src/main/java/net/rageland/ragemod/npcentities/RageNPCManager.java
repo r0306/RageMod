@@ -19,7 +19,6 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
-import org.martin.bukkit.npclib.BWorld;
 
 public class RageNPCManager
 {
@@ -304,7 +303,7 @@ public class RageNPCManager
 				
 				if ((npc != null) && (event.getChunk() == npc.getBukkitEntity().getLocation().getBlock().getChunk())) 
 				{
-					BWorld world = new BWorld(event.getWorld());
+					World world = new Location(event.getWorld());
 					world.getWorldServer().addEntity(npc);
 				}
 			}
