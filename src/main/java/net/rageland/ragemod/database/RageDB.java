@@ -7,6 +7,8 @@ package net.rageland.ragemod.database;
 //		 Every minute or so, process all the updates.  This would keep multiple updates from going to the database multiple times.
 
 import java.sql.*;
+import java.util.logging.Logger;
+
 import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.dbqueries.FactionQueries;
@@ -26,8 +28,10 @@ public class RageDB {
     protected String user;
     protected String password;
     protected long timeout;
-             
-    private RageMod plugin;
+    
+    private RageMod plugin;   
+    Logger log = plugin.getLogger();
+    
     public TownQueries townQueries;
     public LotQueries lotQueries;
     public PlayerQueries playerQueries;
@@ -66,6 +70,9 @@ public class RageDB {
 
     public Connection getConnection() throws SQLException
     {
+    	if (connectionDriver == null) {
+    		log.severe("There is no valid Connection Driver!");
+    	}
     	return connectionDriver.getConnectionPool().getConnection();
     }    
     
