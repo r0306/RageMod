@@ -60,3 +60,39 @@ commands:
     permission-message: No perms to do that!
     
 permissions:
+  ragemod.admin:
+    children: 
+    - ragemod.admin.smitemobs
+    - ragemod.admin.debug
+  ragemod.admin.smitemobs:
+  ragemod.admin.debug:
+  ragemod.build:
+    children:
+      ragemod.build.anylot: true
+      ragemod.build.anytown: true
+      ragemod.build.npctown: true
+      ragemod.build.capitol: true
+      ragemod.build.travelzone: true
+  ragemod.build.anylot:
+  ragemod.build.anytown:
+  ragemod.build.npctown:
+  ragemod.build.capitol:
+  ragemod.build.travelzone:
+  ragemod.lot:
+  ragemod.assign:
+  ragemod.evict:
+  ragemod.ismoderator:
+  ragemod.permit:
+    children: 
+      ragemod.permit.capitol: true
+  ragemod.permit.capitol:
+  ragemod.npc:
+  ragemod.npctown:
+  ragemod.referee:
+  ragemod.referee.blockpvp:
+  ragemod.referee.inspectspawn:
+  ragemod.bounty:
+  ragemod.bounty.createsign:
+  ragemod.bounty.signcreate:
+  ragemod.bounty.add.global:
+  ragemod.bounty.removeall:
