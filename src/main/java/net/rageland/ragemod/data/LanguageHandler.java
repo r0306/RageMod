@@ -1,17 +1,18 @@
-package net.rageland.ragemod.text;
+package net.rageland.ragemod.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.text.Language;
 
 // Stores all languages for access
-public class Languages 
+public class LanguageHandler 
 {
 	private HashMap<Integer, Language> languages = new HashMap<Integer, Language>();
 	private RageMod plugin;
 	
-	public Languages(RageMod plugin) 
+	public LanguageHandler(RageMod plugin) 
 	{
 		this.plugin = plugin;
 		languages = new HashMap<Integer, Language>();

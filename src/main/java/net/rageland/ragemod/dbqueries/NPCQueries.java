@@ -12,7 +12,7 @@ import java.util.Random;
 import org.bukkit.Location;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.npc.NPCData;
-import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.database.RageDB;
 import net.rageland.ragemod.npc.NPCInstance;
 import net.rageland.ragemod.npc.NPCLocation;

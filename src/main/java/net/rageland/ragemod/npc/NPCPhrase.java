@@ -3,7 +3,7 @@ package net.rageland.ragemod.npc;
 import java.util.ArrayList;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.entity.PlayerData;
 
 // Represents a single phrase uttered by an NPC
 public class NPCPhrase
@@ -52,10 +52,11 @@ public class NPCPhrase
 	}
 	
 	// Returns whether the phrase needs to have its XML parsed
-//	public boolean isDynamic()
-//	{
-//		return isDynamic;
-//	}
+	// Is this right?
+	public boolean isDynamic()
+	{
+		return isDynamic;
+	}
 	
 	// Parse XML
 	private String parse(String toParse, PlayerData playerData)

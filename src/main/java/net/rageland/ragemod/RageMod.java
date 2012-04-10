@@ -2,7 +2,7 @@ package net.rageland.ragemod;
 
 import java.io.File;
 import java.util.HashMap;
-import java.net.url;
+import java.net.URL;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,9 +27,11 @@ import net.rageland.ragemod.listener.RMEntityListener;
 import net.rageland.ragemod.listener.RMPlayerListener;
 import net.rageland.ragemod.listener.RMServerListener;
 import net.rageland.ragemod.npcentities.RageNPCManager;
+import net.rageland.ragemod.npcentities.SL;
+import net.rageland.ragemod.npcentities.WL;
 import net.rageland.ragemod.quest.QuestManager;
-import net.rageland.ragemod.text.Languages;
 import net.rageland.ragemod.text.Message;
+import net.rageland.ragemod.data.LanguageHandler;
 import net.rageland.ragemod.config.*;
 
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -53,6 +55,8 @@ public class RageMod extends JavaPlugin {
     private RMEntityListener entityListener;
     private RageMod rm;
     private static RageMod plugin;
+    public SL sl;
+    public WL wl;
     
     private PluginDescriptionFile pdf = rm.getDescription();
     private Logger log = Bukkit.getLogger();
@@ -78,7 +82,7 @@ public class RageMod extends JavaPlugin {
     public TownHandler towns;
     public TaskHandler tasks;
     public FactionHandler factions;
-    public Languages languages;
+    public LanguageHandler languages;
     public AllBountyHandler Bounties;
     public ZoneHandler zones;
     
@@ -239,7 +243,7 @@ public class RageMod extends JavaPlugin {
         towns = new TownHandler(this);
         tasks = new TaskHandler(this);
         factions = new FactionHandler(this);
-        languages = new Languages(this);
+        languages = new LanguageHandler(this);
         
     	server = this.getServer();
     	zones = new ZoneHandler(this);

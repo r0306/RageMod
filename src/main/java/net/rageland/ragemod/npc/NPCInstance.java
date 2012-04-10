@@ -8,6 +8,7 @@ import org.bukkit.World;
 import org.bukkit.entity.HumanEntity;
 import org.getspout.spoutapi.SpoutManager;
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.npcentities.QuestNPC;
 import net.rageland.ragemod.npcentities.RageEntity;
 import net.rageland.ragemod.npcentities.SpeechNPC;
 import net.rageland.ragemod.quest.QuestData;
@@ -175,16 +176,16 @@ public class NPCInstance
 			case SPEECH:
 				entity = new SpeechNPC(this); 
 				break;
-//			case QUEST:
-//				entity = new QuestNPC(this);
+			case QUEST:
+				entity = new QuestNPC(this);
 			default:
 				entity = new RageEntity(this);
 		}
 
 		// Set the position and put the entity in the world
-		// TODO FIX THIS
+		// TODO FIX THIS - Maybe
 		entity.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-		//net.citizensnpcs.resources.npclib.NPCManager.register(1, entity, getName(), "Npc spawned with RageMod");
+		net.citizensnpcs.resources.npclib.NPCManager.register(getCodedName(), getLocation(), getName(), null);
 		plugin.npcManager.addInstance(this.id_NPCInstance, this);
 		location.setInstance(this);
 		

@@ -12,7 +12,7 @@ import net.citizensnpcs.lib.NPCNetworkManager;
 import net.citizensnpcs.lib.creatures.CreatureNPC;
 import net.citizensnpcs.lib.creatures.CreatureNPCType;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.npc.NPCInstance;
 import net.rageland.ragemod.npc.NPCPhrase;
 
@@ -50,19 +50,18 @@ public class RageEntity extends CreatureNPC
 	// TODO Fix this!
 	public RageEntity(NPCInstance instance)
 	{	
-		super (null);
-		/*super(new CraftNPC()); // TODO Fix this!
+		super(new CraftNPC()); // TODO Fix this! (The type net.minecraft.server.ItemInWorldManager cannot be resolved. It is indirectly referenced from required .class files)
 		
-		//NPCManager netMgr = new NPCNetworkManager(new Socket(),
-				//"NPC Manager", new NetHandler()
-				//{
-				//	public boolean c()
-				//	{
-				//		return true;
-				//	}
-				//});
+		NPCManager netMgr = new NPCNetworkManager(new NullSocket(),
+				"NPC Manager", new NetHandler()
+				{
+					public boolean c()
+					{
+						return true;
+					}
+				});
 		// TODO Fix this!
-		//this.netServerHandler = new NPCNetHandler(instance.server.getMCServer(), netMgr, this);*/
+		this.netServerHandler = new NPCNetHandler(instance.server.getMCServer(), netMgr, this);
 		this.lastTargetId = -1;
 		this.lastBounceId = -1;
 		this.lastBounceTick = 0L;
