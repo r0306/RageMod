@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import net.rageland.ragemod.Build;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.utilities.Util;
 import net.rageland.ragemod.world.Town;
 

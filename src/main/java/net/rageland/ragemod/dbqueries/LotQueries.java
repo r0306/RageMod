@@ -10,8 +10,8 @@ import java.util.HashMap;
 import org.bukkit.World;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.database.RageDB;
+import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.world.Lot;
 import net.rageland.ragemod.world.Region2D;
 

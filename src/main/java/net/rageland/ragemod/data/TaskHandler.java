@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.bukkit.ChatColor;
 
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.npc.NPCInstance;
 import net.rageland.ragemod.npc.NPCLocation;
 import net.rageland.ragemod.npc.NPCTown;

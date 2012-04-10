@@ -6,7 +6,7 @@ import java.util.Random;
 
 import net.citizensnpcs.api.event.NPCTargetEvent;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.npcentities.RageEntity;
 import net.rageland.ragemod.npcentities.RageNPCManager;
 import net.rageland.ragemod.quest.KillCreatureQuest;

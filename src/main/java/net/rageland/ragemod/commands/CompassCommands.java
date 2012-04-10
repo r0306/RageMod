@@ -1,7 +1,7 @@
 package net.rageland.ragemod.commands;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.world.Lot;
 import net.rageland.ragemod.world.Town;
 

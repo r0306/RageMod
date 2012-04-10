@@ -2,7 +2,7 @@ package net.rageland.ragemod.npcentities;
 
 import org.bukkit.entity.Player;
 
-import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.npc.NPCInstance;
 
 public class SpeechNPC extends RageEntity

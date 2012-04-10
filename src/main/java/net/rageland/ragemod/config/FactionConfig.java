@@ -6,14 +6,16 @@ public class FactionConfig {
 	private final String Color;
 	private final boolean PlayerFaction;
 	private final String Capitol;
+	private final String language;
 	
-	public FactionConfig(String name,int id, String Color, String Capitol, boolean PlayerFaction){
+	public FactionConfig(String name,int id, String Color, String Capitol, boolean PlayerFaction,String language){
 		this.Capitol=Capitol;
 		this.Color=Color;
 		this.id=id;
 		this.Name=name;
 		this.PlayerFaction=PlayerFaction;
-	}
+		this.language= language;
+		}
 	
 	public String getName() {
 		return Name;
@@ -29,6 +31,10 @@ public class FactionConfig {
 	}
 	public boolean isPlayerFaction() {
 		return PlayerFaction;
+	}
+
+	public String getLanguage() {
+		return language;
 	}
 
 }

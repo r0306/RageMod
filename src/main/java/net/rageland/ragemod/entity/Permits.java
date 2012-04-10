@@ -1,4 +1,4 @@
-package net.rageland.ragemod.data;
+package net.rageland.ragemod.entity;
 
 
 // Temporary passes for players granted by mods

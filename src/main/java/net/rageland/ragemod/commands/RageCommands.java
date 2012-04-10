@@ -3,7 +3,7 @@ package net.rageland.ragemod.commands;
 
 import org.bukkit.entity.Player;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.entity.PlayerData;
 
 public class RageCommands {
 	

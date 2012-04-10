@@ -1,7 +1,7 @@
 package net.rageland.ragemod.npcentities;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.npc.NPCInstance;
 import net.rageland.ragemod.quest.Quest;
 

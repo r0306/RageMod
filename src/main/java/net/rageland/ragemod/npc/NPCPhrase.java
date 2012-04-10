@@ -3,7 +3,7 @@ package net.rageland.ragemod.npc;
 import java.util.ArrayList;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.entity.PlayerData;
 
 // Represents a single phrase uttered by an NPC
 public class NPCPhrase

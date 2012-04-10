@@ -12,7 +12,7 @@ import net.citizensnpcs.lib.NPCNetworkManager;
 import net.citizensnpcs.lib.creatures.CreatureNPC;
 import net.citizensnpcs.lib.creatures.CreatureNPCType;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.npc.NPCInstance;
 import net.rageland.ragemod.npc.NPCPhrase;
 

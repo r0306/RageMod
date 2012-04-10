@@ -13,7 +13,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 import net.rageland.ragemod.Build;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.entity.PlayerData;
 
 // TODO: Make this inherit from Region2D, along with NPCTown (make another class in between)
 

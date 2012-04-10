@@ -1,6 +1,6 @@
 package net.rageland.ragemod.quest;
 
-import net.rageland.ragemod.data.PlayerData;
+import net.rageland.ragemod.entity.PlayerData;
 
 /**
  * Contains quest data, each quest contains an instance of this class.
