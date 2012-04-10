@@ -96,4 +96,18 @@ public class ZoneHandler {
 		//should not happen
     }
 
+	public int getDistanceFromSpawn(Location location) {
+		return (int)this.worldSpawn.distance(location);
+	}
+
+	public boolean isInSandlot(Location location) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean isInTravelZone(Location location) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

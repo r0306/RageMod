@@ -55,11 +55,6 @@ public class NPCTown extends Town
 		plugin.database.npcTownQueries.update(this);
 	}
 	
-	// Checks to see any part of the region extends past zone A
-	public boolean isOutsideZoneA()
-	{
-		return plugin.zones.isOutsideZoneA(region);
-	}
 	
 	// Returns whether or not the player has permission to build in the town
 	public boolean hasPermission(String playerName)

@@ -1,8 +1,6 @@
 package net.rageland.ragemod.listener;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.RageZones;
-import net.rageland.ragemod.RageZones.Zone;
 import net.rageland.ragemod.commands.Commands;
 import net.rageland.ragemod.commands.CompassCommands;
 import net.rageland.ragemod.commands.DebugCommands;
@@ -78,9 +76,9 @@ public class RMPlayerListener implements Listener
     	playerData.attachPlayer(player);
     	
 		// Set the state info
-    	playerData.currentZone = plugin.zones.getZone(player.getLocation());
+    	playerData.currentZone = plugin.zones.isInside(player.getLocation());
     	playerData.currentTown = plugin.towns.getCurrentTown(player.getLocation());
-    	playerData.isInCapitol = plugin.zones.isInCapitol(player.getLocation()); 
+    	playerData.isInCapitol = plugin.zones.isInside(player.getLocation()).isInsideCapitol(player.getLocation()); 
     	
     	// Display any messages they have from actions that happened while they were offline
     	if( !playerData.logonMessageQueue.equals("") )
@@ -274,19 +272,15 @@ public class RMPlayerListener implements Listener
         	event.getFrom().getBlockZ() != event.getTo().getBlockZ() )
         {
         	// Check to see if the player has changed zones
-        	if( playerData.currentZone != plugin.zones.getZone(player.getLocation()))
+        	if( playerData.currentZone != plugin.zones.isInside(player.getLocation()))
         	{
-        		playerData.currentZone = plugin.zones.getZone(player.getLocation());
-        		plugin.message.parse(player, "Your current zone is now " + plugin.zones.getName(playerData.currentZone));        		
+        		playerData.currentZone = plugin.zones.isInside(player.getLocation());
+        		plugin.message.parse(player, "Your current zone is now " + playerData.currentZone.getConfig().getName());        		
         	}
-        	
-        	// *** ZONE A (Neutral Zone) ***
-        	if( playerData.currentZone == RageZones.Zone.A )
-        	{
-        		// Check to see if the player has entered or left the capitol
-        		if( playerData.isInCapitol )
+        		
+        	if( playerData.isInCapitol )
         		{
-        			if( !plugin.zones.isInCapitol(player.getLocation()) )
+        			if( !playerData.currentZone.isInsideCapitol(player.getLocation()) )
         			{
         				playerData.isInCapitol = false;
         				
@@ -302,7 +296,7 @@ public class RMPlayerListener implements Listener
         		}
         		else
         		{
-        			if( plugin.zones.isInCapitol(player.getLocation()) )
+        			if( playerData.currentZone.isInsideCapitol(player.getLocation()) )
         			{
         				playerData.isInCapitol = true;
         				
@@ -338,10 +332,7 @@ public class RMPlayerListener implements Listener
         			}
         		}
         	}
-        	// *** ZONE B (War Zone) ***
-        	else if( playerData.currentZone == RageZones.Zone.B )
-        	{
-	        	// See if the player has entered or left a Town
+        		        	// See if the player has entered or left a Town
 	        	if( playerData.currentTown == null )
 	        	{
 	        		Town currentTown = plugin.towns.getCurrentTown(player.getLocation());
@@ -363,8 +354,6 @@ public class RMPlayerListener implements Listener
 	        		}
 	        	}
         	}
-        }
-    }
     
     // Player interacts with objects (right-clicking, etc.)
     public void onPlayerInteract(PlayerInteractEvent event) 
@@ -405,16 +394,11 @@ public class RMPlayerListener implements Listener
 	    // Portals in normal world
 	    if( world.getName().equalsIgnoreCase("world") )
 	    {
-	    	// *** ZONE A (Neutral Zone) ***
-	    	if( playerData.currentZone == RageZones.Zone.A )
-	    	{
 	    		// All portals from the capitol will go to the center of the Travel Zone
-	    		if( plugin.zones.isInCapitol(player.getLocation()) )
+	    		if( plugin.zones.isInside(player.getLocation()).isInsideCapitol(player.getLocation())){
 	    			event.setTo(plugin.zones.TZ_Center);
-	    	}
-	    	else if( playerData.currentZone == RageZones.Zone.B )
-	    	{
-	    		if( playerData.currentTown != null && playerData.currentTown instanceof PlayerTown )
+	    		}else{
+	    			if( playerData.currentTown != null && playerData.currentTown instanceof PlayerTown )
 	    		{
 	    			PlayerTown currentTown = (PlayerTown)playerData.currentTown;
 	    			event.setTo(currentTown.travelNode);
@@ -423,15 +407,16 @@ public class RMPlayerListener implements Listener
 	    			event.setTo(plugin.zones.TZ_Center);
 	    	}
 	    }
-	    else if( world.getName().equalsIgnoreCase("world_nether") )
+	    else{ if( world.getName().equalsIgnoreCase("world_nether") )
 	    {
-	    	// Temp: Make all portals go back to capitol
-	    	event.setTo(plugin.zones.Capitol_Portal);
+	    	// Temp: Make all portals go back to spawn
+	    	event.setTo(plugin.zones.world.getSpawnLocation());
 	    }
 	    
     }
     
     
     
-}
+    }
+    }
 

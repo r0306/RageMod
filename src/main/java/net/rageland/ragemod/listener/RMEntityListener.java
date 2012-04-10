@@ -90,11 +90,9 @@ public class RMEntityListener implements Listener
     			}
             	
             	// Use the defender's position to determine behavior
-            	// *** ZONE A (Neutral Zone) ***
-            	if( plugin.zones.isInZoneA(defender.getLocation()) )
-            	{
+            	// *** ZONE A (Neutral Zone) **
             		// No PvP in capitol
-            		if( plugin.zones.isInCapitol(defender.getLocation()) )
+            		if( !plugin.zones.isInside(defender.getLocation()).getConfig().isPvp())
             		{
             			edbeEvent.setCancelled(true);
             			plugin.message.parseNo(attacker, "PvP is not allowed inside " + plugin.config.Capitol_CodedName + ".");
@@ -102,23 +100,25 @@ public class RMEntityListener implements Listener
             		}
             		else
             		{
+            			if (plugin.zones.isInside(defender.getLocation()).getConfig().isFactionPvp()){
+            			
             			// Only faction-faction PvP is allowed in neutral zone
             			if( defenderData.id_Faction == 0 )
             			{
             				edbeEvent.setCancelled(true);
-                			plugin.message.sendNo(attacker, "You cannot attack neutral players in " + plugin.config.Zone_NAME_A + ".");
+                			plugin.message.sendNo(attacker, "You cannot attack neutral players in " + plugin.zones.getName(defender.getLocation()) + ".");
                 			return;
             			}
             			else if( attackerData.id_Faction == 0 )
             			{
             				edbeEvent.setCancelled(true);
-                			plugin.message.sendNo(attacker, "Neutral players cannot attack in " + plugin.config.Zone_NAME_A + ".");
+                			plugin.message.sendNo(attacker, "Neutral players cannot attack in " + plugin.zones.getName(defender.getLocation()) + ".");
                 			return;
             			}
             		}
-            	}
+        
             	// *** ZONE B (War Zone) ***
-            	else if( plugin.zones.isInZoneB(defender.getLocation()) )
+            	else
             	{
             		PlayerTown playerTown = (PlayerTown)plugin.towns.getCurrentTown(defender.getLocation());
             		
@@ -161,8 +161,7 @@ public class RMEntityListener implements Listener
     	        			return;
     	        		}
             		}
-            	}
-            }
+            	
             else if( defenderEntity instanceof Player && attackerEntity instanceof Creature)
             {
             	Player defenderPlayer = (Player) defenderEntity;
@@ -198,7 +197,11 @@ public class RMEntityListener implements Listener
             		}
             	}
             }
+            	}
+            		}
+            }
     	}
+    	
     }
     
     // Called when creatures spawn
@@ -212,7 +215,7 @@ public class RMEntityListener implements Listener
     	if( (event.getCreatureType() == CreatureType.CREEPER || event.getCreatureType() == CreatureType.SKELETON ||
     			event.getCreatureType() == CreatureType.ZOMBIE || event.getCreatureType() == CreatureType.SPIDER ||
     			event.getCreatureType() == CreatureType.SQUID || event.getCreatureType() == CreatureType.ENDERMAN) && 
-    			(plugin.zones.isInCapitol(event.getLocation()) || plugin.towns.getCurrentTown(event.getLocation()) != null) )
+    			(plugin.zones.isInside((event.getLocation())).isInsideCapitol(event.getLocation()) || plugin.towns.getCurrentTown(event.getLocation()) != null) )
     		event.setCancelled(true);
     	
     	// Don't let monsters spawn inside the travel zone

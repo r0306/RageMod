@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.RageZones.Action;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.npc.NPCTown;
 import net.rageland.ragemod.world.PlayerTown;
@@ -220,7 +219,7 @@ public class TownCommands
 			return;
 		}
 		// Ensure that the current zone is allowed to create towns
-		if( !plugin.zones.checkPermission(player.getLocation(), Action.TOWN_CREATE) )
+		if( !plugin.zones.isInside(player.getLocation()).getConfig().isPlayerCity())
 		{
 			plugin.message.parseNo(player, "You cannot create a town in this zone.");
 			return;

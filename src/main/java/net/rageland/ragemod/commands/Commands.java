@@ -7,7 +7,6 @@ import java.util.HashMap;
 import net.rageland.ragemod.Build;
 import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.RageZones;
 import net.rageland.ragemod.data.PlayerData;
 import net.rageland.ragemod.data.TownHandler;
 import net.rageland.ragemod.data.PlayerHandler;

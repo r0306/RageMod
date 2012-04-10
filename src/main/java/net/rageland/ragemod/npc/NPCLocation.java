@@ -1,8 +1,8 @@
 package net.rageland.ragemod.npc;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.RageZones.Quadrant;
-import net.rageland.ragemod.RageZones.Zone;
+import net.rageland.ragemod.data.ZoneHandler.Quadrant;
+import net.rageland.ragemod.world.Zone;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -85,10 +85,10 @@ public class NPCLocation extends Location
 	{
 		if( this.zone == null )
 		{
-			if( plugin.zones.isInCapitol(this))
-				this.zone = Zone.CAPITOL;
+			if( plugin.zones.isInside(this).isInsideCapitol(this))
+				this.zone = plugin.zones.isInside(this);
 			else
-				this.zone = plugin.zones.getZone(this);
+				this.zone = plugin.zones.isInside(this);
 		}
 			
 		

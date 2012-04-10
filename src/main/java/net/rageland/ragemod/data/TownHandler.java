@@ -46,7 +46,7 @@ public class TownHandler {
 		for( NPCTown town : npcTowns.values() )
 		{
 			npcTownIDs.put(town.getID(), town.getName().toLowerCase());
-			if( town.isOutsideZoneA() )
+			//TODO config stuff
 				outsideNPCTowns.add(town);
 		}
 	}
@@ -148,7 +148,7 @@ public class TownHandler {
     public Town getCurrentTown(Location location) 
 	{
  		// Zone A - NPC towns
-    	if( plugin.zones.isInZoneA(location) )
+    	if( plugin.zones.isInside((location)).getConfig().isNpcTown())
     	{
         	for( NPCTown town : npcTowns.values() )
         	{
@@ -157,7 +157,7 @@ public class TownHandler {
         	}
     	}
     	// Zone B - Player towns
-    	else if( plugin.zones.isInZoneB(location) )
+    	else if(plugin.zones.isInside((location)).getConfig().isPlayerCity() )
     	{
         	for( PlayerTown town : playerTowns.values() )
         	{

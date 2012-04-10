@@ -180,7 +180,7 @@ public class LotCommands
 	public void check(Player player)
 	{		
 		// Make sure the player is in the capitol
-		if( !plugin.zones.isInCapitol(player.getLocation()) )
+		if( !plugin.zones.isInside(player.getLocation()).isInsideCapitol(player.getLocation()))
 		{
 			plugin.message.parseNo(player, "You must be in " + plugin.config.Capitol_CodedName + " to use this command.");
 			return;

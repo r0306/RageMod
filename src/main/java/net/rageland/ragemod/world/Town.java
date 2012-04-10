@@ -3,7 +3,7 @@ package net.rageland.ragemod.world;
 import java.util.ArrayList;
 
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.RageZones.Quadrant;
+import net.rageland.ragemod.data.ZoneHandler.Quadrant;
 import net.rageland.ragemod.npc.NPCLocation;
 
 import org.bukkit.Location;

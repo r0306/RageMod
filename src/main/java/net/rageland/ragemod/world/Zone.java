@@ -25,7 +25,7 @@ public class Zone {
     	this.config= config;
     	this.plugin=Plugin;
     	this.worldSpawn= new Location2D(world.getSpawnLocation());
-    	this.Beginning = this.plugin.Zones.getoutestline();
+    	this.Beginning = this.plugin.zones.getoutestline();
     }
     
     public boolean isInside(Location loc){

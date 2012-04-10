@@ -380,7 +380,7 @@ public class NPCCommands {
 		for( NPCLocation location : plugin.npcManager.getAllLocations() )
 		{
 			if( location.getTown() == null )
-				plugin.message.parse(player, " " + location.getID() + ": " + plugin.zones.getName(location.getZone()) + " (" + 
+				plugin.message.parse(player, " " + location.getID() + ": " + plugin.zones.getName(location) + " (" + 
 						location.getQuadrant().toString() + ") " + 
 						(location.isActivated() ? ChatColor.GOLD + "ACTIVE" : ""));
 		}
@@ -426,7 +426,7 @@ public class NPCCommands {
 				if( town != null )
 					locationStr = town.getCodedName();
 				else
-					locationStr = plugin.zones.getName(instance.getLocation().getZone()) + " (" + 
+					locationStr = plugin.zones.getName(instance.getLocation()) + " (" + 
 							instance.getLocation().getQuadrant().toString() + ")";
 				plugin.message.parse(player, " " + instance.getCodedName() + ": Loc. " + instance.getLocation().getID() + ", " + locationStr);
 			}

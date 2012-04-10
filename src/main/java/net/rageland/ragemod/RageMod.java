@@ -77,12 +77,11 @@ public class RageMod extends JavaPlugin {
     public FactionHandler factions;
     public Languages languages;
     public AllBountyHandler Bounties;
-    public ZoneHandler Zones;
+    public ZoneHandler zones;
     
     // Semi-static data and methods
     public RageConfig config;
     public RageDB database;
-    public RageZones zones;
     public Message message;
     public RageNPCManager npcManager;
     public QuestManager questManager;
@@ -229,7 +228,7 @@ public class RageMod extends JavaPlugin {
         languages = new Languages(this);
         
     	server = this.getServer();
-    	zones = new RageZones(this, config);
+    	zones = new ZoneHandler(this);
         pluginManager = server.getPluginManager();
         npcManager = new RageNPCManager(this);
         questManager = new QuestManager();

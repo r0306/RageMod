@@ -58,9 +58,6 @@ public class RMBlockListener implements Listener
     	// Bed breaking - clear spawn and home
     	if( block.getType() == Material.BED_BLOCK )
     	{
-    		// /home: bed inside capitol lot
-			if( plugin.zones.isInZoneA(block.getLocation()) )
-			{
 				for( Lot lot : playerData.lots )
 				{
 					if( lot.canSetHome() && lot.isInside(block.getLocation()) )
@@ -73,8 +70,7 @@ public class RMBlockListener implements Listener
 				}
 			}
 			// /spawn: for beds in player towns
-			else if( plugin.zones.isInZoneB(block.getLocation()) )
-			{
+			else {
 				PlayerTown playerTown = (PlayerTown)plugin.towns.getCurrentTown(block.getLocation());
 
 	    		if( playerTown != null )
@@ -93,7 +89,7 @@ public class RMBlockListener implements Listener
 	    		}
 			}
     	}
-    }
+    
     
     // Prevent block placing without permission
     public void onBlockPlace(BlockPlaceEvent event) 
@@ -101,7 +97,6 @@ public class RMBlockListener implements Listener
     	Player player = event.getPlayer();
     	PlayerData playerData = plugin.players.get(player.getName());
     	Block block = event.getBlock();
-    	Location location = block.getLocation();
     	
     	if (event.isCancelled()) 
         {
@@ -120,8 +115,6 @@ public class RMBlockListener implements Listener
     		return;
     	
     	// *** ZONE A (Neutral Zone) ***
-    	if( plugin.zones.isInZoneA(location) )
-    	{
     		// Bed placement - set spawn and home
         	if( block.getType() == Material.BED_BLOCK )
         	{
@@ -148,9 +141,9 @@ public class RMBlockListener implements Listener
     				}
     			}
         	}	
-    	}
+    	
     	// *** ZONE B (War Zone) ***
-    	else if( plugin.zones.isInZoneB(location) )
+    	else 
     	{
     		// /spawn: for beds in player towns
 			if( block.getType() == Material.BED_BLOCK )
@@ -211,19 +204,9 @@ public class RMBlockListener implements Listener
     	}
     	
     	// *** ZONE A (Neutral Zone) ***
-    	else if( plugin.zones.isInZoneA(location) )
+    	else if( plugin.zones.isInside(location).getConfig().isPlayerBuild() )
     	{
-    		// See if player is in capitol
-    		if( plugin.zones.isInCapitol(location) )
-    		{
-    			// If the player is below y=22, make sure they have permission to mine below city (don't check lots)
-        		if( location.getY() < 22 && !RageMod.perms.has(player, "ragemod.mine.capitol"))
-        		{
-        			plugin.message.sendNo(player, "You don't have permission to mine under the city.");
-        			return false;
-        		}
-        		// See if the player is inside a lot, and if they own it
-        		else if( !playerData.isInsideOwnLot(location) && !RageMod.perms.has(player, "ragemod.build.anylot") )
+    		if( !playerData.isInsideOwnLot(location) && !RageMod.perms.has(player, "ragemod.build.anylot") )
         		{
         			Lot lot = plugin.lots.findCurrentLot(location);
         			
@@ -251,11 +234,6 @@ public class RMBlockListener implements Listener
         			
         			return false;
         		}
-        	}
-    	}
-    	// *** ZONE B (War Zone) ***
-    	else if( plugin.zones.isInZoneB(location) )
-    	{
     		if( town != null && town instanceof PlayerTown )
     		{
     			PlayerTown playerTown = (PlayerTown)town;
