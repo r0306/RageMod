@@ -14,6 +14,7 @@ import net.rageland.ragemod.data.FactionHandler;
 import net.rageland.ragemod.data.PlayerHandler;
 import net.rageland.ragemod.data.TownHandler;
 import net.rageland.ragemod.data.TaskHandler;
+import net.rageland.ragemod.data.ZoneHandler;
 import net.rageland.ragemod.database.RageDB;
 import net.rageland.ragemod.listener.RMBlockListener;
 import net.rageland.ragemod.listener.RMEntityListener;
@@ -24,6 +25,7 @@ import net.rageland.ragemod.quest.QuestManager;
 import net.rageland.ragemod.text.Languages;
 import net.rageland.ragemod.text.Message;
 import net.rageland.ragemod.world.Lots;
+import net.rageland.ragemod.config.*;
 
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -35,8 +37,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import net.rageland.ragemod.data.TaskHandler;
 
 /**
  * RageMod for Bukkit
@@ -77,6 +77,7 @@ public class RageMod extends JavaPlugin {
     public FactionHandler factions;
     public Languages languages;
     public AllBountyHandler Bounties;
+    public ZoneHandler Zones;
     
     // Semi-static data and methods
     public RageConfig config;
@@ -85,6 +86,8 @@ public class RageMod extends JavaPlugin {
     public Message message;
     public RageNPCManager npcManager;
     public QuestManager questManager;
+    //for now here
+    public ZonesConfig zc; 
     
     
     

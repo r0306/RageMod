@@ -19,6 +19,7 @@ public class FactionHandler
     
     
     // TODO: Eventually pull all of this stuff from the DB or config - since we only have 2 factions, keep this hardcoded for now
+	// TODO make it config based
     public void loadFactions()
     {
     	factions.put(0, "Neutral");
