@@ -11,6 +11,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import net.rageland.ragemod.data.AllBountyHandler;
 import net.rageland.ragemod.data.FactionHandler;
+import net.rageland.ragemod.data.LotHandler;
 import net.rageland.ragemod.data.PlayerHandler;
 import net.rageland.ragemod.data.TownHandler;
 import net.rageland.ragemod.data.TaskHandler;
@@ -24,7 +25,6 @@ import net.rageland.ragemod.npcentities.RageNPCManager;
 import net.rageland.ragemod.quest.QuestManager;
 import net.rageland.ragemod.text.Languages;
 import net.rageland.ragemod.text.Message;
-import net.rageland.ragemod.world.Lots;
 import net.rageland.ragemod.config.*;
 
 import org.bukkit.Server;
@@ -70,7 +70,7 @@ public class RageMod extends JavaPlugin {
     private double newVersion;
     
     // Global data
-    public Lots lots;
+    public LotHandler lots;
     public PlayerHandler players;
     public TownHandler towns;
     public TaskHandler tasks;
@@ -221,7 +221,7 @@ public class RageMod extends JavaPlugin {
     	config = new RageConfig(this);
         database = new RageDB(this, config);
         
-        lots = new Lots(this);
+        lots = new LotHandler(this);
         players = new PlayerHandler(this);
         towns = new TownHandler(this);
         tasks = new TaskHandler(this);

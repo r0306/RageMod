@@ -1,4 +1,4 @@
-package net.rageland.ragemod.world;
+package net.rageland.ragemod.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,16 +6,17 @@ import java.util.HashMap;
 import org.bukkit.Location;
 
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.world.Lot;
 
 // Stores a HashMap of all the Lots in the capitol
-public class Lots 
+public class LotHandler 
 {
 	
 	// The String key is Category (single letter) + ID; eg. W12
 	private HashMap<String, Lot> lots;
 	private RageMod plugin;
 	
-	public Lots(RageMod plugin)
+	public LotHandler(RageMod plugin)
 	{
 		this.plugin = plugin;
 		lots = new HashMap<String, Lot>();
