@@ -6,57 +6,57 @@ commands:
   lot:
     description: N/A
     usage: /lot
-    permission:
+    permission: ragemod.lot
     permission-message: No perms to do that!
   npc:
     description: N/A
     usage: /npc
-    permission:
+    permission: ragemod.npc
     permission-message: No perms to do that!
   npctown:
     description: N/A
     usage: /npctown
-    permission:
+    permission: ragemod.npctown
     permission-message: No perms to do that!
   rmdebug:
     description: N/A
     usage: /rmdebug
-    permission:
+    permission: ragemod.admin.debug
     permission-message: No perms to do that!
   bounty:
     description: N/A
     usage: /bounty
-    permission:
+    permission: ragemod.bounty
     permission-message: No perms to do that!
   compass:
     description: N/A
     usage: /compass
-    permission:
+    permission: ragemod.compass
     permission-message: No perms to do that!
   faction:
     description: N/A
     usage: /faction
-    permission:
+    permission: ragemod.faction
     permission-message: No perms to do that!
   permit:
     description: N/A
     usage: /permit
-    permission:
+    permission: ragemod.permit
     permission-message: No perms to do that!
   quest:
     description: N/A
     usage: /quest
-    permission:
+    permission: ragemod.quest
     permission-message: No perms to do that!
   rage:
     description: N/A
     usage: /rage
-    permission:
+    permission: ragemod.rage
     permission-message: No perms to do that!
   town:
     description: N/A
     usage: /town
-    permission:
+    permission: ragemod.town
     permission-message: No perms to do that!
     
 permissions:
@@ -96,3 +96,6 @@ permissions:
   ragemod.bounty.signcreate:
   ragemod.bounty.add.global:
   ragemod.bounty.removeall:
+  ragemod.compass:
+  ragemod.town:
+  ragemod.quest:
