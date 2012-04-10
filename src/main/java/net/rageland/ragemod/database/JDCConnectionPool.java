@@ -17,7 +17,7 @@ class ConnectionReaper extends Thread {
            try {
               sleep(delay);
            } catch( InterruptedException e) { }
-           //System.out.println("[RAGE] Attempting to reap connections... (pool size: " + pool.connections.size() + ")");
+           System.out.println("[RAGE] Attempting to reap connections... (pool size: " + pool.connections.size() + ")");
            pool.reapConnections();
         }
     }
@@ -64,7 +64,6 @@ class ConnectionKeepAlive extends Thread
 	}
 	
 }
-@SuppressWarnings("unused")
 public class JDCConnectionPool {
 
    public Vector<JDCConnection> connections;
@@ -82,8 +81,8 @@ public class JDCConnectionPool {
       connections = new Vector<JDCConnection>(poolsize);
       reaper = new ConnectionReaper(this);
       reaper.start();
-      //pinger = new ConnectionKeepAlive(connections);
-      //pinger.start();
+      pinger = new ConnectionKeepAlive(connections);
+      pinger.start();
    }
 
    public synchronized void reapConnections() {
@@ -95,7 +94,7 @@ public class JDCConnectionPool {
       {
           JDCConnection conn = (JDCConnection)connlist.nextElement();
 
-          //System.out.println("[RAGE] Conn. " + connections.indexOf(conn) + ": inUse: " + conn.inUse() + ", stale: " + ((stale-conn.getLastUse())/1000) + " validate(): " + conn.validate());
+          System.out.println("[RAGE] Conn. " + connections.indexOf(conn) + ": inUse: " + conn.inUse() + ", stale: " + ((stale-conn.getLastUse())/1000) + " validate(): " + conn.validate());
           
           if((conn.inUse()) && !conn.validate()) // Reap all connections that fail validate() (DC)
           {
@@ -132,7 +131,7 @@ public class JDCConnectionPool {
 	   for(JDCConnection connection : connections) {    	   
            if(stale < connection.getLastUse() && (connection.validate() && connection.lease())) 
            {
-               //System.out.println("[RAGE] Getting connection " + connections.indexOf(connection));
+               System.out.println("[RAGE] Getting connection " + connections.indexOf(connection));
         	   return connection;
            } 
        }
