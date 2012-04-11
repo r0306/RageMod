@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
+import net.citizensnpcs.lib.NPCSpawner;
+import net.citizensnpcs.lib.creatures.CreatureNPC;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.npc.NPCData;
 import net.rageland.ragemod.npc.NPCInstance;
@@ -32,7 +34,7 @@ public class RageNPCManager
 	int taskid;
 	static int staskid;
 	private RageMod plugin;
-	//private NPCSpawner npcSpawner;
+	private NPCSpawner npcSpawner;
 	private Random random;
 	private static RageMod pluginS;
 	
@@ -62,7 +64,7 @@ public class RageNPCManager
 				for (int i : RageMod.getInstance().npcManager.getActiveNPCs().keySet()) 
 				{
 					
-					// The problem here is that Minecraft changes the obfuscation every release, and we don't know what it's been changed to :(
+					// TODO This needs porting to Citizens
 					
 					//net.minecraft.server.Entity j = (net.minecraft.server.Entity)RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity(); // TODO Fix this!
 					//j.aA();
@@ -187,7 +189,7 @@ public class RageNPCManager
 		try 
 		{
 			// TODO Fix this!
-			//final World world;
+			final World world;
 			//world.removeEntity(npc);
 		} catch (Exception e) 
 		{
@@ -244,24 +246,26 @@ public class RageNPCManager
 
 		sActiveNPCs.clear();
 	}
-/*  // TODO Fix this!
+  // TODO Fix this!
 	public void moveNPC(int id, Location l) 
 	{
-		RageEntity npc = (RageEntity) activeNPCs.get(id);
+		NPCInstance npc = RageMod.getInstance().npcManager.getActiveNPCs().get(id);
 		if (npc != null)
 			npc.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 	}
 
 	public void moveNPCStatic(int id, Location l) 
 	{
-		RageEntity npc = (RageEntity) activeNPCs.get(id);
+		NPCInstance npc = RageMod.getInstance().npcManager.getActiveNPCs().get(id);
 		if (npc != null)
 			npc.setPosition(l.getX(), l.getY(), l.getZ());
 	}
 
+	// TODO Oy Perdemot, look at these 2 methods below \/. - To fix them you need to look at NPCInstance.
+	
 	public void putNPCinbed(int id, Location bed) 
 	{
-		RageEntity npc = (RageEntity) activeNPCs.get(id);
+		NPCInstance npc = RageMod.getInstance().npcManager.getActiveNPCs().get(id);
 		if (npc != null) 
 		{
 			npc.setPosition(bed.getX(), bed.getY(), bed.getZ());
@@ -269,16 +273,20 @@ public class RageNPCManager
 		}
 	}
 
+	// TODO Oy Perdemot, look at the method above and the one below. - To fix them you need to look at NPCInstance.
+	
 	public void getNPCoutofbed(int id) 
 	{
-		RageEntity npc = (RageEntity) activeNPCs.get(id);
+		NPCInstance npc = RageMod.getInstance().npcManager.getActiveNPCs().get(id);
 		if (npc != null)
-	npc.a(true, true, true);
+			npc.a(true, true, true);
 	}
+	
+	// TODO Oy Perdemot, look at these two methods above /\. - To fix them you need to look at NPCInstance.
 
 	public void setSneaking(int id, boolean flag) 
 	{
-		RageEntity npc = (RageEntity) activeNPCs.get(id);
+		NPCInstance npc = RageMod.getInstance().npcManager.getActiveNPCs().get(id);
 		if (npc != null)
 			npc.setSneak(flag);
 	}
@@ -288,10 +296,10 @@ public class RageNPCManager
 		return (RageEntity) activeNPCs.get(id).getEntity();
 	}
 
-	public static boolean isNPC(org.bukkit.entity.Entity e) 
+	public static boolean isNPC1(org.bukkit.entity.Entity e) 
 	{
-		return ((CraftEntity) e).getHandle() instanceof RageEntity;
-	}*/
+		return ((CreatureNPC) e).getHandle() instanceof RageEntity;
+	}
 
 	public int getNPCIdFromEntity(org.bukkit.entity.Entity e) 
 	{
@@ -502,18 +510,11 @@ public class RageNPCManager
 		this.activeNPCs = activeNPCs;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public HashMap<Integer, NPCInstance> getActiveNPCs() {		
+	    return activeNPCs;	 	
+	  }		
+	public void setActiveNPCs(HashMap<Integer, NPCInstance> activeNPCs) {
+		this.activeNPCs = activeNPCs;
+	 	 	
+	}
 }

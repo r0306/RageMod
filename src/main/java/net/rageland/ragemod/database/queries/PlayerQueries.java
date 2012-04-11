@@ -1,4 +1,4 @@
-package net.rageland.ragemod.dbqueries;
+package net.rageland.ragemod.database.queries;
 
 // TODO: Consider fetching all players that have logged in in the last 24 hours on server startup.  May save some lag
 

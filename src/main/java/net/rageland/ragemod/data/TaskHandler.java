@@ -13,6 +13,7 @@ import net.rageland.ragemod.npc.NPCLocation;
 import net.rageland.ragemod.npc.NPCTown;
 import net.rageland.ragemod.utilities.Util;
 import net.rageland.ragemod.world.PlayerTown;
+import net.rageland.ragemod.world.SandLot;
 
 
 public class TaskHandler 
@@ -248,6 +249,12 @@ public class TaskHandler
 		
 		// Despawn NPCs
 		plugin.npcManager.despawnExpired();
+	}
+	
+	private SandLot sandLot;
+	
+	public void fillSandlot(RageMod plugin) {
+		sandLot.processFillSandlot(plugin);
 	}
 	
 	

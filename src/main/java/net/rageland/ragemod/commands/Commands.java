@@ -5,9 +5,9 @@ import java.util.Date;
 import java.util.HashMap;
 
 import net.rageland.ragemod.Build;
-import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.entity.PlayerData;
+import net.rageland.ragemod.config.RageConfig;
 import net.rageland.ragemod.data.TownHandler;
 import net.rageland.ragemod.data.PlayerHandler;
 import net.rageland.ragemod.entity.PlayerData;

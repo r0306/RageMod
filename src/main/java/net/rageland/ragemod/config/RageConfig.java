@@ -1,8 +1,9 @@
-package net.rageland.ragemod;
+package net.rageland.ragemod.config;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.world.TownLevel;
 
 import org.bukkit.ChatColor;
