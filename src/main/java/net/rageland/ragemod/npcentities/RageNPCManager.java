@@ -16,6 +16,7 @@ import net.rageland.ragemod.npc.NPCInstance.NPCType;
 import net.rageland.ragemod.npcentities.RageEntity;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
@@ -23,19 +24,25 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.plugin.PluginManager;
 
 @SuppressWarnings("unused")
 public class RageNPCManager
 {
-	private int taskid;
+	int taskid;
+	static int staskid;
 	private RageMod plugin;
 	//private NPCSpawner npcSpawner;
 	private Random random;
+	private static RageMod pluginS;
 	
 	// Data storage
+	private static HashMap<Integer, NPCInstance> sActiveNPCs = new HashMap<Integer, NPCInstance>();
 	private HashMap<Integer, NPCInstance> activeNPCs = new HashMap<Integer, NPCInstance>();
 	private NPCLocationPool npcLocationPool;
-	private NPCPool npcPool;	
+	private NPCPool npcPool;
+	private static NPCPool sNpcPool;
+	private static NPCLocationPool sNpcLocationPool;
 
 	public RageNPCManager(RageMod plugin) 
 	{
@@ -54,6 +61,9 @@ public class RageNPCManager
 				HashSet<Integer> toRemove = new HashSet<Integer>();
 				for (int i : RageMod.getInstance().npcManager.activeNPCs.keySet()) 
 				{
+					
+					// The problem here is that Minecraft changes the obfuscation every release, and we don't know what it's been changed to :(
+					
 					//net.minecraft.server.Entity j = (net.minecraft.server.Entity)RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity(); // TODO Fix this!
 					//j.aA();
 					//if (j.dead) 
@@ -65,10 +75,12 @@ public class RageNPCManager
 					RageNPCManager.this.despawnById(n);
 			}
 		}, 100L, 100L);
-						//Listener listener;
-						//PluginManager pm = plugin.getServer().getPluginManager();
-						//pm.registerEvent(Event.Type.PLUGIN_DISABLE, new SL(), Priority.Normal, plugin);
-						//pm.registerEvent(Event.Type.CHUNK_LOAD, new WL(), Priority.Normal, plugin);
+						Listener listener;
+						PluginManager pm = plugin.getServer().getPluginManager();
+						SL sl = plugin.sl;
+						WL wl = plugin.wl;
+						pm.registerEvents(sl, plugin);
+						pm.registerEvents(wl, plugin);
 						
 
 	}
@@ -175,6 +187,30 @@ public class RageNPCManager
 		try 
 		{
 			// TODO Fix this!
+			//final World world;
+			//world.removeEntity(npc);
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	private static void sDespawn(NPCInstance instance)
+	{
+		if (instance == null)
+			return;
+		
+		// Return the NPC and Location back to the pool
+		sNpcPool.deactivate(instance.getNPCid());
+		sNpcLocationPool.deactivate(instance.getLocation().getID());
+		
+		RageEntity npc = instance.getEntity();
+		if (npc == null)
+			return;
+		
+		try 
+		{
+			// TODO Fix this!
 			//npc.world.removeEntity(npc);
 		} catch (Exception e) 
 		{
@@ -194,6 +230,19 @@ public class RageNPCManager
 		}
 
 		activeNPCs.clear();
+	}
+	
+	public static void sDespawnAll(boolean deleteInstances) 
+	{
+		for (NPCInstance instance : sActiveNPCs.values()) 
+		{
+			if( deleteInstances && instance != null ) 
+				pluginS.database.npcQueries.disableInstance(instance.getID());
+			
+			sDespawn(instance);
+		}
+
+		sActiveNPCs.clear();
 	}
 /*  // TODO Fix this!
 	public void moveNPC(int id, Location l) 
@@ -272,47 +321,6 @@ public class RageNPCManager
 			}
 		}
 		return null;
-	}
-
-	private class SL implements Listener 
-	{
-		private SL() 
-		{
-			
-		}
-
-		public void onPluginDisable(PluginDisableEvent event) 
-		{
-			if (event.getPlugin() == RageNPCManager.this.plugin) 
-			{
-				RageNPCManager.this.despawnAll(false);
-				RageNPCManager.this.plugin.getServer().getScheduler().cancelTask(RageNPCManager.this.taskid);
-			}
-		}
-	}
-
-	private class WL implements Listener 
-	{
-		private WL() 
-		{
-			
-		}
-
-		public void onChunkLoad(ChunkLoadEvent event) 
-		{
-			for (NPCInstance npcInstance : RageMod.getInstance().npcManager.activeNPCs.values())
-			{
-				RageEntity npc = null;
-				if( npcInstance != null )
-					npc = npcInstance.getEntity();
-				
-				if ((npc != null) && (event.getChunk() == npc.getBukkitEntity().getLocation().getBlock().getChunk())) 
-				{   // TODO FIX THIS!
-					//World world = new Location(event.getWorld(), taskid, taskid, taskid);
-					//world.getWorldServer().addEntity(npc);
-				}
-			}
-		}
 	}
 
 	// Adds a new instance to the HashMap

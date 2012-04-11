@@ -52,10 +52,11 @@ public class NPCPhrase
 	}
 	
 	// Returns whether the phrase needs to have its XML parsed
-//	public boolean isDynamic()
-//	{
-//		return isDynamic;
-//	}
+	// Is this right?
+	public boolean isDynamic()
+	{
+		return isDynamic;
+	}
 	
 	// Parse XML
 	private String parse(String toParse, PlayerData playerData)

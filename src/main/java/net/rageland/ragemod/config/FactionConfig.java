@@ -1,6 +1,7 @@
 package net.rageland.ragemod.config;
 
 public class FactionConfig {
+	
 	private final String Name;
 	private final int id;
 	private final String Color;
@@ -31,6 +32,9 @@ public class FactionConfig {
 	}
 	public boolean isPlayerFaction() {
 		return PlayerFaction;
+	}
+	public String getLanguage() {
+		return language;
 	}
 
 	public String getLanguage() {

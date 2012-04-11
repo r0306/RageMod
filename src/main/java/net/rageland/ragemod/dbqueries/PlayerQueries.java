@@ -12,6 +12,8 @@ import java.util.HashSet;
 import org.bukkit.Location;
 
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.entity.Permits;
+import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.database.RageDB;
 import net.rageland.ragemod.entity.Permits;
 import net.rageland.ragemod.entity.PlayerData;

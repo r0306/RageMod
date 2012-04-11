@@ -86,7 +86,9 @@ public class QuestNPC extends RageEntity
 		}
 		else
 		{
-			// Say something from phrases maybe? This happens if it is a Quest END NPC, and the player is not on a quest, or a wrong one.
+			// This happens if it is a Quest END NPC, and the player is not on a quest, or a wrong one.
+			player.sendMessage("Either you are not on a quest, or I am not who you are looking for!");
+			// Maybe change that. Not very imaginative.
 		}
 	}
 }

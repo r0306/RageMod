@@ -28,8 +28,11 @@ import net.rageland.ragemod.listener.RMEntityListener;
 import net.rageland.ragemod.listener.RMPlayerListener;
 import net.rageland.ragemod.listener.RMServerListener;
 import net.rageland.ragemod.npcentities.RageNPCManager;
+import net.rageland.ragemod.npcentities.SL;
+import net.rageland.ragemod.npcentities.WL;
 import net.rageland.ragemod.quest.QuestManager;
 import net.rageland.ragemod.text.Message;
+import net.rageland.ragemod.data.LanguageHandler;
 import net.rageland.ragemod.config.*;
 
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -53,6 +56,8 @@ public class RageMod extends JavaPlugin {
     private RMEntityListener entityListener;
     private RageMod rm;
     private static RageMod plugin;
+    public SL sl;
+    public WL wl;
     
     private PluginDescriptionFile pdf = rm.getDescription();
     private Logger log = Bukkit.getLogger();

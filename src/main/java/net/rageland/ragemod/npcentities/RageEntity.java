@@ -50,19 +50,18 @@ public class RageEntity extends CreatureNPC
 	// TODO Fix this!
 	public RageEntity(NPCInstance instance)
 	{	
-		super (null);
-		/*super(new CraftNPC()); // TODO Fix this!
+		super(new CraftNPC()); // TODO Fix this! (The type net.minecraft.server.ItemInWorldManager cannot be resolved. It is indirectly referenced from required .class files)
 		
-		//NPCManager netMgr = new NPCNetworkManager(new Socket(),
-				//"NPC Manager", new NetHandler()
-				//{
-				//	public boolean c()
-				//	{
-				//		return true;
-				//	}
-				//});
+		NPCManager netMgr = new NPCNetworkManager(new NullSocket(),
+				"NPC Manager", new NetHandler()
+				{
+					public boolean c()
+					{
+						return true;
+					}
+				});
 		// TODO Fix this!
-		//this.netServerHandler = new NPCNetHandler(instance.server.getMCServer(), netMgr, this);*/
+		this.netServerHandler = new NPCNetHandler(instance.server.getMCServer(), netMgr, this);
 		this.lastTargetId = -1;
 		this.lastBounceId = -1;
 		this.lastBounceTick = 0L;
