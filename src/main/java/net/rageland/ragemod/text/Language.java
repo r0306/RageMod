@@ -1,6 +1,7 @@
 package net.rageland.ragemod.text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -8,38 +9,47 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.rageland.ragemod.test.WordGenCreepTongue;
+
 @SuppressWarnings("unused")
 public class Language 
 {
 	private String name;
-	private ArrayList<ArrayList<String>> dictionary;	// First index is word size
+	
+	private HashMap<String,String> bdEnLa = new HashMap<String,String>();
+	private HashMap<String,String> bdLaEn = new HashMap<String,String>();
+    private HashMap<String,String> tdEnLa = new HashMap<String,String>();
+	private HashMap<String,String> tdLaEn = new HashMap<String,String>();
+	
 	private Pattern puncPattern;
 	private Random random;
+	private WordGen Gen;
 	
-	public Language()
+	public Language(String name, WordGen gen)
 	{
 		// Temp - set up sample dictionary
-		name = "Test Language";
+		this.name = name;
 		puncPattern = Pattern.compile("([^\\.\\,\\!\\?\\;\\:]*)([\\.\\,\\!\\?\\;\\:]*)$");
 		random = new Random();
 		
-		dictionary = new ArrayList<ArrayList<String>>();
-		
-		// Set up banks for up to 12 letter words
-		for( int i = 0; i < 12; i++ )
-		{
-			dictionary.add(new ArrayList<String>());
+		this.Gen = gen;
+		if (this.name == "CreepTongue") {
+			this.Gen = new WordGenCreepTongue();
 		}
+		
+		// Load data
 	}
 	
 	// Add a new word to the dictionary
 	public void addWord(String word)
 	{
-		addWord(word, word.length());
+		this.tdEnLa.put(word,this.Gen.gen(word.length()+1) );
+	    this.tdLaEn.put(this.Gen.gen(word.length()+1),word );
 	}
-	public void addWord(String word, int length)
+	public void addWord(String word, String meaning)
 	{
-		dictionary.get(length - 1).add(word);
+		this.bdEnLa.put(word,meaning );
+		this.bdLaEn.put(meaning,word ); 
 	}
 	
 	// Returns a list of partially and completely translated version of the source string
@@ -97,6 +107,7 @@ public class Language
 				wordLength = 12;
 			
 			// Pull a random word of that length from the dictionary
+			// TODO Perdemot, your changes broke this, I'm not gonna change it cause I haven't seen what you've done thoroughly.
 			String newWord = dictionary.get(wordLength - 1).get(random.nextInt(dictionary.get(wordLength - 1).size()));
 			
 			// Test for capitalization

@@ -12,6 +12,7 @@ import net.rageland.ragemod.commands.PermitCommands;
 import net.rageland.ragemod.commands.QuestCommands;
 import net.rageland.ragemod.commands.RageCommands;
 import net.rageland.ragemod.commands.TownCommands;
+import net.rageland.ragemod.commands.LanguageCommands;
 import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.utilities.Util;
 import net.rageland.ragemod.world.PlayerTown;
@@ -51,6 +52,7 @@ public class RMPlayerListener implements Listener
     private NPCTownCommands npcTownCommands;
     private PermitCommands permitCommands;
     private RageCommands rageCommands;
+    private LanguageCommands langCommands;
 
     public RMPlayerListener(RageMod instance) 
     {
@@ -66,6 +68,7 @@ public class RMPlayerListener implements Listener
         npcTownCommands = new NPCTownCommands(plugin);
         permitCommands = new PermitCommands(plugin);
         rageCommands = new RageCommands(plugin);
+        langCommands = new LanguageCommands(plugin);
     }
 
     // Pull the player data from the DB and register in memory
@@ -159,8 +162,15 @@ public class RMPlayerListener implements Listener
     	}
     	else if( split[0].equalsIgnoreCase("/language") || split[0].equalsIgnoreCase("/lang") )
     	{
-    		commands.language(player);
     		event.setCancelled(true);
+    	} else if (split[0].equalsIgnoreCase("/speak") || split[0].equalsIgnoreCase("/sp")) 
+    	{
+    		if (split.length == 2) 
+    		{
+    		langCommands.speak(player, split[1]);
+    		} else {
+    			langCommands.speak(player, split);
+    		}
     	}
     	else if( split[0].equalsIgnoreCase("/affinity") || split[0].equalsIgnoreCase("/aff") )
     	{

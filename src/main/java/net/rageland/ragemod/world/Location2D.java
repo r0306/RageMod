@@ -5,8 +5,8 @@ import org.bukkit.Location;
 // Simplified version of location checking that ignores Y coordinates - for zones and towns
 public class Location2D 
 {
-	private double x;
-	private double z;
+	double x;
+	double z;
 	
 	public Location2D( double X, double Z )
 	{

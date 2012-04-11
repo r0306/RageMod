@@ -12,6 +12,10 @@ public class WarZoneConfig {
 	
 	public String Zone_WZ_CENTER = "";
 	public String Zone_WZ_REGION = "";
+	public boolean Signs_Protected = false;
+	public boolean Chests_Protected = true;
+	public int WarZone_X_Factor = 2;
+	public int WarZone_Z_Factor = 2;
 	
 	public boolean contains(Material mat) {
 		return false;	

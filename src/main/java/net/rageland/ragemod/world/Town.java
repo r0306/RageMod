@@ -56,6 +56,14 @@ public abstract class Town
 		return name;
 	}
 	
+	public Location2D getSeCorner(Region2D r2d) {
+		return r2d.seCorner;
+	}
+	
+	public Location2D getNwCorner(Region2D r2d) {
+		return r2d.nwCorner;
+	}
+	
 	// Returns whether or not the specified location is inside the region
 	public boolean isInside(Location location)
 	{
