@@ -4,12 +4,14 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.config.WarZoneConfig;
 import net.rageland.ragemod.config.ZonesConfig;
 
 public class Zone {
 	private ZonesConfig config;
 	private RageMod plugin;
 	private int Beginning;
+	private WarZoneConfig wzConfig;
 	
     public World world;
     public World nether;
@@ -21,11 +23,16 @@ public class Zone {
     public Location TZ_Center;
     public Region3D TZ_Region;
     
-    public Zone(RageMod Plugin, ZonesConfig config){
+    
+    public Location WZ_Center;
+    public Region3D WZ_Region;
+    
+    public Zone(RageMod Plugin, ZonesConfig config, WarZoneConfig wzConfig){
     	this.config= config;
     	this.plugin=Plugin;
     	this.worldSpawn= new Location2D(world.getSpawnLocation());
     	this.Beginning = this.plugin.zones.getoutestline();
+    	this.wzConfig = wzConfig;
     }
     
     public boolean isInside(Location loc){
@@ -47,6 +54,14 @@ public class Zone {
     
     public int getOuterLine(){
     	return this.Beginning+this.config.getWidth();
+    }
+    
+    public WarZoneConfig getWzConfig() {
+    	return this.wzConfig;
+    }
+    
+    public boolean isInsideWarzone(Location loc) {
+    	return (this.WZ_Region.isInside(loc));
     }
     
 

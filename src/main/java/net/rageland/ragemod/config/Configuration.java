@@ -1,4 +1,4 @@
-package net.rageland.ragemod;
+package net.rageland.ragemod.config;
 
 import java.io.File;
 import java.io.IOException;

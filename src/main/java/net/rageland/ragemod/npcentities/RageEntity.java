@@ -1,6 +1,5 @@
 package net.rageland.ragemod.npcentities;
 
-import java.net.Socket;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -15,6 +14,7 @@ import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.npc.NPCInstance;
 import net.rageland.ragemod.npc.NPCPhrase;
+import net.rageland.ragemod.utilities.NullSocket;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -50,10 +50,11 @@ public class RageEntity extends CreatureNPC
 	// TODO Fix this!
 	public RageEntity(NPCInstance instance)
 	{	
-		super(new CraftNPC()); // TODO Fix this! (The type net.minecraft.server.ItemInWorldManager cannot be resolved. It is indirectly referenced from required .class files)
+		super(null);
+		//super(new CraftNPC()); // TODO Fix this! (The type net.minecraft.server.ItemInWorldManager cannot be resolved. It is indirectly referenced from required .class files)
 		
 		NPCManager netMgr = new NPCNetworkManager(new NullSocket(),
-				"NPC Manager", new NetHandler()
+				"NPC Manager", new NPCNetHandler()
 				{
 					public boolean c()
 					{
@@ -137,11 +138,7 @@ public class RageEntity extends CreatureNPC
 		}
 	}
 
-	public void setPositionRotation(double x, double y, double z, float yaw,
-			float pitch) {
-		// TODO Unfinished
-		
-	}
+	
 
 	org.bukkit.entity.Entity bukkitEntity;
 	public org.bukkit.entity.Entity getBukkitEntity() {
@@ -149,13 +146,10 @@ public class RageEntity extends CreatureNPC
 		return bukkitEntity;
 	}
 
-	public void setPosition(double x, double y, double z) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	public boolean setSneak(boolean flag) {
-		return flag;
+	public void setPositionRotation(double x, double y, double z, float yaw,
+			float pitch) {
+		// TODO Unfinished	
 	}
 
 	@Override
@@ -184,13 +178,13 @@ public class RageEntity extends CreatureNPC
 
 	// 9-7-11 DC: SpeechData rewritten, will probably not need this anymore
 	// Pulls speech messages from the database
-//	public void addSpeechMessages() 
-//	{
-//		for( NPCPhrase message : plugin.database.npcQueries.getPhrases(instance.getRaceID(), instance.getTownID(), instance.getNPCid()) )
-//		{
-//			this.addSpeechMessage(message);
-//		}
-//	}
+	/*public void addSpeechMessages() 
+	{
+		for( NPCPhrase message : plugin.database.npcQueries.getPhrases(instance.getRaceID(), instance.getTownID(), instance.getNPCid()) )
+		{
+			this.addSpeechMessage(message);
+		}
+	}*/
 
 
 

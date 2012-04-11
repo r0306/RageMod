@@ -6,28 +6,59 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.config.RageConfig;
+import net.rageland.ragemod.config.WarZoneConfig;
 import net.rageland.ragemod.config.ZonesConfig;
+import net.rageland.ragemod.utilities.Util;
 import net.rageland.ragemod.world.Location2D;
+import net.rageland.ragemod.world.Region2D;
 import net.rageland.ragemod.world.Region3D;
-import net.rageland.ragemod.world.Zone;
 
 public class ZoneHandler {
 	
-	private final ArrayList<Zone> zones = new ArrayList<Zone>();
+	public String ZoneA_Name;
+	public int ZoneA_Border; 
+	public String ZoneB_Name;
+	public int ZoneB_Border; 
+	public String ZoneC_Name;
+	public int ZoneC_Border;
+	
+	private final ArrayList<net.rageland.ragemod.world.Zone> zones = new ArrayList<net.rageland.ragemod.world.Zone>();
 	private Location2D worldSpawn;
     public World world;
     public World nether;
     
+    private Region2D Capitol_RegionA;	  	
+    private Region2D Capitol_RegionB;
+    public static Region3D Capitol_SandLot;
+    public Location Capitol_Portal;
+    
+    private RageConfig config;
+    
     // Travel Zone <- TODO not sure how this looks like
     public Location TZ_Center;
     public Region3D TZ_Region;
+    
+    // War Zone <- TODO Probably not correct.
+    public Location WZ_Center;
+    public Region3D WZ_Region;
 	
-	public static enum Quadrant 
-	{
+    private WarZoneConfig wzConfig;
+    
+	public static enum Quadrant {
 		NW,
 		NE,
 		SW,
 		SE;
+	}
+	
+	public static enum Zone {
+		CAPITOL,
+		A,
+		B,
+		C,
+		OUTSIDE,
+		UNKNOWN;
 	}
 
 	//TODO Create an infinite long zone
@@ -44,23 +75,50 @@ public class ZoneHandler {
 		}
 		for (int i= 0;i < temp.length;i++){
 			if (temp[i]!= null){
-				this.zones.add(new Zone(plugin,temp[i]));
+				this.zones.add(new net.rageland.ragemod.world.Zone(plugin,temp[i], wzConfig)); //wzConfig may be wrong here.
 			}else{
 				//I'm an error that gets thrown then
 			}
 		}
+		// Perdemot, ATM it doesn't load the capitol regions, I'm adding it temporarily, as it's done been implemented another way yet..
+		      ZoneA_Name = config.Zone_NAME_A;	
+		      ZoneA_Border = config.Zone_BORDER_A;			  	
+		      ZoneB_Name = config.Zone_NAME_B;			  	
+		      ZoneB_Border = config.Zone_BORDER_B;			  	
+		      ZoneC_Name = config.Zone_NAME_C;			  	
+		      ZoneC_Border = config.Zone_BORDER_C;
+
+		      Capitol_RegionA = new Region2D(world, config.Capitol_X1a, config.Capitol_Z1a, config.Capitol_X2a, config.Capitol_Z2a);  	
+		      Capitol_RegionB = new Region2D(world, config.Capitol_X1b, config.Capitol_Z1b, config.Capitol_X2b, config.Capitol_Z2b);	  	
+		      Capitol_SandLot = new Region3D(world, config.Capitol_SANDLOT);
+		      Capitol_Portal = Util.getLocationFromCoords(world, config.Capitol_PORTAL_LOCATION);
+		      
+		      Capitol_RegionA = new Region2D(world, config.Capitol_X1a, config.Capitol_Z1a, config.Capitol_X2a, config.Capitol_Z2a);
+		      Capitol_RegionB = new Region2D(world, config.Capitol_X1b, config.Capitol_Z1b, config.Capitol_X2b, config.Capitol_Z2b);
+		      Capitol_SandLot = new Region3D(world, config.Capitol_SANDLOT);
+		      Capitol_Portal = Util.getLocationFromCoords(world, config.Capitol_PORTAL_LOCATION);
+		      
+		      
+		      // Is the travel zone supposed to be in the nether?
+		      TZ_Center = Util.getLocationFromCoords(nether, config.Zone_TZ_CENTER);
+		      TZ_Region = new Region3D(nether, config.Zone_TZ_REGION);
+		      
+		      WZ_Center = Util.getLocationFromCoords(world, wzConfig.Zone_WZ_CENTER);
+		      WZ_Region = new Region3D(world, wzConfig.Zone_WZ_REGION);
+		      
+		      worldSpawn = new Location2D(world.getSpawnLocation());
 	}
 	
 	public int getoutestline(){
 		return this.zones.get(this.zones.size()).getOuterLine();
 	}
 	
-	public Zone isInside(Location loc){
+	public net.rageland.ragemod.world.Zone isInside(Location loc){
 		for (int i= 0;i < this.zones.size();i++){
 			if (this.zones.get(i).isInside(loc)) return this.zones.get(i);
 		}
 		return null;
-		//should not happen ...
+		//should not happen ... Das ist error
 	}
 	
     public Quadrant getQuadrant(Location location)
@@ -92,7 +150,7 @@ public class ZoneHandler {
 		for (int i= 0;i < this.zones.size();i++){
 			if (this.zones.get(i).isInside(loc)) return this.zones.get(i).getConfig().getName();
 		}
-		return "U no Zone aka Error";
+		return "An error has ocurred. You appear to not be in a zone!";
 		//should not happen
     }
 

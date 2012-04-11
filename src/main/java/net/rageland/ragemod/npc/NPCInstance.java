@@ -229,13 +229,23 @@ public class NPCInstance
 		return this.data;
 	}
 	
+	// Taken from RageEntity
 	
-
-
+	public void setPosition(double x, double y, double z) {
+		// TODO Auto-generated method stub		
+	}
 	
-
+	public void setPositionRotation(double x, double y, double z, float yaw,
+			float pitch) {
+		// TODO Unfinished	
+	}
 	
+	public boolean setSneak(boolean flag) {
+		return flag;
+	}
 	
-	
+	public boolean a(boolean b, boolean b1, boolean b2) {
+		return true;
+	}
 	
 }

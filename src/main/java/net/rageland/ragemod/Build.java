@@ -2,6 +2,7 @@ package net.rageland.ragemod;
 
 import java.util.ArrayList;
 
+import net.rageland.ragemod.config.RageConfig;
 import net.rageland.ragemod.data.FactionHandler;
 
 import org.bukkit.Location;

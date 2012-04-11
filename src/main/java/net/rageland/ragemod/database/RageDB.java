@@ -9,15 +9,15 @@ package net.rageland.ragemod.database;
 import java.sql.*;
 import java.util.logging.Logger;
 
-import net.rageland.ragemod.RageConfig;
 import net.rageland.ragemod.RageMod;
-import net.rageland.ragemod.dbqueries.FactionQueries;
-import net.rageland.ragemod.dbqueries.LotQueries;
-import net.rageland.ragemod.dbqueries.NPCQueries;
-import net.rageland.ragemod.dbqueries.NPCTownQueries;
-import net.rageland.ragemod.dbqueries.PlayerQueries;
-import net.rageland.ragemod.dbqueries.TaskQueries;
-import net.rageland.ragemod.dbqueries.TownQueries;
+import net.rageland.ragemod.config.RageConfig;
+import net.rageland.ragemod.database.queries.FactionQueries;
+import net.rageland.ragemod.database.queries.LotQueries;
+import net.rageland.ragemod.database.queries.NPCQueries;
+import net.rageland.ragemod.database.queries.NPCTownQueries;
+import net.rageland.ragemod.database.queries.PlayerQueries;
+import net.rageland.ragemod.database.queries.TaskQueries;
+import net.rageland.ragemod.database.queries.TownQueries;
 
 public class RageDB {
 
