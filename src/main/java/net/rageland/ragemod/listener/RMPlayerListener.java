@@ -13,6 +13,7 @@ import net.rageland.ragemod.commands.PermitCommands;
 import net.rageland.ragemod.commands.QuestCommands;
 import net.rageland.ragemod.commands.RageCommands;
 import net.rageland.ragemod.commands.TownCommands;
+import net.rageland.ragemod.commands.LanguageCommands;
 import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.utilities.Util;
 import net.rageland.ragemod.world.PlayerTown;
@@ -68,6 +69,7 @@ public class RMPlayerListener implements Listener
         npcTownCommands = new NPCTownCommands(plugin);
         permitCommands = new PermitCommands(plugin);
         rageCommands = new RageCommands(plugin);
+        langCommands = new LanguageCommands(plugin);
     }
 
     // Pull the player data from the DB and register in memory

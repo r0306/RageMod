@@ -170,22 +170,6 @@ public class Commands
 	}
 	
 	// /language or /lang
-	public void language(Player player)
-	{
-		PlayerData playerData = plugin.players.get(player.getName());
-		String skillText;
-		
-		plugin.message.send(player, ChatColor.GOLD + "Language skill:");
-		
-		for(int i = 1; i <= 4; i++ )
-		{
-			if( playerData.getLanguageSkill(i) == 100 )
-				skillText = ChatColor.WHITE + "100/100";
-			else
-				skillText = ChatColor.GRAY + Integer.toString(playerData.getLanguageSkill(i)) + "/100";
-			plugin.message.send(player, Message.LANGUAGE_NAME_COLOR + "   " + plugin.config.NPC_LANGUAGE_NAMES.get(i) + ": " + skillText);
-		}
-	}
 	
 	// /affinity or /aff
 	public void affinity(Player player)
