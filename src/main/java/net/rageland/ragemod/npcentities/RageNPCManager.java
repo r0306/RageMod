@@ -59,7 +59,7 @@ public class RageNPCManager
 			{
 				// TODO Fix this!
 				HashSet<Integer> toRemove = new HashSet<Integer>();
-				for (int i : RageMod.getInstance().npcManager.activeNPCs.keySet()) 
+				for (int i : RageMod.getInstance().npcManager.getActiveNPCs().keySet()) 
 				{
 					
 					// The problem here is that Minecraft changes the obfuscation every release, and we don't know what it's been changed to :(
@@ -165,9 +165,9 @@ public class RageNPCManager
 	// Despawn one NPC by ID
     public void despawnById(int id) 
 	{
-		NPCInstance instance = activeNPCs.get(id);
+		NPCInstance instance = getActiveNPCs().get(id);
 		despawn(instance);
-		activeNPCs.remove(id);
+		getActiveNPCs().remove(id);
 	}
 	
 	// Despawn the NPC
@@ -221,7 +221,7 @@ public class RageNPCManager
 	// Despawn all active NPCs
 	public void despawnAll(boolean deleteInstances) 
 	{
-		for (NPCInstance instance : activeNPCs.values()) 
+		for (NPCInstance instance : getActiveNPCs().values()) 
 		{
 			if( deleteInstances && instance != null ) 
 				plugin.database.npcQueries.disableInstance(instance.getID());
@@ -229,7 +229,7 @@ public class RageNPCManager
 			despawn(instance);
 		}
 
-		activeNPCs.clear();
+		getActiveNPCs().clear();
 	}
 	
 	public static void sDespawnAll(boolean deleteInstances) 
@@ -297,9 +297,9 @@ public class RageNPCManager
 	{
 		if ((e instanceof HumanEntity)) 
 		{
-			for (int i : activeNPCs.keySet()) 
+			for (int i : getActiveNPCs().keySet()) 
 			{
-				if (((RageEntity) activeNPCs.get(i).getEntity()).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
+				if (((RageEntity) getActiveNPCs().get(i).getEntity()).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
 				{
 					return i;
 				}
@@ -312,11 +312,11 @@ public class RageNPCManager
 	{
 		if ((e instanceof HumanEntity)) 
 		{
-			for (int i : RageMod.getInstance().npcManager.activeNPCs.keySet()) 
+			for (int i : RageMod.getInstance().npcManager.getActiveNPCs().keySet()) 
 			{
-				if (((RageEntity) RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity()).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
+				if (((RageEntity) RageMod.getInstance().npcManager.getActiveNPCs().get(i).getEntity()).getBukkitEntity().getEntityId() == ((HumanEntity) e).getEntityId()) 
 				{
-					return (RageEntity) RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity();
+					return (RageEntity) RageMod.getInstance().npcManager.getActiveNPCs().get(i).getEntity();
 				}
 			}
 		}
@@ -326,13 +326,13 @@ public class RageNPCManager
 	// Adds a new instance to the HashMap
 	public void addInstance(int id_NPCInstance, NPCInstance instance) 
 	{
-		this.activeNPCs.put(id_NPCInstance, instance);
+		this.getActiveNPCs().put(id_NPCInstance, instance);
 	}
 
 	// Checks to see if the entity is contained by activeNPCs
 	public boolean contains(RageEntity RageEntity) 
 	{
-		for( NPCInstance instance : activeNPCs.values() )
+		for( NPCInstance instance : getActiveNPCs().values() )
 		{
 			if( instance.getEntity() == RageEntity )
 				return true;
@@ -343,7 +343,7 @@ public class RageNPCManager
     // Return all instances
     public ArrayList<NPCInstance> getAllInstances()
     {
-    	return new ArrayList<NPCInstance>(activeNPCs.values());
+    	return new ArrayList<NPCInstance>(getActiveNPCs().values());
     }
 
     // Associates NPCLocations with NPCTowns, called on startup
@@ -361,7 +361,7 @@ public class RageNPCManager
 	{
 		ArrayList<NPCInstance> instances = new ArrayList<NPCInstance>();
 		
-		for( NPCInstance instance : activeNPCs.values() )
+		for( NPCInstance instance : getActiveNPCs().values() )
 		{
 			if( instance.getLocation().getTown() == null )
 				instances.add(instance);
@@ -467,14 +467,14 @@ public class RageNPCManager
 	// Despawns all NPCs whose time has expired
 	public void despawnExpired() 
 	{
-		ArrayList<NPCInstance> instances = new ArrayList<NPCInstance>(activeNPCs.values());
+		ArrayList<NPCInstance> instances = new ArrayList<NPCInstance>(getActiveNPCs().values());
 		
 		for( NPCInstance instance : instances )
 		{
 			if( instance.isExpired() )
 			{
 				despawn(instance);
-				activeNPCs.remove(instance.getID());
+				getActiveNPCs().remove(instance.getID());
 				System.out.println("Automatically despawned NPC " + instance.getName());
 			}
 		}
@@ -492,6 +492,14 @@ public class RageNPCManager
 			return true;
 		}
 		return false;
+	}
+
+	public HashMap<Integer, NPCInstance> getActiveNPCs() {
+		return activeNPCs;
+	}
+
+	public void setActiveNPCs(HashMap<Integer, NPCInstance> activeNPCs) {
+		this.activeNPCs = activeNPCs;
 	}
 	
 	

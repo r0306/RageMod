@@ -15,7 +15,7 @@ public class WL implements Listener
 
 		public void onChunkLoad(ChunkLoadEvent event) 
 		{
-			for (NPCInstance npcInstance : RageMod.getInstance().npcManager.activeNPCs.values())
+			for (NPCInstance npcInstance : RageMod.getInstance().npcManager.getActiveNPCs().values())
 			{
 				RageEntity npc = null;
 				if( npcInstance != null )

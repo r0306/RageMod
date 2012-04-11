@@ -15,6 +15,7 @@ import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.npc.NPCInstance;
 import net.rageland.ragemod.npc.NPCPhrase;
+import net.rageland.ragemod.utilities.NullSocket;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -50,7 +51,7 @@ public class RageEntity extends CreatureNPC
 	// TODO Fix this!
 	public RageEntity(NPCInstance instance)
 	{	
-		super(new CraftNPC()); // TODO Fix this! (The type net.minecraft.server.ItemInWorldManager cannot be resolved. It is indirectly referenced from required .class files)
+		super(null); // TODO Fix this! (The type net.minecraft.server.ItemInWorldManager cannot be resolved. It is indirectly referenced from required .class files)
 		
 		NPCManager netMgr = new NPCNetworkManager(new NullSocket(),
 				"NPC Manager", new NetHandler()
