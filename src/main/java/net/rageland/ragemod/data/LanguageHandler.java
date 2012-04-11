@@ -46,6 +46,11 @@ public class LanguageHandler
 				return "XX";
 		}
 	}
+
+	public int getlangid(String lang) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 	
 	

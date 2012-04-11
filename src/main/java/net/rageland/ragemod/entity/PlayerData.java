@@ -28,6 +28,7 @@ public class PlayerData
 	public int id_Player;
 	public String name;
 	public int id_Faction;
+	public int isSpeaking;
 	public boolean isMember = false;
 	public Date memberExpiration;
 	public float bounty;
