@@ -5,6 +5,7 @@ import net.rageland.ragemod.commands.Commands;
 import net.rageland.ragemod.commands.CompassCommands;
 import net.rageland.ragemod.commands.DebugCommands;
 import net.rageland.ragemod.commands.FactionCommands;
+import net.rageland.ragemod.commands.LanguageCommands;
 import net.rageland.ragemod.commands.LotCommands;
 import net.rageland.ragemod.commands.NPCCommands;
 import net.rageland.ragemod.commands.NPCTownCommands;
@@ -51,6 +52,7 @@ public class RMPlayerListener implements Listener
     private NPCTownCommands npcTownCommands;
     private PermitCommands permitCommands;
     private RageCommands rageCommands;
+    private LanguageCommands langcommands;
 
     public RMPlayerListener(RageMod instance) 
     {
@@ -159,7 +161,16 @@ public class RMPlayerListener implements Listener
     	}
     	else if( split[0].equalsIgnoreCase("/language") || split[0].equalsIgnoreCase("/lang") )
     	{
-    		commands.language(player);
+
+    		event.setCancelled(true);
+    	}
+    	else if( split[0].equalsIgnoreCase("/speak") || split[0].equalsIgnoreCase("/sp") )
+    	{
+    		if (split.length == 2){
+    		langcommands.speak(player,split[1]);
+    		}else{
+    			langcommands.speak(player,split);
+    		}
     		event.setCancelled(true);
     	}
     	else if( split[0].equalsIgnoreCase("/affinity") || split[0].equalsIgnoreCase("/aff") )
