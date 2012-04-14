@@ -232,7 +232,7 @@ public class PlayerQueries {
 		}
     	
     	return permits;
-	} 
+	}
 	
 	// Return all permits acquired by the player
 	public HashSet<Integer> getInteractions(int id_Player)

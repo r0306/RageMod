@@ -71,8 +71,7 @@ public class GatheringQuest extends Quest
 	@Override
 	public void statusUpdate(Player player, PlayerData playerData)
 	{
-		// TODO Auto-generated method stub
-
+		// TODO Finish this
 	}
 
 }

@@ -9,6 +9,7 @@ public class QuestManager
 {
 	private RageMod plugin;
 	public HashMap<Integer, Quest> quests = new HashMap<Integer, Quest>();
+	public static HashMap<Integer, Quest> squests = new HashMap<Integer, Quest>();
 
 	public QuestManager()
 	{

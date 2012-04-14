@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import net.rageland.ragemod.RageMod;
@@ -84,6 +85,7 @@ public class PlayerData
 	// Misc.
 	private RageMod plugin;
 	private Player player;
+	private World world;
 	
 	
 	// Constructor
@@ -174,13 +176,13 @@ public class PlayerData
 		
 		if( id_Faction != 0 )
 			colorCode = plugin.factions.getColorCode(this.id_Faction);
-		else if( RageMod.perms.playerInGroup("world", this.name, "Owner") )
+		else if( RageMod.perms.playerInGroup("Rageland", this.name, "Owner") )
 			colorCode = 'o';
-		else if( RageMod.perms.playerInGroup("world", this.name, "Admin") )
+		else if( RageMod.perms.playerInGroup("Rageland", this.name, "Admin") )
 			colorCode = 'a';
-		else if( RageMod.perms.playerInGroup("world", this.name, "Moderator") )
+		else if( RageMod.perms.playerInGroup("Rageland", this.name, "Moderator") || RageMod.perms.playerInGroup("Rageland", this.name, "TrialMod") )
 			colorCode = 'm';
-		else if( RageMod.perms.playerInGroup("world", this.name, "Citizen") )
+		else if( RageMod.perms.playerInGroup("Rageland", this.name, "Citizen") || RageMod.perms.playerInGroup(this.world, this.name, "Member") )
 			colorCode = 'c';
 		else
 			colorCode = 't';	// tourist

@@ -79,7 +79,7 @@ public class KillCreatureQuest extends Quest
 		{
 			plugin.message
 					.parse(player,
-							"You are already on a quest. To abandon the quest write /quest abandon");
+							"You are already on a quest. To abandon the quest type /quest abandon");
 		} 
 		else if(!questData.isRequirementsMet(playerData)) {
 			plugin.message.parse(player, "You don't meet the requirements for this quest.");

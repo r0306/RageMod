@@ -1,4 +1,4 @@
-package net.rageland.ragemod.test;
+package net.rageland.ragemod.text.languages;
 
 import net.rageland.ragemod.text.WordGen;
 

@@ -8,13 +8,15 @@ public class Flags
 	
 	/**
 	 * When a quest is created it is always active.
+	 * @param isRepeatable 
 	 * @param repeatable
 	 * @param random
 	 */
-	public Flags(boolean isNonExclusive, boolean isReserved)
+	public Flags(boolean isNonExclusive, boolean isReserved, boolean isRepeatable)
 	{
 		this.isNonExclusive = isNonExclusive;
 		this.isReserved = isReserved;
+		this.isRepeatable = isRepeatable;
 	}
 	
 	public boolean isNonExclusive()
@@ -28,7 +30,6 @@ public class Flags
 	}
 
 	public boolean isRepeatable() {
-		// TODO Auto-generated method stub
 		return isRepeatable;
 	}
 }

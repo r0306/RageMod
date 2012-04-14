@@ -37,7 +37,7 @@ public class Build
 	    //		L: Liquid (water/lava)
 	    //		n: Snow
 	    //		i: Iron Block
-	    //		S: Special faction block (lapis/netherrack)
+	    //		S: Special faction block (Lapis or Netherrack)
 		for( int x = 0; x < 20; x++ )
 		{
 			for( int z = 0; z < 20; z++ )
@@ -62,17 +62,23 @@ public class Build
 				switch( layout.get(x).charAt(z) )
 				{
 					case 'c':
-						currentBlock.setType(Material.COBBLESTONE); break;
+						currentBlock.setType(Material.COBBLESTONE); 
+						break;
 					case 'd':
-						currentBlock.setType(Material.DIRT); break;
+						currentBlock.setType(Material.DIRT); 
+						break;
 					case 'p':
-						currentBlock.setType(Material.WOOD); break;
+						currentBlock.setType(Material.WOOD); 
+						break;
 					case 's':
-						currentBlock.setType(Material.STONE); break;
+						currentBlock.setType(Material.STONE); 
+						break;
 					case 't':
-						currentBlock.setType(Material.DOUBLE_STEP); break;
+						currentBlock.setType(Material.DOUBLE_STEP); 
+						break;
 					case 'o':
-						currentBlock.setType(Material.OBSIDIAN); break;
+						currentBlock.setType(Material.OBSIDIAN); 
+						break;
 					case 'O':
 						currentBlock.setType(Material.OBSIDIAN);
 						world.getBlockAt(cornerX + x, cornerY + 1, cornerZ + z).setType(Material.OBSIDIAN);
@@ -80,7 +86,8 @@ public class Build
 						world.getBlockAt(cornerX + x, cornerY + 3, cornerZ + z).setType(Material.OBSIDIAN);
 						break;
 					case 'g':
-						currentBlock.setType(Material.GLOWSTONE); break;
+						currentBlock.setType(Material.GLOWSTONE); 
+						break;
 					case 'G':
 						currentBlock.setType(Material.GLOWSTONE); 
 						world.getBlockAt(cornerX + x, cornerY + 1, cornerZ + z).setType(Material.GLOWSTONE);
@@ -111,11 +118,14 @@ public class Build
 						world.getBlockAt(cornerX + x, cornerY - 1, cornerZ + z).setType(plugin.factions.getLiquidBlock(id_Faction));
 						break;
 					case 'n':
-						currentBlock.setType(Material.SNOW_BLOCK); break;
+						currentBlock.setType(Material.SNOW_BLOCK); 
+						break;
 					case 'i':
-						currentBlock.setType(Material.IRON_BLOCK); break;
+						currentBlock.setType(Material.IRON_BLOCK); 
+						break;
 					case 'S':
-						currentBlock.setType(plugin.factions.getSpecialBlock(id_Faction)); break;
+						currentBlock.setType(plugin.factions.getSpecialBlock(id_Faction)); 
+						break;
 						
 				}
 			}

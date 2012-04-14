@@ -11,8 +11,7 @@ import net.rageland.ragemod.entity.Bounty;
 public class AllBountyHandler {
 	private Map<String, BountyHandler> BH = new HashMap<String, BountyHandler>();
 	private List<BountyHandler> BHL;
-	private RageMod plugin; 
-	private Vault vault;
+	private RageMod plugin;
 	
 	public void addPlayer(String PlayerName){
 		Bounty[] temp = null; //TODO get from query

@@ -53,7 +53,7 @@ public class RMPlayerListener implements Listener
     private NPCTownCommands npcTownCommands;
     private PermitCommands permitCommands;
     private RageCommands rageCommands;
-    private LanguageCommands langcommands;
+    private LanguageCommands langCommands;
 
     public RMPlayerListener(RageMod instance) 
     {
@@ -105,25 +105,20 @@ public class RMPlayerListener implements Listener
     	// Check for expired or new memberships
     	if( RageMod.perms.playerInGroup("world", playerData.name, "Member") && !playerData.isMember && !RageMod.perms.has(player, "ragemod.ismoderator") ) 
     	{
-    		// TODO: Find out a way to do this programatically
-    		// Message all mods/admins to demote the member
+    		// Automagical demotion.
     		for( Player onlinePlayer : plugin.getServer().getOnlinePlayers() )
     		{
-    			if( RageMod.perms.has(onlinePlayer, "ragemod.ismoderator") )
-    			{
-    				plugin.message.parse(onlinePlayer, playerData.getCodedName() + "'s membership has expired - please /demote him/her.");
-    			}
+    			RageMod.perms.playerAddGroup(onlinePlayer, "Citizen");
+    			RageMod.perms.playerRemoveGroup(onlinePlayer, "Member");
     		}
     	}
     	else if( !RageMod.perms.playerInGroup("world", playerData.name, "Member") && playerData.isMember && !RageMod.perms.has(player, "ragemod.ismoderator") ) 
     	{
-    		// Message all mods/admins to promote the member
+    		// Automagical promotion.
     		for( Player onlinePlayer : plugin.getServer().getOnlinePlayers() )
     		{
-    			if( RageMod.perms.has(onlinePlayer, "ragemod.ismoderator") )
-    			{
-    				plugin.message.parse(onlinePlayer, playerData.getCodedName() + " has donated $" + plugin.database.playerQueries.getRecentDonations(playerData.id_Player) + " to the server!  Please /promote him/her.");
-    			}
+    			RageMod.perms.playerAddGroup(onlinePlayer, "Member");
+    			RageMod.perms.playerRemoveGroup(onlinePlayer, "Citizen");
     		}
     	}
     }
@@ -169,9 +164,9 @@ public class RMPlayerListener implements Listener
     	else if( split[0].equalsIgnoreCase("/speak") || split[0].equalsIgnoreCase("/sp") )
     	{
     		if (split.length == 2){
-    		langcommands.speak(player,split[1]);
+    			langCommands.speak(player,split[1]);
     		}else{
-    			langcommands.speak(player,split);
+    			langCommands.speak(player,split);
     		}
     		event.setCancelled(true);
     	}

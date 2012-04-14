@@ -76,7 +76,7 @@ public class QuestQueries {
         									  rs.getInt("Required_Affinity"), rs.getInt("Required_Reputation")), 
         				0);
         		rewardData = new RewardData(new ItemStack(34), rs.getInt("Reward_ItemAmount"), (double)rs.getInt("Reward_Money"));
-        		flags = new Flags(rs.getBoolean("IsNonExclusive"), rs.getBoolean("IsReserved"));
+        		flags = new Flags(rs.getBoolean("IsNonExclusive"), rs.getBoolean("IsReserved"), rs.getBoolean("isRepeatable"));
         		
         		switch( rs.getInt("Type") )
         		{

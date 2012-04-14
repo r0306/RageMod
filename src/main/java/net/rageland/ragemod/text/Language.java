@@ -9,7 +9,7 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.rageland.ragemod.test.WordGenCreepTongue;
+import net.rageland.ragemod.text.languages.WordGenCreepTongue;
 
 @SuppressWarnings("unused")
 public class Language 

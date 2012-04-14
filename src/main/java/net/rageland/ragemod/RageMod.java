@@ -30,12 +30,14 @@ import net.rageland.ragemod.listener.RMServerListener;
 import net.rageland.ragemod.npcentities.RageNPCManager;
 import net.rageland.ragemod.npcentities.SL;
 import net.rageland.ragemod.npcentities.WL;
+//import net.rageland.ragemod.quest.Quest;
 import net.rageland.ragemod.quest.QuestManager;
 import net.rageland.ragemod.text.Message;
-import net.rageland.ragemod.data.LanguageHandler;
+//import net.rageland.ragemod.data.LanguageHandler;
 import net.rageland.ragemod.config.*;
 
 import org.bukkit.plugin.PluginDescriptionFile;
+//import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -58,7 +60,6 @@ public class RageMod extends JavaPlugin {
     private static RageMod plugin;
     public SL sl;
     public WL wl;
-    private LanguageHandler langHandler;
     
     private PluginDescriptionFile pdf = rm.getDescription();
     private Logger log = Bukkit.getLogger();
@@ -128,12 +129,12 @@ public class RageMod extends JavaPlugin {
     }
     
     public void creatingNPCTemp() { /*
-    	this.npcManager.spawnNPC("TraderNPC", new Location(getServer().getWorld("world"), -10.0D, 64.0D, 96.0D), "1", NPCManager.TRADERNPC);
-		this.npcManager.spawnNPC("QuestStartNPC", new Location(getServer().getWorld("world"), -10.0D, 64.0D, 94.0D), "2", NPCManager.QUESTSTARTNPC);
-		this.npcManager.spawnNPC("QuestEndNPC", new Location(getServer().getWorld("world"), -10.0D, 64.0D, 92.0D), "3", NPCManager.QUESTENDNPC);
+    	this.npcManager.spawnNPC("TraderNPC", new Location(getServer().getWorld("world"), -10.0D, 64.0D, 96.0D), "1", RageNPCManager.TRADERNPC);
+		this.npcManager.spawnNPC("QuestStartNPC", new Location(getServer().getWorld("world"), -10.0D, 64.0D, 94.0D), "2", RageNPCManager.QUESTSTARTNPC);
+		this.npcManager.spawnNPC("QuestEndNPC", new Location(getServer().getWorld("world"), -10.0D, 64.0D, 92.0D), "3", RageNPCManager.QUESTENDNPC);
 		this.npcManager.spawnNPC("QuestNPC", new Location(getServer().getWorld("world"), -10.0D, 64.0D,90.0D), "4", 3);
 		this.npcManager.spawnNPC("RewardNPC", new Location(getServer().getWorld("world"), -10.0D, 64.0D, 88.0D), "5", 5);
-		NPCManager.npcs.get("5").setQuest((Quest) QuestManager.quests.get(Integer.valueOf(1)));
+		RageNPCManager.npcs.get("5").setQuest((Quest) QuestManager.squests.get(Integer.valueOf(1)));
 		*/
     }
     
@@ -246,7 +247,6 @@ public class RageMod extends JavaPlugin {
         npcManager = new RageNPCManager(this);
         questManager = new QuestManager();
         message = new Message(this);
-        langHandler = new LanguageHandler(this);
     }
     
     private void loadDatabaseData()
