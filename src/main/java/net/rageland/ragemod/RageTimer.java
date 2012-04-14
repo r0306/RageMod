@@ -28,11 +28,12 @@ public class RageTimer implements Runnable
 			
 		//}
 			
-			if( plugin.tasks.getSeconds("FILL_SANDLOT") > plugin.config.Task_FILL_SANDLOT ) {					  	
-				        System.out.println("It has been " + plugin.tasks.getSeconds("FILL_SANDLOT") + " seconds since the last sandlot fill.");					  	
-				        plugin.tasks.fillSandlot(plugin);
-				        plugin.tasks.setComplete("FILL_SANDLOT");					  	
-				      }
+			if( plugin.tasks.getSeconds("FILL_SANDLOT") > plugin.config.Task_FILL_SANDLOT ) 
+			{					  	
+				System.out.println("It has been " + plugin.tasks.getSeconds("FILL_SANDLOT") + " seconds since the last sandlot fill.");					  	
+				plugin.tasks.fillSandlot(plugin);
+				plugin.tasks.setComplete("FILL_SANDLOT");					  	
+			}
 			
 		// Increment/reset the second hand
 		secondHand++;

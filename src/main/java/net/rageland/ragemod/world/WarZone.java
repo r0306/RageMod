@@ -29,11 +29,10 @@ public class WarZone {
 		double xArea = (r2d.nwCorner.x-r2d.seCorner.x)/2*wConfig.WarZone_X_Factor;
 		double zArea = (r2d.nwCorner.z-r2d.seCorner.z)/2*wConfig.WarZone_Z_Factor;
 		double townArea = zArea+xArea;
-		//extend it
+		// Expand the area
 		//use it for the warzone
 		//save around which town it is
 		// save all blocks in the zone
-		rdb.
 	}
 	
 	public void destroyWarZone() {

@@ -509,12 +509,4 @@ public class RageNPCManager
 	public void setActiveNPCs(HashMap<Integer, NPCInstance> activeNPCs) {
 		this.activeNPCs = activeNPCs;
 	}
-	
-	public HashMap<Integer, NPCInstance> getActiveNPCs() {		
-	    return activeNPCs;	 	
-	  }		
-	public void setActiveNPCs(HashMap<Integer, NPCInstance> activeNPCs) {
-		this.activeNPCs = activeNPCs;
-	 	 	
-	}
 }

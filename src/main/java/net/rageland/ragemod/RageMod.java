@@ -58,6 +58,7 @@ public class RageMod extends JavaPlugin {
     private static RageMod plugin;
     public SL sl;
     public WL wl;
+    private LanguageHandler langHandler;
     
     private PluginDescriptionFile pdf = rm.getDescription();
     private Logger log = Bukkit.getLogger();
@@ -163,26 +164,19 @@ public class RageMod extends JavaPlugin {
     
     public void checkForUpdates() {
    	try {
-	  	
             newVersion = updateCheck(currentVersion);
-	  	
+            
             if (newVersion > currentVersion) {
-	  	
-                log.warning("[RageMod] RageMod " + newVersion + " is released! You are running RageMod " + currentVersion);
-	  	
+                log.warning("[RageMod] RageMod " + newVersion + " is released! You are running RageMod " + currentVersion);  	
                 log.warning("[RageMod] Update RageMod at: http://dev.bukkit.org/server-mods/ragemod/files");
-	  	
-            }
-	  	
+            }	  	
         } catch (Exception e) {
 	  	
             // Ignore exceptions like a bawws!
 	  	
         }
 	  	
-  }
-	  	
-  
+  }	  	
 	  	
     private double updateCheck(double currentVersion) throws Exception {
 	  	
@@ -252,6 +246,7 @@ public class RageMod extends JavaPlugin {
         npcManager = new RageNPCManager(this);
         questManager = new QuestManager();
         message = new Message(this);
+        langHandler = new LanguageHandler(this);
     }
     
     private void loadDatabaseData()

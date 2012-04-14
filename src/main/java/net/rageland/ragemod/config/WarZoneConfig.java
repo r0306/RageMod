@@ -17,6 +17,10 @@ public class WarZoneConfig {
 	public int WarZone_X_Factor = 2;
 	public int WarZone_Z_Factor = 2;
 	
+	public String Square;
+			
+	public double Extra_Blocks_Around_Town = 10;
+	
 	public boolean contains(Material mat) {
 		return false;	
 	}

@@ -6,12 +6,15 @@ package net.rageland.ragemod.database.queries;
  * on this, cause I'm not good at DB stuff.
  */
 
-/**
- * 
- * @author PandazNWafflez
- *
- */
 
 public class BlockQueries {
+	
+	public void saveArea() {
+		
+	}
+	
+	public void loadArea() {
+		
+	}
 
 }
