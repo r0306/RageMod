@@ -245,7 +245,12 @@ public class NPCInstance
 	}
 	
 	public boolean a(boolean b, boolean b1, boolean b2) {
+		// TODO Perdemot look at this.
 		return true;
+	}
+
+	public void a(int x, int y, int z) {
+		// TODO Perdemot look at this.	
 	}
 	
 }
