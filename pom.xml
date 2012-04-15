@@ -35,6 +35,11 @@
   		<artifactId>Spout</artifactId>
   		<version>dev</version>
   	</dependency>
+	<dependency>
+		<groupId>org.bukkit.craftbukkit</groupId>
+		<artifactId>Craftbukkit</artifactId>
+		<version>1.2.4-R1</version>
+	</dependency>
   </dependencies>
   <build>
 	<defaultGoal>clean install</defaultGoal>
