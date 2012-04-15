@@ -3,6 +3,7 @@ package net.rageland.ragemod.world;
 import net.rageland.ragemod.config.WarZoneConfig;
 import net.rageland.ragemod.database.RageDB;
 
+@SuppressWarnings("unused")
 public class WarZone {
 	
 	private WarZoneConfig wConfig;

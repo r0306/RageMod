@@ -27,6 +27,7 @@ public class WarZoneConfig {
 
 	private static List<Material> Blocks_To_Drop;
 	
+	@SuppressWarnings("null")
 	public WarZoneConfig(){
 		//TODO get Data
 		Material[] mats = null; //This will be loaded out of the database

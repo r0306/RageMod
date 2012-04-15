@@ -37,8 +37,4 @@ public class FactionConfig {
 		return language;
 	}
 
-	public String getLanguage() {
-		return language;
-	}
-
 }

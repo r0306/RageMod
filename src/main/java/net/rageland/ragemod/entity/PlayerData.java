@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.config.RageConfig;
 import net.rageland.ragemod.npc.NPCInstance;
 import net.rageland.ragemod.quest.PlayerQuestData;
 import net.rageland.ragemod.quest.KillCreatureQuest;
@@ -21,6 +22,7 @@ import net.rageland.ragemod.world.Zone;
 // TODO: Should I be storing IDs for towns and such for all player data?  Then I would call the PlayerTowns hash
 //		 every time I need to retrieve the name.
 
+@SuppressWarnings("unused")
 public class PlayerData 
 {
 	// ***** DATABASE VALUES *****
@@ -86,6 +88,7 @@ public class PlayerData
 	private RageMod plugin;
 	private Player player;
 	private World world;
+	private RageConfig rc;
 	
 	
 	// Constructor
@@ -176,13 +179,13 @@ public class PlayerData
 		
 		if( id_Faction != 0 )
 			colorCode = plugin.factions.getColorCode(this.id_Faction);
-		else if( RageMod.perms.playerInGroup("Rageland", this.name, "Owner") )
+		else if( RageMod.perms.playerInGroup(rc.World_Name, this.name, rc.Owner_Group_Name) )
 			colorCode = 'o';
-		else if( RageMod.perms.playerInGroup("Rageland", this.name, "Admin") )
+		else if( RageMod.perms.playerInGroup(rc.World_Name, this.name, rc.Admin_Group_Name) )
 			colorCode = 'a';
-		else if( RageMod.perms.playerInGroup("Rageland", this.name, "Moderator") || RageMod.perms.playerInGroup("Rageland", this.name, "TrialMod") )
+		else if( RageMod.perms.playerInGroup(rc.World_Name, this.name, rc.Mod_Group_Name) || RageMod.perms.playerInGroup(rc.World_Name, this.name, rc.TrialMod_Group_Name) )
 			colorCode = 'm';
-		else if( RageMod.perms.playerInGroup("Rageland", this.name, "Citizen") || RageMod.perms.playerInGroup(this.world, this.name, "Member") )
+		else if( RageMod.perms.playerInGroup(rc.World_Name, this.name, rc.Normal_Group_Name) || RageMod.perms.playerInGroup(rc.World_Name, this.name, rc.Donator_Group_Name) )
 			colorCode = 'c';
 		else
 			colorCode = 't';	// tourist

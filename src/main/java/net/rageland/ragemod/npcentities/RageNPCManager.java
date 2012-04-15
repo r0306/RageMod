@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
-import net.citizensnpcs.lib.NPCSpawner;
-import net.citizensnpcs.lib.creatures.CreatureNPC;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.npc.NPCData;
 import net.rageland.ragemod.npc.NPCInstance;
@@ -18,23 +16,17 @@ import net.rageland.ragemod.npc.NPCInstance.NPCType;
 import net.rageland.ragemod.npcentities.RageEntity;
 
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-import org.bukkit.event.server.PluginDisableEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.plugin.PluginManager;
 
-@SuppressWarnings("unused")
 public class RageNPCManager
 {
 	int taskid;
 	static int staskid;
 	private RageMod plugin;
-	private NPCSpawner npcSpawner;
 	private Random random;
 	private static RageMod pluginS;
 	
@@ -64,11 +56,8 @@ public class RageNPCManager
 				for (int i : RageMod.getInstance().npcManager.getActiveNPCs().keySet()) 
 				{
 					
-					// TODO This needs porting to Citizens
+					RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity(); // TODO Fix this!
 					
-					//net.minecraft.server.Entity j = (net.minecraft.server.Entity)RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity(); // TODO Fix this!
-					//j.aA();
-					//if (j.dead) 
 					{
 						toRemove.add(i);
 					}
@@ -77,7 +66,6 @@ public class RageNPCManager
 					RageNPCManager.this.despawnById(n);
 			}
 		}, 100L, 100L);
-						Listener listener;
 						PluginManager pm = plugin.getServer().getPluginManager();
 						SL sl = plugin.sl;
 						WL wl = plugin.wl;
@@ -86,6 +74,7 @@ public class RageNPCManager
 						
 
 	}
+	
 	
 	// Used on startup to create NPC entities for all stored instances
 	public void spawnAllInstances() 
@@ -189,7 +178,7 @@ public class RageNPCManager
 		try 
 		{
 			// TODO Fix this!
-			final World world;
+			//final World world;
 			//world.removeEntity(npc);
 		} catch (Exception e) 
 		{
@@ -296,12 +285,12 @@ public class RageNPCManager
 		return (RageEntity) activeNPCs.get(id).getEntity();
 	}
 
-	public static boolean isNPC1(org.bukkit.entity.Entity e) 
+	public static boolean isNPC1(Entity e) 
 	{
-		return ((CreatureNPC) e).getHandle() instanceof RageEntity;
+		return e instanceof RageEntity;
 	}
 
-	public int getNPCIdFromEntity(org.bukkit.entity.Entity e) 
+	public int getNPCIdFromEntity(Entity e) 
 	{
 		if ((e instanceof HumanEntity)) 
 		{
@@ -316,7 +305,7 @@ public class RageNPCManager
 		return -1;
 	}
 
-	public static RageEntity getNPCFromEntity(org.bukkit.entity.Entity e) 
+	public static RageEntity getNPCFromEntity(Entity e) 
 	{
 		if ((e instanceof HumanEntity)) 
 		{

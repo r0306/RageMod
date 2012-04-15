@@ -24,6 +24,15 @@ public class RageConfig {
 	public String SERVER_NAME = "Rageland";
 	public boolean PRE_RELEASE_MODE;
 	public String OWNER_NAME = "TheIcarusKid";		// For sending certain debug notifications
+	public String World_Name = "world";
+	
+	// Group settings
+	public String Normal_Group_Name = "Citizen";
+	public String Donator_Group_Name = "Member";
+	public String TrialMod_Group_Name = "TrialMod";
+	public String Mod_Group_Name = "Moderator";
+	public String Admin_Group_Name = "Admin";
+	public String Owner_Group_Name = "Owner";
 	
 	// Database settings
 	public String DB_URL;

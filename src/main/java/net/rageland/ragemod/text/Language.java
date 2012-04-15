@@ -2,6 +2,7 @@ package net.rageland.ragemod.text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -105,17 +106,18 @@ public class Language
 				wordLength = 12;
 			
 			// Pull a random word of that length from the dictionary
-			String newWord = dictionary.get(wordLength - 1).get(random.nextInt(dictionary.get(wordLength - 1).size()));
+			/*String newWord = dictionary.get(wordLength - 1).get(random.nextInt(dictionary.get(wordLength - 1).size()));
 			
 			// Test for capitalization
 			if( word.substring(0, 1).equals(word.substring(0, 1).toUpperCase()) )
 				newWord = newWord.substring(0, 1).toUpperCase() + newWord.substring(1);
 			
 			// Return the replaced and processed word
-			return newWord + matcher.group(2);		// Add the punctuation back	
+			return newWord + matcher.group(2);		// Add the punctuation back	*/
 		}
 		else
 			return "";
+		return word;
 	}
 
 	private static String join(String[] array, String delimiter) 

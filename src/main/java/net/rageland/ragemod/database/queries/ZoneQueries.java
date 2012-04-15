@@ -6,6 +6,7 @@ import net.rageland.ragemod.database.*;
 import net.rageland.ragemod.world.WarZone;
 import net.rageland.ragemod.world.Zone;
 
+@SuppressWarnings("unused")
 public class ZoneQueries {
 	
 	private RageMod plugin;

@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.database.RageDB;
-import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.world.PlayerTown;
 
 public class TownQueries {

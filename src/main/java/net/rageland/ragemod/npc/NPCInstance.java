@@ -25,6 +25,7 @@ public class NPCInstance
 	private NPCData data;	
 	private NPCLocation location;
 	private RageEntity entity;
+	@SuppressWarnings("unused")
 	private QuestData questData;
 	
 	// Server infrastructure
@@ -167,7 +168,8 @@ public class NPCInstance
 	{
 		if( data == null || location == null )
 			throw new Exception("NPCInstance.spawn() called on non-activated instance");
-		
+
+		@SuppressWarnings("unused")
 		World world = (World) new Location(location.getWorld(), id_NPCInstance, id_NPCInstance, id_NPCInstance);
 		
 		// Spawn the type of NPC 

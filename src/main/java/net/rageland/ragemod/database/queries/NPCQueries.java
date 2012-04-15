@@ -14,7 +14,6 @@ import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.npc.NPCData;
 import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.database.RageDB;
-import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.npc.NPCInstance;
 import net.rageland.ragemod.npc.NPCLocation;
 import net.rageland.ragemod.npc.NPCLocationPool;
@@ -67,11 +66,11 @@ public class NPCQueries
         			if( currentLanguage != null )
         				languages.put(id_Language, currentLanguage);
         			
-        			currentLanguage = new Language();
+        			currentLanguage = new Language(null, null);
         			id_Language = rs.getInt("ID_Language");
         		}
         		
-        		currentLanguage.addWord(rs.getString("Word"), rs.getInt("Length"));
+        		currentLanguage.addWord(rs.getString("Word"));
         	}			
         	
         	// Add the last language

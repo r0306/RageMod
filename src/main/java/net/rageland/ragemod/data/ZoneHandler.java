@@ -14,6 +14,7 @@ import net.rageland.ragemod.world.Location2D;
 import net.rageland.ragemod.world.Region2D;
 import net.rageland.ragemod.world.Region3D;
 
+@SuppressWarnings("unused")
 public class ZoneHandler {
 	
 	public String ZoneA_Name;
