@@ -174,7 +174,7 @@ public class RageConfig {
     	
     	PRE_RELEASE_MODE = pluginConfig.getBoolean("general.pre_release_mode", true);
 		if( PRE_RELEASE_MODE )
-			System.out.println("Activating Pre-release mode.");
+			System.out.println("[RAGE] Running in pre-release mode.");
     	
     	DB_URL = pluginConfig.getString("database.url");
 		DB_NAME = pluginConfig.getString("database.name");
@@ -412,11 +412,5 @@ public class RageConfig {
     	
     	return floor;
     }
-
-    
-    
-    
-    
-    
     
 }

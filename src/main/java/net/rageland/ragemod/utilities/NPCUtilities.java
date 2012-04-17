@@ -8,7 +8,8 @@ import org.bukkit.World;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class NPCUtilities {
+public class NPCUtilities 
+{
 	public static String notEnoughSpaceMessage = "$dERROR: $6Not enough free space in your inventory. Clear out some space and try again.";
 
 	public static boolean checkFreeSpace(ItemStack[] contents, ItemStack item,
@@ -78,7 +79,6 @@ public class NPCUtilities {
 			int randomX = rand.nextInt(max.getBlockX() - min.getBlockX()) + min.getBlockX();
 			int randomZ = rand.nextInt(max.getBlockZ() - min.getBlockZ()) + min.getBlockZ();
 			
-			@SuppressWarnings("unused")
 			Location possibleLocation;
 			
 			for(int i = 0; i < maxRetries; i++) {
@@ -91,7 +91,7 @@ public class NPCUtilities {
 					{
 						for(int z = -1; z < 2; z++)
 						{
-//							if(possibleLocation.getBlock().getRelative(x, y, z).isEmpty())  // TODO: Commented out by Icarus, preventing compilation
+							if(possibleLocation.getBlock().getRelative(x, y, z).isEmpty())  // TODO: Commented out by Icarus, preventing compilation
 							{
 								
 							}

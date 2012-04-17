@@ -5,6 +5,8 @@ public class Simple_Quicksort {
 	 * Ein einfach Quicksort für ein Array vom Typ int so geschreiben, dass
 	 * Sonar nicht meckert :)
 	 * 
+	 * Wie du sprechen ins Deutsch? - Pandaz
+	 * 
 	 * @author Jan-Henrik Brommundt
 	 * @version 1.0
 	 */
@@ -47,6 +49,8 @@ public class Simple_Quicksort {
 	/**
 	 * 
 	 * Ein einfach Quicksort
+	 * 
+	 * Das ist nicht!
 	 * 
 	 * @param a
 	 *            das zu sortierende Array

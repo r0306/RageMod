@@ -30,16 +30,14 @@ import net.rageland.ragemod.listener.RMServerListener;
 import net.rageland.ragemod.npcentities.RageNPCManager;
 import net.rageland.ragemod.npcentities.SL;
 import net.rageland.ragemod.npcentities.WL;
-//import net.rageland.ragemod.quest.Quest;
 import net.rageland.ragemod.quest.QuestManager;
 import net.rageland.ragemod.text.Message;
-//import net.rageland.ragemod.data.LanguageHandler;
 import net.rageland.ragemod.config.*;
 
 import org.bukkit.plugin.PluginDescriptionFile;
-//import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -49,7 +47,10 @@ import org.bukkit.Bukkit;
  * RageMod for Bukkit
  *
  * @author TheIcarusKid
+ * @author PandazNWafflez
+ * @author Perdemot
  */
+
 public class RageMod extends JavaPlugin {
 	
     private RMPlayerListener playerListener;
@@ -76,8 +77,9 @@ public class RageMod extends JavaPlugin {
     private double currentVersion;
     private double newVersion;
     
+    // Config stuff
     public static String mainDirectory = "plugins/RageMod";
-    public File file = new File(mainDirectory + File.separator + "config.yml");
+    public File file = new File(mainDirectory + File.separator + "ragemod.yml");
     
     // Global data
     public LotHandler lots;
@@ -90,15 +92,17 @@ public class RageMod extends JavaPlugin {
     public ZoneHandler zones;
     
     // Semi-static data and methods
-    public RageConfig config;
     public RageDB database;
     public Message message;
     public RageNPCManager npcManager;
     public QuestManager questManager;
-    //for now here
-    public ZonesConfig zc; 
     
-    
+    // Config stuff
+    public ZonesConfig zc;
+    public RageConfig config; 
+    public WarZoneConfig wzConfig;
+    public FactionConfig fConfig;
+    public Configuration configuration;
     
     public RageMod() 
     {
@@ -116,16 +120,44 @@ public class RageMod extends JavaPlugin {
     public void onEnable() 
     {           
     	plugin = this;
-    	checkForUpdates();
     	load();
+    	checkForUpdates();
         initializeVariables();
         registerEvents();        
         setupPermissions();   
         loadDatabaseData();        
         startScheduledTasks();        
         runDebugTests();  
+        checkDependencies();
         
         System.out.println("[RAGE] RageMod v" + pdf.getVersion() + " is enabled!");
+    }
+    
+    public void checkDependencies() {
+    	
+    	PluginManager pm = getServer().getPluginManager();
+    	Plugin v = pm.getPlugin("Vault");
+    	Plugin s = pm.getPlugin("Spout");
+    	Plugin c = pm.getPlugin("Citizens");
+    	
+    	if (v != null) {
+    		log.info("[RAGE] Found Vault!");
+    		if (s != null) {
+    			log.info("[RAGE] Found Spout!");
+    			if (c != null) {
+    				log.info("[RAGE] Found Citizens");
+    			} else {
+    				log.severe("[RAGE] Citizens not found! Disabling");
+    				pm.disablePlugin(this);
+    			}
+    		} else {
+    			log.severe("[RAGE] Spout was not found! Disabling!");
+    			pm.disablePlugin(this);
+    		}
+    	} else {
+    		log.severe("[RAGE] Vault not found! Disabling!");
+    		pm.disablePlugin(this);
+    	}
     }
     
     public void creatingNPCTemp() { /*
@@ -139,20 +171,20 @@ public class RageMod extends JavaPlugin {
     }
     
     public void onDisable() {    
-    	// this.npcManager.despawnAll();
-        System.out.println("[RAGE] Goodbye world!");
+    	//npcManager.despawnAll(true);
+        System.out.println("[RAGE] RageMod disabling!");
     }
         
-    public Configuration load(){
-        try {
-            Configuration config = new Configuration(plugin, "config.yml");
-            config.load();
-            return config;
+    public Configuration load() {
+    	try {
+        Configuration config = new Configuration(plugin, "config.yml");
+        config.load();
+        return config;
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    	return null;
     }
     
     public boolean isDebugging(final Player player) {
@@ -166,17 +198,13 @@ public class RageMod extends JavaPlugin {
     public void checkForUpdates() {
    	try {
             newVersion = updateCheck(currentVersion);
-            
             if (newVersion > currentVersion) {
                 log.warning("[RageMod] RageMod " + newVersion + " is released! You are running RageMod " + currentVersion);  	
                 log.warning("[RageMod] Update RageMod at: http://dev.bukkit.org/server-mods/ragemod/files");
             }	  	
         } catch (Exception e) {
-	  	
-            // Ignore exceptions like a bawws!
-	  	
-        }
-	  	
+            // Ignore exceptions 	
+        }	  	
   }	  	
 	  	
     private double updateCheck(double currentVersion) throws Exception {
@@ -241,7 +269,7 @@ public class RageMod extends JavaPlugin {
         factions = new FactionHandler(this);
         languages = new LanguageHandler(this);
         
-    	server = this.getServer();
+    	server = getServer();
     	zones = new ZoneHandler(this);
         pluginManager = server.getPluginManager();
         npcManager = new RageNPCManager(this);

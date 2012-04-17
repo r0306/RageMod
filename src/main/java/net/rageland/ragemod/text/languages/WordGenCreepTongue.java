@@ -2,7 +2,8 @@ package net.rageland.ragemod.text.languages;
 
 import net.rageland.ragemod.text.WordGen;
 
-public class WordGenCreepTongue extends WordGen{
+public class WordGenCreepTongue extends WordGen
+{
 	public WordGenCreepTongue(){
 		super();
 		this.Beg.put(0, "Sss");

@@ -134,9 +134,11 @@ public class Util
 		else if (creature instanceof EnderDragon)
 		{
 			return CreatureType.ENDER_DRAGON;
-		} else if (creature instanceof Enderman) {
+		} else if (creature instanceof Enderman) 
+		{
 			return CreatureType.ENDERMAN;
-		} else {
+		} else 
+		{
 			return CreatureType.valueOf("Unknown");
 		}
 	}
