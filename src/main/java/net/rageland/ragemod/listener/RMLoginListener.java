@@ -1,6 +1,7 @@
 package net.rageland.ragemod.listener;
 
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.config.RageConfig;
 import net.rageland.ragemod.entity.PlayerData;
 
 import org.bukkit.ChatColor;
@@ -12,6 +13,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class RMLoginListener implements Listener {
+	
+	private RageConfig config;
 	private RageMod plugin;
 	
 	public RMLoginListener(RageMod plugin){
@@ -56,8 +59,8 @@ public class RMLoginListener implements Listener {
 	    		// Automagical demotion.
 	    		for( Player onlinePlayer : plugin.getServer().getOnlinePlayers() )
 	    		{
-	    			RageMod.perms.playerAddGroup(onlinePlayer, "Citizen");
-	    			RageMod.perms.playerRemoveGroup(onlinePlayer, "Member");
+	    			RageMod.perms.playerAddGroup(onlinePlayer, config.Normal_Group_Name);
+	    			RageMod.perms.playerRemoveGroup(onlinePlayer, config.Donator_Group_Name);
 	    		}
 	    	}
 	    	else if( !RageMod.perms.playerInGroup("world", playerData.name, "Member") && playerData.isMember && !RageMod.perms.has(player, "ragemod.ismoderator") ) 
@@ -65,8 +68,8 @@ public class RMLoginListener implements Listener {
 	    		// Automagical promotion.
 	    		for( Player onlinePlayer : plugin.getServer().getOnlinePlayers() )
 	    		{
-	    			RageMod.perms.playerAddGroup(onlinePlayer, "Member");
-	    			RageMod.perms.playerRemoveGroup(onlinePlayer, "Citizen");
+	    			RageMod.perms.playerAddGroup(onlinePlayer, config.Donator_Group_Name);
+	    			RageMod.perms.playerRemoveGroup(onlinePlayer, config.Normal_Group_Name);
 	    		}
 	    	}
 	    }
