@@ -60,4 +60,13 @@ public class LanguageHandler
 		return this.translate(message, this.getlangid(name));
 	}	
 	
+	public String[] names(){
+		Integer[] temp = (Integer[]) this.langids.values().toArray();
+		String[] work = new String[temp.length];
+		for (int i=0; i< temp.length; i++){
+			work[i]= this.languages.get(i).getName();
+		}
+		return work;
+	}
+	
 }

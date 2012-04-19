@@ -77,6 +77,34 @@ public class LanguageCommands {
 		return false;
 	}
 	
-	
-	
+	public void teach(Player Issuer,String Target, String Language, String amount){
+		PlayerData pd = this.plugin.players.get(Target);
+		try {
+			int i =Integer.valueOf(Language);
+			int x =Integer.valueOf(amount);
+			pd.setLanguageSkill(i,x);
+		}catch(Exception e){
+			try{
+			int x =Integer.valueOf(amount);
+			pd.setLanguageSkill(this.plugin.languages.getlangid(Language),x);
+			}catch(Exception ex){
+				//mesage u suck
+			}
+		}
+		
+	}
+	public void addword(Player player, String Language, String word,
+			String Meaning) {
+		try {
+			int i =Integer.valueOf(Language);
+			this.plugin.languages.getLanguage(i).addWord(word, Meaning);
+		}catch(Exception e){
+			int i = this.plugin.languages.getlangid(Language);
+			if (i != 0){
+				this.plugin.languages.getLanguage(i).addWord(word, Meaning);
+			}else{
+				//buuug
+			}
+		}
+	}
 }

@@ -5,35 +5,24 @@ package net.rageland.ragemod.config;
  * Simple Config File for the Zones should be parsed out of a yaml later
  * Allows you to make custom Zones
  */
-@SuppressWarnings("unused")
 public class ZonesConfig {
 	//Basic Settings
-	
-	private String Basic_Settings = "";
 	
 	private final String name;
 	private final int position;
 	private final int id;
 	private final int width;
-	
-	//Mob Settings
-	private String Mob_Settings = "";
+	private final boolean capitol;
 	
 	private final boolean mobs;
 	private final int mob_percent;
 	private final int mob_strength;
 	private final boolean mobsday;
 	
-	//Player Settings
-	private String Player_Settings = "";
-	
 	private final boolean player_build;
 	private final boolean player_city;
 	private final boolean pvp;
 	private final boolean faction_pvp;
-	
-	//Npc Settings
-	private String NPC_Settings = "";
 	
 	private final boolean npcs;
 	private final boolean npc_town;
@@ -43,12 +32,13 @@ public class ZonesConfig {
 	 *
 	 */
 	
-	public ZonesConfig(String name,int position,int id, int width, boolean mobs, int mobpercentage, int mobstrength, 
+	public ZonesConfig(String name,int position,int id, int width,boolean capitol, boolean mobs, int mobpercentage, int mobstrength, 
 			boolean mobsspawnday,boolean playerbuild, boolean playercity, boolean pvp, boolean factionpvp, boolean npcs, boolean npctowns){
 		this.id= id;
 		this.name= name;
 		this.position=position;
 		this.width=width;
+		this.capitol=capitol;
 		
 		this.mobs=mobs;
 		this.mob_percent= mobpercentage;
@@ -70,11 +60,12 @@ public class ZonesConfig {
 	 * For mobs = false
 	 * @param mobs must be false
 	 */
-	public ZonesConfig(String name,int position,int id, int width, boolean mobs,boolean playerbuild, boolean playercity, boolean pvp, boolean factionpvp, boolean npcs, boolean npctowns){
+	public ZonesConfig(String name,int position,int id, int width,boolean capitol, boolean mobs,boolean playerbuild, boolean playercity, boolean pvp, boolean factionpvp, boolean npcs, boolean npctowns){
 		this.id= id;
 		this.name= name;
 		this.position=position;
 		this.width=width;
+		this.capitol=capitol;
 		
 		this.mobs=false;
 		this.mob_percent= 0;
@@ -133,6 +124,10 @@ public class ZonesConfig {
 
 	public int getWidth() {
 		return width;
+	}
+
+	public boolean isCapitol() {
+		return capitol;
 	}
 	
 	

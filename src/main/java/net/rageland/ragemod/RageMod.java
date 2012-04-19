@@ -26,7 +26,9 @@ import net.rageland.ragemod.data.TaskHandler;
 import net.rageland.ragemod.data.ZoneHandler;
 import net.rageland.ragemod.database.RageDB;
 import net.rageland.ragemod.listener.RMBlockListener;
+import net.rageland.ragemod.listener.RMChatListener;
 import net.rageland.ragemod.listener.RMEntityListener;
+import net.rageland.ragemod.listener.RMLoginListener;
 import net.rageland.ragemod.listener.RMPlayerListener;
 import net.rageland.ragemod.listener.RMServerListener;
 import net.rageland.ragemod.npcentities.RageNPCManager;
@@ -59,6 +61,8 @@ public class RageMod extends JavaPlugin {
     private RMBlockListener blockListener;
     private RMServerListener serverListener;
     private RMEntityListener entityListener;
+    private RMChatListener chatListener;
+	private RMLoginListener loginListener;
     private RageMod rm;
     private static RageMod plugin;
     public SL sl;
@@ -107,6 +111,7 @@ public class RageMod extends JavaPlugin {
     public WarZoneConfig wzConfig;
     public FactionConfig fConfig;
     public Configuration configuration;
+
     
     public RageMod() 
     {
@@ -255,6 +260,8 @@ public class RageMod extends JavaPlugin {
         pluginManager.registerEvents(playerListener, this);        
         pluginManager.registerEvents(blockListener, this);      
         pluginManager.registerEvents(entityListener, this);
+        pluginManager.registerEvents(chatListener, this);
+        pluginManager.registerEvents(loginListener, this);
     }
     
     private void initializeVariables()
@@ -263,6 +270,8 @@ public class RageMod extends JavaPlugin {
     	playerListener = new RMPlayerListener(this);
     	blockListener = new RMBlockListener(this);  
     	entityListener = new RMEntityListener(this);
+    	chatListener = new RMChatListener(this);
+    	loginListener = new RMLoginListener(this);
     	config = new RageConfig(this);
         database = new RageDB(this, config);
         

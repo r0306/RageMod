@@ -47,6 +47,10 @@ public class BountyCommands {
 		}
 	}
 	
+	public void resultBlockIssue(Player Issuer){
+		BlockCommands.remove(Issuer.getName());
+	}
+	
 	public void createsign(Block block,String city,Player Issuer){ //admin one
 		if (perms.playerHas(Issuer, "ragemod.bounty.createsign") || perms.playerHas(Issuer, "ragemod.*") || perms.playerHas(Issuer, "ragemod.bounty")) {
 			this.oab.getBH(city).addSign(block);						
@@ -124,6 +128,13 @@ public class BountyCommands {
 		} else {
 			Issuer.sendMessage("Non-players can't issue bounties!");
 		}
+	}
+
+	public boolean knowsCity(String City) {
+		if (this.oab.getBH(City)!=null){
+			return true;
+		}
+		return false;
 	}
 	
 	

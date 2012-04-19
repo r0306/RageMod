@@ -23,65 +23,9 @@ public class DebugCommands
 	{
 		this.plugin = plugin;
 	}
-	
-	public void onRmdebugCommand(Player player, PlayerData playerData, String[] split) 
-	{
-		if( split.length < 2 )
-		{
-			plugin.message.parse(player, "Debug commands: <required> [optional]");
-			if( true )
-				plugin.message.parse(player, "   /rmdebug colors   (displays all chat colors)");
-			if( true )
-				plugin.message.parse(player, "   /rmdebug donation  (displays amount of donations)");
-			if( false )
-				plugin.message.parse(player, "   /rmdebug sanctum <level> (attempts to build sanctum floor)");
-			if( true )
-				plugin.message.parse(player, "   /rmdebug setlang <1-4> <level> (sets your language skill)");
-			if( true )
-				plugin.message.parse(player, "   /rmdebug tptown <town_name> (teleports to town)");
-			if( true )
-				plugin.message.parse(player, "   /rmdebug translate [text] (translates the entered text)");
-			if( true )
-				plugin.message.parse(player, "   /rmdebug transcast <#> <text> (translates/broadcasts text)");
-		}
-		else if( split[1].equalsIgnoreCase("colors") )
-		{
-			this.colors(player);
-		}
-		else if( split[1].equalsIgnoreCase("donation") )
-		{
-			this.donation(player);
-		}
-		else if( split[1].equalsIgnoreCase("sanctum") )
-		{
-			if( split.length == 3 )
-				this.sanctum(player, split[2]); 
-			else
-    			plugin.message.parse(player, "Usage: /debug sanctum <level>"); 
-		}
-		else if( split[1].equalsIgnoreCase("setlang") )
-		{
-			if( split.length == 4 )
-				this.setlang(player, split[2], split[3]); 
-			else
-			{
-    			plugin.message.parse(player, "Usage: /rmdebug setlang <1-4> <level>"); 
-				plugin.message.send(player, "   Languages: 1-Creeptongue, 2-Gronuk, 3-Benali, 4-Avialese");
-			}
-		}
-		else if( split[1].equalsIgnoreCase("tptown") )
-		{
-			if( split.length == 3 )
-				this.towntp(player, split[2]); 
-			else
-    			plugin.message.parse(player, "Usage: /rmdebug tptown <town_name>"); 
-		}
-		else
-			plugin.message.parse(player, "Type /rmdebug to see a list of available commands.");
-	}
 
 	// /debug colors
-	private void colors(Player player) 
+	public void colors(Player player) 
 	{
 		player.sendMessage(ChatColor.DARK_GRAY + "Dark Gray: Player (Tourist)");
 		player.sendMessage(ChatColor.GRAY + "Gray: Player (Neutral)");
@@ -102,7 +46,7 @@ public class DebugCommands
 	}
 	
 	// /debug donation
-	private void donation(Player player) 
+	public void donation(Player player) 
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
 		int donation = plugin.database.playerQueries.getRecentDonations(playerData.id_Player);
@@ -111,7 +55,7 @@ public class DebugCommands
 	}
 
 	// /debug sanctum <level>
-	private void sanctum(Player player, String levelString) 
+	public void sanctum(Player player, String levelString) 
 	{
 		//plugin.message.sendNo(player, "This command has been disabled.");
 		//return;
@@ -143,50 +87,9 @@ public class DebugCommands
 		Build.sanctumFloor(plugin, world, cornerX, cornerY, cornerZ, level, playerData.id_Faction);	
 	}
 	
-	// Sets the language skill
-	@SuppressWarnings("static-access")
-	private void setlang(Player player, String langString, String levelString) 
-	{
-		PlayerData playerData = plugin.players.get(player.getName());
-		int id_Language;
-		int level;
-		
-		// Parse the language string
-		try
-		{
-			id_Language = Integer.parseInt(langString);
-			if( id_Language < 1 || id_Language > 4 )
-				throw new Exception();
-		}
-		catch( Exception ex )
-		{
-			plugin.message.sendNo(player, "Invalid language (1-4).");
-			return;
-		}
-		// Parse the level string
-		try
-		{
-			level = Integer.parseInt(levelString);
-			if( level < 0 || level > 100 )
-				throw new Exception();
-		}
-		catch( Exception ex )
-		{
-			plugin.message.sendNo(player, "Invalid skill level (0-100).");
-			return;
-		}
-		
-		// Set the language skill
-		playerData.setLanguageSkill(id_Language, level);
-		playerData.update();
-		
-		plugin.message.send(player, "Your " + plugin.message.LANGUAGE_NAME_COLOR + plugin.config.NPC_LANGUAGE_NAMES.get(id_Language) + 
-				plugin.message.DEFAULT_COLOR + " skill is now " + ChatColor.WHITE + level + ".");
-		
-	}
 	
 	// Teleports to selected town
-	private void towntp(Player player, String townName)
+	public void towntp(Player player, String townName)
 	{
 		Town town = plugin.towns.get(townName);
 		
@@ -200,6 +103,10 @@ public class DebugCommands
 		// Teleport to the town
 		plugin.message.send(player, "Teleporting...");
 		player.teleport(Util.findTeleportLocation(town.centerPoint));
+	}
+	
+	public void langs(Player player){
+		player.sendMessage(this.plugin.languages.names());
 	}
 	
 

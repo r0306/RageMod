@@ -73,7 +73,16 @@ public class BountyHandler {
 		this.bountys.add(bounty);
 		this.upadtesigns();
 		return true;
-		
+	}
+	
+	public double showBounty(String PlayerName){
+		if (this.hasPlayer(PlayerName)) 
+			for (int i = 0; i<=this.bountys.size();i++){
+				if (this.bountys.get(i).getPlayerName() == PlayerName){
+					return bountys.get(i).getAmount();
+				}
+			}
+		return 0;
 	}
 	
 	public boolean increaseBounty(Bounty bounty){

@@ -54,5 +54,17 @@ public class AllBountyHandler {
 		return temp;
 	}
 	
+	public double showallBountys(String PlayerName){
+		double temp = 0;
+		for (int i=0;i<BHL.size();i++){
+			temp = temp + BHL.get(i).showBounty(PlayerName);
+		}
+		return temp;
+	}
+	
+	public double showBounty(String Player, String City){
+		return this.getBH(City).showBounty(Player);
+	}
+	
 
 }
