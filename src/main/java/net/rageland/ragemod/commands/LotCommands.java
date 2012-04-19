@@ -255,7 +255,7 @@ public class LotCommands
 			if( donation < lot.getPrice() )
 			{
 				plugin.message.send(player, "To claim this lot you must be a " + lot.getCategoryName() + "-level " + plugin.config.SERVER_NAME + " member.", ChatColor.AQUA);
-				plugin.message.send(player, "Visit http://www.rageland.net/donate for more details.", ChatColor.AQUA);
+				plugin.message.send(player, "Visit " + plugin.config.Website_URL + " for more details.", ChatColor.AQUA);
 				return;
 			}
 		}
@@ -265,7 +265,7 @@ public class LotCommands
 			if( !playerData.isMember )
 			{
 				plugin.message.send(player, "To claim a Market lot you must be an active " + plugin.config.SERVER_NAME + " member.", ChatColor.AQUA);
-				plugin.message.send(player, "Visit http://www.rageland.net/donate for more details.", ChatColor.AQUA);
+				plugin.message.send(player, "Visit " + plugin.config.Website_URL + " for more details.", ChatColor.AQUA);
 				return;
 			}
 		}
@@ -454,9 +454,4 @@ public class LotCommands
 		
 		plugin.message.send(player, "You are no longer the owner of lot " + lot.getLotCode() + ".");
 	}
-
-
-
-	
-	
 }

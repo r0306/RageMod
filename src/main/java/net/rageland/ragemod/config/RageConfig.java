@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
 
 // Stores and loads configuration values
+
 public class RageConfig {
 	
 	/* TODO: 
@@ -25,6 +26,8 @@ public class RageConfig {
 	public boolean PRE_RELEASE_MODE;
 	public String OWNER_NAME = "TheIcarusKid";		// For sending certain debug notifications
 	public String World_Name = "world";
+	public boolean Update_Checks = true;
+	public String Website_URL = "http://rageland.net";
 	
 	// Group settings
 	public String Normal_Group_Name = "Citizen";
@@ -294,7 +297,7 @@ public class RageConfig {
     	ArrayList<String> floor = new ArrayList<String>();
     	
     	if( level == 1 )
-    	{
+    	{									   // 0
     		floor.add("cccccccccccccccccccc"); 
     		floor.add("cddddddddccddddddddc");
     		floor.add("cddddddddccddddddddc");

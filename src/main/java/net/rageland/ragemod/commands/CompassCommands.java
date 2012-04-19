@@ -26,7 +26,7 @@ public class CompassCommands
 				plugin.message.parse(player, "   /compass lot <lot_code>   (points compass to specified lot)");
 			if( true )
 				plugin.message.parse(player, "   /compass spawn   (points compass to world spawn)");
-			if( !plugin.config.PRE_RELEASE_MODE )
+			if(!(plugin.config.PRE_RELEASE_MODE))
 			{
 				if( playerData.townName.equals("") )
 					plugin.message.parse(player, "   /compass town <town_name>   (points compass to specified town)");
@@ -45,7 +45,7 @@ public class CompassCommands
 		{
 			this.spawn(player);
 		}
-		else if( split[1].equalsIgnoreCase("town") && !plugin.config.PRE_RELEASE_MODE )
+		else if( split[1].equalsIgnoreCase("town") && !(plugin.config.PRE_RELEASE_MODE))
 		{
 			if( split.length == 2 && !playerData.townName.equals("") )
 				this.town(player, playerData.townName);

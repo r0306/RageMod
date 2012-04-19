@@ -19,7 +19,7 @@ public class RageTimer implements Runnable
 		if( secondHand == 0 )
 		{
 			// Process town upkeep/taxes
-			if( plugin.tasks.getSeconds("TOWN_UPKEEP") > plugin.config.Task_TOWN_UPKEEP )
+			if(plugin.tasks.getSeconds("TOWN_UPKEEP") > plugin.config.Task_TOWN_UPKEEP)
 			{
 				plugin.tasks.processTownUpkeeps();
 				plugin.tasks.setComplete("TOWN_UPKEEP");
@@ -28,7 +28,7 @@ public class RageTimer implements Runnable
 			
 		}
 			
-			if( plugin.tasks.getSeconds("FILL_SANDLOT") > plugin.config.Task_FILL_SANDLOT ) 
+			if(plugin.tasks.getSeconds("FILL_SANDLOT") > plugin.config.Task_FILL_SANDLOT) 
 			{					  	
 				System.out.println("It has been " + plugin.tasks.getSeconds("FILL_SANDLOT") + " seconds since the last sandlot fill.");					  	
 				plugin.tasks.fillSandlot(plugin);

@@ -2,6 +2,8 @@ package net.rageland.ragemod.npcentities;
 
 import net.rageland.ragemod.RageMod;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 
@@ -14,6 +16,7 @@ public class SL implements Listener {
 			
 		}
 
+		@EventHandler(priority = EventPriority.HIGHEST)
 		public void onPluginDisable(PluginDisableEvent event) 
 		{
 			if (event.getPlugin() == plugin) 

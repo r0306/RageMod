@@ -1,0 +1,107 @@
+# General Settings:
+SERVER_NAME: "Rageland"
+PRE_RELEASE_MODE: true
+OWNER_NAME: "TheIcarusKid"
+World_Name: "world"
+Website_URL: "http://rageland.net"
+
+# Group Settings:
+Normal_Group_Name: "Citizen"
+Donator_Group_Name: "Member"
+TrialMod_Group_Name: "TrialMod"
+Mod_Group_Name: "Moderator"
+Admin_Group_Name: "Admin"
+Owner_Group_Name: "Owner"
+
+# Database Settings:
+DB_URL: "localhost"
+DB_NAME: "RageMod"
+DB_DRIVER: ""
+DB_USER: ""
+DB_PASSWORD: ""
+
+# Town Settings:
+Town_MIN_DISTANCE_BETWEEN: 400
+Town_MIN_DISTANCE_ENEMY_CAPITOL: 2000
+Town_MIN_DISTANCE_SPAWN: 1000
+Town_MAX_LEVEL_NEUTRAL: 4
+Town_MAX_LEVEL_FACTION: 5
+Town_DISTANCE_BETWEEN_BEDS: 6
+Town_UPKEEP_PER_PLAYER: 1.00
+Town_MAX_BANKRUPT_DAYS: 7
+Town_COLORED_SHEEP_CHANCE: 20
+
+#Money Settings
+
+CURRENCY_NAME: ''Silver''
+CURRENCY_MINOR: ''Copper''
+PRICE_GOLD: 2
+INCOME_PER_BLOCK: 1
+DEFAULT_PORTAL_COST: 1
+
+#Zone Settings
+
+Zone_NAME_A: "The Neutral Zone"
+Zone_BORDER_A: 1000
+Zone_NAME_B: "The War Zone"
+Zone_BORDER_B: 2000
+Zone_NAME_C: "The Wilds"
+Zone_BORDER_C: 2500
+Zone_TZ_CENTER: "-489,10,702"
+Zone_TZ_REGION: "-229,127,1042,-749,1,522"
+
+#Lot Settings
+
+Lot_X_OFFSET:
+Lot_Z_OFFSET:
+Lot_MULTIPLIER: 16
+Lot_PRICE_COAL: 10
+Lot_PRICE_IRON: 20
+Lot_PRICE_GOLD: 30
+Lot_PRICE_DIAMOND: 40
+
+#Capitol Settings
+
+Capitol_Name: "Rage City"
+Capitol_CodedName: "<tc>Rage City</tc>"
+Capitol_X1a:
+Capitol_Z1a:
+Capitol_X2a:
+Capitol_Z2a:
+Capitol_X1b:
+Capitol_Z1b:
+Capitol_X2b:
+Capitol_Z2b:
+Capitol_SANDLOT: #Auto-Regenerating sand mine! FTW!
+Capitol_SANDLOT_GOLD_ODDS:
+Capitol_SANDLOT_DIAMOND_ODDS:
+Capitol_PORTAL_LOCATION:
+
+#Cooldowns (In seconds)
+
+Cooldown_Spawn:
+Cooldown_Home:
+
+#Faction Settings
+
+Faction_BaseJoinCost: 100
+Faction_JoinCostIncrease: 10
+
+#Task frequencies (seconds)  1 hour: 3600  1 day:  86400  1 week: 604800
+
+Task_TOWN_UPKEEP: 86400
+Task_FILL_SANDLOT: 86400
+
+#NPC Settings
+
+NPC_TOTAL_FLOATING:
+NPC_TTL_MIN: 360
+NPC_TTL_MAX: 4320
+NPC_PHRASES: 2
+NPC_PHRASE_POOL: 8
+NPCTOWN_GUEST_CHANCE: 33
+CUSTOM_SKIN_PATH: ""
+NPC_HUMAN_ID: 5
+NPC_AFFINITY_MAX: 10
+NPC_MIN_AFFINITY: -10
+NPC_AFFINITY_GAIN_TALK: 1

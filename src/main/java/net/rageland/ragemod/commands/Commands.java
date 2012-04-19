@@ -87,7 +87,7 @@ public class Commands
 		if( playerData.home_LastUsed != null )
 		{
 			int secondsSinceLastUse = (int)((now.getTime() - playerData.home_LastUsed.getTime()) / 1000);
-			if( secondsSinceLastUse < plugin.config.Cooldown_Home )
+			if(secondsSinceLastUse < plugin.config.Cooldown_Home)
 			{
 				plugin.message.parseNo(player, "Spell /home is not ready yet (" + Util.formatCooldown(plugin.config.Cooldown_Home - secondsSinceLastUse) + " left)");
 				return;
@@ -151,7 +151,7 @@ public class Commands
 		if( playerData.spawn_LastUsed != null )
 		{
 			int secondsSinceLastUse = (int)((now.getTime() - playerData.spawn_LastUsed.getTime()) / 1000);
-			if( secondsSinceLastUse < plugin.config.Cooldown_Spawn )
+			if( secondsSinceLastUse < plugin.config.Cooldown_Spawn)
 			{
 				plugin.message.parseNo(player, "Spell /spawn is not ready yet (" + Util.formatCooldown(plugin.config.Cooldown_Spawn - secondsSinceLastUse) + " left)");
 				return;
@@ -195,7 +195,4 @@ public class Commands
 		}
 		plugin.message.send(player, "   " + ChatColor.WHITE + "Total: " + playerData.getAffinities().size());
 	}
-	
-	
-	
 }

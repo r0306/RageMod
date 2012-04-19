@@ -105,7 +105,7 @@ public class BountyCommands {
 			temp.setCity("global");
 			this.oab.getBH("global").addBounty(temp);
 			Issuer.sendMessage(ChatColor.GREEN + "Bounty added!");
-			}else{
+			} else {
 				Issuer.sendMessage("You don't have enough money. You need to hunt him by yourself :(");	
 			}
 		} else if (Issuer instanceof Player) {

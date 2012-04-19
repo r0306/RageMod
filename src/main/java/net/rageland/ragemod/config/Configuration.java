@@ -74,7 +74,6 @@ public class Configuration {
 	}
 	
 	/**
-	 * Returns the YamlConfiguration.
 	 * @return the YamlConfiguration
 	 */ 
 	public YamlConfiguration getYamlConfig() {

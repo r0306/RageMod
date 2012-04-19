@@ -121,7 +121,6 @@ public class RageMod extends JavaPlugin {
     {           
     	plugin = this;
     	load();
-    	checkForUpdates();
         initializeVariables();
         registerEvents();        
         setupPermissions();   
@@ -129,6 +128,10 @@ public class RageMod extends JavaPlugin {
         startScheduledTasks();        
         runDebugTests();  
         checkDependencies();
+        
+        if (config.Update_Checks == true) {
+    		checkForUpdates();
+        }
         
         System.out.println("[RAGE] RageMod v" + pdf.getVersion() + " is enabled!");
     }
@@ -147,7 +150,7 @@ public class RageMod extends JavaPlugin {
     			if (c != null) {
     				log.info("[RAGE] Found Citizens");
     			} else {
-    				log.severe("[RAGE] Citizens not found! Disabling");
+    				log.severe("[RAGE] Citizens was not found! Disabling");
     				pm.disablePlugin(this);
     			}
     		} else {

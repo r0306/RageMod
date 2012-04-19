@@ -43,7 +43,7 @@ public class NPCTownCommands {
 				plugin.message.parse(player, "   /npctown newphrase <phrase>  (adds a new phrase)");
 			if( playerData.isSteward )
 				plugin.message.parse(player, "   /npctown resident <name> [sex]  (creates a new NPC)");
-			if( RageMod.perms.has(player, "ragemod.npctown") )
+			if( RageMod.perms.has(player, "ragemod.npctown") || RageMod.perms.has(player, "ragemod.*") )
 				plugin.message.parse(player, "   /npctown setsteward <town> <player>   (sets steward)");
 			
 		}
@@ -255,7 +255,6 @@ public class NPCTownCommands {
 	public void info(Player player, String townName) 
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
-		
 		Town town = plugin.towns.get(townName);
 		
 		// Check to see if specified town exists
@@ -290,7 +289,7 @@ public class NPCTownCommands {
 			String residents = "";
 			for( NPCData npc : plugin.npcManager.getAllResidents(town.getID()) )
 				residents += ", #" + npc.id_NPC + ": " + npc.getCodedName() + " (" + (npc.isMale ? 'M' : 'F') + ", " + 
-						plugin.config.NPC_AFFINITY_NAMES.get(npc.defaultAffinityCode) + ")";
+						npc.defaultAffinityCode + ")";
 			if( !residents.equals("") )
 				plugin.message.parse(player, "   Residents: " + residents.substring(2));
 				
@@ -470,8 +469,5 @@ public class NPCTownCommands {
 					 town.getNPCLocations().size() + ChatColor.WHITE + " locations");
 		}
 		return;
-	
 	}
-
-
 }

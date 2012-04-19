@@ -56,7 +56,7 @@ public class RageNPCManager
 				for (int i : RageMod.getInstance().npcManager.getActiveNPCs().keySet()) 
 				{
 					
-					RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity(); // TODO Fix this!
+					RageMod.getInstance().npcManager.activeNPCs.get(i).getEntity();
 					
 					{
 						toRemove.add(i);
@@ -66,11 +66,11 @@ public class RageNPCManager
 					RageNPCManager.this.despawnById(n);
 			}
 		}, 100L, 100L);
-						PluginManager pm = plugin.getServer().getPluginManager();
-						SL sl = plugin.sl;
-						WL wl = plugin.wl;
-						pm.registerEvents(sl, plugin);
-						pm.registerEvents(wl, plugin);
+		PluginManager pm = plugin.getServer().getPluginManager();
+		SL sl = plugin.sl; 
+		WL wl = plugin.wl;
+		pm.registerEvents(sl, plugin);
+		pm.registerEvents(wl, plugin);
 						
 
 	}

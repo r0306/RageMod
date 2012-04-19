@@ -121,8 +121,6 @@ public class NPCCommands {
 	}
 
 
-
-
 	private void createQuestNPC(Player player, String name, String questNpcType, String questId)
 	{
 		PlayerData playerData = plugin.players.get(player.getName());
@@ -143,8 +141,8 @@ public class NPCCommands {
 			npc.id_NPCTown = 0;		// 0 = no town
 			npc.name = name;
 			npc.isBilingual = false;
-			/*
-			npc.isQuestNPC = true;
+			
+			/*npc.isQuestNPC = true;
 			npc.quest = plugin.questManager.quests.get(questId);
 			
 			if(questNpcType.equals("0"))
@@ -152,8 +150,8 @@ public class NPCCommands {
 			else if(questNpcType.equals("1"))
 				npc.questNPCType = 1;
 			else
-				npc.questNPCType = 2;
-				*/
+				npc.questNPCType = 2;*/
+				
 			
 			plugin.npcManager.addNPC(npc);
 			
@@ -448,6 +446,4 @@ public class NPCCommands {
 		plugin.npcManager.despawnAll(true);
 		plugin.message.send(player, "Cleared all NPCs.");
 	}
-	
-
 }

@@ -58,7 +58,4 @@ public class RageCommands {
 			plugin.message.sendNo(player, "Error: " + ex.getMessage());
 		}	
 	}
-
-
-
 }

@@ -28,7 +28,7 @@ public class LanguageCommands {
 				skillText = ChatColor.WHITE + "100/100";
 			else
 				skillText = ChatColor.GRAY + Integer.toString(playerData.getLanguageSkill(i)) + "/100";
-			plugin.message.send(player, Message.LANGUAGE_NAME_COLOR + "   " + plugin.config.NPC_LANGUAGE_NAMES.get(i) + ": " + skillText);
+			plugin.message.send(player, Message.LANGUAGE_NAME_COLOR + "   " + plugin.config.NPC_LANGUAGE_NAMES + ": " + skillText);
 		}
 	}
 	
@@ -76,7 +76,4 @@ public class LanguageCommands {
 		Issuer.chat(work);
 		return false;
 	}
-	
-	
-	
 }
