@@ -5,10 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
-import uk.co.oliwali.HawkEye.HawkEye;
-
-import de.diddiz.LogBlock.CommandsHandler;
-
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.config.WarZoneConfig;
 import net.rageland.ragemod.database.RageDB;
