@@ -26,19 +26,21 @@ public class ZonesConfig {
 	
 	private final boolean npcs;
 	private final boolean npc_town;
+	private final boolean Neutral;
 	
 	/**
 	 * Simple Config File for the Zones should be parsed out of a yaml later
 	 *
 	 */
 	
-	public ZonesConfig(String name,int position,int id, int width,boolean capitol, boolean mobs, int mobpercentage, int mobstrength, 
+	public ZonesConfig(String name,int position,int id, int width,boolean capitol, boolean neutral, boolean mobs, int mobpercentage, int mobstrength, 
 			boolean mobsspawnday,boolean playerbuild, boolean playercity, boolean pvp, boolean factionpvp, boolean npcs, boolean npctowns){
 		this.id= id;
 		this.name= name;
 		this.position=position;
 		this.width=width;
 		this.capitol=capitol;
+		this.Neutral= neutral;
 		
 		this.mobs=mobs;
 		this.mob_percent= mobpercentage;
@@ -60,12 +62,13 @@ public class ZonesConfig {
 	 * For mobs = false
 	 * @param mobs must be false
 	 */
-	public ZonesConfig(String name,int position,int id, int width,boolean capitol, boolean mobs,boolean playerbuild, boolean playercity, boolean pvp, boolean factionpvp, boolean npcs, boolean npctowns){
+	public ZonesConfig(String name,int position,int id, int width,boolean capitol,boolean neutral, boolean mobs,boolean playerbuild, boolean playercity, boolean pvp, boolean factionpvp, boolean npcs, boolean npctowns){
 		this.id= id;
 		this.name= name;
 		this.position=position;
 		this.width=width;
 		this.capitol=capitol;
+		this.Neutral= neutral;
 		
 		this.mobs=false;
 		this.mob_percent= 0;
@@ -128,6 +131,10 @@ public class ZonesConfig {
 
 	public boolean isCapitol() {
 		return capitol;
+	}
+
+	public boolean isNeutral() {
+		return Neutral;
 	}
 	
 	

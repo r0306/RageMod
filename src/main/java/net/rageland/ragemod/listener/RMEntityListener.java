@@ -77,28 +77,16 @@ public class RMEntityListener implements Listener
 			}
         	
             // Handle PvP
-            if( attackerEntity instanceof Player && defenderEntity instanceof Player && !plugin.config.PRE_RELEASE_MODE ) 
+            if( attackerEntity instanceof Player && defenderEntity instanceof Player) 
             {
             	Player attacker = (Player)attackerEntity;
             	Player defender = (Player)defenderEntity;
             	PlayerData attackerData = plugin.players.get(attacker.getName());
             	PlayerData defenderData = plugin.players.get(defender.getName());
-            	
-            	// Always prevent allies from harming each other
-    			if( attackerData.id_Faction == defenderData.id_Faction )
-    			{
-    				edbeEvent.setCancelled(true);
-        			plugin.message.parseNo(attacker, plugin.players.get(defenderData.name).getCodedName() + " is your ally!");
-        			return;
-    			}
-            	
-            	// Use the defender's position to determine behavior
-            	// *** ZONE A (Neutral Zone) **
-            		// No PvP in capitol
             		if( !plugin.zones.isInside(defender.getLocation()).getConfig().isPvp())
             		{
             			edbeEvent.setCancelled(true);
-            			plugin.message.parseNo(attacker, "PvP is not allowed inside " + plugin.config.Capitol_CodedName + ".");
+            			plugin.message.parseNo(attacker, "PvP is not allowed inside " + plugin.zones.getName(defender.getLocation()) + ".");
             			return;
             		}
             		else
@@ -106,21 +94,25 @@ public class RMEntityListener implements Listener
             			if (plugin.zones.isInside(defender.getLocation()).getConfig().isFactionPvp()){
             			
             			// Only faction-faction PvP is allowed in neutral zone
-            			if( defenderData.id_Faction == 0 )
-            			{
-            				edbeEvent.setCancelled(true);
-                			plugin.message.sendNo(attacker, "You cannot attack neutral players in " + plugin.zones.getName(defender.getLocation()) + ".");
-                			return;
-            			}
-            			else if( attackerData.id_Faction == 0 )
-            			{
+            				if( defenderData.id_Faction == 0 && plugin.zones.isInside(defender.getLocation()).getConfig().isNeutral()  )
+            				{
+            					edbeEvent.setCancelled(true);
+            					plugin.message.sendNo(attacker, "You cannot attack neutral players in " + plugin.zones.getName(defender.getLocation()) + ".");
+            					return;
+            				}else if( attackerData.id_Faction == defenderData.id_Faction )
+                			{
+                				edbeEvent.setCancelled(true);
+                    			plugin.message.parseNo(attacker, plugin.players.get(defenderData.name).getCodedName() + " is your ally!");
+                    			return;
+                			}
+            				
+            				else if( attackerData.id_Faction == 0 && plugin.zones.isInside(defender.getLocation()).getConfig().isNeutral() )
+            				{
             				edbeEvent.setCancelled(true);
                 			plugin.message.sendNo(attacker, "Neutral players cannot attack in " + plugin.zones.getName(defender.getLocation()) + ".");
                 			return;
+            				}
             			}
-            		}
-        
-            	// *** ZONE B (War Zone) ***
             	else
             	{
             		PlayerTown playerTown = (PlayerTown)plugin.towns.getCurrentTown(defender.getLocation());

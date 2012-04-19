@@ -1,5 +1,6 @@
 package net.rageland.ragemod.listener;
 
+import net.milkbowl.vault.economy.EconomyResponse;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.commands.Commands;
 import net.rageland.ragemod.commands.CompassCommands;
@@ -27,6 +28,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -65,8 +69,11 @@ public class RMPlayerListener implements Listener
         	// Check to see if the player has changed zones
         	if( playerData.currentZone != plugin.zones.isInside(player.getLocation()))
         	{
+        		plugin.chat.removePlayer(playerData);
         		playerData.currentZone = plugin.zones.isInside(player.getLocation());
-        		plugin.message.parse(player, "Your current zone is now " + playerData.currentZone.getConfig().getName());        		
+        		plugin.chat.addPlayer(playerData);
+        		plugin.message.parse(player, "Your current zone is now " + playerData.currentZone.getConfig().getName()); 
+
         	}
         		
         	if( playerData.isInCapitol )
@@ -204,5 +211,31 @@ public class RMPlayerListener implements Listener
 	    	event.setTo(plugin.zones.world.getSpawnLocation());
 	    } 
     }
+    
+	public void onPlayerDeath(PlayerDeathEvent event){
+	    if (!(event.getEntity() instanceof Player)) {
+	        return;
+	      }
+
+	      Player victim = (Player)event.getEntity();
+
+	      EntityDamageEvent e = event.getEntity().getLastDamageCause();
+	      if (!(e instanceof EntityDamageByEntityEvent)) {
+	        return;
+	      }
+	      EntityDamageByEntityEvent nEvent = (EntityDamageByEntityEvent)e;
+
+	      if (!(nEvent.getDamager() instanceof Player)) {
+	        return;
+	      }
+	      Player killer = (Player)nEvent.getDamager();
+	      	double temp= plugin.Bounties.removeallBountys(victim.getName());
+			EconomyResponse work = plugin.economy.bankDeposit(killer.getName(), temp);
+			if (work.type == EconomyResponse.ResponseType.SUCCESS){	
+				killer.sendMessage(ChatColor.GREEN + "You have been awarded " + temp + " in bounty for your kill!");
+				victim.sendMessage(ChatColor.RED + killer.getDisplayName()+" has taken "+ temp+" for your head.");
+			}
+
+	}
 }
 

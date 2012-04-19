@@ -94,6 +94,16 @@ public class RMChatListener implements Listener {
 	    		}
 	    		return true;
 	    	}
+	    	case "chat": case "c":{
+	    		if(checkmin(1,args,sender))
+	    		switch(args[0]){
+	    		case "global":		this.bountyCommands.addSignIssue(player, args);
+	    		case "local":		if(check(3,args,sender))this.bountyCommands.addBounty(player, args[2], args[1],playerData.townName);break;
+	    		case "whisper":		if(check(4,args,sender))this.bountyCommands.addBounty(player, args[2], args[1],args[3]);break;
+	    		case "zone":		if(check(3,args,sender))this.bountyCommands.addGlobalBounty(player, args[2], args[1]);break;
+	    		}
+	    		return true;
+	    	}
 	    	case "language": case "lang":{
 	    		if(checkmin(1,args,sender)){
 	    		switch(args[0]){
