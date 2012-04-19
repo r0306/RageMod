@@ -19,6 +19,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -42,6 +44,7 @@ public class RMEntityListener implements Listener
     }
     
     // Called when an entity damages another entity
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDamage(EntityDamageEvent rawEvent) 
     {
     	Entity defenderEntity = rawEvent.getEntity();
@@ -205,6 +208,7 @@ public class RMEntityListener implements Listener
     }
     
     // Called when creatures spawn
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onCreatureSpawn(CreatureSpawnEvent event) 
     {
         // Don't process code if event was cancelled by another plugin
@@ -241,6 +245,7 @@ public class RMEntityListener implements Listener
     /**
      *  Called on entityTarget. Used for detecting right clicks on the NPC
      */
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityTarget(EntityTargetEvent event) 
     {    	
 		if ((event instanceof NPCTargetEvent)) 

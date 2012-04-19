@@ -5,16 +5,22 @@ import java.util.HashMap;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.npc.NPCTown;
+import net.rageland.ragemod.world.Location2D;
 import net.rageland.ragemod.world.Lot;
 import net.rageland.ragemod.world.PlayerTown;
+import net.rageland.ragemod.world.Region2D;
 import net.rageland.ragemod.world.Town;
+import net.rageland.ragemod.world.WarZone;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
@@ -25,13 +31,33 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public class RMBlockListener implements Listener 
 {
     private final RageMod plugin;
-
+    private WarZone wz;
+    private Location2D loc;
+	private Region2D r2d;
+    
     public RMBlockListener(final RageMod plugin) 
     {
         this.plugin = plugin;
     }
+    
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onBlockDropItem(BlockDispenseEvent e) {
+    	if (wz.isInside(loc, r2d)) {
+    		if (e.getBlock().equals("Dispenser")) {
+    			if (e.isCancelled()) {
+    				e.setCancelled(false);
+    				return;
+    			} else {
+    				return;
+    			}
+    		} else {
+    			e.setCancelled(true);
+    		}
+    	}
+    }
 
     // Prevent block breaking without permission
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent event) 
     {
     	Player player = event.getPlayer();
@@ -53,6 +79,12 @@ public class RMBlockListener implements Listener
     	// *** DISABLE ALL FURTHER CODE FOR LOT RELEASE ***
     	if( plugin.config.PRE_RELEASE_MODE )
     		return;
+    	
+    	if (wz.isInside(loc, r2d)) {
+    		event.setCancelled(true);
+    		event.getBlock().breakNaturally();
+    		event.getBlock().getDrops().clear();
+    	}
     	
     	
     	// Bed breaking - clear spawn and home
@@ -92,6 +124,7 @@ public class RMBlockListener implements Listener
     
     
     // Prevent block placing without permission
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockPlaceEvent event) 
     {
     	Player player = event.getPlayer();
@@ -113,6 +146,10 @@ public class RMBlockListener implements Listener
     	// *** DISABLE ALL FURTHER CODE FOR LOT RELEASE ***
     	if( plugin.config.PRE_RELEASE_MODE )
     		return;
+    	
+    	if (wz.isInside(loc, r2d)) {
+    		
+    	}
     	
     	// *** ZONE A (Neutral Zone) ***
     		// Bed placement - set spawn and home
@@ -201,9 +238,8 @@ public class RMBlockListener implements Listener
     			plugin.message.sendNo(player, "You don't have permission to build here.");
     			return false;
     		}
-    	}
-    	
-    	// *** ZONE A (Neutral Zone) ***
+    		
+    	} // *** ZONE A (Neutral Zone) ***
     	else if( plugin.zones.isInside(location).getConfig().isPlayerBuild() )
     	{
     		if( !playerData.isInsideOwnLot(location) && !RageMod.perms.has(player, "ragemod.build.anylot") )
@@ -268,6 +304,9 @@ public class RMBlockListener implements Listener
     	{
     		plugin.message.sendNo(player, "You cannot build inside the Travel Zone.");
     		return false;
+    	} else if (wz.isInside(loc,  r2d))
+    	{
+    		return true;
     	}
     	
     	return true;

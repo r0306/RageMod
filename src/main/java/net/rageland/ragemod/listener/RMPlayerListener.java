@@ -23,6 +23,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -73,6 +75,7 @@ public class RMPlayerListener implements Listener
     }
 
     // Pull the player data from the DB and register in memory
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent event)
     {
     	Player player = event.getPlayer();    	
@@ -124,6 +127,7 @@ public class RMPlayerListener implements Listener
     }
     
     // Register the player as logged off
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerQuit(PlayerQuitEvent event)
     {
     	Player player = event.getPlayer();    	
@@ -141,6 +145,7 @@ public class RMPlayerListener implements Listener
     
     
     // Process commands
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) 
     {
     	Player player = event.getPlayer();
@@ -270,6 +275,7 @@ public class RMPlayerListener implements Listener
     }
     
     // Player movement
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerMove(PlayerMoveEvent event) 
     {
         Player player = event.getPlayer();
@@ -364,6 +370,7 @@ public class RMPlayerListener implements Listener
         	}
     
     // Player interacts with objects (right-clicking, etc.)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) 
     {
     	Player player = event.getPlayer();
@@ -378,6 +385,7 @@ public class RMPlayerListener implements Listener
     }
     
     // Player respawn
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(PlayerRespawnEvent event) 
     {
     	Player player = event.getPlayer();
@@ -390,6 +398,7 @@ public class RMPlayerListener implements Listener
     }
     
     // Player portal usage
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerPortal(PlayerPortalEvent event)
     {
 	    Player player = event.getPlayer();
@@ -405,26 +414,18 @@ public class RMPlayerListener implements Listener
 	    		// All portals from the capitol will go to the center of the Travel Zone
 	    		if( plugin.zones.isInside(player.getLocation()).isInsideCapitol(player.getLocation())){
 	    			event.setTo(plugin.zones.TZ_Center);
-	    		}else{
-	    			if( playerData.currentTown != null && playerData.currentTown instanceof PlayerTown )
+	    		}else if( playerData.currentTown != null && playerData.currentTown instanceof PlayerTown ) 
 	    		{
 	    			PlayerTown currentTown = (PlayerTown)playerData.currentTown;
 	    			event.setTo(currentTown.travelNode);
 	    		}
 	    		else
 	    			event.setTo(plugin.zones.TZ_Center);
-	    	}
-	    }
-	    else{ if( world.getName().equalsIgnoreCase("world_nether") )
+	    	} else if( world.getName().equalsIgnoreCase("world_nether") )
 	    {
 	    	// Temp: Make all portals go back to spawn
 	    	event.setTo(plugin.zones.world.getSpawnLocation());
-	    }
-	    
+	    } 
     }
-    
-    
-    
-    }
-    }
+}
 
