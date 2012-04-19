@@ -1,6 +1,7 @@
 package net.rageland.ragemod.listener;
 
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.config.RageConfig;
 import net.rageland.ragemod.entity.PlayerData;
 
 import org.bukkit.ChatColor;
