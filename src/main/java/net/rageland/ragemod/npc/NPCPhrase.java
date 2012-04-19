@@ -1,7 +1,5 @@
 package net.rageland.ragemod.npc;
 
-import java.util.ArrayList;
-
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.entity.PlayerData;
 
@@ -9,7 +7,6 @@ import net.rageland.ragemod.entity.PlayerData;
 public class NPCPhrase
 {
 	private String message;
-	private ArrayList<String> translations;
 	private int id;
 	private NPCData npcData;
 	private RageMod plugin;
@@ -39,16 +36,7 @@ public class NPCPhrase
 	
 	private String getTranslation(PlayerData playerData)
 	{
-		// Check to see if the translations have been set up yet
-		if( translations == null )
-			translations = plugin.languages.translate(message, npcData.id_NPCRace);
-		
-		int skill = playerData.getLanguageSkill(npcData.id_NPCRace);
-		
-		if( skill >= 100 )
-			return parse(message, playerData);
-		else
-			return parse(translations.get((int)(((skill / 25) - 3) * -1)), playerData);	// This maps 0 to 3, 25 to 2, 50 to 1, and 75 to 0
+		return this.plugin.languages.translate(message, plugin.races.races.get(npcData.id_NPCRace).getLang().getName());
 	}
 	
 	// Returns whether the phrase needs to have its XML parsed

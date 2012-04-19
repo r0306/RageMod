@@ -81,6 +81,7 @@ public class RMPlayerListener implements Listener
     	Player player = event.getPlayer();    	
     	PlayerData playerData = plugin.players.playerLogin(player.getName());    
     	playerData.attachPlayer(player);
+    	plugin.chat.addPlayer(playerData);
     	
 		// Set the state info
     	playerData.currentZone = plugin.zones.isInside(player.getLocation());
@@ -139,6 +140,7 @@ public class RMPlayerListener implements Listener
     	plugin.database.playerQueries.playerLogoff(playerData.id_Player);
     	plugin.database.playerQueries.recordInstances(playerData);
     	plugin.database.playerQueries.recordAffinity(playerData);
+    	plugin.chat.removePlayer(playerData);
     }
     
     
@@ -271,6 +273,8 @@ public class RMPlayerListener implements Listener
         		event.setCancelled(true);
         	}
     	}
+    	this.plugin.chat.ChatEvent(player.getName(), event.getMessage());
+    	event.setCancelled(true);
     		
     }
     

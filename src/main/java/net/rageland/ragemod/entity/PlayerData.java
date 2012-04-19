@@ -89,6 +89,7 @@ public class PlayerData
 	private Player player;
 	private World world;
 	private RageConfig rc;
+	public int chat; //Where the message goes 0 = whisper 1=local 2= zone 3= global
 	
 	
 	// Constructor
@@ -281,6 +282,10 @@ public class PlayerData
 	public float getAffinity(int npcID)
 	{
 		return npcAffinities.get(npcID);
+	}
+	
+	public Player getPlayer(){
+		return this.player;
 	}
 	
 	

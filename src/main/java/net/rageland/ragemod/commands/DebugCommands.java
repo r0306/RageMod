@@ -76,17 +76,6 @@ public class DebugCommands
 			else
     			plugin.message.parse(player, "Usage: /rmdebug tptown <town_name>"); 
 		}
-		else if( split[1].equalsIgnoreCase("translate") )
-		{
-				this.translate(player, split); 
-		}
-		else if( split[1].equalsIgnoreCase("transcast") )
-		{
-			if( split.length > 3 )
-				this.transcast(player, split); 
-			else
-    			plugin.message.parse(player, "Usage: /rmdebug transcast 1-4 <text>"); 
-		}
 		else
 			plugin.message.parse(player, "Type /rmdebug to see a list of available commands.");
 	}
@@ -213,81 +202,6 @@ public class DebugCommands
 		player.teleport(Util.findTeleportLocation(town.centerPoint));
 	}
 	
-	// Translates the text typed by the player
-	private void translate(Player player, String[] split) 
-	{
-		String message = new String();
-		ArrayList<String> results;
-		
-		if( split.length == 2 )
-		{
-			plugin.message.parse(player, "Usage: /debug translate [text]");
-			plugin.message.parse(player, "Translating sample message...");
-			message = "Greetings, fellow traveler.  Would you like a cup of ale?";
-		}
-		else
-		{
-			// Pull the commands out of the string
-			for( int i = 2; i < split.length; i++ )
-				message += split[i] + " ";
-		}
-		
-		try
-		{
-			plugin.message.parse(player,  "[En] " + message);
-			
-			// Translate into all 4 languages
-			for( int i = 1; i <= 4; i++ )
-			{
-				results = plugin.languages.translate(message, i);
-				plugin.message.parse(player,  "[" + plugin.languages.getAbbreviation(i) + "] " + results.get(3), ChatColor.DARK_AQUA);
-			}
-		}
-		catch( Exception ex )
-		{
-			plugin.message.send(player, "Error: " + ex.getMessage());
-		}
-	}
-	
-	// Translates and broadcasts the text typed by the player
-	private void transcast(Player player, String[] split) 
-	{
-		PlayerData playerData = plugin.players.get(player.getName());
-		String message = new String();
-		ArrayList<String> results;
-		int id_Language;
-		
-		try
-		{
-			id_Language = Integer.parseInt(split[2]);
-		}
-		catch( Exception ex )
-		{
-			plugin.message.sendNo(player, "Invalid language (1-4).");
-			return;
-		}
-		if( id_Language < 1 || id_Language > 4 )
-		{
-			plugin.message.sendNo(player, "Invalid language (1-4).");
-			return;
-		}
-		
-		// Pull the commands out of the string
-		for( int i = 3; i < split.length; i++ )
-			message += split[i] + " ";
-		
-		results = plugin.languages.translate(message, id_Language);
-		plugin.message.broadcast(playerData.getCodedName() + " has initiated a translation test:");
-		plugin.message.broadcast("[En] " + message, ChatColor.GREEN);
-		
-		try
-		{
-			plugin.message.broadcast("[" + plugin.languages.getAbbreviation(id_Language) + "] " + results.get(3), ChatColor.DARK_AQUA);
-		}
-		catch( Exception ex )
-		{
-			plugin.message.send(player, "Error: " + ex.getMessage());
-		}
-	}
+
 
 }

@@ -13,6 +13,7 @@ import net.rageland.ragemod.utilities.Util;
 import net.rageland.ragemod.world.Location2D;
 import net.rageland.ragemod.world.Region2D;
 import net.rageland.ragemod.world.Region3D;
+import net.rageland.ragemod.world.Zone;
 
 @SuppressWarnings("unused")
 public class ZoneHandler {
@@ -24,7 +25,7 @@ public class ZoneHandler {
 	public String ZoneC_Name;
 	public int ZoneC_Border;
 	
-	private final ArrayList<net.rageland.ragemod.world.Zone> zones = new ArrayList<net.rageland.ragemod.world.Zone>();
+	private final ArrayList<Zone> zones = new ArrayList<Zone>();
 	private Location2D worldSpawn;
     public World world;
     public World nether;
@@ -51,15 +52,6 @@ public class ZoneHandler {
 		NE,
 		SW,
 		SE;
-	}
-	
-	public static enum Zone {
-		CAPITOL,
-		A,
-		B,
-		C,
-		OUTSIDE,
-		UNKNOWN;
 	}
 
 	//TODO Create an infinite long zone
@@ -114,12 +106,16 @@ public class ZoneHandler {
 		return this.zones.get(this.zones.size()).getOuterLine();
 	}
 	
-	public net.rageland.ragemod.world.Zone isInside(Location loc){
+	public Zone isInside(Location loc){
 		for (int i= 0;i < this.zones.size();i++){
 			if (this.zones.get(i).isInside(loc)) return this.zones.get(i);
 		}
 		return null;
 		//should not happen ... Das ist error
+	}
+	
+	public Zone[] getZones(){
+		return (Zone[]) this.zones.toArray();
 	}
 	
     public Quadrant getQuadrant(Location location)

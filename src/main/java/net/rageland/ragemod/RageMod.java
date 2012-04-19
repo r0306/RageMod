@@ -15,10 +15,12 @@ import org.w3c.dom.NodeList;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import net.rageland.ragemod.data.AllBountyHandler;
+import net.rageland.ragemod.data.ChatHandler;
 import net.rageland.ragemod.data.FactionHandler;
 import net.rageland.ragemod.data.LanguageHandler;
 import net.rageland.ragemod.data.LotHandler;
 import net.rageland.ragemod.data.PlayerHandler;
+import net.rageland.ragemod.data.RaceHandler;
 import net.rageland.ragemod.data.TownHandler;
 import net.rageland.ragemod.data.TaskHandler;
 import net.rageland.ragemod.data.ZoneHandler;
@@ -86,10 +88,12 @@ public class RageMod extends JavaPlugin {
     public PlayerHandler players;
     public TownHandler towns;
     public TaskHandler tasks;
+    public RaceHandler races;
     public FactionHandler factions;
     public LanguageHandler languages;
     public AllBountyHandler Bounties;
     public ZoneHandler zones;
+    public ChatHandler chat;
     
     // Semi-static data and methods
     public RageDB database;

@@ -1,6 +1,5 @@
 package net.rageland.ragemod.data;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.rageland.ragemod.RageMod;
@@ -10,6 +9,7 @@ import net.rageland.ragemod.text.Language;
 public class LanguageHandler 
 {
 	private HashMap<Integer, Language> languages = new HashMap<Integer, Language>();
+	private HashMap<String, Integer> langids = new HashMap<String, Integer>();
 	private RageMod plugin;
 	
 	public LanguageHandler(RageMod plugin) 
@@ -18,19 +18,19 @@ public class LanguageHandler
 		languages = new HashMap<Integer, Language>();
 	}
 	
-	// On startup, pull all the language dictionaries 
+	// On startup, pull all the language dictionaries TODO make this for the new system
 	public void loadDictionaries()
 	{
 		languages = plugin.database.npcQueries.loadDictionaries();	
 	}
 	
 	// Translate a sentence into the specified language at all comprehension levels
-	public ArrayList<String> translate(String source, int id_Language)
+	public String translate(String source, int id_Language)
 	{
-		return languages.get(id_Language).translate(source);
+		return languages.get(id_Language).translateEnLa(source);
 	}
 
-	public String getAbbreviation(int id_Language) 
+	public String getAbbreviation(int id_Language) //TODO what is this? A Short thing for the language names?
 	{
 		switch( id_Language )
 		{
@@ -48,8 +48,16 @@ public class LanguageHandler
 	}
 
 	public int getlangid(String lang) {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.langids.get(lang);
+	}
+
+	public Language getLanguage(int isSpeaking) {
+		return this.languages.get(isSpeaking);
+	}
+
+	public String translate(String message, String name) {
+		
+		return this.translate(message, this.getlangid(name));
 	}	
 	
 }

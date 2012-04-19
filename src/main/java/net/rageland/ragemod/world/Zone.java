@@ -12,6 +12,7 @@ public class Zone {
 	private RageMod plugin;
 	private int Beginning;
 	private WarZoneConfig wzConfig;
+	private String Name;
 	
     public World world;
     public World nether;
@@ -63,6 +64,11 @@ public class Zone {
     public boolean isInsideWarzone(Location loc) {
     	return (this.WZ_Region.isInside(loc));
     }
+
+	public String getName() {
+		return Name;
+	}
+
     
 
 }
