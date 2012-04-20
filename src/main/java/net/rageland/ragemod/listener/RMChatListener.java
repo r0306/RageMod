@@ -6,6 +6,7 @@ import net.rageland.ragemod.entity.PlayerData;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,30 +14,30 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-public class RMChatListener implements Listener {
+public class RMChatListener implements Listener, CommandExecutor {
     private RageMod plugin;
-    //private QuestCommands questCommands;
+    private QuestCommands questCommands;
     private CompassCommands compassCommands;
     private LotCommands lotCommands;
-    //private TownCommands townCommands;
-    //private FactionCommands factionCommands;
+    private TownCommands townCommands;
+    private FactionCommands factionCommands;
     private DebugCommands debugCommands;
     private Commands commands;
-    //private NPCCommands npcCommands;
+    private NPCCommands npcCommands;
     private NPCTownCommands npcTownCommands;
     private PermitCommands permitCommands;
     private LanguageCommands langCommands;
     private BountyCommands bountyCommands;
     
     public RMChatListener(RageMod Plugin){
-        //questCommands = new QuestCommands(plugin);
+        questCommands = new QuestCommands(plugin);
         compassCommands = new CompassCommands(plugin);
         lotCommands = new LotCommands(plugin);
-       // townCommands = new TownCommands(plugin);
-       // factionCommands = new FactionCommands(plugin);
+        townCommands = new TownCommands(plugin);
+        factionCommands = new FactionCommands(plugin);
         debugCommands = new DebugCommands(plugin);
         commands = new Commands(plugin);
-       // npcCommands = new NPCCommands(plugin);
+        npcCommands = new NPCCommands(plugin);
         npcTownCommands = new NPCTownCommands(plugin);
         permitCommands = new PermitCommands(plugin);
         langCommands = new LanguageCommands(plugin);
@@ -69,7 +70,7 @@ public class RMChatListener implements Listener {
     	event.setCancelled(true);	
     }
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		if (sender instanceof Player) {
 			Player player = null;

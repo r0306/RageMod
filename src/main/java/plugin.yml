@@ -67,7 +67,9 @@ permissions:
     - ragemod.admin.smitemobs
     - ragemod.admin.debug
   ragemod.admin.smitemobs:
+    description: TBM
   ragemod.admin.debug:
+    description: TBM
   ragemod.build:
     children:
       ragemod.build.anylot: true
@@ -76,28 +78,52 @@ permissions:
       ragemod.build.capitol: true
       ragemod.build.travelzone: true
   ragemod.build.anylot:
+    description: TBM
   ragemod.build.anytown:
+    description: TBM
   ragemod.build.npctown:
+    description: TBM
   ragemod.build.capitol:
+    description: TBM
   ragemod.build.travelzone:
+    description: TBM
   ragemod.lot:
-  ragemod.assign:
+    description: TBM
+  ragemod.lot.assign:
+    description: TBM
   ragemod.evict:
+    description: TBM
   ragemod.ismoderator:
+    description: TBM
   ragemod.permit:
+    description: TBM
     children: 
       ragemod.permit.capitol: true
   ragemod.permit.capitol:
+    description: TBM
   ragemod.npc:
+    description: TBM
   ragemod.npctown:
+    description: TBM
   ragemod.referee:
+    description: TBM
   ragemod.referee.blockpvp:
+    description: TBM
   ragemod.referee.inspectspawn:
+    description: TBM
   ragemod.bounty:
+    description: TBM
   ragemod.bounty.createsign:
+    description: TBM
   ragemod.bounty.signcreate:
+    description: TBM
   ragemod.bounty.add.global:
+    description: TBM
   ragemod.bounty.removeall:
+    description: TBM
   ragemod.compass:
+    description: TBM
   ragemod.town:
+    description: TBM
   ragemod.quest:
+    description: TBM

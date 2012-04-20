@@ -14,8 +14,7 @@ public class RMServerListener implements Listener {
 	private RageMod plugin = RageMod.getInstance();
 	private Server server = plugin.getServer();
 	
-	public RMServerListener(RageMod instance, Server server) {
+	public RMServerListener(RageMod instance) {
 		this.plugin = instance;
-		this.server = server;
 	}
 }
