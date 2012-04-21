@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.commands.BountyCommands;
+import net.rageland.ragemod.commands.Commands;
 import net.rageland.ragemod.commands.CompassCommands;
 import net.rageland.ragemod.commands.DebugCommands;
 import net.rageland.ragemod.commands.LanguageCommands;
@@ -31,6 +32,7 @@ public class RMCommandExecutor implements CommandExecutor {
 	private CommandSender sender;
 	private Player player = (Player) sender;
 	private PlayerData pd = plugin.players.get(player.getName());
+	private Commands cmds;
 	private DebugCommands dbCmds;
 	private LotCommands lCmds;
 	private LanguageCommands langCmds;
@@ -42,6 +44,7 @@ public class RMCommandExecutor implements CommandExecutor {
 	private BountyCommands boCmds;
 	private TownCommands tCmds;
 	private CompassCommands compCmds;
+	private CommandExecutor cmdExec;
 	
 	public RMCommandExecutor(RageMod plugin) {
 		this.plugin = plugin;
@@ -57,6 +60,27 @@ public class RMCommandExecutor implements CommandExecutor {
 		boCmds = new BountyCommands(plugin);
 		tCmds = new TownCommands(plugin);
 		compCmds = new CompassCommands(plugin);
+		cmds = new Commands(plugin);
+	}
+	
+	private boolean check(int num, String[] args, CommandSender sender){
+    	if (args.length > num) {
+            sender.sendMessage(ChatColor.RED + "Too many arguments!");
+            return false;
+         } 
+         if (args.length < num) {
+            sender.sendMessage(ChatColor.RED + "Not enough arguments!");
+            return false;
+         }
+         return true;
+    }
+	
+	private boolean checkmin(int num, String[] args, CommandSender sender) {
+        if (args.length < num) {
+            sender.sendMessage(ChatColor.RED + "Not enough arguments!");
+            return false;
+         }
+         return true;
 	}
 	
 	public RMCommandExecutor get() {
@@ -91,20 +115,37 @@ public class RMCommandExecutor implements CommandExecutor {
 				boCmds.onBountyCommand(player, pd, split);
 				return true;
 			} else if (cmd.getName().equalsIgnoreCase("language") || cmd.getName().equalsIgnoreCase("lang")) {
-				if (split[0] == "teach") {
-					langCmds.teach(player, split[1], split[2], split[3]);
-				} else if (split[0] == "addword") {
-					langCmds.addword(player, split[1], split[2], split[3]);
-				} else if (split[0] == "removeword") {
-					
-				} else if (split[0] == "translate" || split[0] == "t") {
-					
-				} else if (split[0] == "create") {
-					
-				} else if (split[0] == "wg" || split[0] == "wordgen") {
-					
-				} else {
-					sender.sendMessage(ChatColor.DARK_RED + "Not a valid RageMod language command!");
+				if (checkmin(1, split, sender)) {
+					if (split[0] == "teach") {
+						 if (check(4,split,sender)) {
+							 langCmds.teach(player, split[1], split[2], split[3]);
+							 return true;
+						 } else {
+							 return false;
+						 }
+					} else if (split[0] == "addword") {
+						if (check(4, split, sender)) {
+							langCmds.addword(player, split[1], split[2], split[3]);
+							return true;
+						} else {
+							return false;
+						}
+					} else if (split[0] == "removeword") {
+
+						return true;
+					} else if (split[0] == "translate" || split[0] == "t") {
+
+						return true;
+					} else if (split[0] == "create") {
+						
+						return true;
+					} else if (split[0] == "wg" || split[0] == "wordgen") {
+
+						return true;
+					} else {
+						sender.sendMessage(ChatColor.DARK_RED + "Not a valid RageMod language command!");
+						return false;
+					}
 				}
 				return true;
 			} else if (cmd.getName().equalsIgnoreCase("quest")) {
@@ -115,12 +156,34 @@ public class RMCommandExecutor implements CommandExecutor {
 				return true;
 			} else if (cmd.getName().equalsIgnoreCase("rage")) {
 				rCmds.onCommand(player, pd, split);
+				return true;
+			} else if (cmd.getName().equalsIgnoreCase("home")) {
+				cmds.home(player, split[0]);
+				return true;
+			} else if (cmd.getName().equalsIgnoreCase("spawn")) {
+				cmds.spawn(player, split[0]);
+				return true;
+			} else if (cmd.getName().equalsIgnoreCase("affinity") || cmd.getName().equalsIgnoreCase("aff")) {
+				cmds.affinity(player);
+				return true;
+			} else if (cmd.getName().equalsIgnoreCase("chat") || cmd.getName().equalsIgnoreCase("c")) {
+				
+				return true;
+			} else if (cmd.getName().equalsIgnoreCase("speak") || cmd.getName().equalsIgnoreCase("s")) {
+				langCmds.speak(player, split[0]);
+				return true;
+			} else if (cmd.getName().equalsIgnoreCase("ragemod") || cmd.getName().equalsIgnoreCase("rm")) {
+				cmds.ragemod(player);
+				return true;
+			} else {
+				if (cmdExec.onCommand(sender, cmd, args, split) == false) {
+					player.sendMessage(ChatColor.DARK_RED + "That command does not exist!");
+					return true;
+				}
 			}
 		} else if (sender instanceof ConsoleCommandSender) {
 			final Logger log = Bukkit.getLogger();
-			log.info("[RAGE] ======= RageMod Console Command Handling Sevice ======= [RAGE]");
-			log.warning("[RAGE] We here at RageModDevs do not support console command usage in RageMod as of yet. RageMod will now check for updates in case of a later version which does having been released.");
-			log.info("[RAGE] ======= RageMod Console Command Handling Sevice ======= [RAGE]");
+			log.info("[RAGE] RageMod does not support console commands as of yet.");
 			plugin.checkForUpdates();
 		}
 		return false;

@@ -2,6 +2,7 @@ package net.rageland.ragemod;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.net.URL;
 import java.util.logging.Logger;
 
@@ -36,6 +37,7 @@ import net.rageland.ragemod.npcentities.SL;
 import net.rageland.ragemod.npcentities.WL;
 import net.rageland.ragemod.quest.QuestManager;
 import net.rageland.ragemod.text.Message;
+import net.rageland.ragemod.commands.executor.RMCommandExecutor;
 import net.rageland.ragemod.config.*;
 
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -65,6 +67,7 @@ public class RageMod extends JavaPlugin {
     private RMChatListener chatListener;
 	private RMLoginListener loginListener;
     private RageMod rm;
+    private RMCommandExecutor exec = new RMCommandExecutor(this);
     private static RageMod plugin;
     public SL sl;
     public WL wl;
@@ -131,17 +134,57 @@ public class RageMod extends JavaPlugin {
     public void onEnable() 
     {           
     	plugin = this;
-    	load();
+        checkDependencies();   
+    	load();  
     	checkForUpdates();
         initializeVariables();
+    	initializeCommands();
         registerEvents();        
-        setupPermissions();   
-        loadDatabaseData();        
+        setupPermissions();        
         startScheduledTasks();        
-        runDebugTests();  
-        checkDependencies();
+        runDebugTests();
+        loadDatabaseData();
         
         System.out.println("[RAGE] RageMod v" + pdf.getVersion() + " is enabled!");
+    }
+    
+    private List<String> speakAliases;
+    private List<String> chatAliases;
+    private List<String> bountyAliases;
+    private List<String> npcTownAliases;
+    private List<String> permitAliases;
+    
+    public void initializeCommands() {
+    	
+    	speakAliases.add("s");
+    	chatAliases.add("c");
+    	bountyAliases.add("bty");
+    	bountyAliases.add("bnty");
+    	npcTownAliases.add("npct");
+    	permitAliases.add("permits");
+    	permitAliases.add("perm");
+    	
+    	getCommand("speak").setAliases(speakAliases);
+    	getCommand("chat").setAliases(chatAliases);
+    	getCommand("bounty").setAliases(bountyAliases);
+    	getCommand("npctown").setAliases(npcTownAliases);
+    	getCommand("permit").setAliases(permitAliases);
+    	
+    	getCommand("home").setExecutor(exec);
+    	getCommand("spawn").setExecutor(exec);
+    	getCommand("affinity").setExecutor(exec);
+    	getCommand("npctown").setExecutor(exec);
+    	getCommand("npc").setExecutor(exec);
+    	getCommand("quest").setExecutor(exec);
+    	getCommand("lot").setExecutor(exec);
+    	getCommand("bounty").setExecutor(exec);
+    	getCommand("town").setExecutor(exec);
+    	getCommand("rage").setExecutor(exec);
+    	getCommand("permit").setExecutor(exec);
+    	getCommand("language").setExecutor(exec);
+    	getCommand("speak").setExecutor(exec);
+    	getCommand("chat").setExecutor(exec);
+    	getCommand("rmdebug").setExecutor(exec);
     }
     
     public void checkDependencies() {

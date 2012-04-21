@@ -18,6 +18,7 @@ import net.rageland.ragemod.utilities.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
 
 @SuppressWarnings("unused")
 public class Commands 
@@ -28,6 +29,14 @@ public class Commands
 	{
 		this.plugin = plugin;
 	}
+	
+	PluginDescriptionFile pdf = plugin.getDescription();
+	
+	public void ragemod(Player player) {
+		player.sendMessage(ChatColor.GOLD + "===RageMod v" + pdf.getVersion() + "===");
+		player.sendMessage(ChatColor.GREEN + "|Programmed by " + pdf.getAuthors() + "|");
+	}
+	
 	// /zone
 	public void zone(Player player)
 	{

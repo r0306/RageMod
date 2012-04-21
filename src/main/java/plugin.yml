@@ -2,6 +2,7 @@ name: RageMod
 main: net.rageland.ragemod.RageMod
 version: 0.1
 
+authors: [PandazNWafflez, Perdemot, TheIcarusKid]
 dev-url: http://dev.bukkit.org/server-mods/ragemod/
 website: https://github.com/RageModDevs/RageMod
 database: true
