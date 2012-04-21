@@ -76,10 +76,10 @@ public class Commands
 			return;
 		}
 		
-		// See if player has an active membership
-		if( !playerData.isMember )
+		// See if player has an active membership or the override node.
+		if( !(playerData.isMember) &&(!(RageMod.perms.has(player, "ragemod.override.home")) ||(!(RageMod.perms.has(player, "ragemod.override")))) || !(RageMod.perms.has(player, "ragemod.*")) )
 		{
-			plugin.message.parseNo(player, "Only active Rageland members can use /home.");
+			plugin.message.parseNo(player, "Only active server members can use /home.");
 			return;
 		}
 		
@@ -174,6 +174,12 @@ public class Commands
 	// /affinity or /aff
 	public void affinity(Player player)
 	{
+		
+		if (!RageMod.perms.has(player, "ragemod.affinity")) {
+			plugin.message.parse(player, plugin.noPerms);
+			return;
+		}
+		
 		PlayerData playerData = plugin.players.get(player.getName());
 		HashMap<Integer, Integer> affinities = new HashMap<Integer, Integer>();
 		affinities.put(-2, 0);

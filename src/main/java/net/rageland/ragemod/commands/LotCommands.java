@@ -19,6 +19,104 @@ public class LotCommands
 		this.plugin = plugin;
 	}
 	
+	public void onLotCommand(Player player, PlayerData playerData, String[] split) {
+		  	
+		if( split.length < 2 || split.length > 4 ) {
+			plugin.message.parse(player, "Lot commands: <required> [optional]");
+		  	
+			if( playerData.lots.size() > 0 )
+				plugin.message.parse(player, "   /lot allow <player_name> (allow player to build in your lots)");
+		  	
+			if( RageMod.perms.has(player, "ragemod.lot.assign") )
+				plugin.message.parse(player, "   /lot assign <lot_code> <player_name>  (gives lot to player)");
+		  	if( true )
+		  		plugin.message.parse(player, "   /lot check   (returns info on the current lot)");
+		  	if( true )
+		  		plugin.message.parse(player, "   /lot claim [lot_code]   (claims the specified or current lot)");
+		  	if( playerData.lots.size() > 0 )
+		  		plugin.message.parse(player, "   /lot disallow <player_name/all> (removes permissions)");
+		  	if( RageMod.perms.has(player, "ragemod.lot.evict") )
+		  		plugin.message.parse(player, "   /lot evict <lot_code>   (sets specified lot to 'unclaimed')");
+		  	if( playerData.lots.size() > 0 )
+		  		plugin.message.parse(player, "   /lot list   (lists all lots you own)");
+		  	if( playerData.lots.size() > 0 )
+		  		plugin.message.parse(player, "   /lot unclaim [lot_code]  (unclaims the specified lot)");
+		} else if( split[1].equalsIgnoreCase("allow") ) {
+		
+			if( split.length == 3 )
+				this.allow(player, split[2]); 
+		  	else
+		  		plugin.message.parse(player, "Usage: /lot allow <player_name>"); 
+		  	} else if( split[1].equalsIgnoreCase("assign") ) {
+		  		if( split.length == 4 )
+		  			this.assign(player, split[2], split[3]); 
+		  		else
+		  			plugin.message.parse(player, "Usage: /lot assign <lot_code> <player_name>"); 
+		  	} else if( split[1].equalsIgnoreCase("check") ) {
+		  		this.check(player);
+	    } else if( split[1].equalsIgnoreCase("claim") ) {
+	    	if( split.length == 2 )
+	    		this.claim(player, "");
+		  	else if( split.length == 3 )
+		  		this.claim(player, split[2]); 
+		  	else
+		  		plugin.message.parse(player, "Usage: /lot claim [lot_code]"); 
+	    } else if( split[1].equalsIgnoreCase("disallow") ) {
+		  	
+	      if( split.length == 3 )
+		  	
+	        this.disallow(player, split[2]); 
+		  	
+	      else
+		  	
+	          plugin.message.parse(player, "Usage: /lot disallow <player_name/all>"); 
+		  	
+	    }
+		  	
+	    else if( split[1].equalsIgnoreCase("evict") )
+		  	
+	    {
+		  	
+	     if( split.length == 3 )
+		  	
+	        this.evict(player, split[2]); 
+		  	
+	      else
+		  	
+	          plugin.message.parse(player, "Usage: /lot evict <lot_code>"); 
+		  	
+	    }
+		  	
+	    else if( split[1].equalsIgnoreCase("list") )
+		  	
+	   {
+		  	
+	     this.list(player);
+		  	
+	    }
+		  	
+	    else if( split[1].equalsIgnoreCase("unclaim") )
+		  	
+	    {
+		  	
+	      if( split.length == 2 )
+		  	
+	        this.unclaim(player, "");
+		  	
+	      else if( split.length == 3 )
+		  	
+	        this.unclaim(player, split[2]); 
+		  	
+	      else
+		  	
+	          plugin.message.parse(player, "Usage: /lot unclaim [lot_code]"); 
+		  	
+	   }
+		  	
+	    else
+		  	
+	    	plugin.message.parse(player, "Type /lot to see a list of available commands.");
+	  }
 	// /lot allow <player_name>
 	public void allow(Player player, String targetPlayerName) 
 	{

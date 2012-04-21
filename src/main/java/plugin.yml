@@ -8,69 +8,120 @@ database: true
 
 commands:
   lot:
-    description: N/A
+    description: Lot command.
     usage: /lot
     permission: ragemod.lot
     permission-message: No perms to do that!
   npc:
-    description: N/A
+    description: NPC command.
     usage: /npc
     permission: ragemod.npc
     permission-message: No perms to do that!
   npctown:
-    description: N/A
+    description: NPC town command.
     usage: /npctown
     permission: ragemod.npctown
     permission-message: No perms to do that!
   rmdebug:
-    description: N/A
+    description: RageMod debugging command.
     usage: /rmdebug
     permission: ragemod.admin.debug
     permission-message: No perms to do that!
   bounty:
-    description: N/A
+    description: Bounty command.
     usage: /bounty
     permission: ragemod.bounty
     permission-message: No perms to do that!
   compass:
-    description: N/A
+    description: Compass command.
     usage: /compass
     permission: ragemod.compass
     permission-message: No perms to do that!
   faction:
-    description: N/A
+    description: Faction command.
     usage: /faction
     permission: ragemod.faction
     permission-message: No perms to do that!
   permit:
-    description: N/A
+    description: Permit command.
     usage: /permit
     permission: ragemod.permit
     permission-message: No perms to do that!
   quest:
-    description: N/A
+    description: Quest command.
     usage: /quest
     permission: ragemod.quest
     permission-message: No perms to do that!
   rage:
-    description: N/A
+    description: Rage command.
     usage: /rage
     permission: ragemod.rage
     permission-message: No perms to do that!
   town:
-    description: N/A
+    description: Town command.
     usage: /town
     permission: ragemod.town
     permission-message: No perms to do that!
+  home:
+    description: Home command.
+    usage: /home
+    permission: ragemod.override.home
+    permission-message:
+  spawn:
+    description: Spawn command.
+    usage: /spawn
+    permission: ragemod.override.spawn
+    permission-message:
+  affinity:
+    description: Affinity command.
+    usage: /affinity
+    permission: ragemod.affinity
+    permission-message: No perms to do that!
     
 permissions:
+  ragemod.*:
+    default: op
+    children:
+      ragemod.admin: true
+      ragemod.lot: true
+      ragemod.bounty: true
+      ragemod.npc: true
+      ragemod.npctown: true
+      ragemod.build: true
+      ragemod.referee: true
+      ragemod.rage: true
+      ragemod.town: true
+      ragemod.compass: true
+      ragemod.evict: true
+      ragemod.ismoderator: true
+      ragemod.permit: true
+      ragemod.affinity: true
+      ragemod.override: true
+  ragemod.override:
+    description: Overrides the isMember check for /home and /spawn
+    children:
+      ragemod.override.spawn: true
+      ragemod.override.home: true
+    default: false
+  ragemod.override.spawn:
+    default: false
+    description: Allows override of isMember check for /spawn
+  ragemod.override.home:
+    default: false
+    description: Allows override of isMember check for /home
+  ragemod.affinity:
+    description: Allows access to /affinity
+    default: false
   ragemod.admin:
+    default: false
     children: 
-    - ragemod.admin.smitemobs
-    - ragemod.admin.debug
+      ragemod.admin.smitemobs
+      ragemod.admin.debug
   ragemod.admin.smitemobs:
+    default: false
     description: TBM
   ragemod.admin.debug:
+    default: false
     description: TBM
   ragemod.build:
     children:
@@ -79,68 +130,97 @@ permissions:
       ragemod.build.npctown: true
       ragemod.build.capitol: true
       ragemod.build.travelzone: true
+    default: false
   ragemod.build.anylot:
     description: TBM
+    default: false
   ragemod.build.anytown:
     description: TBM
+    default: false
   ragemod.build.npctown:
     description: TBM
+    default: false
   ragemod.build.capitol:
     description: TBM
+    default: false
   ragemod.build.travelzone:
     description: TBM
+    default: false
   ragemod.lot:
     description: TBM
+    default: false
     children:
       ragemod.lot.assign: true
       ragemod.lot.claim: true
   ragemod.lot.claim:
+    default: false
     description: Allows lot claiming.
   ragemod.lot.assign:
+    default: false
     description: TBM
   ragemod.evict:
+    default: false
     description: TBM
   ragemod.ismoderator:
+    default: false
     description: TBM
   ragemod.permit:
+    default: false
     description: TBM
     children: 
       ragemod.permit.capitol: true
   ragemod.permit.capitol:
+    default: false
     description: TBM
   ragemod.npc:
+    default: false
     description: TBM
     children:
       ragemod.npc.create: true
   ragemod.npc.create:
+    default: false
     description: Allows NPC creation.
   ragemod.npctown:
+    default: false
     description: TBM
     children: 
       ragemod.npctown.create: true
   ragemod.npctown.create:
+    default: false
     description: Allows NPCTown creation.
   ragemod.referee:
+    default: false
     description: TBM
   ragemod.referee.blockpvp:
+    default: false
     description: TBM
   ragemod.referee.inspectspawn:
+    default: false
     description: TBM
   ragemod.bounty:
+    default: false
     description: TBM
   ragemod.bounty.createsign:
+    default: false
     description: TBM
   ragemod.bounty.signcreate:
+    default: false
     description: TBM
   ragemod.bounty.add.global:
+    default: false
     description: TBM
   ragemod.bounty.removeall:
+    default: false
     description: TBM
   ragemod.compass:
+    default: false
     description: TBM
   ragemod.town:
+    default: false
     description: TBM
   ragemod.quest:
+    default: false
     description: TBM
   ragemod.rage:
+    default: false
     description: Rage command access.

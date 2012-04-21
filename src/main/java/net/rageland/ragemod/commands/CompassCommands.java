@@ -1,6 +1,7 @@
 package net.rageland.ragemod.commands;
 
 import net.rageland.ragemod.RageMod;
+import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.world.Lot;
 import net.rageland.ragemod.world.Town;
 
@@ -15,6 +16,42 @@ public class CompassCommands
 	{
 		this.plugin = plugin;
 	}
+	
+	public void onCompassCommand(Player player, PlayerData playerData, String[] split) {
+		if (split.length < 2 || split.length > 3) {
+			plugin.message.parse(player, "Compass commands: <required> [optional]");
+			      if( true )
+			        plugin.message.parse(player, "   /compass lot <lot_code>   (points compass to specified lot)");
+			      if( true )
+			        plugin.message.parse(player, "   /compass spawn   (points compass to world spawn)");
+			      if( !plugin.config.PRE_RELEASE_MODE )
+			      {
+			        if( playerData.townName.equals("") )
+			          plugin.message.parse(player, "   /compass town <town_name>   (points compass to specified town)");
+			        else
+			          plugin.message.parse(player, "   /compass town [town_name]   (points compass to town)");	
+			      }  	  	
+			} else if (split[1].equalsIgnoreCase("lot")) {
+				if (split.length == 3) {
+					this.lot(player, split[2]);
+				} else {
+					plugin.message.parse(player, "Usage: /compass lot <lot_code>");
+				}
+			} else if (split[1].equalsIgnoreCase("spawn")) {
+				this.spawn(player);
+			} else if (split[1].equalsIgnoreCase("town") && !plugin.config.PRE_RELEASE_MODE) {
+				if (split.length == 2 && !playerData.townName.equals("")) {
+					this.town(player, playerData.townName);
+				} else if (split.length == 3) {
+					this.town(player, split[2]);
+				} else {
+					plugin.message.parse(player, "Usage: /compass town <town_name>");
+				}
+			} else {
+				plugin.message.parse(player, "Type /compass for a list of commands");
+			}
+		}
+	
 
 	// /compass lot <lot_code>
 	public void lot(Player player, String lotCode) 

@@ -22,6 +22,99 @@ public class NPCTownCommands {
 		this.plugin = plugin;
 	}
 	
+	public void onNPCTownCommand(Player player, PlayerData playerData, String[] split) {
+		  	
+	    if( split.length < 2 || split.length > 5 ) {	
+	    	plugin.message.parse(player, "NPCTown commands: <required> [optional]");
+	        
+	    	if( playerData.isSteward )
+	    		plugin.message.parse(player, "   /npctown allow <player> (allow player to build in your town)");
+	    	
+	    	if( RageMod.perms.has(player, "ragemod.npctown") )
+	    		plugin.message.parse(player, "   /npctown create <name> <raceID> <x,z,x,z>   (new NPCTown)");
+	    	if( playerData.isSteward )
+	    		plugin.message.parse(player, "   /npctown disallow <player/all> (removes permissions)");
+	    	if( true )
+	    		plugin.message.parse(player, "   /npctown list   (lists all NPCTowns)");
+	    	if( true )
+	    		plugin.message.parse(player, "   /npctown info [town_name]   (gives info on NPCTown)");
+		  	if( playerData.isSteward )
+		  		plugin.message.parse(player, "   /npctown newloc  (creates a new NPC)");
+		  	if( playerData.isSteward )
+		  		plugin.message.parse(player, "   /npctown newphrase <phrase>  (adds a new phrase)");
+		  	if( playerData.isSteward )
+		  		plugin.message.parse(player, "   /npctown resident <name> [sex]  (creates a new NPC)");
+		  	if( RageMod.perms.has(player, "ragemod.npctown") )
+		  		plugin.message.parse(player, "   /npctown setsteward <town> <player>   (sets steward)");
+	    } else if( split[1].equalsIgnoreCase("allow") ) {
+		  	
+	      if( split.length == 3 )
+	    	  this.allow(player, split[2]); 
+	      else
+	    	  plugin.message.parse(player, "Usage: /npctown allow <player_name>"); 
+	    } else if( split[1].equalsIgnoreCase("create") ) {
+		  	
+	      if( split.length == 5 )
+	    	  this.create(player, split[2], split[3], split[4]); 
+		  else	
+			  plugin.message.parse(player, "Usage: /npctown create <name> <lvl> <x,z,x,z>"); 
+	    } else if( split[1].equalsIgnoreCase("disallow") ) {
+		  	
+	      if( split.length == 3 )
+	    	  this.disallow(player, split[2]); 
+	      else	
+	    	  plugin.message.parse(player, "Usage: /npctown disallow <player_name/all>"); 
+	    } else if( split[1].equalsIgnoreCase("info") ) {
+		  	
+	      if( split.length == 2 && !playerData.npcTownName.equals("") )
+	    	  this.info(player, playerData.npcTownName);
+		  	else if( split.length == 3 )
+		  		this.info(player, split[2]);
+	        else
+	        	plugin.message.parse(player, "Usage: /npctown info <town_name>");
+	    } else if( split[1].equalsIgnoreCase("list") ) {
+	    	this.list(player, "");
+	    } else if( split[1].equalsIgnoreCase("newloc") ) {
+		  	
+	    	if( split.length == 2 )
+	    		this.newloc(player);
+		  	
+	//      else if( split.length == 3 )
+		  	
+	//        this.newloc(player, split[2]);
+	    	else
+	    		plugin.message.parse(player, "Usage: /npctown newloc");
+	    } else if( split[1].equalsIgnoreCase("newphrase") ) {
+		  	
+	      if( split.length > 2 )  	
+	    	  this.newphrase(player, split);
+	      else		  	
+	    	  plugin.message.parse(player, "Usage: /npctown newphrase <phrase>"); 	
+	    }
+		  	
+	    else if( split[1].equalsIgnoreCase("resident") ) {
+		  	
+	    if( split.length == 3 ) 
+	    	this.resident(player, split[2], "M"); 
+		  	
+	      else if( split.length == 4 )
+	    	  this.resident(player, split[2], split[3]); 
+		  	
+	      else {
+	    	  plugin.message.parse(player, "Usage: /npctown resident <name> [gender]");
+	      }
+		  	
+	    } else if( split[1].equalsIgnoreCase("setsteward") ) {
+	   
+	    	if( split.length == 4 )
+	    		this.setsteward(player, split[2], split[3]); 
+	    	else
+	    		plugin.message.parse(player, "Usage: /npctown setsteward <town_name> <player_name>");
+		  	
+	    } else
+	    	plugin.message.parse(player, "Type /npctown to see a list of available commands.");
+	}
+	
 
 	// Allows a player to build in the NPCTown
 	public void allow(Player player, String targetPlayerName) 

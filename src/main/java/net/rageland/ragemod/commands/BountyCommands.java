@@ -11,6 +11,7 @@ import net.milkbowl.vault.permission.Permission;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.data.AllBountyHandler;
 import net.rageland.ragemod.entity.Bounty;
+import net.rageland.ragemod.entity.PlayerData;
 
 public class BountyCommands {
 	
@@ -22,6 +23,29 @@ public class BountyCommands {
 	public BountyCommands(RageMod plugin) {
 		this.plugin = plugin;
 		this.oab = plugin.Bounties;
+	}
+	
+	public void onBountyCommand(Player Issuer, PlayerData pd, String[] split) {
+		
+		pd = plugin.players.get(Issuer.getName());
+		
+		if (split[0] == "addsign") {
+			this.addSignIssue(Issuer, split);
+		} else if (split[0] == "add") {
+			this.addBounty(Issuer, split[1], split[2], pd.townName);
+		} else if (split[0] == "addcity") {
+			this.addBounty(Issuer, split[1], split[2], split[3]);
+		} else if (split[0] == "addglobal") {
+			this.addGlobalBounty(Issuer, split[1], split[2]);
+		} else if (split[0] == "removeall") {
+			this.removeAllBountys(Issuer, null);
+		} else if (split[0] == "cancel") {
+			this.resultBlockIssue(Issuer);
+		} else if (split[0] == "show") {
+			Issuer.sendMessage(ChatColor.BLUE + "This command is not yet ready");
+		} else {
+			Issuer.sendMessage(ChatColor.DARK_RED + "That is not a valid bounty command!");
+		}
 	}
 	
 	public void addSignIssue(Player Issuer,String[] Command){
@@ -82,12 +106,12 @@ public class BountyCommands {
 			Bounty temp = new Bounty();
 			EconomyResponse work = this.plugin.economy.bankWithdraw(Issuer.getName(),Double.parseDouble(Amount) );
 			if (work.type == EconomyResponse.ResponseType.SUCCESS){		
-			temp.setAmount(Double.parseDouble(Amount));
-			temp.setPlayerName(Target);
-			temp.setBountyGiver(Issuer.getName());
-			temp.setCity(City);
-			this.oab.getBH(City).addBounty(temp);
-			Issuer.sendMessage(ChatColor.GREEN + "Bounty added!");
+				temp.setAmount(Double.parseDouble(Amount));
+				temp.setPlayerName(Target);
+				temp.setBountyGiver(Issuer.getName());
+				temp.setCity(City);
+				this.oab.getBH(City).addBounty(temp);
+				Issuer.sendMessage(ChatColor.GREEN + "Bounty added!");
 			} else {
 				Issuer.sendMessage("You don't have enough money. You need to hunt him by yourself :(");	
 			}
