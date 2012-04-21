@@ -57,6 +57,7 @@ public class DebugCommands
 	// /debug sanctum <level>
 	public void sanctum(Player player, String levelString) 
 	{
+		if (RageMod.perms.has(player, "ragemod.admin.debug")) {
 		//plugin.message.sendNo(player, "This command has been disabled.");
 		//return;
 
@@ -85,12 +86,19 @@ public class DebugCommands
 		int cornerZ = (int)player.getLocation().getZ() - 10; 
 		
 		Build.sanctumFloor(plugin, world, cornerX, cornerY, cornerZ, level, playerData.id_Faction);	
+		
+		} else {
+			plugin.message.parse(player, plugin.noPerms);
+		}
 	}
 	
 	
 	// Teleports to selected town
 	public void towntp(Player player, String townName)
 	{
+		
+		if (RageMod.perms.has(player, "ragemod.admin.debug")) {
+		
 		Town town = plugin.towns.get(townName);
 		
 		// Check to see if specified town exists
@@ -103,12 +111,13 @@ public class DebugCommands
 		// Teleport to the town
 		plugin.message.send(player, "Teleporting...");
 		player.teleport(Util.findTeleportLocation(town.centerPoint));
+		
+		} else {
+			plugin.message.parse(player, plugin.noPerms);
+		}
 	}
 	
 	public void langs(Player player){
 		player.sendMessage(this.plugin.languages.names());
 	}
-	
-
-
 }

@@ -25,11 +25,11 @@ public class BountyCommands {
 	}
 	
 	public void addSignIssue(Player Issuer,String[] Command){
-		if (perms.playerHas(Issuer, "ragemod.bounty.createsign") || perms.playerHas(Issuer, "ragemod.bounty.signcreate") || perms.playerHas(Issuer, "ragemod.*") || perms.playerHas(Issuer, "ragemod.bounty")) {
+		if (perms.has(Issuer, "ragemod.bounty.createsign") || perms.has(Issuer, "ragemod.bounty.signcreate") || perms.has(Issuer, "ragemod.*") || perms.has(Issuer, "ragemod.bounty")) {
 			this.BlockCommands.put(Issuer.getName(),Command);
-			Issuer.sendMessage(ChatColor.GREEN + "You may no right-click a sign.");
+			Issuer.sendMessage(ChatColor.GREEN + "You may not right-click a sign.");
 		} else if (Issuer instanceof Player) {
-			Issuer.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+			plugin.message.parse(Issuer, plugin.noPerms);
 		} else {
 			Issuer.sendMessage("Non-players can't issue bounties!");
 		}	
@@ -52,22 +52,22 @@ public class BountyCommands {
 	}
 	
 	public void createsign(Block block,String city,Player Issuer){ //admin one
-		if (perms.playerHas(Issuer, "ragemod.bounty.createsign") || perms.playerHas(Issuer, "ragemod.*") || perms.playerHas(Issuer, "ragemod.bounty")) {
+		if (perms.has(Issuer, "ragemod.bounty.createsign") || perms.has(Issuer, "ragemod.*") || perms.has(Issuer, "ragemod.bounty")) {
 			this.oab.getBH(city).addSign(block);						
 			Issuer.sendMessage(ChatColor.GREEN + "Bounty-Sign successfully added!");
 		} else if (Issuer instanceof Player) {
-			Issuer.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+			plugin.message.parse(Issuer, plugin.noPerms);
 		} else {
 			Issuer.sendMessage("Non-players can't issue bounties!");
 		}
 	}
 	
 	public void createsign(Block block,Player Issuer){
-		if (perms.playerHas(Issuer, "ragemod.bounty.signcreate") || perms.playerHas(Issuer, "ragemod.*") || perms.playerHas(Issuer, "ragemod.bounty")) {
+		if (perms.has(Issuer, "ragemod.bounty.signcreate") || perms.has(Issuer, "ragemod.*") || perms.has(Issuer, "ragemod.bounty")) {
 			this.oab.getBH(this.plugin.players.get(Issuer.getName()).townName).addSign(block);	
 			Issuer.sendMessage(ChatColor.GREEN + "Bounty-Sign successfully added!");
 		} else if (Issuer instanceof Player) {
-			Issuer.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+			plugin.message.parse(Issuer, plugin.noPerms);
 		} else {
 			Issuer.sendMessage("Non-players can't issue bounties!");
 		}
@@ -78,7 +78,7 @@ public class BountyCommands {
 	}
 	
 	public void addBounty(Player Issuer,String Amount,String Target,String City){
-		if (perms.playerHas(Issuer, "ragemod.bounty.add.normal") || perms.playerHas(Issuer, "ragemod.bounty") || perms.playerHas(Issuer, "ragemod.*")) {
+		if (perms.has(Issuer, "ragemod.bounty.add.normal") || perms.has(Issuer, "ragemod.bounty") || perms.has(Issuer, "ragemod.*")) {
 			Bounty temp = new Bounty();
 			EconomyResponse work = this.plugin.economy.bankWithdraw(Issuer.getName(),Double.parseDouble(Amount) );
 			if (work.type == EconomyResponse.ResponseType.SUCCESS){		
@@ -88,18 +88,18 @@ public class BountyCommands {
 			temp.setCity(City);
 			this.oab.getBH(City).addBounty(temp);
 			Issuer.sendMessage(ChatColor.GREEN + "Bounty added!");
-			}else{
+			} else {
 				Issuer.sendMessage("You don't have enough money. You need to hunt him by yourself :(");	
 			}
 		} else if (Issuer instanceof Player ) {
-			Issuer.sendMessage("You don't have permission to do that!");
+			plugin.message.parse(Issuer, plugin.noPerms);
 		} else {
 			Issuer.sendMessage("Non-players can't issue bounties!");
 		}
 	}
 	
 	public void addGlobalBounty(Player Issuer,String Amount,String Target){
-		if (perms.playerHas(Issuer, "ragemod.bounty.add.global") || perms.playerHas(Issuer,  "ragemod.bounty") || perms.playerHas(Issuer, "ragemod.*")) {
+		if (perms.has(Issuer, "ragemod.bounty.add.global") || perms.has(Issuer,  "ragemod.bounty") || perms.has(Issuer, "ragemod.*")) {
 			EconomyResponse work = this.plugin.economy.bankWithdraw(Issuer.getName(),Double.parseDouble(Amount) );
 			if (work.type == EconomyResponse.ResponseType.SUCCESS){	
 			Bounty temp = new Bounty();
@@ -109,22 +109,22 @@ public class BountyCommands {
 			temp.setCity("global");
 			this.oab.getBH("global").addBounty(temp);
 			Issuer.sendMessage(ChatColor.GREEN + "Bounty added!");
-			}else{
+			} else {
 				Issuer.sendMessage("You don't have enough money. You need to hunt him by yourself :(");	
 			}
 		} else if (Issuer instanceof Player) {
-			Issuer.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+			plugin.message.parse(Issuer, plugin.noPerms);
 		} else {
 			Issuer.sendMessage("Non-players can't issue bounties!");
 		}
 	}
 	
 	public void removeAllBountys(Player Issuer, String Target){
-		if (perms.playerHas(Issuer, "ragemod.bounty.removeall") || perms.playerHas(Issuer, "ragemod.*") || perms.playerHas(Issuer,  "ragemod.bounty")) {
+		if (perms.has(Issuer, "ragemod.bounty.removeall") || perms.has(Issuer, "ragemod.*") || perms.has(Issuer,  "ragemod.bounty")) {
 			this.oab.removeallBountys(Target);
 			Issuer.sendMessage(ChatColor.RED + "All Bountys removed!");
 		} else if (Issuer instanceof Player) {
-			Issuer.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+			plugin.message.parse(Issuer, plugin.noPerms);
 		} else {
 			Issuer.sendMessage("Non-players can't issue bounties!");
 		}
@@ -136,7 +136,4 @@ public class BountyCommands {
 		}
 		return false;
 	}
-	
-	
-
 }

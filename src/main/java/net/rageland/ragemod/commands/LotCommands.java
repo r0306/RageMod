@@ -125,83 +125,90 @@ public class LotCommands
 	// /lot claim [lot_code]
 	public void claim(Player player, String lotCode) 
 	{
-		PlayerData playerData = plugin.players.get(player.getName());
-		Lot lot;
 		
-		// Get the current lot, whether blank (current location) or typed
-		if( lotCode.equals("") )
-			lot = plugin.lots.findCurrentLot(player.getLocation());
-		else
-			lot = plugin.lots.get(lotCode);
+		if (RageMod.perms.has(player, "ragemod.lot.claim") || RageMod.perms.has(player, "ragemod.lot")) {
 		
-		// lot will be null if either of the above methods failed
-		if( lot == null )
-		{
+			PlayerData playerData = plugin.players.get(player.getName());
+			Lot lot;
+		
+			// Get the current lot, whether blank (current location) or typed
 			if( lotCode.equals("") )
-				plugin.message.parseNo(player, "You are not standing on a valid lot.  (consult the online map)");
+				lot = plugin.lots.findCurrentLot(player.getLocation());
 			else
-				plugin.message.parseNo(player, lotCode + " is not a valid lot code.  (consult the online map)");
-			return;
-		}
-		// See if the lot is already claimed
-		if( !lot.owner.equals("") )
-		{
-			if( lot.owner.equals(playerData.name) )
-				plugin.message.sendNo(player, "You already own this lot!");
-			else
-				plugin.message.parseNo(player, "Lot " + lot.getLotCode() + " is already owned by " + plugin.players.get(lot.owner).getCodedName() + ".");
-			return;
-		}
-		// Make sure the player does not already own a lot of the current lot's category
-		for( Lot ownedLot : playerData.lots )
-		{
-			if( ownedLot.category == lot.category && (lot.category == LotCategory.WARRENS || lot.category == LotCategory.MARKET) )
-			{
-				plugin.message.sendNo(player, "You can only own one " + lot.getCategoryName() + " lot at a time.");
-				return;
-			}
-			else if( (lot.category == LotCategory.COAL || lot.category == LotCategory.IRON || lot.category == LotCategory.GOLD || lot.category == LotCategory.DIAMOND) &&
-					 (ownedLot.category == LotCategory.COAL || ownedLot.category == LotCategory.IRON || ownedLot.category == LotCategory.GOLD || ownedLot.category == LotCategory.DIAMOND) )
-			{
-				plugin.message.sendNo(player, "You can only own one member lot at a time.");
-				return;
-			}
-		}
-		// If the player is claiming a member lot, see if they have donated the appropriate amount
-		if( lot.isMemberLot() )
-		{
-			int donation = plugin.database.playerQueries.getRecentDonations(playerData.id_Player);
+				lot = plugin.lots.get(lotCode);
 			
-			if( donation < lot.getPrice() )
+			// lot will be null if either of the above methods failed
+			if( lot == null )
 			{
-				plugin.message.send(player, "To claim this lot you must be a " + lot.getCategoryName() + "-level " + plugin.config.SERVER_NAME + " member.", ChatColor.AQUA);
-				plugin.message.send(player, "Visit http://www.rageland.net/donate for more details.", ChatColor.AQUA);
+				if( lotCode.equals("") )
+					plugin.message.parseNo(player, "You are not standing on a valid lot.  (consult the online map)");
+				else
+					plugin.message.parseNo(player, lotCode + " is not a valid lot code.  (consult the online map)");
 				return;
 			}
-		}
-		// See if the player has an active membership
-		if( lot.category == LotCategory.MARKET )
-		{
-			if( !playerData.isMember )
+			// See if the lot is already claimed
+			if( !lot.owner.equals("") )
 			{
-				plugin.message.send(player, "To claim a Market lot you must be an active " + plugin.config.SERVER_NAME + " member.", ChatColor.AQUA);
-				plugin.message.send(player, "Visit http://www.rageland.net/donate for more details.", ChatColor.AQUA);
+				if( lot.owner.equals(playerData.name) )
+					plugin.message.sendNo(player, "You already own this lot!");
+				else
+					plugin.message.parseNo(player, "Lot " + lot.getLotCode() + " is already owned by " + plugin.players.get(lot.owner).getCodedName() + ".");
 				return;
 			}
+			// Make sure the player does not already own a lot of the current lot's category
+			for( Lot ownedLot : playerData.lots )
+			{
+				if( ownedLot.category == lot.category && (lot.category == LotCategory.WARRENS || lot.category == LotCategory.MARKET) )
+				{
+					plugin.message.sendNo(player, "You can only own one " + lot.getCategoryName() + " lot at a time.");
+					return;
+				}
+				else if( (lot.category == LotCategory.COAL || lot.category == LotCategory.IRON || lot.category == LotCategory.GOLD || lot.category == LotCategory.DIAMOND) &&
+						(ownedLot.category == LotCategory.COAL || ownedLot.category == LotCategory.IRON || ownedLot.category == LotCategory.GOLD || ownedLot.category == LotCategory.DIAMOND) )
+					{
+					plugin.message.sendNo(player, "You can only own one member lot at a time.");
+					return;
+					}
+				}
+				// If the player is claiming a member lot, see if they have donated the appropriate amount
+				if( lot.isMemberLot() )
+				{
+					int donation = plugin.database.playerQueries.getRecentDonations(playerData.id_Player);
+			
+					if( donation < lot.getPrice() )
+					{
+						plugin.message.send(player, "To claim this lot you must be a " + lot.getCategoryName() + "-level " + plugin.config.SERVER_NAME + " member.", ChatColor.AQUA);
+						plugin.message.send(player, "Visit " + plugin.config.Website_URL, ChatColor.AQUA);
+						return;
+					}
+				}
+				// See if the player has an active membership
+				if( lot.category == LotCategory.MARKET )
+				{
+					if( !playerData.isMember )
+					{
+						plugin.message.send(player, "To claim a Market lot you must be an active " + plugin.config.SERVER_NAME + " member.", ChatColor.AQUA);
+						plugin.message.send(player, "Visit " + plugin.config.Website_URL + " for more details.", ChatColor.AQUA);
+						return;
+					}
+				}
+		
+				// All checks have succeeded - give the lot to the player
+				plugin.database.lotQueries.lotClaim(playerData, lot);
+		
+				// Update the playerData
+				playerData.lots.add(lot);
+		
+				// Update Lots to set the owner
+				lot.owner = playerData.name;
+				plugin.lots.put(lot);
+		
+				plugin.message.send(player, "You now own lot " + lot.getLotCode() + ".");
+		
+			} else {
+				plugin.message.parse(player, plugin.noPerms);
+			}
 		}
-		
-		// All checks have succeeded - give the lot to the player
-		plugin.database.lotQueries.lotClaim(playerData, lot);
-		
-		// Update the playerData
-		playerData.lots.add(lot);
-		
-		// Update Lots to set the owner
-		lot.owner = playerData.name;
-		plugin.lots.put(lot);
-		
-		plugin.message.send(player, "You now own lot " + lot.getLotCode() + ".");
-	}
 	
 	// /lot disallow <player_name/all>
 	public void disallow(Player player, String targetPlayerName) 
@@ -374,9 +381,4 @@ public class LotCommands
 		
 		plugin.message.send(player, "You are no longer the owner of lot " + lot.getLotCode() + ".");
 	}
-
-
-
-	
-	
 }

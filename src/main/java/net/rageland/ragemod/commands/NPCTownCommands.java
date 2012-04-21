@@ -67,6 +67,12 @@ public class NPCTownCommands {
 	// Creates a new town
 	public void create(Player player, String name, String raceString, String coords) 
 	{
+		
+		if (!(RageMod.perms.has(player, "ragemod.npctown.create"))) {
+			plugin.message.parse(player, plugin.noPerms);
+			return;
+		}
+		
 		String[] split = coords.split(",");
 		try
 		{
@@ -348,11 +354,8 @@ public class NPCTownCommands {
 		plugin.message.parse(player, targetPlayerData.getCodedName() + " is now the Steward of " + town.getCodedName() + ".");
 		Player targetPlayer = plugin.getServer().getPlayer(targetPlayerData.name);
 		if( targetPlayer != null && targetPlayer.isOnline() )
-			plugin.message.parse(targetPlayer, playerData.getCodedName() + " has assigned you as the Steward of " + town.getCodedName() + ".");
-		
+			plugin.message.parse(targetPlayer, playerData.getCodedName() + " has assigned you as the Steward of " + town.getCodedName() + ".");	
 	}
-
-
 	
 	// Lists all NPCTowns
 	public void list(Player player, String factionName) 
@@ -369,8 +372,5 @@ public class NPCTownCommands {
 					 town.getNPCLocations().size() + ChatColor.WHITE + " locations");
 		}
 		return;
-	
 	}
-
-
 }

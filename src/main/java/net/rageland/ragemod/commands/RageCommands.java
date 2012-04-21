@@ -1,6 +1,5 @@
 package net.rageland.ragemod.commands;
 
-
 import org.bukkit.entity.Player;
 import net.rageland.ragemod.RageMod;
 import net.rageland.ragemod.entity.PlayerData;
@@ -16,6 +15,10 @@ public class RageCommands {
 	
 	public void onCommand(Player player, PlayerData playerData, String[] split) 
 	{
+		if (!RageMod.perms.has(player, "ragemod.rage") && !RageMod.perms.has(player, "ragemod.*")) {
+			plugin.message.parse(player, plugin.noPerms);
+			return;
+		}
 		if( split.length < 2 )
 		{
 			plugin.message.parse(player, "Rage commands: <required> [optional]");
@@ -32,7 +35,6 @@ public class RageCommands {
 		
 		else
 			plugin.message.parse(player, "Type /npctown to see a list of available commands.");
-		
 	}
 	
 	// Creates a new NPC location in the town
@@ -58,7 +60,4 @@ public class RageCommands {
 			plugin.message.sendNo(player, "Error: " + ex.getMessage());
 		}	
 	}
-
-
-
 }

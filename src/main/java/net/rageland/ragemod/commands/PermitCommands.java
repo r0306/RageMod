@@ -44,7 +44,7 @@ public class PermitCommands
 		PlayerData targetPlayerData = plugin.players.get(targetPlayerName);
 		
 		// Make sure the player has permission to perform this command
-		if( !RageMod.perms.has(player, "ragemod.permit.capitol") )
+		if( !RageMod.perms.has(player, "ragemod.permit.capitol") || !RageMod.perms.has(player, "ragemod.permit") )
 		{
 			plugin.message.sendNo(player, "You do not have permission to perform that command.");
 			return;
