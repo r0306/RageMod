@@ -120,11 +120,14 @@ public class NPCCommands {
 		
 	}
 
-
-
-
 	private void createQuestNPC(Player player, String name, String questNpcType, String questId)
 	{
+		
+		if (!(RageMod.perms.has(player, "ragemod.npc"))) {
+			plugin.message.parse(player, plugin.noPerms);
+			return;
+		}
+		
 		PlayerData playerData = plugin.players.get(player.getName());
 		
 		try
@@ -200,7 +203,7 @@ public class NPCCommands {
 	{
 		if(split.length == 3 && split[1].equalsIgnoreCase("despawn"))
 		{
-			
+			return true;
 		}
 		return false;
 	}

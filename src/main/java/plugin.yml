@@ -2,6 +2,8 @@ name: RageMod
 main: net.rageland.ragemod.RageMod
 version: 0.1
 
+dev-url: http://dev.bukkit.org/server-mods/ragemod/
+website: https://github.com/RageModDevs/RageMod
 database: true
 
 commands:
@@ -89,6 +91,11 @@ permissions:
     description: TBM
   ragemod.lot:
     description: TBM
+    children:
+      ragemod.lot.assign: true
+      ragemod.lot.claim: true
+  ragemod.lot.claim:
+    description: Allows lot claiming.
   ragemod.lot.assign:
     description: TBM
   ragemod.evict:
@@ -103,8 +110,16 @@ permissions:
     description: TBM
   ragemod.npc:
     description: TBM
+    children:
+      ragemod.npc.create: true
+  ragemod.npc.create:
+    description: Allows NPC creation.
   ragemod.npctown:
     description: TBM
+    children: 
+      ragemod.npctown.create: true
+  ragemod.npctown.create:
+    description: Allows NPCTown creation.
   ragemod.referee:
     description: TBM
   ragemod.referee.blockpvp:
@@ -127,3 +142,5 @@ permissions:
     description: TBM
   ragemod.quest:
     description: TBM
+  ragemod.rage:
+    description: Rage command access.

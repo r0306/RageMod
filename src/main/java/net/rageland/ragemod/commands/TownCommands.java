@@ -11,6 +11,7 @@ import net.rageland.ragemod.world.PlayerTown;
 import net.rageland.ragemod.world.Town;
 import net.rageland.ragemod.world.TownLevel;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 // TODO: Keep towns from being created on zone borders
@@ -30,7 +31,7 @@ public class TownCommands
 	{
 		if( split.length < 2 || split.length > 3 )
 		{
-			plugin.message.parse(player, "Town commands: <required> [optional]");
+				plugin.message.parse(player, "Town commands: <required> [optional]");
 			if( playerData.isMayor && !playerData.townName.equals("") )
 				plugin.message.parse(player, "   /town add <player_name>   (adds a new resident)");
 			if( playerData.townName.equals("") )
@@ -61,35 +62,34 @@ public class TownCommands
 		else if( split[1].equalsIgnoreCase("add") )
 		{
 			if( split.length == 3 )
-    			this.add(player, split[2]); 
-    		else
-    			plugin.message.parse(player, "Usage: /town add <player_name>");
+				this.add(player, split[2]); 
+			else
+				plugin.message.parse(player, "Usage: /town add <player_name>");
 		}
 		else if( split[1].equalsIgnoreCase("create") )
 		{
-	
-			// TODO: Support 2+ word town names
-			
+				// TODO: Support 2+ word town names
+		
 			if( split.length == 2 )
 				this.create(player, "");
 			else if( split.length == 3 )
 				this.create(player, split[2]); 
 			else
-    			plugin.message.parse(player, "Usage: /town create [town_name] (use 'quotes' for multiple-word town names)"); 
+				plugin.message.parse(player, "Usage: /town create [town_name] (use 'quotes' for multiple-word town names)"); 
 		}
 		else if( split[1].equalsIgnoreCase("deposit") )
 		{
 			if( split.length == 3 )
 				this.deposit(player, split[2]); 
-    		else
-    			plugin.message.parse(player, "Usage: /town deposit <amount>");
+			else
+				plugin.message.parse(player, "Usage: /town deposit <amount>");
 		}
 		else if( split[1].equalsIgnoreCase("evict") )
 		{
 			if( split.length == 3 )
 				this.evict(player, split[2]); 
-    		else
-    			plugin.message.parse(player, "Usage: /town evict <player_name>");
+			else
+				plugin.message.parse(player, "Usage: /town evict <player_name>");
 		}
 		else if( split[1].equalsIgnoreCase("info") )
 		{
@@ -97,9 +97,9 @@ public class TownCommands
 				this.info(player, playerData.townName);
 			else if( split.length == 3 )
 				this.info(player, split[2]);
-    		else
-    			plugin.message.parse(player, "Usage: /town info <town_name>");
-		}
+			else
+				plugin.message.parse(player, "Usage: /town info <town_name>");
+			}
 		else if( split[1].equalsIgnoreCase("leave") )
 		{
 			this.leave(player); 	 
@@ -110,15 +110,15 @@ public class TownCommands
 				this.list(player, "");
 			else if( split.length == 3 )
 				this.list(player, split[2]);
-    		else
-    			plugin.message.parse(player, "Usage: /town list [faction]");
+			else
+				plugin.message.parse(player, "Usage: /town list [faction]");
 		}
 		else if( split[1].equalsIgnoreCase("minimum") )
 		{
 			if( split.length == 3 )
 				this.minimum(player, split[2]); 
-    		else
-    			plugin.message.parse(player, "Usage: /town minimum <amount>");
+			else
+				plugin.message.parse(player, "Usage: /town minimum <amount>");
 		}
 		else if( split[1].equalsIgnoreCase("residents") )
 		{
@@ -126,24 +126,24 @@ public class TownCommands
 				this.residents(player, playerData.townName);
 			else if( split.length == 3 )
 				this.residents(player, split[2]);
-    		else
-    			plugin.message.parse(player, "Usage: /town residents <town_name>");
+			else
+				plugin.message.parse(player, "Usage: /town residents <town_name>");
 		}
 		else if( split[1].equalsIgnoreCase("upgrade") )
 		{
 			if( split.length == 2 )
-    			this.upgrade(player, false);
-    		else if( split.length == 3 && split[2].equalsIgnoreCase("confirm"))
-    			this.upgrade(player, true);
-    		else
-    			plugin.message.parse(player, "Usage: /town upgrade [confirm]");
+				this.upgrade(player, false);
+			else if( split.length == 3 && split[2].equalsIgnoreCase("confirm"))
+				this.upgrade(player, true);
+			else
+				plugin.message.parse(player, "Usage: /town upgrade [confirm]");
 		}
 		else if( split[1].equalsIgnoreCase("withdrawl") )
 		{
 			if( split.length == 3 )
 				this.withdrawl(player, split[2]); 
-    		else
-    			plugin.message.parse(player, "Usage: /town withdrawl <amount>");
+			else
+				plugin.message.parse(player, "Usage: /town withdrawl <amount>");
 		}
 		else
 			plugin.message.parse(player, "Type /town to see a list of available commands.");
@@ -185,17 +185,13 @@ public class TownCommands
 			plugin.message.sendNo(player, "Your town already has the maximum number of residents for its level.");
 			return;
 		}
-		
 		// Add the target to the player's town
 		plugin.database.townQueries.townAdd(targetPlayerName, playerData.townName);
-		
 		// Update the playerData
 		targetPlayerData.townName = playerData.townName;
 		// This will give the player's balance back if they were a previous resident of the town
 		targetPlayerData.treasuryBalance = plugin.database.playerQueries.getPlayerTreasuryBalance(targetPlayerData.id_Player, playerTown.getID());
-		
 		playerTown.residents.add(targetPlayerData.name);
-		
 		plugin.message.parse(player, targetPlayerData.getCodedName() + " is now a resident of " + playerTown.getCodedName() + ".");		
 	}
 	
@@ -205,83 +201,88 @@ public class TownCommands
 		PlayerData playerData = plugin.players.get(player.getName());
 		HashMap<String, Integer> nearbyTowns = plugin.towns.checkForNearbyTowns(player.getLocation());
 		int cost = plugin.config.townLevels.get(1).initialCost;
+		
+			if (RageMod.perms.has(player, "ragemod.town")) {
 
-		// Ensure that the player is not currently a resident of a town
-		if( !playerData.townName.equals("") )
-		{
-			plugin.message.parseNo(player, "You are already a resident of '" + plugin.towns.get(playerData.townName).getCodedName() + "'; you must use '/town leave' before you can create a new town.");
-			return;
-		}		
-		// Ensure that the town name is not taken
-		if( plugin.towns.get(townName) != null )
-		{
-			plugin.message.sendNo(player, "A town named " + townName + " already exists!");
-			return;
-		}
-		// Ensure that the current zone is allowed to create towns
-		if( !plugin.zones.isInside(player.getLocation()).getConfig().isPlayerCity())
-		{
-			plugin.message.parseNo(player, "You cannot create a town in this zone.");
-			return;
-		}
-		// Check for any towns that are too close to the current point - list all
-		if( nearbyTowns.size() > 0 )
-		{
-			String message = "You are too close to the following towns: ";
-			for( String nearbyTownName : nearbyTowns.keySet() )
+			// Ensure that the player is not currently a resident of a town
+			if( !playerData.townName.equals("") )
 			{
-				message += plugin.towns.get(nearbyTownName).getCodedName() + " (" + nearbyTowns.get(nearbyTownName) + "m) ";
+				plugin.message.parseNo(player, "You are already a resident of '" + plugin.towns.get(playerData.townName).getCodedName() + "'; you must use '/town leave' before you can create a new town.");
+				return;
+			}		
+			// Ensure that the town name is not taken
+			if( plugin.towns.get(townName) != null )
+			{
+				plugin.message.sendNo(player, "A town named " + townName + " already exists!");
+				return;
 			}
-			plugin.message.parseNo(player, message);
-			plugin.message.parse(player, "Towns must be a minimum distance of " + plugin.config.Town_MIN_DISTANCE_BETWEEN + "m apart.");
-			return;
-		}
-		// Check to see if the player has enough money to join the specified faction
-		if( !RageMod.econ.has(townName, cost) )
-		{
-			plugin.message.parseNo(player, "You need at least " + RageMod.econ.format(cost) + " to create a " + plugin.config.townLevels.get(1).name + ".");
-			return;
-		}
+			// Ensure that the current zone is allowed to create towns
+			if( !plugin.zones.isInside(player.getLocation()).getConfig().isPlayerCity())
+			{
+				plugin.message.parseNo(player, "You cannot create a town in this zone.");
+				return;
+			}
+			// Check for any towns that are too close to the current point - list all
+			if( nearbyTowns.size() > 0 )
+			{
+				String message = "You are too close to the following towns: ";
+				for( String nearbyTownName : nearbyTowns.keySet() )
+				{
+					message += plugin.towns.get(nearbyTownName).getCodedName() + " (" + nearbyTowns.get(nearbyTownName) + "m) ";
+				}
+				plugin.message.parseNo(player, message);
+				plugin.message.parse(player, "Towns must be a minimum distance of " + plugin.config.Town_MIN_DISTANCE_BETWEEN + "m apart.");
+				return;
+			}
+			// Check to see if the player has enough money to join the specified faction
+			if( !RageMod.econ.has(townName, cost) )
+			{
+				plugin.message.parseNo(player, "You need at least " + RageMod.econ.format(cost) + " to create a " + plugin.config.townLevels.get(1).name + ".");
+				return;
+			}
 		
-		// TODO: Check against NPC town names
+			// TODO: Check against NPC town names
 		
-		// Create the town if name selected, otherwise return message
-		if( !townName.equals("") )
-		{
-			// Add the new town to the database
-			int townID = plugin.database.townQueries.townCreate(player, townName);
+			// Create the town if name selected, otherwise return message
+			if( !townName.equals("") )
+			{
+				// Add the new town to the database
+				int townID = plugin.database.townQueries.townCreate(player, townName);
 			
-			// Update PlayerTowns
-			PlayerTown playerTown = new PlayerTown(plugin, townID, townName, player.getWorld());
-			playerTown.centerPoint = player.getLocation();
+				// Update PlayerTowns
+				PlayerTown playerTown = new PlayerTown(plugin, townID, townName, player.getWorld());
+				playerTown.centerPoint = player.getLocation();
 					
-			playerTown.id_Faction = playerData.id_Faction;
-			playerTown.bankruptDate = null;
-			playerTown.townLevel = plugin.config.townLevels.get(1);
-			playerTown.treasuryBalance = plugin.config.townLevels.get(1).minimumBalance;
-			playerTown.minimumBalance = plugin.config.townLevels.get(1).minimumBalance;
-			playerTown.mayor = playerData.name;
-			playerTown.residents.add(playerData.name);
+				playerTown.id_Faction = playerData.id_Faction;
+				playerTown.bankruptDate = null;
+				playerTown.townLevel = plugin.config.townLevels.get(1);
+				playerTown.treasuryBalance = plugin.config.townLevels.get(1).minimumBalance;
+				playerTown.minimumBalance = plugin.config.townLevels.get(1).minimumBalance;
+				playerTown.mayor = playerData.name;
+				playerTown.residents.add(playerData.name);
 			
-			playerTown.createRegions();
-			playerTown.build();
+				playerTown.createRegions();
+				playerTown.build();
 			
-			plugin.towns.add(playerTown);
+				plugin.towns.add(playerTown);
 			
-			// Update the playerData
-			playerData.townName = townName;
-			playerData.isMayor = true;
-			playerData.currentTown = playerTown;
-			playerData.treasuryBalance = cost;
+				// Update the playerData
+				playerData.townName = townName;
+				playerData.isMayor = true;
+				playerData.currentTown = playerTown;
+				playerData.treasuryBalance = cost;
 			
-			// Subtract from player balance
-			RageMod.econ.bankWithdraw(townName, cost);
+				// Subtract from player balance
+				RageMod.econ.bankWithdraw(townName, cost);
 			
-			plugin.message.parse(player, "Congratulations, you are the new mayor of " + playerTown.getCodedName() + "!");		
-		}
-		else
-		{
-			plugin.message.parse(player, "This location is valid for a new town - to create one for " + RageMod.econ.format(cost) + ", type '/town create <town_name>'");
+				plugin.message.parse(player, "Congratulations, you are the new mayor of " + playerTown.getCodedName() + "!");		
+			}
+			else
+			{
+				plugin.message.parse(player, "This location is valid for a new town - to create one for " + RageMod.econ.format(cost) + ", type '/town create <town_name>'");
+			}
+		} else {
+			plugin.message.parse(player, ChatColor.DARK_RED + "You don't have permission to do that!");
 		}
 	}
 	
@@ -293,48 +294,48 @@ public class TownCommands
 		PlayerTown playerTown = (PlayerTown)plugin.towns.get(playerData.townName);
 		
 		// Make sure the player is a resident of a town
-		if( playerData.townName.equals("") )
-		{
-			plugin.message.sendNo(player, "Only town residents can use the deposit command.");
-			return;
-		}
-		// Ensure that the typed amount is a valid number
-		try
-		{
-			amount = Double.parseDouble(amountString);
-		}
-		catch( Exception ex )
-		{
-			plugin.message.sendNo(player, "Invalid amount.");
-			return;
-		}
-		// Ensure that the amount is greater than 0 (no sneaky withdrawls!)
-		if( amount <= 0 )
-		{
-			plugin.message.sendNo(player, "Invalid amount.");
-			return;	
-		}
-		// Make sure the player has enough money to make the deposit
-		if( !RageMod.econ.has(amountString, amount) )
-		{
-			plugin.message.parseNo(player, "You don't have enough money!");
-			return;
-		}
+			if( playerData.townName.equals("") )
+			{
+				plugin.message.sendNo(player, "Only town residents can use the deposit command.");
+				return;
+			}
+			// Ensure that the typed amount is a valid number
+			try
+			{
+				amount = Double.parseDouble(amountString);
+			}
+			catch( Exception ex )
+			{
+				plugin.message.sendNo(player, "Invalid amount.");
+				return;
+			}
+			// Ensure that the amount is greater than 0 (no sneaky withdrawls!)
+			if( amount <= 0 )
+			{
+				plugin.message.sendNo(player, "Invalid amount.");
+				return;	
+			}
+			// Make sure the player has enough money to make the deposit
+			if( !RageMod.econ.has(amountString, amount) )
+			{
+				plugin.message.parseNo(player, "You don't have enough money!");
+				return;
+			}
 		
-		// Subtract the amount from the player's balance
-		RageMod.econ.bankWithdraw(amountString, amount);
+			// Subtract the amount from the player's balance
+			RageMod.econ.bankWithdraw(amountString, amount);
 		
-		// Update the database
-		plugin.database.townQueries.townDeposit(playerTown.getID(), playerData.id_Player, amount);
+			// Update the database
+			plugin.database.townQueries.townDeposit(playerTown.getID(), playerData.id_Player, amount);
 		
-		// Update the town data
-		playerTown.treasuryBalance += amount; 
-		plugin.towns.add(playerTown);
+			// Update the town data
+			playerTown.treasuryBalance += amount; 
+			plugin.towns.add(playerTown);
 		
-		// Update the player data
-		playerData.treasuryBalance += amount;
+			// Update the player data
+			playerData.treasuryBalance += amount;
 		
-		plugin.message.parse(player, "Deposited " + RageMod.econ.format(amount) + " into town treasury.");
+			plugin.message.parse(player, "Deposited " + RageMod.econ.format(amount) + " into town treasury.");
 	}
 	
 	// /town evict <player_name>
@@ -667,17 +668,4 @@ public class TownCommands
 		
 		plugin.message.parse(player, "Withdrew " + RageMod.econ.format(amount) + " from town treasury.");
 	}
-	
-	
-
-	
-
-
-
-	
-	
-	
-	
-	
-	
 }

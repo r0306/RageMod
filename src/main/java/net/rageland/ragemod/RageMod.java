@@ -39,6 +39,7 @@ import net.rageland.ragemod.text.Message;
 import net.rageland.ragemod.config.*;
 
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -78,6 +79,7 @@ public class RageMod extends JavaPlugin {
     public static Economy econ;
     public Economy economy;
     public Message text;
+	public String noPerms = ChatColor.DARK_RED + "You don't have permission to do that!";
     
     // Update stuff
     private double currentVersion;

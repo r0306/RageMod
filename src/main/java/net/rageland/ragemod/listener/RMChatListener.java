@@ -87,9 +87,9 @@ public class RMChatListener implements Listener, CommandExecutor {
 	    		case "remove":		if(check(4,args,sender) && args[3] == "all")this.bountyCommands.removeAllBountys(player, args[2]);break;
 	    		case "cancel":		this.bountyCommands.resultBlockIssue(player);
 	    		case "show": 		if(check(2,args,sender) && args[1] == "all"){//TODO add show for all break;
-	    							}else if(check(2,args,sender)&& this.bountyCommands.knowsCity(args[1])){
-	    							 //show for city break;
-	    							}else{
+	    							} else if(check(2,args,sender)&& this.bountyCommands.knowsCity(args[1])) {
+	    								//show for city break;
+	    							} else {
 	    								//show for city player is in break;
 	    							}
 	    		}

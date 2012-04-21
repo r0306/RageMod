@@ -130,6 +130,7 @@ public class RageConfig {
     public HashMap<Integer, String> NPC_RACE_NAMES;
     public HashMap<Integer, String> NPC_AFFINITY_NAMES;
     public HashMap<Integer, String> NPC_AFFINITY_CODED_NAMES;
+	public String Website_URL = "http://rageland.net";
     
     
     public RageConfig (RageMod plugin)
