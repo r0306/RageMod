@@ -14,7 +14,7 @@ import net.rageland.ragemod.world.PlayerTown;
 import net.rageland.ragemod.world.Town;
 import net.rageland.ragemod.utilities.Util;
 import org.bukkit.entity.Creature;
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -30,8 +30,8 @@ import org.bukkit.event.entity.EntityTargetEvent;
 /**
  * RageMod entity listener
  * @author TheIcarusKid
+ * But PandazNWafflez got rid of all your use of deprecated methods :P
  */
-@SuppressWarnings("deprecation")
 public class RMEntityListener implements Listener
 {
 	private final RageMod plugin;
@@ -182,9 +182,9 @@ public class RMEntityListener implements Listener
             		if(playerData.isOnKillQuest())
             		{
             			KillCreatureQuest kcQuest = (KillCreatureQuest) playerData.activeQuestData.getQuest();
-            			CreatureType entityCreatureType = Util.getCreatureTypeFromEntity(defenderCreature);
+            			EntityType entityEntityType = Util.getEntityTypeFromEntity(defenderCreature);
             			
-            			if(entityCreatureType == kcQuest.getCreatureToBeKilled())
+            			if(entityEntityType == kcQuest.getEntityToBeKilled())
             			{
             				playerData.activeQuestData.incrementObjectiveCounter();
             				playerData.activeQuestData.getQuest().statusUpdate(attackerPlayer, playerData);
@@ -208,9 +208,9 @@ public class RMEntityListener implements Listener
             return;
     	
     	// Don't let monsters spawn inside player towns or the capitol
-    	if( (event.getCreatureType() == CreatureType.CREEPER || event.getCreatureType() == CreatureType.SKELETON ||
-    			event.getCreatureType() == CreatureType.ZOMBIE || event.getCreatureType() == CreatureType.SPIDER ||
-    			event.getCreatureType() == CreatureType.SQUID || event.getCreatureType() == CreatureType.ENDERMAN) && 
+    	if( (event.getEntityType() == EntityType.CREEPER || event.getEntityType() == EntityType.SKELETON ||
+    			event.getEntityType() == EntityType.ZOMBIE || event.getEntityType() == EntityType.SPIDER ||
+    			event.getEntityType() == EntityType.SQUID || event.getEntityType() == EntityType.ENDERMAN) && 
     			(plugin.zones.isInside((event.getLocation())).isInsideCapitol(event.getLocation()) || plugin.towns.getCurrentTown(event.getLocation()) != null) )
     		event.setCancelled(true);
     	
@@ -219,7 +219,7 @@ public class RMEntityListener implements Listener
     		event.setCancelled(true);
     	
     	// Change colors of sheep spawned inside faction towns
-    	else if( event.getCreatureType() == CreatureType.SHEEP )
+    	else if( event.getEntityType() == EntityType.SHEEP )
     	{
     		Town town = plugin.towns.getCurrentTown(event.getLocation());
     		if( town != null && town instanceof PlayerTown )

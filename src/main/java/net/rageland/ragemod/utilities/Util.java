@@ -10,7 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Cow;
 import org.bukkit.entity.Creature;
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Enderman;
@@ -28,7 +28,6 @@ import org.bukkit.entity.Zombie;
 
 // Misc. methods
 
-@SuppressWarnings("deprecation")
 public class Util 
 {	
 	// Formats the cooldown time into a lovely string
@@ -71,75 +70,75 @@ public class Util
 		return new Timestamp(now().getTime() + (minutes * 60000));
 	}
 	
-	public static CreatureType getCreatureTypeFromEntity(Creature creature)
+	public static EntityType getEntityTypeFromEntity(Creature creature)
 	{
 		
 		if(creature instanceof Spider)
 		{
-			return CreatureType.SPIDER;
+			return EntityType.SPIDER;
 		}
 		else if(creature instanceof Wolf)
 		{
-			return CreatureType.WOLF;
+			return EntityType.WOLF;
 		}
 		else if(creature instanceof Creeper)
 		{
-			return CreatureType.CREEPER;
+			return EntityType.CREEPER;
 		}
 		else if(creature instanceof Slime)
 		{
-			return CreatureType.SLIME;
+			return EntityType.SLIME;
 		}
 		else if(creature instanceof Skeleton)
 		{
-			return CreatureType.SKELETON;
+			return EntityType.SKELETON;
 		}
 		else if(creature instanceof Zombie)
 		{
-			return CreatureType.ZOMBIE;
+			return EntityType.ZOMBIE;
 		}
 		else if(creature instanceof PigZombie)
 		{
-			return CreatureType.PIG_ZOMBIE;
+			return EntityType.PIG_ZOMBIE;
 		}
 		else if(creature instanceof Squid)
 		{
-			return CreatureType.SQUID;
+			return EntityType.SQUID;
 		}
 		else if(creature instanceof Chicken)
 		{
-			return CreatureType.CHICKEN;
+			return EntityType.CHICKEN;
 		}
 		else if(creature instanceof Cow)
 		{
-			return CreatureType.COW;
+			return EntityType.COW;
 		}
 		else if(creature instanceof Ghast)
 		{
-			return CreatureType.GHAST;
+			return EntityType.GHAST;
 		}
 		else if(creature instanceof Pig)
 		{
-			return CreatureType.PIG;
+			return EntityType.PIG;
 		}
 		else if(creature instanceof Sheep)
 		{
-			return CreatureType.SHEEP;
+			return EntityType.SHEEP;
 		}
 
 		else if(creature instanceof Giant)
 		{
-			return CreatureType.GIANT;
+			return EntityType.GIANT;
 		}
 		else if (creature instanceof EnderDragon)
 		{
-			return CreatureType.ENDER_DRAGON;
+			return EntityType.ENDER_DRAGON;
 		} else if (creature instanceof Enderman) 
 		{
-			return CreatureType.ENDERMAN;
+			return EntityType.ENDERMAN;
 		} else 
 		{
-			return CreatureType.valueOf("Unknown");
+			return EntityType.valueOf("Unknown");
 		}
 	}
 	

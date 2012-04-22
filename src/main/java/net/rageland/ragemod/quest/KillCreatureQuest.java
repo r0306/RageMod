@@ -5,6 +5,7 @@ import net.rageland.ragemod.entity.PlayerData;
 import net.rageland.ragemod.utilities.InventoryUtilities;
 
 import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 @SuppressWarnings({"unused", "deprecation"})
@@ -14,14 +15,14 @@ public class KillCreatureQuest extends Quest
 	private QuestData questData;
 	private RewardData rewardData;
 	private Flags flags;
-	private CreatureType creatureToBeKilled;
+	private EntityType creatureToBeKilled;
 	private RageMod plugin;
 
 	public KillCreatureQuest(
 			QuestData questData, 
 			RewardData rewardData, 
 			Flags flags,
-			CreatureType creatureToBeKilled)
+			EntityType creatureToBeKilled)
 	{
 		super(questData, rewardData, flags, id_NPCInstance_Source);
 		this.questData = questData;
@@ -31,7 +32,7 @@ public class KillCreatureQuest extends Quest
 		this.plugin = RageMod.getInstance();
 	}
 	
-	public CreatureType getCreatureToBeKilled()
+	public EntityType getEntityToBeKilled()
 	{
 		return creatureToBeKilled;
 	}
