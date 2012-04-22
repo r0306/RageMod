@@ -7,6 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Blaze;
+import org.bukkit.entity.CaveSpider;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Cow;
 import org.bukkit.entity.Creature;
@@ -16,6 +18,9 @@ import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Giant;
+import org.bukkit.entity.MagmaCube;
+import org.bukkit.entity.Minecart;
+import org.bukkit.entity.MushroomCow;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Sheep;
@@ -72,7 +77,6 @@ public class Util
 	
 	public static EntityType getEntityTypeFromEntity(Creature creature)
 	{
-		
 		if(creature instanceof Spider)
 		{
 			return EntityType.SPIDER;
@@ -133,10 +137,32 @@ public class Util
 		else if (creature instanceof EnderDragon)
 		{
 			return EntityType.ENDER_DRAGON;
-		} else if (creature instanceof Enderman) 
+		} 
+		else if (creature instanceof Enderman) 
 		{
 			return EntityType.ENDERMAN;
-		} else 
+		}
+		else if (creature instanceof MagmaCube)
+		{
+			return EntityType.MAGMA_CUBE;
+		}
+		else if (creature instanceof Minecart)
+		{
+			return EntityType.MINECART;
+		}
+		else if (creature instanceof MushroomCow)
+		{
+			return EntityType.MUSHROOM_COW;
+		}
+		else if (creature instanceof Blaze)
+		{
+			return EntityType.BLAZE;
+		}
+		else if (creature instanceof CaveSpider)
+		{
+			return EntityType.CAVE_SPIDER;
+		}
+		else 
 		{
 			return EntityType.valueOf("Unknown");
 		}
