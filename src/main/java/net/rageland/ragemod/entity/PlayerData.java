@@ -146,7 +146,7 @@ public class PlayerData
 	// Checks whether the current location is inside one of the player's lots
 	public boolean isInsideOwnLot(Location location)
 	{
-		if(!location.getWorld().getName().equalsIgnoreCase("world"))
+		if(!location.getWorld().getName().equalsIgnoreCase(rc.World_Name))
 			return false;
 		
 		for( Lot lot : this.lots )
